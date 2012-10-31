@@ -28,8 +28,8 @@ import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGRect;
 
 /**
- * K�ytt�liittym�n karttakomponentti. Toteutukseen k�ytet��n Batikin
- * JSVGCanvas-k�ytt�liittym�komponenttia.
+ * Käyttöliittymän karttakomponentti. Toteutukseen käytetään Batikin
+ * JSVGCanvas-käyttöliittymäkomponenttia.
  * 
  * Toteutusta hankaloittaa se, ett� Batikin tietorakenteiden k�sittely
  * t�ytyy tehd� Batikin omasta s�ikeest� k�sin, kun taas muu sovellus

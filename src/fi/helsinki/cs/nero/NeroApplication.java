@@ -4,16 +4,15 @@
  */
 package fi.helsinki.cs.nero;
 
+import fi.helsinki.cs.nero.db.NeroDatabase;
+import fi.helsinki.cs.nero.logic.Session;
+import fi.helsinki.cs.nero.ui.NeroUI;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 
-import fi.helsinki.cs.nero.db.NeroDatabase;
-import fi.helsinki.cs.nero.logic.Session;
-import fi.helsinki.cs.nero.ui.NeroUI;
-
 /**
- * Nero-sovelluksen pääohjelma.
+ * Nero-sovelluksen pï¿½ï¿½ohjelma.
  * @author Osma Suominen
  */
 public class NeroApplication {
@@ -39,12 +38,12 @@ public class NeroApplication {
             properties.load(new FileInputStream(filename));
         }
         catch (FileNotFoundException x) {
-            /* TODO laitetaanko joku ikkuna ilmoittamaan virheestä? */
-            System.out.println("Tiedostoa ei löydy!");
+            /* TODO laitetaanko joku ikkuna ilmoittamaan virheestï¿½? */
+            System.out.println("Tiedostoa ei lï¿½ydy!");
             System.exit(1);
         }
         catch (Exception x) {
-            /* TODO laitetaanko joku ikkuna ilmoittamaan virheestä? */
+            /* TODO laitetaanko joku ikkuna ilmoittamaan virheestï¿½? */
             System.out.println("Virhe luettaessa asetuksia tiedostosta: " +
                     x.toString());
             System.exit(1);
@@ -53,16 +52,16 @@ public class NeroApplication {
     
     /**
      * Palauttaa konfiguraatiotiedostossa olevien kenttien arvot
-     * @param name kentän nimi
-     * @return kentän arvo
+     * @param name kentï¿½n nimi
+     * @return kentï¿½n arvo
      */
     public static String getProperty(String name) {
         return properties.getProperty(name);
     }
     
     /**
-     * Ajaa Nero-sovelluksen. Käynnistää ohjelman eri komponentit ja
-     * liittää ne toisiinsa.
+     * Ajaa Nero-sovelluksen. Kï¿½ynnistï¿½ï¿½ ohjelman eri komponentit ja
+     * liittï¿½ï¿½ ne toisiinsa.
      * @param args komentoriviparametrit
      */
 	public static void main(String[] args) {
