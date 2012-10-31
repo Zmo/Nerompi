@@ -44,6 +44,7 @@ public class NeroUI {
         /* (non-Javadoc)
          * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
          */
+        @Override
         public void updateObserved(int type) {
         	switch(type) {
             case NeroObserverTypes.CURSORCHANGE:
