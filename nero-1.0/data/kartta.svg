@@ -1,0 +1,1249 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="kartta.css" type="text/css"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg width="700" height="720">
+  <g id="buttons">
+    <rect class="button" id="button1" x="594" y="60" width="22" height="25"/>
+    <rect class="button" id="button2" x="594" y="35" width="22" height="25"/>
+    <rect class="button" id="button3" x="594" y="10" width="22" height="25"/>
+    <text x="600" y="79" pointer-events="none">1</text>
+    <text x="600" y="54" pointer-events="none">2</text>
+    <text x="600" y="29" pointer-events="none">3</text>
+  </g>
+  <g id="floors">
+  <g id="floor1">
+	<polygon
+		points="9.914,607.943 97.647,607.943 97.647,427.943 157.647,427.943 157.647,607.943 246.447,607.943
+			246.447,429.543 310.447,429.543 310.447,607.943 397.647,607.943 397.901,429.543
+			457.545,429.543 457.392,627.43 591.857,627.58 591.945,326.432 542.701,326.343
+			542.701,293.009 572.301,293.179 572.228,260.51 543.501,260.316
+			543.501,241.383 634.531,241.576 634.517,121.772 546.85,121.772 546.881,15.772
+			8,15.772 8.143,196.629 37,196.772 37,206.772 46,206.772 46,228.629 37.364,228.772
+			37.143,251.772 10,251.915"
+		 style="visibility:visible;fill:rgb(192,192,192);stroke:rgb(0,0,0);stroke-width:4"/>
+	<rect id="B113" x="310" y="547" width="36" height="60"
+		 class="room"/>
+	<rect id="B114" x="310" y="511" width="36" height="36"
+		 class="room"/>
+	<rect id="B115" x="310" y="487" width="36" height="24"
+		 class="room"/>
+	<rect id="B116" x="310" y="455" width="36" height="32"
+		 class="room"/>
+	<rect id="B112" x="360" y="547" width="37" height="23"
+		 class="room"/>
+	<rect id="B111" x="360" y="511" width="37" height="36"
+		 class="room"/>
+	<rect id="B110" x="360" y="488" width="37" height="23"
+		 class="room"/>
+	<rect id="B109" x="360" y="451" width="37" height="37"
+		 class="room"/>
+	<rect id="C116" x="157" y="547" width="39" height="60"
+		 class="room"/>
+	<rect id="C117" x="157" y="511" width="39" height="36"
+		 class="room"/>
+	<rect id="C118" x="157" y="487" width="39" height="24"
+		 class="room"/>
+	<rect id="C119" x="157" y="455" width="39" height="32"
+		 class="room"/>
+	<rect id="C115" x="210" y="547" width="36" height="23"
+		 class="room"/>
+	<rect id="C114" x="210" y="511" width="36" height="36"
+		 class="room"/>
+	<rect id="C113" x="210" y="487" width="36" height="24"
+		 class="room"/>
+	<rect id="C112" x="210" y="451" width="36" height="36"
+		 class="room"/>
+	<rect id="D117" x="10" y="547" width="37" height="60"
+		 class="room"/>
+	<rect id="D118" x="10" y="511" width="37" height="36"
+		 class="room"/>
+	<rect id="D119" x="10" y="487" width="37" height="24"
+		 class="room"/>
+	<rect id="D120" x="10" y="453" width="37" height="33"
+		 class="room"/>
+	<polygon id="D121"
+		points="10.128,453.275 46.878,453.275 46.878,413.275 17.628,413.275 17.628,417.275 10.128,417.275"
+		
+		 class="room"/>
+	<rect id="D116" x="61" y="548" width="36" height="22"
+		 class="room"/>
+	<rect id="D115" x="61" y="512" width="36" height="36"
+		 class="room"/>
+	<rect id="D114" x="61" y="487" width="36" height="25"
+		 class="room"/>
+	<rect id="D113" x="61" y="455" width="36" height="32"
+		 class="room"/>
+	<rect id="D128" x="8" y="15" width="39" height="38"
+		 class="room"/>
+	<rect id="D127" x="8" y="52" width="39" height="36"
+		 class="room"/>
+	<rect id="D126" x="8" y="88" width="39" height="47"
+		 class="room"/>
+	<rect id="D125" x="8" y="134" width="39" height="25"
+		 class="room"/>
+	<rect id="D124" x="7" y="158" width="40" height="39"
+		 class="room"/>
+	<rect id="D131" x="61" y="15" width="31" height="38"
+		 class="room"/>
+	<rect id="D132" x="61" y="53" width="31" height="24"
+		 class="room"/>
+	<rect id="B123" x="299" y="16" width="93" height="179"
+		 class="room"/>
+	<rect id="C132" x="259" y="135" width="40" height="60"
+		 class="room"/>
+	<rect id="C131" x="259" y="76" width="40" height="59"
+		 class="room"/>
+	<rect id="C130" x="259" y="16" width="40" height="60"
+		 class="room"/>
+	<rect id="C129" x="164" y="16" width="79" height="60"
+		 class="room"/>
+	<rect id="C128" x="164" y="76" width="79" height="79"
+		 class="room"/>
+	<rect id="C124" x="160" y="250" width="87" height="58"
+		 class="room"/>
+	<rect id="C123" x="160" y="308" width="87" height="59"
+		 class="room"/>
+	<rect id="C122" x="160" y="367" width="87" height="47"
+		 class="room"/>
+	<rect id="D123" x="9" y="251" width="88" height="84"
+		 class="room"/>
+	<polygon id="D122"
+		points="9.484,334.932 97.084,334.932 97.034,413.282 17.456,413.224 17.484,416.932 9.484,416.932"
+		
+		 class="room"/>
+	<rect id="B121" x="310" y="250" width="86" height="58"
+		 class="room"/>
+	<rect id="B120" x="310" y="308" width="86" height="59"
+		 class="room"/>
+	<rect id="B119" x="310" y="367" width="86" height="46"
+		 class="room"/>
+	<rect id="B124" x="392" y="134" width="33" height="61"
+		 class="room"/>
+	<rect id="B125" x="392" y="76" width="51" height="58"
+		 class="room"/>
+	<rect id="A110" x="458" y="369" width="46" height="38"
+		 class="room"/>
+	<rect id="A109" x="504" y="369" width="38" height="38"
+		 class="room"/>
+	<rect id="A108" x="542" y="369" width="50" height="38"
+		 class="room"/>
+	<rect id="A111" x="458" y="407" width="134" height="221"
+		 class="room"/>
+	<rect id="A118" x="460" y="16" width="86" height="60"
+		 class="room"/>
+	<rect id="A119" x="511" y="76" width="35" height="25"
+		 class="room"/>
+	<rect id="B107" x="360" y="428" width="21" height="23"
+		 class="room"/>
+	<rect id="B108" x="381" y="428" width="16" height="23"
+		 class="room"/>
+	<rect id="B117" x="311" y="436" width="35" height="19"
+		 class="room"/>
+	<rect id="B118" x="311" y="428" width="35" height="8"
+		 class="room"/>
+	<rect id="C111" x="232" y="429" width="14" height="22"
+		 class="room"/>
+	<rect id="C110" x="221" y="429" width="11" height="22"
+		 class="room"/>
+	<rect id="C109" x="210" y="429" width="11" height="22"
+		 class="room"/>
+	<rect id="C120" x="159" y="436" width="37" height="19"
+		 class="room"/>
+	<rect id="C121" x="159" y="428" width="37" height="8"
+		 class="room"/>
+	<rect id="D112" x="61" y="435" width="36" height="20"
+		 class="room"/>
+	<rect id="D111" x="61" y="428" width="36" height="7"
+		 class="room"/>
+	<rect id="D133" x="76" y="77" width="16" height="19"
+		 class="room"/>
+	<rect id="D134a" x="76" y="96" width="16" height="11"
+		 class="room"/>
+	<rect id="D134b" x="76" y="107" width="16" height="13"
+		 class="room"/>
+	<rect id="D139" x="92" y="97" width="51" height="23"
+		 class="room"/>
+	<rect id="D140" x="92" y="76" width="51" height="21"
+		 class="room"/>
+	<rect id="D141" x="92" y="17" width="51" height="59"
+		 class="room"/>
+	<rect id="A107" x="553" y="326" width="38" height="43"
+		 class="room"/>
+	<line x1="545" y1="326" x2="484" y2="326"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:2"/>
+	<rect id="D135" x="61" y="134" width="31" height="15"
+		 class="room"/>
+	<rect id="D136" x="61" y="149" width="31" height="18"
+		 class="room"/>
+	<rect id="D137" x="61" y="167" width="31" height="20"
+		 class="room"/>
+	<rect id="D138" x="61" y="187" width="31" height="8"
+		 class="room"/>
+	<rect id="A112" x="464" y="187" width="32" height="8"
+		 class="room"/>
+	<rect id="A113" x="464" y="167" width="32" height="20"
+		 class="room"/>
+	<polygon id="A114"
+		points="464.022,167.308 464.022,133.919 459.689,133.919 459.689,101.067 546.906,101.055 547.019,122.502
+			541.019,122.502 541.171,176.805 495.829,176.836 495.859,167.283"
+		 class="room"/>
+	<rect id="A117" x="586" y="449" width="28" height="25"
+		 class="room"
+		transform="matrix(1.16327 0 0 1 -203.245 -373)"/>
+	<rect id="A116" x="563" y="449" width="23" height="10"
+		 class="room"
+		transform="matrix(0.801244 0 0 1 8.89968 -373)"/>
+	<line x1="459.925" y1="82.757" x2="459.925" y2="92.924"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="B127" x="392" y="16" width="51" height="32"
+		 class="room"/>
+	<rect id="B126" x="392" y="48" width="51" height="28"
+		 class="room"/>
+	<rect id="B102" x="425" y="134" width="39" height="61"
+		 class="room"/>
+	<rect id="A120" x="541" y="123" width="44" height="73"
+		 class="room"/>
+	<rect id="A121" x="585" y="123" width="9" height="73"
+		 class="room"/>
+	<rect id="A103" x="594" y="123" width="41" height="73"
+		 class="room"/>
+	<rect x="111" y="253" width="49" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect x="116" y="253" width="13" height="59"
+		 class="room"/>
+	<line x1="115.949" y1="304.165" x2="129.172" y2="304.165"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="115.694" y1="289.392" x2="129.122" y2="289.392"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="116.005" y1="282.716" x2="128.732" y2="282.716"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="116.005" y1="276.534" x2="129.096" y2="276.534"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="115.642" y1="269.989" x2="129.46" y2="269.989"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="115.642" y1="263.443" x2="129.096" y2="263.443"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="116.172" y1="296.609" x2="129.06" y2="296.609"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="122.1" y1="311.88" x2="122" y2="253"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="122" y1="253" x2="126" y2="258"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="122" y1="253" x2="118.1" y2="258.13"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="60" y1="120" x2="83" y2="120"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="116" y1="195" x2="116" y2="158"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D103" x="92" y="134" width="39" height="61"
+		 class="room"/>
+	<rect id="D106" x="131" y="167" width="23" height="28"
+		 class="room"/>
+	<polygon id="C126"
+		points="153.839,195.041 163.089,195.041 163.089,186.958 196.089,186.958 196.089,167.041 153.839,167.041"
+		
+		 class="room"/>
+	<rect id="C125" x="163" y="187" width="33" height="8"
+		 class="room"/>
+	<rect id="C127" x="196" y="167" width="47" height="28"
+		 class="room"/>
+	<line x1="449" y1="195" x2="449" y2="158"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect x="261" y="253" width="49" height="160"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect x="266" y="253" width="14" height="59"
+		 style="fill:rgb(255,255,255);stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="266" y1="304" x2="280.144" y2="304.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="266" y1="297" x2="280.144" y2="297.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="266" y1="291" x2="279.977" y2="291.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="266" y1="285" x2="280.144" y2="285.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="266" y1="278" x2="280.144" y2="278.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="266" y1="272" x2="279.977" y2="272.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="265.977" y1="265.036" x2="279.977" y2="265.036"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="273.033" y1="311.795" x2="273" y2="254"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="273.144" y1="254.036" x2="268" y2="259"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="272.747" y1="253.824" x2="278" y2="259"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<polygon
+		points="9.914,607.943 97.647,607.943 97.647,427.943 157.647,427.943 157.647,607.943 246.447,607.943
+			246.447,429.543 310.447,429.543 310.447,607.943 397.647,607.943 397.901,429.543
+			457.545,429.543 457.392,627.43 591.857,627.58 591.945,326.432 542.701,326.343
+			542.701,293.009 572.301,293.179 572.228,260.51 543.501,260.316
+			543.501,241.383 634.531,241.576 634.517,121.772 546.85,121.772 546.881,15.772
+			8,15.772 8.143,196.629 37,196.772 37,206.772 46,206.772 46,228.629 37.364,228.772
+			37.143,251.772 10,251.915"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:4"/>
+	<rect id="A105" x="467" y="219" width="18" height="17"
+	     onclick="easter();"
+		 class="room"/>
+  </g>
+  <g id="floor2">
+	<polygon
+		points="9.914,611.943 97.647,611.943 97.647,431.943 157.647,431.943 157.647,611.943 246.447,611.943
+			246.447,433.543 310.447,433.543 310.447,611.943 397.647,611.943 397.901,433.543
+			457.545,433.543 457.392,623.097 591.857,623.247 591.945,330.432
+			544.156,330.343 544.156,297.009 544.08,289.179 544.104,278.328 544.168,264.316
+			544.263,245.383 634.531,245.576 634.517,125.772 545.759,125.772 545.79,80.499
+			546.063,63.408 545.972,39.772 545.881,30.681 545.79,22.317 459.879,22.317
+			460.325,138.872 394.576,139.015 394.576,21.378 308.121,21.378 308.121,138.69
+			244.94,138.833 244.719,21.348 158.575,21.521 158.601,138.458 91.869,138.252
+			92.314,21.19 10.237,21.19"
+		 style="visibility:visible;fill:rgb(192,192,192);stroke:rgb(192,192,192);stroke-width:2"/>
+	<rect id="B215" x="310" y="551" width="36" height="60"
+		 class="room"/>
+	<rect id="B216" x="310" y="515" width="36" height="36"
+		 class="room"/>
+	<rect id="B217" x="310" y="491" width="36" height="24"
+		 class="room"/>
+	<rect id="B218" x="310" y="459" width="36" height="32"
+		 class="room"/>
+	<rect id="B214" x="360" y="551" width="37" height="23"
+		 class="room"/>
+	<rect id="B213" x="360" y="515" width="37" height="36"
+		 class="room"/>
+	<rect id="B212" x="360" y="492" width="37" height="23"
+		 class="room"/>
+	<rect id="B211" x="360" y="455" width="37" height="37"
+		 class="room"/>
+	<rect id="C214" x="157" y="551" width="39" height="60"
+		 class="room"/>
+	<rect id="C215" x="157" y="515" width="39" height="36"
+		 class="room"/>
+	<rect id="C216" x="157" y="491" width="39" height="24"
+		 class="room"/>
+	<rect id="C217" x="157" y="459" width="39" height="32"
+		 class="room"/>
+	<rect id="C213" x="210" y="551" width="36" height="23"
+		 class="room"/>
+	<rect id="C212" x="210" y="515" width="36" height="36"
+		 class="room"/>
+	<rect id="C211" x="210" y="491" width="36" height="24"
+		 class="room"/>
+	<rect id="C210" x="210" y="455" width="36" height="36"
+		 class="room"/>
+	<rect id="D223" x="10" y="551" width="37" height="60"
+		 class="room"/>
+	<rect id="D222" x="61" y="552" width="36" height="22"
+		 class="room"/>
+	<rect id="D221" x="61" y="516" width="36" height="36"
+		 class="room"/>
+	<rect id="D220" x="61" y="491" width="36" height="25"
+		 class="room"/>
+	<rect id="D219" x="61" y="459" width="36" height="32"
+		 class="room"/>
+	<rect id="B219" x="311" y="440" width="35" height="19"
+		 class="room"/>
+	<rect id="B220" x="311" y="432" width="35" height="8"
+		 class="room"/>
+	<rect id="C218" x="159" y="440" width="37" height="19"
+		 class="room"/>
+	<rect id="C219" x="159" y="432" width="37" height="8"
+		 class="room"/>
+	<rect id="D218" x="61" y="439" width="36" height="20"
+		 class="room"/>
+	<rect id="D217" x="61" y="432" width="36" height="7"
+		 class="room"/>
+	<rect id="D245" x="61" y="171" width="31" height="20"
+		 class="room"/>
+	<rect id="D246" x="61" y="191" width="31" height="8"
+		 class="room"/>
+	<rect id="A233" x="464" y="191" width="32" height="8"
+		 class="room"/>
+	<rect id="A234" x="464" y="171" width="32" height="20"
+		 class="room"/>
+	<rect id="B202" x="425" y="138" width="39" height="61"
+		 class="room"/>
+	<rect id="A243" x="585" y="127" width="9" height="73"
+		 class="room"/>
+	<line x1="116" y1="199" x2="116" y2="162"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D203" x="92" y="138" width="39" height="61"
+		 class="room"/>
+	<rect id="D205" x="131" y="171" width="23" height="28"
+		 class="room"/>
+	<line x1="449" y1="199" x2="449" y2="162"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="C208" x="210" y="432" width="13" height="23"
+		 class="room"/>
+	<rect id="C209" x="223" y="432" width="22" height="23"
+		 class="room"/>
+	<rect id="D244" x="61" y="140" width="31" height="31"
+		 class="room"/>
+	<rect id="D243" x="61" y="106" width="33" height="34"
+		 class="room"/>
+	<rect id="D242" x="61" y="82" width="33" height="24"
+		 class="room"/>
+	<rect id="D241" x="61" y="58" width="33" height="24"
+		 class="room"/>
+	<polygon id="D240b"
+		points="46.788,46.215 61.149,46.215 61.149,57.715 93.899,57.715 93.899,20.465 46.816,20.465"
+		
+		 class="room"/>
+	<rect id="C224" x="154" y="191" width="42" height="8"
+		 class="room"/>
+	<rect id="C225" x="154" y="171" width="42" height="20"
+		 class="room"/>
+	<rect id="C226" x="131" y="139" width="65" height="32"
+		 class="room"/>
+	<rect id="C227" x="159" y="105" width="37" height="34"
+		 class="room"/>
+	<rect id="C228" x="159" y="82" width="37" height="23"
+		 class="room"/>
+	<rect id="C229" x="159" y="58" width="37" height="24"
+		 class="room"/>
+	<rect id="C230a" x="159" y="21" width="37" height="37"
+		 class="room"/>
+	<rect id="C231" x="210" y="58" width="34" height="25"
+		 class="room"/>
+	<rect id="C232" x="210" y="83" width="34" height="22"
+		 class="room"/>
+	<rect id="C233" x="210" y="105" width="34" height="35"
+		 class="room"/>
+	<polygon id="C230b"
+		points="196.199,20.956 243.899,21.056 244.099,58.206 209.983,58.206 209.983,44.039 196.199,44.256"
+		
+		 class="room"/>
+	<rect id="C234" x="210" y="140" width="31" height="37"
+		 class="room"/>
+	<rect id="C235" x="210" y="177" width="16" height="22"
+		 class="room"/>
+	<rect id="C236" x="226" y="177" width="15" height="22"
+		 class="room"/>
+	<rect id="C237" x="241" y="140" width="36" height="59"
+		 class="room"/>
+	<rect id="B229a" x="307" y="20" width="38" height="38"
+		 class="room"/>
+	<rect id="B228" x="307" y="58" width="38" height="24"
+		 class="room"/>
+	<rect id="B227" x="307" y="82" width="38" height="23"
+		 class="room"/>
+	<rect id="B226" x="307" y="105" width="38" height="35"
+		 class="room"/>
+	<rect id="B230" x="360" y="58" width="36" height="24"
+		 class="room"/>
+	<rect id="B231" x="360" y="82" width="36" height="23"
+		 class="room"/>
+	<rect id="B232" x="360" y="105" width="36" height="36"
+		 class="room"/>
+	<polygon id="B225"
+		points="277.198,198.986 311.075,198.986 311.075,172.628 345.045,172.548 345.001,140.156 277.256,140.183"
+		
+		 class="room"/>
+	<polygon id="B229b"
+		points="345.007,44.893 360.004,44.893 360.004,58.103 396.072,58.036 396.098,21.413 345.007,21.309"
+		
+		 class="room"/>
+	<rect id="B233" x="360" y="140" width="65" height="59"
+		 class="room"/>
+	<rect id="A239a" x="460" y="22" width="36" height="37"
+		 class="room"/>
+	<rect id="A238" x="460" y="59" width="36" height="23"
+		 class="room"/>
+	<rect id="A237" x="460" y="82" width="36" height="23"
+		 class="room"/>
+	<rect id="A236" x="460" y="105" width="36" height="35"
+		 class="room"/>
+	<rect id="A240" x="510" y="58" width="36" height="24"
+		 class="room"/>
+	<polygon id="A239b"
+		points="510.015,45.342 509.989,58.024 546.728,58.021 546.742,21.979 496.015,21.993 496.036,45.342"
+		
+		 class="room"/>
+	<rect id="A235" x="464" y="140" width="32" height="31"
+		 class="room"/>
+	<rect id="A241" x="510" y="82" width="36" height="45"
+		 class="room"/>
+	<rect id="A242" x="510" y="127" width="75" height="73"
+		 class="room"/>
+	<rect id="A201" x="594" y="126" width="40" height="74"
+		 class="room"/>
+	<rect id="B224" x="311" y="172" width="34" height="19"
+		 class="room"/>
+	<rect id="B223" x="311" y="191" width="34" height="8"
+		 class="room"/>
+	<rect id="A244" x="510" y="246" width="35" height="36"
+		 class="room"/>
+	<rect id="A245" x="510" y="282" width="35" height="37"
+		 class="room"/>
+	<rect id="A210" x="510" y="332" width="81" height="67"
+		 class="room"/>
+	<rect id="A212" x="554" y="434" width="37" height="24"
+		 class="room"/>
+	<rect id="A213" x="554" y="458" width="37" height="36"
+		 class="room"/>
+	<rect id="A214" x="554" y="494" width="37" height="58"
+		 class="room"/>
+	<rect id="A215" x="554" y="552" width="37" height="35"
+		 class="room"/>
+	<rect id="A216" x="554" y="587" width="37" height="36"
+		 class="room"/>
+	<rect id="A211" x="554" y="399" width="37" height="35"
+		 class="room"/>
+	<rect id="A220" x="458" y="587" width="37" height="37"
+		 class="room"/>
+	<rect id="A221" x="458" y="552" width="37" height="35"
+		 class="room"/>
+	<rect id="A222" x="457" y="528" width="38" height="24"
+		 class="room"/>
+	<rect id="A223" x="458" y="493" width="37" height="35"
+		 class="room"/>
+	<rect id="A224" x="457" y="457" width="38" height="36"
+		 class="room"/>
+	<rect id="A217" x="510" y="552" width="29" height="47"
+		 class="room"/>
+	<rect id="A218" x="510" y="493" width="29" height="59"
+		 class="room"/>
+	<rect id="A219" x="510" y="434" width="29" height="59"
+		 class="room"/>
+	<rect id="A226" x="481" y="434" width="14" height="23"
+		 class="room"/>
+	<rect id="A225" x="458" y="434" width="23" height="23"
+		 class="room"/>
+	<rect id="A228" x="460" y="391" width="36" height="20"
+		 class="room"/>
+	<rect id="A227" x="460" y="411" width="36" height="8"
+		 class="room"/>
+	<rect id="A229" x="460" y="364" width="36" height="27"
+		 class="room"/>
+	<rect id="A230" x="460" y="333" width="36" height="31"
+		 class="room"/>
+	<rect id="A231" x="460" y="293" width="36" height="26"
+		 class="room"/>
+	<rect id="A232" x="460" y="246" width="36" height="47"
+		 class="room"/>
+	<rect id="A203" x="464" y="224" width="22" height="19"
+		 class="room" onclick="easter2()"/>
+	<rect id="B209" x="360" y="432" width="13" height="23"
+		 class="room"/>
+	<rect id="B210" x="373" y="432" width="24" height="23"
+		 class="room"/>
+	<rect id="D224" x="10" y="517" width="37" height="34"
+		 class="room"/>
+	<rect id="D225" x="10" y="494" width="37" height="23"
+		 class="room"/>
+	<rect id="D226" x="10" y="458" width="37" height="36"
+		 class="room"/>
+	<rect id="D227" x="10" y="434" width="37" height="24"
+		 class="room"/>
+	<rect id="D228" x="10" y="411" width="37" height="23"
+		 class="room"/>
+	<rect id="D229" x="10" y="376" width="37" height="35"
+		 class="room"/>
+	<rect id="D230" x="10" y="352" width="37" height="24"
+		 class="room"/>
+	<rect id="D231" x="10" y="317" width="37" height="35"
+		 class="room"/>
+	<rect id="D232" x="10" y="293" width="37" height="24"
+		 class="room"/>
+	<rect id="D233" x="10" y="258" width="37" height="35"
+		 class="room"/>
+	<rect id="D234" x="9" y="199" width="38" height="59"
+		 class="room"/>
+	<rect id="D235" x="9" y="177" width="38" height="22"
+		 class="room"/>
+	<rect id="D236" x="9" y="140" width="38" height="37"
+		 class="room"/>
+	<rect id="D237" x="9" y="117" width="38" height="23"
+		 class="room"/>
+	<rect id="D238" x="9" y="82" width="38" height="35"
+		 class="room"/>
+	<rect id="D239" x="9" y="58" width="38" height="24"
+		 class="room"/>
+	<rect id="D240a" x="9" y="20" width="38" height="38"
+		 class="room"/>
+	<rect id="D211" x="61" y="258" width="35" height="35"
+		 class="room"/>
+	<rect id="D212" x="61" y="293" width="35" height="24"
+		 class="room"/>
+	<rect id="D213" x="61" y="317" width="35" height="35"
+		 class="room"/>
+	<rect id="D214" x="61" y="352" width="35" height="24"
+		 class="room"/>
+	<rect id="D215" x="61" y="376" width="35" height="24"
+		 class="room"/>
+	<rect id="D209" x="73" y="231" width="11" height="27"
+		 class="room"/>
+	<rect id="D208" x="84" y="231" width="12" height="27"
+		 class="room"/>
+	<rect id="D210" x="61" y="231" width="12" height="27"
+		 class="room"/>
+	<rect id="C222" x="160" y="232" width="67" height="82"
+		 class="room"/>
+	<rect id="C221" x="160" y="314" width="67" height="59"
+		 class="room"/>
+	<rect id="C220" x="160" y="373" width="67" height="46"
+		 class="room"/>
+	<rect id="B222" x="310" y="232" width="67" height="82"
+		 class="room"/>
+	<rect id="B221" x="310" y="314" width="67" height="105"
+		 class="room"/>
+	<polygon
+		points="9.914,611.943 97.647,611.943 97.647,431.943 157.647,431.943 157.647,611.943 246.447,611.943
+			246.447,433.543 310.447,433.543 310.447,611.943 397.647,611.943 397.901,433.543
+			457.545,433.543 457.574,623.794 591.413,624.024 591.581,330.432
+			545.618,330.51 545.534,300.342 545.634,291.846 545.561,280.51 545.501,264.316
+			545.501,245.716 634.531,245.576 634.517,125.772 546.486,125.772 546.517,21.772
+			459.527,21.772 459.549,138.921 396.682,138.921 396.357,20.977 306.937,20.977
+			307.17,138.879 245,138.772 245,20.328 158,20.372 158,138.172 94.564,138.473
+			94.387,19.372 9.2,19.915"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:4"/>
+	<rect x="245" y="258" width="65" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect x="96" y="258" width="64" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D216" x="61" y="400" width="35" height="19"
+		 class="room"/>
+	<rect x="396" y="258" width="64" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+  </g>
+  <g id="floor3">
+	<polygon
+		points="30.914,611.943 118.647,611.943 118.647,431.943 178.647,431.943 178.647,611.943 267.447,611.943
+			267.447,433.543 331.447,433.543 331.447,611.943 418.647,611.943
+			418.901,433.543 478.545,433.543 478.392,623.097 612.857,623.247 612.945,330.432
+			565.156,330.343 565.156,297.009 565.08,289.179 565.104,278.328 565.168,264.316
+			566.063,246.183 567.131,196.776 566.717,165.372 566.759,125.772 566.79,80.499
+			567.063,63.408 566.972,39.772 566.881,30.681 566.79,22.317 480.879,22.317
+			481.325,138.872 415.576,139.015 415.576,21.378 329.121,21.378 329.121,138.69
+			265.94,138.833 265.719,21.348 179.575,21.521 179.601,138.458 112.869,138.252
+			113.314,21.19 31.237,21.19"
+		 style="visibility:visible;fill:rgb(192,192,192);stroke:rgb(192,192,192);stroke-width:2"/>
+	<rect id="B315" x="331" y="551" width="36" height="60"
+		 class="room"/>
+	<rect id="B316" x="331" y="515" width="36" height="36"
+		 class="room"/>
+	<rect id="B317" x="331" y="491" width="36" height="24"
+		 class="room"/>
+	<rect id="B318" x="331" y="459" width="36" height="32"
+		 class="room"/>
+	<rect id="B314" x="381" y="551" width="37" height="23"
+		 class="room"/>
+	<rect id="B313" x="381" y="515" width="37" height="36"
+		 class="room"/>
+	<rect id="B312" x="381" y="492" width="37" height="23"
+		 class="room"/>
+	<rect id="B311" x="381" y="455" width="37" height="37"
+		 class="room"/>
+	<rect id="C315" x="178" y="551" width="39" height="60"
+		 class="room"/>
+	<rect id="C316" x="178" y="515" width="39" height="36"
+		 class="room"/>
+	<rect id="C317" x="178" y="491" width="39" height="24"
+		 class="room"/>
+	<rect id="C318" x="178" y="459" width="39" height="32"
+		 class="room"/>
+	<rect id="C314" x="231" y="551" width="36" height="23"
+		 class="room"/>
+	<rect id="C313" x="231" y="515" width="36" height="36"
+		 class="room"/>
+	<rect id="C312" x="231" y="491" width="36" height="24"
+		 class="room"/>
+	<rect id="C311" x="231" y="455" width="36" height="36"
+		 class="room"/>
+	<rect id="D322" x="31" y="551" width="37" height="60"
+		 class="room"/>
+	<rect id="D321" x="82" y="552" width="36" height="22"
+		 class="room"/>
+	<rect id="D320" x="82" y="516" width="36" height="36"
+		 class="room"/>
+	<rect id="D319" x="82" y="491" width="36" height="25"
+		 class="room"/>
+	<rect id="D318" x="82" y="459" width="36" height="32"
+		 class="room"/>
+	<rect id="B319" x="332" y="440" width="35" height="19"
+		 class="room"/>
+	<rect id="B320" x="332" y="432" width="35" height="8"
+		 class="room"/>
+	<rect id="C319" x="180" y="440" width="37" height="19"
+		 class="room"/>
+	<rect id="C320" x="180" y="432" width="37" height="8"
+		 class="room"/>
+	<rect id="D317" x="82" y="439" width="36" height="20"
+		 class="room"/>
+	<rect id="D316" x="82" y="432" width="36" height="7"
+		 class="room"/>
+	<rect id="D345" x="82" y="171" width="31" height="20"
+		 class="room"/>
+	<rect id="D346" x="82" y="191" width="31" height="8"
+		 class="room"/>
+	<rect id="A333" x="485" y="191" width="32" height="8"
+		 class="room"/>
+	<rect id="A334" x="485" y="171" width="32" height="20"
+		 class="room"/>
+	<rect id="B302" x="446" y="138" width="39" height="61"
+		 class="room"/>
+	<line x1="137" y1="199" x2="137" y2="162"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D303" x="113" y="138" width="39" height="61"
+		 class="room"/>
+	<rect id="D305" x="152" y="171" width="23" height="28"
+		 class="room"/>
+	<line x1="470" y1="199" x2="470" y2="162"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D344" x="82" y="140" width="31" height="31"
+		 class="room"/>
+	<rect id="D343" x="82" y="106" width="33" height="34"
+		 class="room"/>
+	<rect id="D342" x="82" y="82" width="33" height="24"
+		 class="room"/>
+	<rect id="D341" x="82" y="58" width="33" height="24"
+		 class="room"/>
+	<rect id="C324" x="175" y="191" width="42" height="8"
+		 class="room"/>
+	<rect id="C325" x="175" y="171" width="42" height="20"
+		 class="room"/>
+	<rect id="C327" x="180" y="105" width="37" height="34"
+		 class="room"/>
+	<rect id="C328" x="180" y="82" width="37" height="23"
+		 class="room"/>
+	<rect id="C333" x="231" y="105" width="34" height="35"
+		 class="room"/>
+	<rect id="C334" x="231" y="140" width="31" height="37"
+		 class="room"/>
+	<rect id="C335" x="231" y="177" width="16" height="22"
+		 class="room"/>
+	<rect id="C336" x="247" y="177" width="15" height="22"
+		 class="room"/>
+	<rect id="C337" x="262" y="140" width="36" height="59"
+		 class="room"/>
+	<rect id="B328" x="328" y="58" width="38" height="24"
+		 class="room"/>
+	<rect id="B327" x="328" y="82" width="38" height="23"
+		 class="room"/>
+	<rect id="B326" x="328" y="105" width="38" height="35"
+		 class="room"/>
+	<rect id="B330" x="381" y="58" width="36" height="24"
+		 class="room"/>
+	<rect id="B331" x="381" y="82" width="36" height="23"
+		 class="room"/>
+	<rect id="B332" x="381" y="105" width="36" height="36"
+		 class="room"/>
+	<polygon id="C338"
+		points="298.198,198.986 332.075,198.986 332.075,172.628 366.045,172.548 366.001,140.156 298.256,140.183"
+		
+		 class="room"/>
+	<rect id="B333" x="381" y="140" width="65" height="59"
+		 class="room"/>
+	<rect id="A337" x="481" y="82" width="36" height="23"
+		 class="room"/>
+	<rect id="A336" x="481" y="105" width="36" height="35"
+		 class="room"/>
+	<rect id="A335" x="485" y="140" width="32" height="31"
+		 class="room"/>
+	<rect id="B325" x="332" y="172" width="34" height="19"
+		 class="room"/>
+	<rect id="B324" x="332" y="191" width="34" height="8"
+		 class="room"/>
+	<rect id="A312" x="575" y="434" width="37" height="24"
+		 class="room"/>
+	<rect id="A313" x="575" y="458" width="37" height="36"
+		 class="room"/>
+	<rect id="A314" x="575" y="494" width="37" height="58"
+		 class="room"/>
+	<rect id="A315" x="575" y="552" width="37" height="35"
+		 class="room"/>
+	<rect id="A316" x="575" y="587" width="37" height="36"
+		 class="room"/>
+	<rect id="A311" x="575" y="399" width="37" height="35"
+		 class="room"/>
+	<rect id="A320" x="479" y="587" width="37" height="37"
+		 class="room"/>
+	<rect id="A321" x="479" y="552" width="37" height="35"
+		 class="room"/>
+	<rect id="A322" x="478" y="528" width="38" height="24"
+		 class="room"/>
+	<rect id="A323" x="479" y="493" width="37" height="35"
+		 class="room"/>
+	<rect id="A324" x="478" y="457" width="38" height="36"
+		 class="room"/>
+	<rect id="A317" x="531" y="552" width="29" height="47"
+		 class="room"/>
+	<rect id="A318" x="531" y="493" width="29" height="59"
+		 class="room"/>
+	<rect id="A319" x="531" y="434" width="29" height="59"
+		 class="room"/>
+	<rect id="A326" x="502" y="434" width="14" height="23"
+		 class="room"/>
+	<rect id="A325" x="479" y="434" width="23" height="23"
+		 class="room"/>
+	<rect id="A328" x="481" y="391" width="36" height="20"
+		 class="room"/>
+	<rect id="A327" x="481" y="411" width="36" height="8"
+		 class="room"/>
+	<rect id="A329" x="481" y="364" width="36" height="27"
+		 class="room"/>
+	<rect id="A330" x="481" y="333" width="36" height="31"
+		 class="room"/>
+	<rect id="A302" x="485" y="224" width="22" height="19"
+		 class="room"/>
+	<rect id="D323" x="31" y="517" width="37" height="34"
+		 class="room"/>
+	<rect id="D324" x="31" y="494" width="37" height="23"
+		 class="room"/>
+	<rect id="D325" x="31" y="458" width="37" height="36"
+		 class="room"/>
+	<rect id="D326" x="31" y="434" width="37" height="24"
+		 class="room"/>
+	<rect id="D329" x="31" y="352" width="37" height="24"
+		 class="room"/>
+	<rect id="D330" x="31" y="317" width="37" height="35"
+		 class="room"/>
+	<rect id="D331" x="31" y="293" width="37" height="24"
+		 class="room"/>
+	<rect id="D332" x="31" y="258" width="37" height="35"
+		 class="room"/>
+	<rect id="D335" x="30" y="177" width="38" height="22"
+		 class="room"/>
+	<rect id="D336" x="30" y="140" width="38" height="37"
+		 class="room"/>
+	<rect id="D337" x="30" y="117" width="38" height="23"
+		 class="room"/>
+	<rect id="D338" x="30" y="82" width="38" height="35"
+		 class="room"/>
+	<rect id="D339" x="30" y="58" width="38" height="24"
+		 class="room"/>
+	<rect id="D310" x="82" y="258" width="35" height="35"
+		 class="room"/>
+	<rect id="D311" x="82" y="293" width="35" height="24"
+		 class="room"/>
+	<rect id="D312" x="82" y="317" width="35" height="35"
+		 class="room"/>
+	<rect id="D313" x="82" y="352" width="35" height="24"
+		 class="room"/>
+	<rect id="D314" x="82" y="376" width="35" height="24"
+		 class="room"/>
+	<rect id="D308" x="94" y="231" width="11" height="27"
+		 class="room"/>
+	<rect id="D307" x="105" y="231" width="12" height="27"
+		 class="room"/>
+	<rect id="D309" x="82" y="231" width="12" height="27"
+		 class="room"/>
+	<rect id="C323" x="181" y="232" width="67" height="82"
+		 class="room"/>
+	<rect id="C322" x="181" y="314" width="67" height="59"
+		 class="room"/>
+	<rect id="C321" x="181" y="373" width="67" height="46"
+		 class="room"/>
+	<rect id="B323" x="331" y="232" width="67" height="82"
+		 class="room"/>
+	<rect x="266" y="258" width="65" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect x="117" y="258" width="64" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D315" x="82" y="400" width="35" height="19"
+		 class="room"/>
+	<rect x="417" y="258" width="64" height="161"
+		 style="fill:rgb(128,128,128);stroke:rgb(0,0,0);stroke-width:1"/>
+	<rect id="D328" x="32" y="376" width="36" height="22"
+		 class="room"/>
+	<rect id="D327" x="31" y="398" width="37" height="36"
+		 class="room"/>
+	<rect id="D333" x="31" y="234" width="37" height="24"
+		 class="room"/>
+	<rect id="D334" x="31" y="199" width="37" height="35"
+		 class="room"/>
+	<rect id="D340" x="30" y="20" width="85" height="38"
+		 class="room"/>
+	<rect id="C329" x="179" y="21" width="38" height="61"
+		 class="room"/>
+	<rect id="C326" x="177" y="138" width="40" height="33"
+		 class="room"/>
+	<rect id="D347" x="152" y="139" width="25" height="32"
+		 class="room"/>
+	<rect id="B322" x="331" y="314" width="67" height="57"
+		 class="room"/>
+	<rect id="C330" x="217" y="21" width="49" height="36"
+		 class="room"/>
+	<rect id="C331" x="231" y="57" width="34" height="24"
+		 class="room"/>
+	<rect id="C332" x="231" y="81" width="35" height="24"
+		 class="room"/>
+	<rect id="B329" x="328" y="20" width="90" height="38"
+		 class="room"/>
+	<rect id="A338" x="480" y="22" width="37" height="60"
+		 class="room"/>
+	<rect id="A339" x="517" y="23" width="50" height="35"
+		 class="room"/>
+	<rect id="A341" x="531" y="81" width="36" height="35"
+		 class="room"/>
+	<rect id="A342" x="531" y="116" width="36" height="24"
+		 class="room"/>
+	<rect id="A343" x="531" y="140" width="36" height="35"
+		 class="room"/>
+	<rect id="A344" x="531" y="175" width="36" height="23"
+		 class="room"/>
+	<rect id="A345" x="531" y="198" width="36" height="35"
+		 class="room"/>
+	<rect id="A346" x="531" y="233" width="36" height="23"
+		 class="room"/>
+	<rect id="A347" x="531" y="256" width="36" height="24"
+		 class="room"/>
+	<rect id="A348" x="531" y="280" width="36" height="38"
+		 class="room"/>
+	<rect id="A340" x="531" y="58" width="36" height="23"
+		 class="room"/>
+	<rect id="A310" x="575" y="374" width="36" height="25"
+		 class="room"/>
+	<rect id="A309" x="575" y="330" width="36" height="44"
+		 class="room"/>
+	<rect id="A307" x="531" y="374" width="30" height="44"
+		 class="room"/>
+	<rect id="A331" x="481" y="280" width="35" height="38"
+		 class="room"/>
+	<rect id="A332" x="481" y="244" width="35" height="36"
+		 class="room"/>
+	<rect id="C309" x="242" y="432" width="12" height="23"
+		 class="room"/>
+	<rect id="C310" x="254" y="432" width="12" height="23"
+		 class="room"/>
+	<rect id="C308" x="231" y="432" width="11" height="23"
+		 class="room"/>
+	<rect id="B309" x="381" y="432" width="22" height="23"
+		 class="room"/>
+	<rect id="B310" x="403" y="432" width="15" height="23"
+		 class="room"/>
+	<rect id="B321" x="331" y="370" width="67" height="49"
+		 class="room"/>
+	<polygon
+		points="30.914,611.943 118.647,611.943 118.647,431.943 178.647,431.943 178.647,611.943 267.447,611.943
+			267.447,433.543 331.447,433.543 331.447,611.943 418.647,611.943
+			418.901,433.543 478.545,433.543 478.574,623.794 612.413,624.024 612.581,330.432
+			567.709,330.51 567.625,316.706 567.725,295.119 567.652,284.874 567.592,264.68
+			567.754,246.443 567.414,219.35 567.517,176.883 567.486,125.772 567.517,21.772
+			480.527,21.772 480.549,138.921 417.682,138.921 417.357,20.977 327.937,20.977
+			328.17,138.879 266,138.772 266,20.328 179,20.372 179,138.172 115.564,138.473
+			115.387,19.372 30.2,19.915"
+		 style="fill:none;stroke:rgb(0,0,0);stroke-width:4"/>
+  </g>
+  <g id="legend">
+    <rect class="room occupied" x="10" y="635" width="20" height="20" />
+    <text x="40" y="650">Varattu huone</text>
+    <rect class="room partfree" x="10" y="665" width="20" height="20" />
+    <text x="40" y="680">Osittain vapaa huone</text>
+    <rect class="room free" x="10" y="695" width="20" height="20" />
+    <text x="40" y="710">Vapaa huone</text>
+    <rect class="room active" x="210" y="635" width="20" height="20" />
+    <text x="240" y="650">Valittu huone/kerros</text>
+    <rect class="room project" x="210" y="665" width="20" height="20" />
+    <text x="240" y="680">Projektin huone</text>
+    <rect class="room noposts" x="210" y="695" width="20" height="20" />
+    <text x="240" y="710">Huone ilman työpisteitä</text>
+    
+    <text x="410" y="650">Liikutus: Shift + vasen nappi</text>
+    <text x="410" y="670">Zoomaus: Shift + oikea nappi</text>
+    <text x="410" y="690">Rajaus: Ctrl + vasen nappi</text>
+    <text x="410" y="710">Alkutila: Shift + Ctrl + oikea nappi</text>
+  </g>
+  </g>
+  <script type="text/ecmascript">
+<![CDATA[
+
+var ps = -1; // pacman state
+var px; // pacman x coord
+var py; // pacman y coord
+var pa; // pacman angle
+var gs; // ghost state
+var gx; // ghost x coord
+var gy; // ghost y coord
+var pacman;
+var ghost;
+var frame = 0;
+
+//document.getElementById("floor1").setAttribute("display", "none");
+//document.getElementById("floor3").setAttribute("display", "none");
+
+function place() {
+  pacman.setAttribute("transform", "translate("+px+" "+py+") rotate("+pa+" 15 15)");
+  ghost.setAttribute("transform", "translate("+gx+" "+gy+")");
+}
+
+function move() {
+  switch(ps) {
+    case 0: // enter
+      px -= 1;
+      if(px < 400) ps = 1;
+      break; // move up
+    case 1:
+      pa = 270;
+      py -= 1;
+      if(py < 220) ps = 2;
+      break;
+    case 2: // move left
+      pa = 180;
+      px -= 1;
+      if(px < 100) {
+        ps = 3;
+        gs = 1; // awaken ghost
+        ghost.removeAttribute("style");
+      }
+      break;
+    case 3: // run away
+      pa = 0;
+      px += 2;
+      if(px > 420) ps = 4;
+      break;
+    case 4: // run down
+      pa = 90;
+      py += 2;
+      if(py >= 265) ps = 5;
+      break;
+    case 5: // run out
+      pa = 0;
+      px += 2;
+      if(px > 570) {
+        pacman.setAttribute("style", "display: none");
+        ps = 6;
+      }
+      break;
+    case 6: // done
+      break;
+  }
+  
+  switch(gs) {
+    case 0: // do nothing;
+      break;
+    case 1: // move up
+      gy -= 1.8;
+      if(gy < 220) gs = 2;
+      break;
+    case 2: // chase
+      gx += 1.8;
+      if(gx > 420) gs = 3;
+      break;
+    case 3: // chase down
+      gy += 1.8;
+      if(gy >= 265) gs = 4;
+      break;
+    case 4: // chase out
+      gx += 1.8;
+      if(gx > 570) {
+        ghost.setAttribute("style", "display: none");
+        ps = -1;
+      }
+      break;
+  }
+
+  ++frame;
+  if(((frame + 15) % 30) == 0)
+    document.getElementById("mouth").setAttribute("transform", "translate(0 16) scale(1 0.2)");
+  if((frame % 30) == 0)
+    document.getElementById("mouth").removeAttribute("transform");
+  
+  place();
+  if(ps != -1)
+    setTimeout(move, 10);
+}
+
+function easter() {
+  if(ps != -1) return;
+  ps=0; px=560; py=265; pa=180;
+
+  pacman = document.getElementById("pacman");
+  pacman.parentNode.removeChild(pacman);
+  pacman.removeAttribute("style");
+  document.documentElement.appendChild(pacman);
+
+  gs=0; gx=90; gy=260;
+  ghost = document.getElementById("ghost");
+  ghost.setAttribute("style", "display: none;");
+  ghost.parentNode.removeChild(ghost);
+  document.documentElement.appendChild(ghost);
+  
+  place();
+  setTimeout(move, 10);
+  frame = 0;
+}
+
+var ts = -1;
+var tx;
+var ty;
+var tux;
+var iwas;
+
+function place2() {
+  tux.setAttribute("transform", "translate("+tx+" "+ty+")");
+}
+
+function clear2() {
+  tux.setAttribute("display", "none");
+  iwas.setAttribute("display", "none");
+}
+
+function move2() {
+  switch(ts) {
+    case 0:
+      tx -= 0.5;
+      if(tx < 310) {
+        iwas.removeAttribute("display");
+        ts = -1;
+        setTimeout(clear2, 3000);
+      }
+      break;
+  }
+
+  place2();
+  if(ts != -1)
+    setTimeout(move2, 10);
+}
+
+function easter2() {
+  if(ts != -1) return;
+  ts = 0; tx = 460; ty = 195;
+  tux = document.getElementById("tux");
+  tux.parentNode.removeChild(tux);
+  tux.removeAttribute("display");
+  document.documentElement.appendChild(tux);
+
+  iwas = document.getElementById("iwas");
+  iwas.parentNode.removeChild(iwas);
+  iwas.setAttribute("display", "none");
+  iwas.setAttribute("transform", "translate(240 140)");
+  document.documentElement.appendChild(iwas);
+
+  place2();
+  setTimeout(move2, 10);
+}
+
+
+]]>
+  </script>
+  <g id="easter" style="display: none;">
+  	<g id="pacman">
+  	  <g transform="scale(0.75)">
+		<circle id="head" cx="20" cy="20" r="18"
+			 style="fill:rgb(255,255,0);"/>
+		<polygon id="mouth" points="15.5,20 39.5,10 39.5,30"
+			 style="fill:rgb(192,192,192);"/>
+      </g>
+	</g>
+  	<g id="ghost">
+  	  <g transform="scale(0.75)">
+		<g id="body">
+			<circle cx="17.5" cy="19.5" r="15.5"
+				 style="fill:rgb(255,0,0);stroke:rgb(255,0,0);stroke-width:1"
+				transform="translate(17.5 35) scale(1 1.1129) translate(-17.5 -35)"/>
+			<rect x="2" y="17" width="31" height="18"
+				 style="fill:rgb(255,0,0);stroke:rgb(255,0,0);stroke-width:1"/>
+			<polygon
+				points="2.9375,35.75 32.0625,35.75 27.4375,39.25 22.8125,35.875 17.8125,39.375 12.5625,35.875
+					7.3125,39.25"
+				 style="fill:rgb(255,0,0);stroke:rgb(255,0,0);stroke-width:1"/>
+		</g>
+		<g id="right_eye">
+			<circle id="right_eye_bg" cx="24.5" cy="13.5" r="4.5"
+				 style="fill:rgb(255,255,255);stroke:rgb(255,255,255);stroke-width:1"/>
+			<circle id="right_eye_ball" cx="24" cy="16" r="2"
+				 style="fill:rgb(0,0,255);stroke:rgb(0,0,255);stroke-width:1"/>
+		</g>
+		<g id="left_eye">
+			<circle id="left_eye_bg" cx="10.5" cy="13" r="4.5"
+				 style="fill:rgb(255,255,255);stroke:rgb(255,255,255);stroke-width:1"/>
+			<circle id="left_eye_ball" cx="10" cy="15.5" r="2"
+				 style="fill:rgb(0,0,255);stroke:rgb(0,0,255);stroke-width:1"/>
+		</g>
+           </g>
+	</g>
+	
+	<g id="tux">
+	  <g transform="scale(0.1)">
+  <defs> 
+    <marker id="ArrowEnd" viewBox="0 0 10 10" refX="0" refY="5" 
+     markerUnits="strokeWidth" 
+     markerWidth="4" 
+     markerHeight="3" 
+     orient="auto"> 
+        <path d="M 0 0 L 10 5 L 0 10 z" /> 
+    </marker>
+    <marker id="ArrowStart" viewBox="0 0 10 10" refX="10" refY="5" 
+     markerUnits="strokeWidth" 
+     markerWidth="4" 
+     markerHeight="3" 
+     orient="auto"> 
+        <path d="M 10 0 L 0 5 L 10 10 z" /> 
+    </marker> </defs>
+<g>
+</g>
+<g>
+<path style="stroke:none; fill:#000000" d="M 280.594 246.472C 275.837 266.04 251.731 306.918 238.928 324.908C 226.116 342.968 227.704 359.228 204.028 352.902C 180.421 346.566 173.804 347.715 149.409 349.154C 125.161 350.593 130.409 348.434 115.227 355.271C 100.116 362.106 49.3837 272.378 45.2858 255.677C 41.2477 238.986 42.0228 236.911 49.8138 217.516C 56.2507 201.486 63.8807 182.979 75.7197 165.157C 90.0918 143.52 105.653 132.056 104.503 115.285C 99.9757 53.0386 96.3777 21.9566 124.002 7.5636C 150.347 -6.10742 172.366 2.01758 181.071 6.69458C 184.809 8.71362 192.444 12.6016 198.121 19.4376C 203.807 26.1246 208.915 36.2786 211.793 49.0816C 217.699 74.7776 209.355 66.2816 216.041 95.7146C 222.667 125.069 236.119 139.461 252.53 162.708C 268.931 185.956 286.062 224.304 280.594 246.472z"/>
+<g>
+<path style="stroke:none; fill:#000000" d="M 231.514 150.021C 232.184 149.554 232.259 148.849 231.718 148.058C 231.172 147.259 230.407 147.024 229.771 147.458C 229.235 147.824 229.168 148.274 229.526 149.22L 229.751 149.815C 229.919 150.257 229.884 150.502 229.635 150.671C 229.315 150.892 228.88 150.718 228.552 150.24C 228.352 149.946 228.267 149.639 228.316 149.403C 228.356 149.251 228.428 149.145 228.648 148.946L 228.254 148.371C 227.48 148.938 227.404 149.643 228.018 150.539C 228.608 151.403 229.41 151.662 230.07 151.21C 230.581 150.861 230.665 150.381 230.364 149.588L 230.13 148.98C 229.931 148.463 229.945 148.175 230.187 148.009C 230.501 147.795 230.896 147.937 231.201 148.382C 231.5 148.821 231.471 149.186 231.12 149.446L 231.514 150.021z"/>
+<path style="stroke:none; fill:#000000" d="M 233.418 150.755L 233.047 150.212L 229.618 152.557L 229.989 153.1L 233.418 150.755zM 234.76 149.838L 234.384 149.289L 233.697 149.758L 234.072 150.308L 234.76 149.838z"/>
+<path style="stroke:none; fill:#000000" d="M 234.054 151.684L 230.625 154.029L 231 154.579L 233.154 153.106C 233.651 152.767 234.296 152.854 234.6 153.299C 234.878 153.705 234.785 154.103 234.347 154.404L 231.984 156.019L 232.361 156.568L 234.514 155.096C 235.011 154.757 235.656 154.843 235.961 155.289C 236.234 155.687 236.139 156.098 235.708 156.393L 233.344 158.008L 233.721 158.558L 236.293 156.799C 236.908 156.379 237.007 155.793 236.568 155.152C 236.254 154.693 235.929 154.512 235.324 154.456C 235.552 154.003 235.521 153.62 235.217 153.175C 234.903 152.717 234.527 152.532 233.914 152.52L 234.398 152.188L 234.054 151.684z"/>
+<path style="stroke:none; fill:#000000" d="M 238.783 158.391C 238.126 157.429 237.039 157.316 235.888 158.104C 234.736 158.891 234.442 159.937 235.109 160.912C 235.767 161.874 236.857 161.993 237.982 161.224C 239.167 160.414 239.459 159.379 238.783 158.391zM 238.284 158.742C 238.704 159.358 238.451 160.068 237.599 160.65C 236.795 161.2 236.025 161.17 235.613 160.567C 235.197 159.959 235.446 159.241 236.277 158.673C 237.102 158.109 237.867 158.134 238.284 158.742z"/>
+<path style="stroke:none; fill:#000000" d="M 240.269 160.774L 236.84 163.119L 237.215 163.669L 239.106 162.376C 239.807 161.898 240.515 161.95 240.9 162.513C 241.195 162.946 241.121 163.399 240.709 163.681L 238.333 165.306L 238.705 165.849L 241.297 164.077C 241.866 163.688 241.941 163.011 241.49 162.35C 241.14 161.84 240.72 161.647 240.037 161.673L 240.613 161.279L 240.269 160.774z"/>
+<path style="stroke:none; fill:#000000" d="M 245.267 168.411L 244.738 168.562C 244.998 168.143 245.007 167.734 244.761 167.374C 244.161 166.497 242.747 166.283 241.798 166.931C 241.118 167.397 240.914 168.208 241.33 168.817C 241.567 169.163 241.904 169.347 242.436 169.424C 242.143 169.712 242.143 170.076 242.424 170.489C 242.756 170.973 243.218 171.243 243.839 171.308C 244.504 171.381 245.173 171.221 245.683 170.873C 247.012 169.965 247.254 167.945 246.212 166.421C 245.68 165.642 244.795 165.036 243.877 164.818C 242.857 164.575 241.712 164.782 240.854 165.368C 239.401 166.362 239.14 168.48 240.272 170.136C 240.604 170.62 241.059 171.076 241.558 171.427L 241.871 170.944C 241.354 170.51 241.04 170.177 240.799 169.823C 239.85 168.437 240.082 166.712 241.332 165.857C 242.707 164.918 244.706 165.299 245.65 166.679C 246.505 167.93 246.309 169.61 245.216 170.356C 244.449 170.881 243.339 170.843 242.959 170.287C 242.838 170.11 242.866 169.87 243.024 169.762C 243.082 169.723 243.217 169.668 243.404 169.618L 245.639 168.954L 245.267 168.411zM 244.315 167.621C 244.566 167.987 244.475 168.444 244.108 168.666C 243.771 168.877 243.1 169.076 242.747 169.077C 242.353 169.078 242.031 168.943 241.865 168.701C 241.619 168.34 241.762 167.821 242.194 167.525C 242.928 167.023 243.939 167.072 244.315 167.621z"/>
+<path style="stroke:none; fill:#000000" d="M 248.567 170.034L 243.796 173.296L 244.133 173.787L 244.57 173.486C 244.351 174.022 244.397 174.498 244.724 174.976C 245.341 175.879 246.484 175.963 247.622 175.184C 248.735 174.423 249.038 173.391 248.42 172.487C 248.098 172.017 247.693 171.803 247.133 171.812L 248.938 170.577L 248.567 170.034zM 247.838 172.732C 248.254 173.341 247.993 174.096 247.174 174.655C 246.395 175.187 245.588 175.144 245.18 174.549C 244.787 173.972 245.051 173.235 245.856 172.685C 246.661 172.134 247.445 172.156 247.838 172.732z"/>
+<path style="stroke:none; fill:#000000" d="M 248.199 179.736L 251.628 177.391L 251.257 176.848L 249.313 178.177C 248.613 178.656 247.904 178.602 247.515 178.033C 247.22 177.601 247.294 177.147 247.706 176.866L 250.134 175.206L 249.762 174.662L 247.119 176.47C 246.549 176.858 246.474 177.535 246.93 178.202C 247.274 178.706 247.67 178.906 248.341 178.918L 247.864 179.244L 248.199 179.736z"/>
+<path style="stroke:none; fill:#000000" d="M 255.516 180.198L 255.144 179.655L 253.371 180.867C 253.561 180.401 253.494 179.909 253.181 179.451C 252.572 178.561 251.461 178.466 250.368 179.213C 249.209 180.006 248.885 181.062 249.516 181.985C 249.838 182.456 250.238 182.663 250.865 182.667L 250.414 182.975L 250.745 183.46L 255.516 180.198zM 252.733 179.891C 253.135 180.48 252.867 181.211 252.048 181.771C 251.257 182.312 250.474 182.291 250.08 181.714C 249.668 181.112 249.926 180.351 250.724 179.805C 251.523 179.259 252.325 179.295 252.733 179.891z"/>
+<path style="stroke:none; fill:#000000" d="M 255.118 182.496L 254.747 181.952L 251.317 184.297L 251.688 184.84L 255.118 182.496zM 256.46 181.578L 256.084 181.029L 255.397 181.498L 255.773 182.049L 256.46 181.578z"/>
+<path style="stroke:none; fill:#000000" d="M 257.284 185.664L 256.786 186.003C 257.004 185.451 256.966 184.988 256.666 184.549C 256.071 183.679 254.909 183.608 253.797 184.37C 253.234 184.754 252.879 185.217 252.743 185.722C 252.63 186.174 252.711 186.658 252.957 187.018C 253.252 187.449 253.641 187.625 254.283 187.638L 254.106 187.758C 253.642 188.077 253.321 188.209 253.036 188.202C 252.735 188.197 252.425 187.996 252.197 187.662C 252.027 187.413 251.941 187.146 251.955 186.915C 251.968 186.724 252.024 186.609 252.205 186.438L 251.824 185.881C 251.216 186.383 251.175 187.151 251.725 187.956C 252.074 188.466 252.538 188.793 252.965 188.827C 253.458 188.874 253.957 188.677 254.762 188.127L 257.628 186.168L 257.284 185.664zM 256.202 184.952C 256.605 185.541 256.345 186.228 255.488 186.814C 254.669 187.374 253.93 187.361 253.536 186.784C 253.129 186.189 253.387 185.485 254.219 184.916C 255.044 184.353 255.804 184.37 256.202 184.952z"/>
+<path style="stroke:none; fill:#000000" d="M 256.034 189.734L 255.569 189.055L 254.888 189.519L 255.353 190.2L 256.034 189.734z"/>
+<path style="stroke:none; fill:#000000" d="M 262.728 190.747L 262.357 190.204L 260.583 191.417C 260.773 190.951 260.706 190.458 260.393 190.001C 259.784 189.11 258.673 189.016 257.58 189.762C 256.422 190.555 256.098 191.612 256.728 192.535C 257.051 193.006 257.451 193.213 258.078 193.216L 257.627 193.524L 257.957 194.009L 262.728 190.747zM 259.945 190.441C 260.348 191.03 260.08 191.761 259.261 192.32C 258.47 192.862 257.686 192.841 257.293 192.264C 256.881 191.662 257.139 190.9 257.936 190.354C 258.735 189.808 259.538 189.845 259.945 190.441z"/>
+<path style="stroke:none; fill:#000000" d="M 262.056 196.719C 262.58 196.36 262.868 196.106 263.056 195.834C 263.467 195.227 263.449 194.47 263.01 193.829C 262.357 192.873 261.204 192.759 260.078 193.529C 258.952 194.299 258.666 195.368 259.324 196.33C 259.861 197.116 260.677 197.354 261.516 196.982L 261.141 196.432C 260.587 196.591 260.14 196.444 259.841 196.006C 259.603 195.659 259.559 195.257 259.722 194.877C 259.829 194.612 259.994 194.431 260.33 194.192L 262.056 196.719zM 260.784 193.901C 261.45 193.513 262.126 193.617 262.502 194.167C 262.869 194.704 262.706 195.42 262.143 195.805C 262.13 195.813 262.117 195.823 262.099 195.825L 260.784 193.901z"/>
+</g>
+</g>
+<g>
+<path style="stroke:none; fill:#ffffff" d="M 137.175 129.177C 127.821 129.537 115.467 104.577 114.284 114.206C 113.161 123.356 112.848 123.27 112.848 132.195C 112.848 138.172 110.12 138.602 104.213 147.597C 101.195 152.344 98.8158 157.452 96.9477 162.639C 95.7977 165.727 94.7177 168.965 93.8587 172.133C 93.4987 173.722 92.8487 175.371 92.4897 176.96C 89.5407 187.825 79.0267 201.207 76.5887 212.071C 74.1397 222.865 71.1617 229.773 71.6217 244.242C 71.9818 255.582 72.1207 254.527 76.5087 258.125C 80.8267 261.723 85.2927 265.111 92.1297 271.148C 99.3257 277.415 114.287 288.348 116.306 291.736C 118.466 295.185 120.347 300.666 117.096 305.478C 113.845 310.293 100.945 309.731 101.015 309.731C 100.945 309.731 112.214 323.107 114.153 325.057C 116.022 326.925 126.311 335.772 159.123 329.655C 177.612 326.197 191.935 315.843 202.298 305.839C 215.681 292.816 216.622 288.771 219.092 281.484C 222.223 272.245 223.732 265.245 224.733 260.845C 225.649 256.813 226.905 244.602 226.905 238.846C 226.905 223.874 225.185 208.623 221.728 197.389C 218.56 186.885 213.523 179.549 209.205 170.045C 200.569 151.125 200.999 142.629 193.303 130.546C 184.529 116.584 188.846 107.3 177.182 107.878C 162.65 108.669 150.917 128.597 137.175 129.177z"/>
+<path style="stroke:none; fill:#000000" d="M 173.015 170.125C 173.444 168.176 193.804 164.867 197.481 165.946C 201.079 167.026 217.55 190.194 214.672 191.132C 211.873 192.072 205.607 182.497 195.683 177.89C 185.678 173.283 172.655 172.063 173.015 170.125z"/>
+<path style="stroke:none; fill:#000000" d="M 127.664 215.105C 129.533 215.464 126.55 228.986 126.411 242.879C 126.26 256.771 128.883 262.738 127.664 264.107C 126.434 265.476 123.266 258.93 123.416 245.038C 123.556 231.145 125.785 214.675 127.664 215.105z"/>
+<path style="stroke:none; fill:#000000" d="M 135.235 168.606C 136.315 168.685 144.15 167.026 144.441 167.746C 144.73 168.246 139.553 169.904 137.965 171.484C 137.604 171.924 135.955 173.363 135.086 173.283C 134.366 173.213 133.937 171.773 132.928 170.623C 130.409 168.106 128.829 168.326 129.329 167.385C 129.69 166.596 133.147 168.535 135.235 168.606z"/>
+<path style="stroke:none; fill:#000000" d="M 109.559 170.693C 109.098 172.677 102.258 173.61 97.3957 176.376C 94.4297 178.064 92.8677 180.608 88.8107 183.964C 84.7537 187.319 102.39 143.878 101.392 149.494C 100.394 155.112 98.4787 158.209 99.4857 161.585C 101.274 167.579 110.02 168.708 109.559 170.693z"/>
+</g>
+<g>
+<path style="stroke:none; fill:#ffb80f" d="M 280.735 263.383C 285.192 269.859 280.594 278.274 283.832 283.461C 289.15 291.946 299.874 300.511 303.982 302.891C 306.93 304.689 311.098 306.409 310.957 311.665C 310.738 317.642 307.789 319.221 306.141 320.88C 302.823 324.188 286.131 332.464 275.048 340.02C 261.086 349.584 256.268 353.831 251.731 358.37C 244.685 365.416 237.988 367.794 227.265 367.794C 216.55 367.794 211.723 365.566 208.415 362.616C 205.106 359.739 201.439 352.392 201.799 341.459C 202.079 330.595 205.536 320.66 207.196 303.749C 207.916 296.484 207.835 287.489 207.835 279.503C 207.835 269.429 207.985 260.864 210.144 259.564C 214.032 257.116 214.892 256.976 219.498 256.976C 224.106 256.976 226.185 257.266 227.704 258.774C 229.143 260.214 228.563 263.522 228.065 268.199C 227.624 272.877 229.863 274.386 232.092 276.335C 234.321 278.203 236.34 280.583 243.386 281.152C 250.442 281.663 253.03 280.503 256.338 278.423C 259.647 276.335 264.324 272.587 266.053 270.428C 267.712 268.35 271.81 261.153 272.599 261.153C 273.319 261.153 278.076 259.495 280.735 263.383z"/>
+<path style="stroke:none; fill:#ffb80f" d="M 29.7347 274.466C 23.2587 279.144 6.85774 278.704 2.67975 284.18C -1.41826 289.648 2.82875 297.563 2.74875 312.245C 2.74875 318.502 1.67075 323.249 0.950745 327.066C -0.0482635 331.884 -0.698257 335.272 1.30974 338.72C 4.98874 344.836 10.8848 346.346 44.6357 353.403C 62.6957 357.14 79.7467 366.854 91.1908 367.794C 102.634 368.654 105.083 364.846 112.059 358.659C 118.965 352.462 121.204 354.411 120.984 340.809C 120.764 327.277 112.059 323.249 102.204 307.637C 92.3397 292.016 90.7598 289.139 84.2147 278.784C 77.6677 268.559 64.7147 250 57.2987 249.779C 51.4027 249.64 48.0847 252.798 44.4157 256.546C 40.7487 260.284 36.2107 269.789 29.7347 274.466z"/>
+</g>
+<g>
+<path style="stroke:none; fill:#ffffff" d="M 125.661 94.9956C 129.979 93.2676 130.118 93.4066 132.997 87.1506C 135.305 82.3326 136.455 79.8836 136.385 72.5386C 136.385 65.3426 134.156 62.9046 130.768 58.2256C 127.53 53.7586 122.353 53.5496 119.115 54.1186C 117.246 54.4076 114.797 56.7876 113.139 60.3056C 112.059 62.6836 111.199 65.7026 111.129 68.8706C 110.91 77.3646 111.629 80.6046 113.567 86.3606C 115.877 93.1266 121.484 96.6446 125.661 94.9956z"/>
+<path style="stroke:none; fill:#000000" d="M 121.633 65.7026C 123.792 65.7026 126.521 67.1406 127.821 69.0896C 129.189 71.0286 130.199 73.7676 130.199 76.8556C 130.199 81.4636 129.69 86.5706 126.96 88.1586C 126.091 88.6596 124.222 89.0886 123.143 89.0886C 120.694 89.0886 120.484 87.5096 118.175 85.1316C 117.386 84.2716 115.006 80.0936 115.006 76.6456C 115.006 74.4876 114.508 71.3886 116.377 68.6606C 117.676 66.6416 119.324 65.7026 121.633 65.7026z"/>
+<path style="stroke:none; fill:#ffffff" d="M 170.277 95.9256C 181.071 94.7766 184.888 90.6076 186.827 83.3326C 188.556 76.8556 188.625 69.6596 183.809 61.2446C 179.271 53.1886 176.684 51.8896 170.136 51.3896C 160.062 50.5206 155.305 57.5766 153.075 62.6136C 150.708 68.0806 151.208 67.2916 151.347 74.1976C 151.497 81.4636 153.725 84.4926 156.244 89.0196C 158.762 93.4876 169.056 96.0056 170.277 95.9256z"/>
+<path style="stroke:none; fill:#000000" d="M 169.417 65.4226C 174.814 65.4226 177.972 70.2396 179.051 76.4266C 179.491 79.2336 178.842 82.4716 177.112 84.7016C 175.173 87.2896 171.715 88.8796 168.907 88.8796C 166.249 88.8796 163.221 89.3086 161.641 87.1506C 160.061 84.9206 159.702 79.9546 159.702 76.4266C 159.702 72.4686 160.852 69.6596 162.861 67.4316C 164.379 65.7826 167.108 65.4226 169.417 65.4226z"/>
+<path style="stroke:none; fill:#ffffff" d="M 170.566 68.8006C 171.136 68.2206 172.366 68.8006 173.735 70.3096C 175.173 71.8996 175.173 73.1886 174.015 74.0576C 172.935 74.9876 172.505 72.6886 171.785 71.8186C 170.496 70.5296 169.417 69.8796 170.566 68.8006z"/>
+<path style="stroke:none; fill:#ffffff" d="M 122.124 69.4806C 122.533 68.6926 124.54 68.8916 125.423 70.3726C 126.3 71.9066 126.45 75.4356 125.979 75.5876C 124.73 76.0696 124.817 73.9656 123.673 72.5666C 122.59 71.1556 121.713 70.3216 122.124 69.4806z"/>
+<path style="stroke:none; fill:#ffffff" d="M 174.327 47.0146C 174.362 47.5946 177.502 48.1676 178.802 48.6386C 180.102 49.1086 183.144 51.7486 184.334 53.1196C 185.524 54.4896 187.722 58.9426 188.446 58.7476C 189.173 58.5506 187.579 55.5526 186.428 53.8926C 185.277 52.2346 181.715 48.4496 179.447 47.5146C 177.177 46.5806 174.291 46.4376 174.327 47.0146z"/>
+<path style="stroke:none; fill:#ffffff" d="M 125.069 49.2716C 125.113 50.3076 128.464 49.9856 131.94 52.9846C 135.491 56.0486 135.886 58.7766 136.972 58.6736C 138.06 58.5706 136.407 55.2006 132.778 51.9806C 129.936 49.4576 125.027 48.2376 125.069 49.2716z"/>
+</g>
+<g>
+<path style="stroke:none; fill:#ffb80f" d="M 142.142 79.8146C 147.389 79.1646 154.585 80.4536 157.903 82.9026C 160.991 85.2116 163.15 86.4306 165.959 87.3696C 175.384 90.4586 187.767 91.8976 187.187 100.393C 186.537 110.538 183.588 115.075 175.173 117.734C 168.408 119.822 156.314 131.546 146.959 131.546C 142.791 131.546 136.955 131.766 133.577 130.546C 130.339 129.387 125.8 123.92 120.484 119.533C 115.157 115.215 110.19 110.607 110.049 104.56C 109.83 98.1636 114.008 96.0746 119.905 90.9686C 123.003 88.2296 128.61 83.6926 132.498 81.6826C 136.096 79.8836 138.394 80.2446 142.142 79.8146z"/>
+<path style="stroke:none; fill:#000000" d="M 125.081 114.613C 123.415 114.011 121.773 113.056 121.123 112.476C 118.825 111.03 114.749 107.119 113.358 106.22C 112.928 106.08 111.731 106.168 111.989 107.009C 112.713 109.368 114.253 110.776 116.3 112.419C 118.8 114.425 121.88 116.415 124.574 117.765C 126.159 118.561 130.118 119.463 130.118 119.463C 133.926 119.963 137.465 119.822 139.763 119.822C 145.16 119.822 151.856 117.594 158.903 114.206C 165.818 110.758 167.468 109.388 172.366 106.58C 177.112 103.921 183.09 100.463 181 99.4536C 178.911 98.3746 176.823 99.8826 169.986 103.991C 163.371 108.019 158.833 110.538 152.217 113.416C 149.188 114.715 145.16 116.295 142.142 116.514C 139.264 116.725 135.516 116.654 133.287 116.654C 130.699 116.654 127.805 115.595 125.081 114.613z"/>
+<path style="stroke:none; fill:#000000" d="M 146.39 84.7716C 147.179 86.3606 149.188 86.5706 150.558 87.3696C 151.856 88.0896 152.577 88.2296 153.075 87.9396C 154.225 87.3696 153.366 85.2816 152.217 84.5616C 151.137 83.8426 145.95 83.6926 146.39 84.7716z"/>
+<path style="stroke:none; fill:#000000" d="M 130.559 87.1506C 130.339 87.7996 132.137 89.0196 132.997 88.1586C 134.006 87.3696 135.156 86.5706 135.596 86.2906C 137.395 85.1316 136.675 84.3426 133.797 84.7716C 130.838 85.3506 130.838 86.5006 130.559 87.1506z"/>
+</g>
+<g>
+<path style="stroke:none; fill:#ffffff" d="M 247.929 223.027C 246.869 230.621 246.293 233.507 244.759 238.58C 243.459 242.886 241.61 247.198 241.1 248.499C 240.895 249.021 241.963 248.947 242.423 248.293C 242.883 247.639 243.223 246.997 243.751 245.813C 245.923 240.945 251.103 225.191 249.172 211.959C 247.473 200.316 243.162 190.633 233.877 180.833C 231.116 177.92 221.883 172.212 221.235 173.335C 220.745 174.184 229.055 176.05 237.743 187.625C 245.562 198.037 249.485 211.891 247.929 223.027z"/>
+<path style="stroke:none; fill:#ffffff" d="M 234.832 249.74C 237.35 248.116 243.148 247.536 246.809 247.723C 250.469 247.912 254.617 248.539 254.617 248.539C 254.617 248.539 258.301 249.083 261.661 250.442C 265.023 251.801 269.318 254.362 269.516 256.913C 269.715 259.464 268.22 258.499 266.734 256.231C 265.248 253.961 262.386 252.245 258.859 251.062C 255.331 249.879 250.199 249.366 248.141 249.241C 246.083 249.115 240.839 249.096 237.802 250.077C 234.765 251.058 233.192 253.383 231.757 253.688C 230.321 253.991 232.312 251.365 234.832 249.74z"/>
+<path style="stroke:none; fill:#ffffff" d="M 63.6677 225.428C 62.9527 233.507 64.1027 240.197 66.3937 244.849C 68.8927 249.928 76.6587 256.574 76.1467 257.092C 75.0497 258.201 66.3057 248.111 64.5788 244.32C 62.2497 239.208 61.1967 233.169 62.1527 224.617C 63.4597 212.925 67.3828 203.683 71.9877 193.883C 73.6937 190.251 78.7077 180.919 79.5577 181.898C 80.6328 183.138 76.6417 186.031 71.2677 198.971C 66.2737 210.994 64.4877 216.163 63.6677 225.428z"/>
+<path style="stroke:none; fill:#ffffff" d="M 173.735 19.2876C 172.865 20.2976 171.856 28.9326 174.094 29.8016C 176.253 30.7316 183.948 26.9936 183.659 24.9746C 183.229 22.0266 180.061 18.3596 178.772 18.2086C 177.472 18.1386 174.524 18.1386 173.735 19.2876z"/>
+<path style="stroke:none; fill:#ffffff" d="M 198.7 109.818C 198.051 110.538 199.2 116.874 203.308 121.041C 207.336 125.069 209.854 125.069 211.513 123.27C 214.672 119.892 212.153 116.725 210.213 114.495C 208.275 112.266 205.756 113.056 203.448 110.827C 201.219 108.599 199.641 108.739 198.7 109.818z"/>
+</g>
+	
+	      </g>
+    </g>
+
+    <g id="iwas">
+      <g transform="scale(0.6)">
+	<g id="kupla">
+		<polygon points="116.111,69.1667 133,94.5 134,67.5"
+			 style="fill:rgb(255,255,255);stroke:rgb(0,0,0);stroke-width:1"/>
+		<ellipse cx="97.5" cy="38" rx="96.5" ry="32"
+			 style="fill:rgb(255,255,255);stroke:rgb(0,0,0);stroke-width:1"/>
+		<polygon
+			points="115.71,67.2222 118.821,71.2222 133.044,70.1111 133.266,65.2222"
+			 style="fill:rgb(255,255,255);stroke:rgb(255,255,255);stroke-width:1"/>
+	</g>
+	<text id="teksti" x="12" y="45" style="fill:rgb(0,0,0);font-size:18;">I was made with that</text>
+      </g>
+    </g>
+	
+  </g>
+</svg>

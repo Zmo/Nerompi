@@ -1,0 +1,198 @@
+<project name="Nero" default="build" basedir=".">
+	<!-- directory for external jars (used recursively) -->
+	<property name="libdir" location="lib" />
+	<!-- "src" would be nicer, but can't change it anymore -->
+	<property name="srcdir" location="." />
+	<!-- place to put all the compiled java classes -->
+	<property name="builddir" location="build" />
+	<!-- distribution directory, copy data files and nero.jar here -->
+	<property name="distdir" location="dist" />
+	<!-- startup scripts -->
+	<property name="scriptdir" location="scripts" />
+	<!-- test reports -->
+	<property name="testdir" location="testresults" />
+	<property name="coveragedir" location="${testdir}/coverage" />
+	<property name="emmainstrdir" location="${testdir}/instr" />
+	<property name="junitdir" location="${testdir}/junit" />
+
+	<!-- external libraries -->
+	<path id="extlibs">
+		<fileset dir="${libdir}" includes="**/*.jar" />
+	</path>
+	<path id="emmalibs" >
+		<pathelement location="${libdir}/emma.jar" />
+		<pathelement location="${libdir}/emma_ant.jar" />
+	</path>
+	<!-- task definition for emma -->
+ 	<taskdef resource="emma_ant.properties" classpathref="emmalibs" />
+	
+	<!-- compile the basic class files -->
+	<target name="build" description="Compile the program">
+		<mkdir dir="${builddir}" />
+		<!-- source and target must be 1.4, enable debugging if EMMA is turned on -->
+		<javac srcdir="${srcdir}" destdir="${builddir}" target="1.4" source="1.4" debug="${emmaenabled}">
+			<classpath refid="extlibs" />
+			<include name="fi/helsinki/cs/nero/**/*.java" />
+			<exclude name="**/CVS/*" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="build" description="Create JAR-file and copy needed files to distribution directory">
+		<!-- create directory structure -->
+		<mkdir dir="${distdir}" />
+		<mkdir dir="${distdir}/data" />
+		<mkdir dir="${distdir}/lib" />
+		<!-- create the jar file -->
+		<jar destfile="${distdir}/nero.jar" basedir="${builddir}" excludes="fi/helsinki/cs/nero/test/**">
+			<!--
+			disabled for now since $CLASSPATH and/or java -classpath doesn't
+			work well with "java -jar foo.jar"
+			<manifest>
+				<attribute name="Main-Class" value="fi.helsinki.cs.nero.NeroApplication"/>
+			</manifest>
+			-->
+		</jar>
+		<!-- copy data files -->
+		<copy todir="${distdir}/data">
+			<fileset dir="data" defaultexcludes="yes" />
+		</copy>
+		<!-- copy libraries -->
+		<copy todir="${distdir}/lib">
+			<fileset dir="lib" defaultexcludes="yes">
+				<!-- exclude libraries needed for testing/building -->
+				<exclude name="dbunit*.jar" />
+				<exclude name="emma*.jar" />
+				<exclude name="junit*.jar" />
+			</fileset>
+		</copy>
+		<!-- copy startup scripts -->
+		<copy todir="${distdir}">
+			<fileset dir="${scriptdir}" defaultexcludes="yes" />
+		</copy>
+		<chmod perm="0700" dir="${distdir}" includes="*.sh" />
+		<!-- copy initialization file -->
+		<copy file="nero.ini" todir="${distdir}" />
+	</target>
+
+	<!-- use emma, clean everything so we can turn on debugging -->
+	<target name="-emma" description="Setup EMMA stuff, turn on debugging. Do not run directly.">
+		<property name="emmaenabled" value="true" />
+	</target>
+	
+	<target name="testemma" depends="-emma, cleanbuild, cleantest, test" description="Run JUnit tests with EMMA enabled" />
+	<target name="runemma" depends="-emma, cleandist, cleantest, run" description="Run Nero with EMMA enabled" />
+	
+	<target name="test" depends="cleanemma, build" description="Run JUnit tests">
+		<!-- clear possible old data -->
+		<delete dir="${junitdir}" />
+		<mkdir dir="${junitdir}" />
+		
+		<!-- create instrumented files from our own code -->
+		<emma enabled="${emmaenabled}">
+			<instr instrpath="${builddir}" destdir="${emmainstrdir}"
+				metadatafile="${coveragedir}/metadata.emma" merge="false"
+			>
+				<filter excludes="fi.helsinki.cs.nero.test.*" />
+				<filter excludes="fi.helsinki.cs.nero.db.*" />
+				<filter excludes="fi.helsinki.cs.nero.ui.*" />
+				<filter excludes="fi.helsinki.cs.nero.NeroApplication" />
+				<filter excludes="fi.helsinki.cs.nero.event.NeroObserverTypes" />
+			</instr>
+		</emma>
+
+		<!-- almost ordinary junit block -->
+		<junit fork="yes" printsummary="on">
+			<!-- set coverage file, merge results from separate tests -->
+			<jvmarg value="-Demma.coverage.out.file=${coveragedir}/coverage.emma" />
+		    <jvmarg value="-Demma.coverage.out.merge=true" />
+			<classpath>
+				<!-- possible emma instrumented files first -->
+				<pathelement location="${emmainstrdir}" />
+				<!-- normal libs -->
+				<path refid="extlibs" />
+				<!-- just in case "." isn't in classpath -->
+				<pathelement location="${builddir}" />
+			</classpath>
+			<batchtest todir="${junitdir}" fork="yes">
+				<fileset dir="${builddir}"
+					includes="fi/helsinki/cs/nero/test/*.class"
+					excludes="**/*DB*.class"
+				/>
+			</batchtest>
+			<formatter type="xml" />
+		</junit>
+
+		<!-- create coverage reports -->
+		<emma enabled="${emmaenabled}">
+			<report sourcepath="${srcdir}" sort="+name">
+				<fileset dir="${coveragedir}" includes="*.emma" />
+				<txt outfile="${coveragedir}/coverage.txt" />
+				<html outfile="${coveragedir}/coverage.html" />
+			</report>
+		</emma>
+
+		<!-- create junit report -->
+		<junitreport todir="${junitdir}">
+			<fileset dir="${junitdir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${junitdir}" />
+		</junitreport>
+	</target>
+
+	<target name="run" depends="cleanemma, dist" description="Run Nero">
+		<!-- create instrumented files from our own code -->
+		<emma enabled="${emmaenabled}">
+			<instr instrpath="${builddir}" destdir="${emmainstrdir}"
+				metadatafile="${coveragedir}/metadata.emma" merge="true"
+			>
+				<filter excludes="fi.helsinki.cs.nero.test.*" />
+				<filter excludes="fi.helsinki.cs.nero.event.NeroObserverTypes" />
+			</instr>
+		</emma>
+		
+		<!-- run the software -->
+		<java fork="true" dir="dist" classname="fi.helsinki.cs.nero.NeroApplication">
+			<!-- set coverage file, merge results from separate tests -->
+			<jvmarg value="-Demma.coverage.out.file=${coveragedir}/coverage.emma" />
+		    <jvmarg value="-Demma.coverage.out.merge=true" />
+			<classpath>
+				<!-- possible emma instrumented files first -->
+				<pathelement location="${emmainstrdir}" />
+				<!-- normal libs -->
+				<path refid="extlibs" />
+				<pathelement location="${distdir}/nero.jar" />
+			</classpath>
+		</java>
+		
+		<!-- create coverage reports -->
+		<emma enabled="${emmaenabled}">
+			<report sourcepath="${srcdir}" sort="+name">
+				<fileset dir="${coveragedir}" includes="*.emma" />
+				<txt outfile="${coveragedir}/coverage.txt" />
+				<html outfile="${coveragedir}/coverage.html" />
+			</report>
+		</emma>
+	</target>
+	
+	<target name="cleandist" description="Clean distribution directory">
+		<delete dir="${distdir}" />
+	</target>
+	
+    <target name="cleanbuild" description="Clean build directory">
+        <delete dir="${builddir}" />
+    </target>
+    
+	<target name="cleanemma" description="Clean EMMA instrumented files">
+		<delete dir="${emmainstrdir}" />
+	</target>
+
+	<target name="cleantest" description="Clean test directory, including EMMA generated files">
+		<delete dir="${testdir}" />
+	</target>
+	
+	<target name="cleanall" depends="cleandist, cleanbuild, cleanemma, cleantest"
+		description="Clean everything"
+	/>
+
+</project>

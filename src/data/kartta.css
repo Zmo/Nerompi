@@ -1,0 +1,68 @@
+/* kerroksenvaihtonappi */
+.button {
+stroke: rgb(0,0,0);
+stroke-width: 1;
+fill: rgb(255,255,255);
+}
+
+/* yleiset määrittelyt tekstille */
+text {
+font-size: 16;
+font-weight: bold;
+}
+
+/* huoneen numero kartalla */
+.label {
+font-size: 10;
+font-weight: normal;
+}
+
+/* merkkien selitykset */
+#legend text {
+font-size: 13;
+font-weight: normal;
+}
+
+/* huone perustilassa (ei valittu tms.) */
+.room {
+fill: white;
+stroke: black;
+stroke-width: 1;
+}
+
+/* projektin huone */
+.project {
+stroke-width: 3;
+stroke: blue;
+}
+
+/* valittu huone/kerros */
+.active {
+stroke-width: 3;
+stroke: magenta;
+}
+
+/* hakuehtojen mukainen huone */
+.filtered {
+
+}
+
+/* varattu huone */
+.occupied {
+fill: tomato;
+}
+
+/* osittain vapaa huone */
+.partfree {
+fill: darkorange; 
+}
+
+/* vapaa huone */
+.free {
+fill: limegreen;
+}
+
+/* huone ilman työpisteitä */
+.noposts {
+fill: tan;
+}

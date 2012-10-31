@@ -1,0 +1,238 @@
+* toistaiseksi jako JUnit ja DbUnit testeihin selv‰: data-, event- ja
+  ui-luokille JUnit, lopuille DbUnit (DbUnit-testeiss‰ saa olla toki myˆs
+  "normaalia" JUnit kamaa).
+* kirjataan t‰h‰n tiedostoon mit‰ ollaan jo toteutettu ja mit‰ ei.
+  - tarkoittaa tekem‰tt‰, + tehty osittain, = tehty kokonaan, ! ei testata.
+  Myˆs muuta juttua sopii suoltaa t‰nne, jos jotain tulee mieleen.
+* Erikoistapauksena Sessionille mahdollisesti kaksi eri testiluokkaa, sek‰
+  normaali JUnit ett‰ DbUnit (vaatii lis‰‰ selvennyst‰!). Sessionin testit
+  kuuluvat sitten kategoriaan "integraatiotestaus", joka puoltaisi pelk‰n
+  yhden DbUnit-testiluokan k‰yttˆ‰...
+* DbUnit-testit vaativat viel‰ ison kasan tietokantas‰‰tˆ‰, joten niit‰ sitten
+  joskus hieman myˆhemmin.
+* Testiluokan nimi esimerkiksi TestContract, tai jos kyseess‰ olisi DbUnitia
+  k‰ytt‰v‰ testiluokka, niin TestDBContract (tai molemmat)
+* Testien ajamiseen en toistaiseksi ota kantaa, eclipse osannee suorilta
+  jotain, mutta haluan ett‰ homma onnistuu sitten joskus komentorivilt‰
+  antilla (siis ant, ei Antti :)
+* Testaussuunnitelma luultavasti kertoo mit‰ kaikkea pit‰isi testata. Mutta ei
+  sellasta m‰‰r‰‰ kuitenkaan jaksa kirjottaa kukaan :D
+* Virheellisill‰ arvoilla on viel‰ paha testata, kun ei ole oikein virheiden
+  k‰sittely selvill‰. Joku sais oikeesti kirjottaa selv‰sti kuka heitt‰‰ ja
+  ket‰, miss‰ on nullit sallittuja ja miss‰ ei.
+
+* Ja parit urlit:
+    http://www.junit.org/
+    http://www.junit.org/junit/javadoc/3.8.1/index.htm
+    http://junit.sourceforge.net/doc/faq/faq.htm
+    http://dbunit.sourceforge.net/
+
+data/Contract.java
+    + public class Contract implements Comparable
+    + public Contract(Session session, String contractID, Project project,
+                        TimeSlice timeSlice)
+    - public Project getProject()
+    + public String getContractID()
+    + public TimeSlice getTimeSlice()
+    + public int compareTo(Object arg0)
+
+./data/Person.java
+    - public class Person
+    + public Person(Session session, String personID, String name,
+                    Contract[] contracts, Reservation[] reservations)
+    + public String getPersonID()
+    + public String getName()
+    + public Contract[] getContracts()
+    + public Reservation[] getReservations()
+
+./data/PhoneNumber.java
+    - public class PhoneNumber
+    - public PhoneNumber(Session session, String phoneNumberID, Post post,
+                            String phoneNumber)
+    + public PhoneNumber(PhoneNumber template, Post post)
+    - public String getPhoneNumberID()
+    - public Post getPost()
+    - public String getPhoneNumber()
+
+./data/Post.java
+    - public class Post
+    - public Post(Session session, String postID, Room room,
+                PhoneNumber[] phoneNumbers)
+    - public String getPostID()
+    - public PhoneNumber[] getPhonenumbers()
+    - public Reservation[] getReservations()
+    - public void clearReservations()
+    - public int getStatus()
+
+./data/Project.java
+    - public class Project {
+    + public Project(Session session, String projectID, Contract[] contracts,
+                        TimeSlice timeSlice, Person projectManager)
+    + public String getProjectID()
+    + public Person getProjectManager()
+    - public Contract[] getContracts()
+    - public TimeSlice getTimeSlice()
+
+./data/Reservation.java
+    - public class Reservation implements Comparable {
+    + public Reservation(Session session, String reservationID, Post post,
+                            Person person, TimeSlice timeSlice,
+                            double weeklyHours, String description)
+    - public Reservation(Reservation template, TimeSlice timeSlice)
+    + public String getReservationID()
+    + public Person getReservingPerson()
+    + public Post getTargetPost()
+    + public TimeSlice getTimeSlice()
+    - public double getWeeklyHours()
+    - public String getDescription()
+    - public int compareTo(Object arg0)
+
+./data/Room.java
+    - public class Room
+    - public Room(Session session, String roomID,String buildingName,
+                    String floor, String roomNumber, String roomName,
+                    double roomSize, Post[] posts, String description)
+    - public String getRoomID()
+    - public String getBuildingName()
+    - public String getFloor()
+    - public String getRoomNumber()
+    - public String getRoomName()
+    - public Post[] getPosts()
+    - public String getDescription()
+    - public int getStatus()
+
+./data/TimeSlice.java
+    - public class TimeSlice implements Comparable
+        * Onko selv‰‰ kuinka toteuttaa Comparablen? Kumpi ristiin menevist‰
+          aikav‰leist‰ on "isompi"?
+    - public TimeSlice(Date startDate, Date endDate)
+    - public Date getEndDate()
+    - public void setEndDate(Date endDate)
+    - public Date getStartDate()
+    - public void setStartDate(Date startDate)
+    - public int compareTo(Object arg0)
+
+./db/NeroDatabase.java (DbUnit)
+    - public class NeroDatabase
+    - public NeroDatabase(Connection connection)
+    - public Reservation[] getReservations(Person person, TimeSlice timeslice)
+    - public Reservation[] getReservations(Post post, TimeSlice timeslice)
+    - public boolean createReservation(Reservation reservation)
+    - public boolean deleteReservation(Reservation reservation)
+    - public boolean updateReservation(Reservation reservation)
+    - public Contract[] getContracts(Person person, TimeSlice timeslice)
+    - public Person[] getPeople(TimeSlice timescale, String personName,
+                            Project project, boolean showEndingContracts,
+                            boolean withoutPost,boolean partTimeTeachersOnly)
+    - public Post[] getPosts(Room room)
+    - public boolean deletePost(Post post)
+    - public boolean createPost(Post post)
+    - public Room[] getRooms()
+    - public Room[] getRooms(Project project, TimeSlice timescale)
+    - public Room[] getRooms(String roomName, int maxPosts)
+    - public Connection getConnection()
+    - public void setConnection(Connection connection)
+    - public Project[] getProjects()
+    - public void updatePhoneNumber(PhoneNumber phone)
+
+./event/NeroObserver.java
+    * Rajapintaluokka, ei tarvitse testata(?)
+    - public interface NeroObserver
+    - public void updateObserved(int type);
+
+./event/NeroObserverManager.java
+    - public class NeroObserverManager
+    - public NeroObserverManager()
+    - public void addObserver(int type, NeroObserver observer)
+    - public void notifyObservers(int type)
+
+./event/NeroObserverTypes.java
+    * Sis‰lt‰‰ pelk‰st‰‰n Observer-tyyppej‰. Voisi testata, ett‰ static intien
+      m‰‰r‰ on NTYPES, tai jotain.. ei v‰ltt‰m‰tt‰ ole pakko,
+    - public class NeroObserverTypes
+
+./logic/Session.java (osittain DbUnit)
+    public class Session
+
+    * Selv‰sti puhtaat JUnit-testit (mahtaakohan tarvita lis‰‰ gettereit‰
+      testausta varten...)
+    - public void registerObserver(int type, NeroObserver observer)
+    - public void setActiveRoom(Room activeRoom)
+    - public void setFilterEndingContracts(boolean showEndingContracts)
+    - public void setFilterFreePosts(int freePosts)
+    - public void setFilterMaxPosts(int maxPosts)
+    - public void setFilterPartTimeTeachers(boolean partTimeTeachersOnly)
+    - public void setFilterPersonName(String personName)
+    - public void setFilterProject(Project project)
+    - public void setFilterRoomName(String roomName)
+    - public void setFilterTimescale(TimeSlice timescale)
+    - public void setFilterWithoutPost(boolean withoutPost)
+    - public void setTimeScaleSlice(TimeSlice timescaleSlice)
+    - public TimeSlice getTimeScaleSlice()
+    - public Room getActiveRoom()
+    - public Room[] getFilteredRooms()
+    - public int getFilterFreePosts()
+    - public TimeSlice getFilterTimescale()
+
+    * Tahtoo DbUnitin, ehk‰
+    - public Session()
+    - public Project[] getProjects() {
+    - public Room[] getRooms() {
+    - public Room[] getProjectRooms() {
+    - public Person[] getFilteredPeople()
+    - public void updateReservation(Reservation reservation)
+        * T‰ss‰ oli jotain ep‰selvyytt‰. Jyrki suosittelee toiseksi
+          parametriksi TimeSlice‰, jolloin kaikki p‰ivitt‰minen tapahtuu
+          t‰‰ll‰.
+    - public void deleteReservation(Reservation reservation)
+    - public void createReservation(Post post, Contract contract)
+    - public void createReservation(Post post, Person person)
+    - public void deletePost(Post post)
+    - public void createPost(Room room)
+    - public void addPhoneNumber(Post post, PhoneNumber phone)
+    - public void deletePhoneNumber(PhoneNumber phone)
+    - public Contract[] getContracts(Person person)
+    - public Reservation[] getReservations(Person person)
+    - public Reservation[] getReservations(Post post)
+
+./ui/JMultiSlider.java
+    * Kaikkea ei varmaankaan voi testata, mutta jotakin. Toistaiseksi puuttuu
+      -/+/= merkinn‰t.
+    public class JMultiSlider extends JComponent
+    public JMultiSlider()
+    public JMultiSlider(int min, int max)
+    public void addChangeListener(ChangeListener l)
+    public void removeChangeListener(ChangeListener l)
+    public int getValueLeft()
+    public int getValueRight()
+    public boolean getValueIsAdjusting()
+    public int getMinimum()
+    public int getMaximum()
+    public void setValueLeft(int value)
+    public void setValueRight(int value)
+    public void setValues(int leftValue, int rightValue)
+    public void setValuesAndRange(int leftValue, int rightValue,
+                                    int minimumValue, int maximumValue)
+    public void setMinimum(int value)
+    public void setMaximum(int value)
+    * Iso osa event-handlereista taitaa olla tyhji‰?
+    public void stateChanged(ChangeEvent event)
+    public void mousePressed(MouseEvent event)
+    public void mouseReleased(MouseEvent event)
+    public void mouseDragged(MouseEvent event)
+    public void mouseClicked(MouseEvent event)
+    public void mouseEntered(MouseEvent event)
+    public void mouseExited(MouseEvent event)
+    public void mouseMoved(MouseEvent event)
+    public void stateChanged(ChangeEvent event)
+    public void stateChanged(ChangeEvent event)
+    public static void main(String[] args)
+    public void run()
+
+./ui/Map.java
+    * T‰ydentynee jossain vaiheessa... ei tietoa kuinka paljon voi
+      yksikkˆtestata.
+    public class Map extends JSVGCanvas implements NeroObserver
+    public void updateObserved(int type)
+
+// vim:expandtab:shiftwidth=4:tabstop=4:softtabstop=4
