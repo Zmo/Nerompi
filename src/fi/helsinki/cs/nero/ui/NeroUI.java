@@ -1,12 +1,16 @@
 package fi.helsinki.cs.nero.ui;
 
 
+import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.plaf.plastic.theme.DesertBluer;
+import fi.helsinki.cs.nero.event.NeroObserver;
+import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.logic.Session;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
@@ -18,13 +22,6 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
-
-import com.jgoodies.plaf.plastic.Plastic3DLookAndFeel;
-import com.jgoodies.plaf.plastic.theme.DesertBluer;
-
-import fi.helsinki.cs.nero.event.NeroObserver;
-import fi.helsinki.cs.nero.event.NeroObserverTypes;
-import fi.helsinki.cs.nero.logic.Session;
 
 public class NeroUI {
     /**
@@ -81,7 +78,7 @@ public class NeroUI {
 			SwingUtilities.updateComponentTreeUI(frame);
 		}
 		catch(Exception e){
-		   //pitäiskös sitten jotain muka tehä?
+		   //pitï¿½iskï¿½s sitten jotain muka tehï¿½?
 		}
         
         JPanel fullPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -93,7 +90,7 @@ public class NeroUI {
         fullScrollPane = new JScrollPane(fullPanel);
         frame.getContentPane().add(fullScrollPane);
       
-        //Alustetaan ja lisätään vasen puolisko.
+        //Alustetaan ja lisï¿½tï¿½ï¿½n vasen puolisko.
         JPanel left = new JPanel();
         left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
         
@@ -103,9 +100,9 @@ public class NeroUI {
         left.setMaximumSize(new Dimension(LEFT_WIDTH, HEIGHT));
         fullPanel.add(left);
 
-        //Alustetaan ja lisätään oikea puolisko.
-        //Luodaan kerrostettu näkymä, jossa aikajakson osoittavat pystyviivat ovat
-        //muiden komponenttien päällä.
+        //Alustetaan ja lisï¿½tï¿½ï¿½n oikea puolisko.
+        //Luodaan kerrostettu nï¿½kymï¿½, jossa aikajakson osoittavat pystyviivat ovat
+        //muiden komponenttien pï¿½ï¿½llï¿½.
         JLayeredPane rightLayers = new JLayeredPane();
         rightLayers.setMinimumSize(new Dimension(RIGHT_WIDTH, HEIGHT));
         rightLayers.setPreferredSize(new Dimension(RIGHT_WIDTH, HEIGHT));
@@ -124,17 +121,17 @@ public class NeroUI {
         //Luodaan oikean puoliskon ylempi osa.
         fullPanel.add(rightLayers);
 
-        //Luodaan ja lisätään hakupaneeli.
+        //Luodaan ja lisï¿½tï¿½ï¿½n hakupaneeli.
         left.add(new SearchPanel(this.session));
         
-        //Luodaan ja lisätään karttakomponentti.
+        //Luodaan ja lisï¿½tï¿½ï¿½n karttakomponentti.
 
         left.add(new Map(session, frame));
 
-        // lisätään statusbar
+        // lisï¿½tï¿½ï¿½n statusbar
         left.add(new Statusbar(session, LEFT_WIDTH));
 
-        //Luodaan ja lisätään aikajana.
+        //Luodaan ja lisï¿½tï¿½ï¿½n aikajana.
         DateSlider dateSlider = new DateSlider(session, RIGHT_WIDTH); 
         right.add(dateSlider, BorderLayout.NORTH);
         
@@ -150,7 +147,7 @@ public class NeroUI {
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(600);
 
-        // dummyPanel varaa tilaa sitä varten, että Slider saadaan oikeaan kohtaan 
+        // dummyPanel varaa tilaa sitï¿½ varten, ettï¿½ Slider saadaan oikeaan kohtaan 
         JPanel dummyPanel = new JPanel();
         dummyPanel.setPreferredSize(new Dimension(JMultiSlider.SIDE_WIDTH-1, 1));
         right.add(dummyPanel, BorderLayout.WEST);
@@ -174,7 +171,7 @@ public class NeroUI {
     
     public NeroUI(Session session) {
         	this.session = session;    
-        // Luo ohjelman käyttöliittymä Swingin tapahtumankäsittelijäsäikeessä
+        // Luo ohjelman kï¿½yttï¿½liittymï¿½ Swingin tapahtumankï¿½sittelijï¿½sï¿½ikeessï¿½
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
