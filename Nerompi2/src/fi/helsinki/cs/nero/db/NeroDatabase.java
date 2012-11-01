@@ -38,110 +38,110 @@ public class NeroDatabase implements NeroObserver {
 	private Connection connection;
 
 	/**
-	 * Session johon tämä tietokantayhteys liittyy.
+	 * Session johon tï¿½mï¿½ tietokantayhteys liittyy.
 	 */
 	private Session session;
 
 	/**
-	 * Kaikki järjestelmän tuntemat huoneet työpisteineen ja puhelinnumeroineen.
+	 * Kaikki jï¿½rjestelmï¿½n tuntemat huoneet tyï¿½pisteineen ja puhelinnumeroineen.
 	 * Hajautusrakenne, jossa avaimena on huoneen id ja arvona huoneolio.
 	 */
 	private Map rooms;
 
 	/**
-	 * Kaikki järjestelmän tuntemat projektit. Hajautusrakenne, jossa avaimena
+	 * Kaikki jï¿½rjestelmï¿½n tuntemat projektit. Hajautusrakenne, jossa avaimena
 	 * on projektin id ja arvona projektiolio.
 	 */
 	private Map projects;
 	
 	/**
-	 * Kaikki järjestelmän tuntemat työpisteet. Hajautusrakenne, jossa avaimena
-	 * on työpisteen id ja arvona työpisteolio.
+	 * Kaikki jï¿½rjestelmï¿½n tuntemat tyï¿½pisteet. Hajautusrakenne, jossa avaimena
+	 * on tyï¿½pisteen id ja arvona tyï¿½pisteolio.
 	 */
 	private Map posts;
 	
 	/**
-	 * Kaikki järjestelmän tuntemat puhelinnumerot. Hajautusrakenne, jossa
-	 * avaimena on työpisteen id (tai "free") ja arvona vektori puhelinnumeroista
+	 * Kaikki jï¿½rjestelmï¿½n tuntemat puhelinnumerot. Hajautusrakenne, jossa
+	 * avaimena on tyï¿½pisteen id (tai "free") ja arvona vektori puhelinnumeroista
 	 */
 	private Map phoneNumbers;
 	
 	/**
-	 * Järjestelmän tuntemia henkilöitä, jotka on jo ladattu tietokannasta. Hajautusrakenne,
-	 * jossa avaimena on henkilön tunniste (htunnus) ja arvona henkilöolio.
+	 * Jï¿½rjestelmï¿½n tuntemia henkilï¿½itï¿½, jotka on jo ladattu tietokannasta. Hajautusrakenne,
+	 * jossa avaimena on henkilï¿½n tunniste (htunnus) ja arvona henkilï¿½olio.
 	 */
 	private Map people = new Hashtable();
 
 	/**
-	 * Tietojen esilataamisessa käytetyt preparedStatementit
+	 * Tietojen esilataamisessa kï¿½ytetyt preparedStatementit
 	 */
 	private PreparedStatement prepAllProjects;
 	private PreparedStatement prepAllRooms;
 	private PreparedStatement prepAllPosts;
 	private PreparedStatement prepAllPhoneNumbers;
 	/**
-	 * getReservations(Person person, TimeSlice timeslice)-metodin käyttämät
+	 * getReservations(Person person, TimeSlice timeslice)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
 	 */
 	private PreparedStatement prepPersonReservations;
 	/**
-	 * getRerservations(Post post, TimeSlice timeslice)-metodin käyttämät
+	 * getRerservations(Post post, TimeSlice timeslice)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
 	 */
 	private PreparedStatement prepPostReservations;
 	/**
-	 * getPersons()-metodin käyttämät PreparedStatementit.
+	 * getPersons()-metodin kï¿½yttï¿½mï¿½t PreparedStatementit.
 	 */
 	private PreparedStatement prepPersonContracts;
 	/**
-	 * getRooms(Project project, TimeSlice timescale)-metodin käyttämät
+	 * getRooms(Project project, TimeSlice timescale)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
 	 */
 	private PreparedStatement prepProjectRooms;
 	/**
-	 * getRooms(String roomName, int maxPosts)-metodin käyttämät
+	 * getRooms(String roomName, int maxPosts)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
 	 */
 	private PreparedStatement prepNamedRoomsNormal, prepNamedRoomsWithMaxPosts;
 	/**
-	 * Varausten käsittelyssä tarvittavat PreparedStatementit
+	 * Varausten kï¿½sittelyssï¿½ tarvittavat PreparedStatementit
 	 */
 	private PreparedStatement prepNextReservationID;
 	private PreparedStatement prepAddReservation;
 	private PreparedStatement prepUpdateReservation;
 	private PreparedStatement prepDeleteReservation;
 	/**
-	 * getPeople()-metodissa käytetyt PreparedStatementit talletetaan hajautukseen,
-	 * jossa avaimena on kyselyn SQL-koodi Stringinä ja arvona PreparedStatement
+	 * getPeople()-metodissa kï¿½ytetyt PreparedStatementit talletetaan hajautukseen,
+	 * jossa avaimena on kyselyn SQL-koodi Stringinï¿½ ja arvona PreparedStatement
 	 */
 	private Map prepFilteredPeople = new Hashtable();
 	/**
-	 * Työpisteiden käsittelyssä tarvittavat PreparedStatementit
+	 * Tyï¿½pisteiden kï¿½sittelyssï¿½ tarvittavat PreparedStatementit
 	 */
 	private PreparedStatement prepNextPostID;
 	private PreparedStatement prepCreatePost;
 	private PreparedStatement prepDeletePost;
 	/**
-	 * Puhelinnumeroihin liittyvät PreparedStatementit
+	 * Puhelinnumeroihin liittyvï¿½t PreparedStatementit
 	 */
 	private PreparedStatement prepPostPhoneNumbers;
 	private PreparedStatement prepUpdatePhoneNumber;
 	
 	/**
 	 * Konstruktori. Luo yhteyden tietokantaan ja esilataa tiedot huoneista,
-	 * puhelinnumeroista sekä projekteista.
-	 * @param session Sessio, johon tämä tietokantaolio liittyy
+	 * puhelinnumeroista sekï¿½ projekteista.
+	 * @param session Sessio, johon tï¿½mï¿½ tietokantaolio liittyy
 	 * @param className Tietokanta-ajurin luokan nimi
 	 * @param connectionString Tietokantayhteyden nimi
-	 * @param username Käyttäjätunnus
+	 * @param username Kï¿½yttï¿½jï¿½tunnus
 	 * @param password Salasana
 	 */
 	public NeroDatabase(Session session, String className,
 			String connectionString, String username, String password)
 	{
 		this.session = session;
-		// kuunnellaan aikajakson ja huonedatan muutoksia, jotta voidaan varmistua, etteivät
-		// talletetut henkilöoliot sisällä vanhentunutta tietoa
+		// kuunnellaan aikajakson ja huonedatan muutoksia, jotta voidaan varmistua, etteivï¿½t
+		// talletetut henkilï¿½oliot sisï¿½llï¿½ vanhentunutta tietoa
 		session.registerObserver(NeroObserverTypes.TIMESCALE, this);
 		session.registerObserver(NeroObserverTypes.ROOMS, this);
 		
@@ -155,7 +155,7 @@ public class NeroDatabase implements NeroObserver {
 		} catch(SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		} catch(ClassNotFoundException e) {
-			System.err.println("Tietokanta-ajuria ei löydy.");
+			System.err.println("Tietokanta-ajuria ei lï¿½ydy.");
 		}
 		session.waitState(false);
 	}
@@ -164,11 +164,11 @@ public class NeroDatabase implements NeroObserver {
 	 * Luo tietokantayhteyden.
 	 * @param className Tietokanta-ajurin luokan nimi
 	 * @param connectionString Tietokantayhteyden nimi
-	 * @param username Käyttäjätunnus
+	 * @param username Kï¿½yttï¿½jï¿½tunnus
 	 * @param password Salasana
 	 * @return Luotu tietokantayhteys
-	 * @throws SQLException Jos yhteyden luonti epäonnistuu
-	 * @throws ClassNotFoundException Jos tietokanta-ajuria ei löydy
+	 * @throws SQLException Jos yhteyden luonti epï¿½onnistuu
+	 * @throws ClassNotFoundException Jos tietokanta-ajuria ei lï¿½ydy
 	 */
 	private Connection createConnection(String className,
 			String connectionString, String username, String password)
@@ -181,8 +181,8 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Lataa järjestelmän tuntemat projektit projects-hajautukseen myöhempää
-	 * käyttöä varten.
+	 * Lataa jï¿½rjestelmï¿½n tuntemat projektit projects-hajautukseen myï¿½hempï¿½ï¿½
+	 * kï¿½yttï¿½ï¿½ varten.
 	 * @throws SQLException
 	 */
 	private void loadProjects() throws SQLException {
@@ -192,7 +192,7 @@ public class NeroDatabase implements NeroObserver {
 		if(this.prepAllProjects == null) {
 			this.prepAllProjects = this.connection.prepareStatement(
 					"SELECT koodi, nimi, vastuuhenkilo, alkupvm,"
-					/* loppupvm voi olla null, käytetään 2099-12-31 */
+					/* loppupvm voi olla null, kï¿½ytetï¿½ï¿½n 2099-12-31 */
 					+ " NVL(loppupvm, TO_DATE('2099-12-31', 'YYYY-MM-DD')) AS loppupvm"
 					+ " FROM PROJEKTI"
 					+ " ORDER BY nimi, alkupvm"
@@ -215,8 +215,8 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Lataa järjestelmän tuntemat huoneet työpisteineen
-	 * rooms-hajautukseen myöhempää käyttöä varten.
+	 * Lataa jï¿½rjestelmï¿½n tuntemat huoneet tyï¿½pisteineen
+	 * rooms-hajautukseen myï¿½hempï¿½ï¿½ kï¿½yttï¿½ï¿½ varten.
 	 * @throws SQLException
 	 */
 	private void loadRooms() throws SQLException {
@@ -252,7 +252,7 @@ public class NeroDatabase implements NeroObserver {
 		}
 		
 		ResultSet rs = this.prepAllRooms.executeQuery();
-		/* NOTE rhuone-taulussa on sekä "numero" että "huone_nro" kentät */
+		/* NOTE rhuone-taulussa on sekï¿½ "numero" ettï¿½ "huone_nro" kentï¿½t */
 		int numbercount = 0;
 		while(rs.next()) {
 			Room room = new Room(this.session, rs.getString("id"),
@@ -266,7 +266,7 @@ public class NeroDatabase implements NeroObserver {
 			while(prs.next()) {
 				Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size()+1);
 				
-				/* haetaan puhelinnumerot (hidas, kolme sisäkkäistä prepared statementia
+				/* haetaan puhelinnumerot (hidas, kolme sisï¿½kkï¿½istï¿½ prepared statementia
 				 * mutta olkoot. */
 				Collection numbers = new Vector();
 				this.prepPostPhoneNumbers.setString(1, post.getPostID());
@@ -293,8 +293,8 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Lataa järjestelmän tuntemat puhelinnumerot.
-	 * Saa kutsua vasta loadRooms() jälkeen.
+	 * Lataa jï¿½rjestelmï¿½n tuntemat puhelinnumerot.
+	 * Saa kutsua vasta loadRooms() jï¿½lkeen.
 	 * @throws SQLException
 	 */
 	private void loadPhoneNumbers() throws SQLException {
@@ -334,18 +334,18 @@ public class NeroDatabase implements NeroObserver {
 	}
 	
 
-	/* --- Työpistevarauksiin liittyvät metodit alkaa --- */ 
+	/* --- Tyï¿½pistevarauksiin liittyvï¿½t metodit alkaa --- */ 
 	
 	/**
-	 * Palauttaa parametrina annetun henkilön työpistevaraukset, jotka
-	 * leikkaavat parametrina annettua aikaväliä. Varaukset palautetaan
-     * järjestettynä ensisijaisesti alkuajankohdan, toissijaisesti loppuajankohdan
+	 * Palauttaa parametrina annetun henkilï¿½n tyï¿½pistevaraukset, jotka
+	 * leikkaavat parametrina annettua aikavï¿½liï¿½. Varaukset palautetaan
+     * jï¿½rjestettynï¿½ ensisijaisesti alkuajankohdan, toissijaisesti loppuajankohdan
      * mukaan.
 	 * 
 	 * @param person
-	 *            Henkilö, jonka työpistevarauksia haetaan.
+	 *            Henkilï¿½, jonka tyï¿½pistevarauksia haetaan.
 	 * @param timeslice
-	 *            Aikaväli, jonka aikana varauksen tulee olla ainakin osittain
+	 *            Aikavï¿½li, jonka aikana varauksen tulee olla ainakin osittain
 	 *            voimassa.
 	 * @return varaukset <code>Reservation[]</code> oliona.
 	 */
@@ -390,13 +390,13 @@ public class NeroDatabase implements NeroObserver {
 	}
 
     /**
-	 * Palauttaa parametrina annetun työpisteen varaukset, jotka ovat ainakin
-	 * osittain päällekäin annetun aikaväli kanssa.
+	 * Palauttaa parametrina annetun tyï¿½pisteen varaukset, jotka ovat ainakin
+	 * osittain pï¿½ï¿½llekï¿½in annetun aikavï¿½li kanssa.
 	 * 
 	 * @param post
-	 *            Työpiste, jonka varauksia haetaan.
+	 *            Tyï¿½piste, jonka varauksia haetaan.
 	 * @param timeslice
-	 *            Aikaväli, jolla varausten tulee olla ainakin osittain
+	 *            Aikavï¿½li, jolla varausten tulee olla ainakin osittain
 	 *            voimassa.
 	 * @return Palautaa varaukset <code>Reservation[]</code> oliona.
 	 */
@@ -441,18 +441,18 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Lisää kantaan parametrinä annetun varauksen.
+	 * Lisï¿½ï¿½ kantaan parametrinï¿½ annetun varauksen.
 	 * 
 	 * @param reservation
-	 *            Uusi varaus, joka lisätään kantaan.
-	 * @return Onnistuiko lisäys.
+	 *            Uusi varaus, joka lisï¿½tï¿½ï¿½n kantaan.
+	 * @return Onnistuiko lisï¿½ys.
 	 */
 	public boolean createReservation(Reservation reservation) {
 		boolean success = false;
 		this.session.waitState(true);
 		try {
-			/* seuraava vapaa ID _täytyy_ hakea ensin
-			 * jälkipolville: "SELECT * FROM USER_SEQUENCES" */
+			/* seuraava vapaa ID _tï¿½ytyy_ hakea ensin
+			 * jï¿½lkipolville: "SELECT * FROM USER_SEQUENCES" */
 			if(this.prepNextReservationID == null) {
 				this.prepNextReservationID = this.connection.prepareStatement(
 						"SELECT seq_tpvara_id.NEXTVAL FROM dual"
@@ -469,7 +469,7 @@ public class NeroDatabase implements NeroObserver {
 						" INSERT INTO tyopistevaraus"
 						+ " (id, tpiste_id, henklo_htunnus, viikkotunnit,"
 						+ "  selite, alkupvm, loppupvm, lisayspvm)"
-						/* TRUNC lyhentää ajan pelkäksi päivämääräksi */
+						/* TRUNC lyhentï¿½ï¿½ ajan pelkï¿½ksi pï¿½ivï¿½mï¿½ï¿½rï¿½ksi */
 						+ " VALUES (?, ?, ?, ?, ?, TRUNC(?), TRUNC(?), SYSDATE)"
 				);
 			}
@@ -488,7 +488,7 @@ public class NeroDatabase implements NeroObserver {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		}
 		
-		// poistetaan henkilön tiedot jotka ovat nyt vanhentuneet
+		// poistetaan henkilï¿½n tiedot jotka ovat nyt vanhentuneet
 		people.remove(reservation.getReservingPerson().getPersonID());
 		this.session.waitState(false);
 		return success;
@@ -518,18 +518,18 @@ public class NeroDatabase implements NeroObserver {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		}
 
-		// poistetaan henkilön tiedot jotka ovat nyt vanhentuneet
+		// poistetaan henkilï¿½n tiedot jotka ovat nyt vanhentuneet
 		people.remove(reservation.getReservingPerson().getPersonID());
 		this.session.waitState(false);
 		return success;
 	}
 
 	/**
-	 * Päivittää parametrina annetun varauksen kantaan.
+	 * Pï¿½ivittï¿½ï¿½ parametrina annetun varauksen kantaan.
 	 * 
 	 * @param reservation
 	 *            muokattu varaus, joka halutaan tallettaa
-	 * @return Onnistuiko päivitys.
+	 * @return Onnistuiko pï¿½ivitys.
 	 */
 	public boolean updateReservation(Reservation reservation) {
 		boolean success = false;
@@ -560,25 +560,25 @@ public class NeroDatabase implements NeroObserver {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		}
 		
-		// poistetaan henkilön tiedot jotka ovat nyt vanhentuneet
+		// poistetaan henkilï¿½n tiedot jotka ovat nyt vanhentuneet
 		people.remove(reservation.getReservingPerson().getPersonID());
 		this.session.waitState(false);
 		return success;
 	}
 
-	/* --- Työpistevarauksiin liittyvät metodit loppuu --- */ 
+	/* --- Tyï¿½pistevarauksiin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Sopimuksiin liittyvät metodit alkaa --- */ 
+	/* --- Sopimuksiin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa parametrinä annetun henkilön työsopimusjaksot tietyltä
-	 * aikaväliltä.
+	 * Palauttaa parametrinï¿½ annetun henkilï¿½n tyï¿½sopimusjaksot tietyltï¿½
+	 * aikavï¿½liltï¿½.
 	 * 
 	 * @param person
-	 *            Henkilö, jonka sopimuksista ollaan kiinnostuneita.
+	 *            Henkilï¿½, jonka sopimuksista ollaan kiinnostuneita.
 	 * @param timeslice
-	 *            Aikaväli, jonka kannsa sopimukset ovat ainakin osittain
-	 *            päällekkäin.
+	 *            Aikavï¿½li, jonka kannsa sopimukset ovat ainakin osittain
+	 *            pï¿½ï¿½llekkï¿½in.
 	 * @return Sopimusjaksot <code>Contract[]</code> oliona.
 	 */
 	public Contract[] getContracts(Person person, TimeSlice timeslice) {
@@ -586,7 +586,7 @@ public class NeroDatabase implements NeroObserver {
 		this.session.waitState(true);
 		try {
 			if(this.prepPersonContracts == null) {
-				/* NOTE pelkästään sopimusnumero ei ole yksiselitteinen
+				/* NOTE pelkï¿½stï¿½ï¿½n sopimusnumero ei ole yksiselitteinen
 				 * Taulun primary key on kolmikko
 				 * {sopimusnumero, henkloh_tunnus, alkupvm_jakso}
 				 */ 
@@ -615,7 +615,7 @@ public class NeroDatabase implements NeroObserver {
 				Date end = new Date(rs.getDate("loppupvm_jakso").getTime());
 				TimeSlice ts = new TimeSlice(start, end);
                 int workingPercentage = rs.getInt("vv_hoitoprosentti");
-                // kannassa vv_hoitoprosentti-kentän NULL merkitsee normaalia työskentelyä
+                // kannassa vv_hoitoprosentti-kentï¿½n NULL merkitsee normaalia tyï¿½skentelyï¿½
                 if(rs.wasNull()) workingPercentage = 100;
 
 				Contract contract = new Contract(this.session,
@@ -632,30 +632,30 @@ public class NeroDatabase implements NeroObserver {
 		return (Contract[])contracts.toArray(new Contract[0]);
 	}
 
-	/* --- Sopimuksiin liittyvät metodit loppuu --- */ 
+	/* --- Sopimuksiin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Henkilöihin liittyvät metodit alkaa --- */ 
+	/* --- Henkilï¿½ihin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa henkilöt jotka täyttävät parametreinä annetut hakuehdot.
-	 * Hakuehtoja voi yhdistää, ja oliotyyppiset hakuehdot voivat olla null,
-	 * jolloin ne eivät rajaa tulosta.
+	 * Palauttaa henkilï¿½t jotka tï¿½yttï¿½vï¿½t parametreinï¿½ annetut hakuehdot.
+	 * Hakuehtoja voi yhdistï¿½ï¿½, ja oliotyyppiset hakuehdot voivat olla null,
+	 * jolloin ne eivï¿½t rajaa tulosta.
 	 * 
 	 * @param timescale
-	 *            Aikaväli, jota henkilöiden työsopimusjaksojen tule leikata
+	 *            Aikavï¿½li, jota henkilï¿½iden tyï¿½sopimusjaksojen tule leikata
 	 * @param personName
-	 *            Merkkijono, johon henkilön (suku?)nimeä verrataan.
+	 *            Merkkijono, johon henkilï¿½n (suku?)nimeï¿½ verrataan.
 	 * @param partTimeTeachersOnly
-	 *            jos tosi, näytetään vain sivutoimiset tuntiopettajat
+	 *            jos tosi, nï¿½ytetï¿½ï¿½n vain sivutoimiset tuntiopettajat
 	 * @param withoutPost
-	 *            jos tosi, näytetään vain ne, joilla on työsopimusjakso ilman
-	 *            samanaikaista työpistevarausta
+	 *            jos tosi, nï¿½ytetï¿½ï¿½n vain ne, joilla on tyï¿½sopimusjakso ilman
+	 *            samanaikaista tyï¿½pistevarausta
 	 * @param showEndingContracts
-	 *            jos tosi, näytetään vain ne, joiden viimeinen työsopimusjakso
-	 *            on aikavälillä
+	 *            jos tosi, nï¿½ytetï¿½ï¿½n vain ne, joiden viimeinen tyï¿½sopimusjakso
+	 *            on aikavï¿½lillï¿½
 	 * @param project
-	 *            projekti, jonka henkilöt näytetään
-	 * @return henkilöt <code>Person[]</code> oliona.
+	 *            projekti, jonka henkilï¿½t nï¿½ytetï¿½ï¿½n
+	 * @return henkilï¿½t <code>Person[]</code> oliona.
 	 */
 	public Person[] getPeople(TimeSlice timescale, String personName,
 			Project project, boolean showEndingContracts, boolean withoutPost,
@@ -665,9 +665,9 @@ public class NeroDatabase implements NeroObserver {
 		long startTime = System.currentTimeMillis();
 		this.session.waitState(true);
 		
-		session.setStatusMessage("Haetaan henkilöitä..."
+		session.setStatusMessage("Haetaan henkilï¿½itï¿½..."
 				/*
-				+ " (aikaväli: " + timescale
+				+ " (aikavï¿½li: " + timescale
 				+ ", nimi: " + personName
 				+ ", projekti: " + project
 				+ ", loppuvat: " + showEndingContracts
@@ -685,21 +685,21 @@ public class NeroDatabase implements NeroObserver {
 			+ " WHERE (UPPER(h.sukunimi) LIKE UPPER(?)"
 			+ " OR UPPER(h.etunimet) LIKE UPPER(?))";
 		
-		// täsmällisemmissä hauissa täytyy katsoa työsopimusjaksoa
+		// tï¿½smï¿½llisemmissï¿½ hauissa tï¿½ytyy katsoa tyï¿½sopimusjaksoa
 		if(showEndingContracts || withoutPost ||
 				project != null || partTimeTeachersOnly)
 			sqlQuery += " AND tsj.henklo_htunnus = h.htunnus"
 				+ " AND tsj.sopimustyyppi LIKE ?"
 				/* Oraclessa like-vertailu nulliin ei toimi,
-				 * joten käytetään NVL()-funktiota */
+				 * joten kï¿½ytetï¿½ï¿½n NVL()-funktiota */
 				+ " AND NVL(tsj.prjkti_koodi, 'oraclesucks') LIKE ?"
 				+ " AND ? <= tsj.loppupvm_jakso AND ? >= tsj.alkupvm_jakso";
-		else // tehdään ulkoliitos eli saadaan myös henkilöt ilman sopimusjaksoja
+		else // tehdï¿½ï¿½n ulkoliitos eli saadaan myï¿½s henkilï¿½t ilman sopimusjaksoja
 			sqlQuery += " AND tsj.henklo_htunnus(+) = h.htunnus";
         
-		// Jos pyydetty työpisteettömät mutta ei päättyviä sopimuksia,
-		// tarkistetaan helpoin tapaus tässä (yksi vähintään
-		// koko sopimusjakson peittävä varaus) ja loput tarkistetaan koodissa
+		// Jos pyydetty tyï¿½pisteettï¿½mï¿½t mutta ei pï¿½ï¿½ttyviï¿½ sopimuksia,
+		// tarkistetaan helpoin tapaus tï¿½ssï¿½ (yksi vï¿½hintï¿½ï¿½n
+		// koko sopimusjakson peittï¿½vï¿½ varaus) ja loput tarkistetaan koodissa
 		if(withoutPost && !showEndingContracts)
 			sqlQuery += " AND NOT EXISTS ("
 				+ " SELECT id"
@@ -712,8 +712,8 @@ public class NeroDatabase implements NeroObserver {
 		// Yhteinen GROUP BY -osa
 		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet";
 		
-		// jos näytetään vain päättyvät sopimukset, niin voidaan rajata jo nyt,
-		// mutta jos mukana ovat myös työpisteettömät, niin täytyy rajaus tehdä myöhemmin
+		// jos nï¿½ytetï¿½ï¿½n vain pï¿½ï¿½ttyvï¿½t sopimukset, niin voidaan rajata jo nyt,
+		// mutta jos mukana ovat myï¿½s tyï¿½pisteettï¿½mï¿½t, niin tï¿½ytyy rajaus tehdï¿½ myï¿½hemmin
 		if(showEndingContracts && !withoutPost)
 			sqlQuery += " HAVING MAX(loppupvm_jakso) BETWEEN ? AND ?";
 	    
@@ -723,7 +723,7 @@ public class NeroDatabase implements NeroObserver {
 		try {
 			// katsotaan olisiko sqlQuerya vastaava PreparedStatement jo valmiina
 			PreparedStatement prep = (PreparedStatement) prepFilteredPeople.get(sqlQuery);
-			// jos ei ole, tehdään ja pannaan talteen
+			// jos ei ole, tehdï¿½ï¿½n ja pannaan talteen
 			if(prep == null) {
 				prep = this.connection.prepareStatement(sqlQuery);
 				prepFilteredPeople.put(sqlQuery, prep);
@@ -731,14 +731,14 @@ public class NeroDatabase implements NeroObserver {
 			long prepTime = System.currentTimeMillis();
 			//System.err.println("Valmisteluun meni aikaa ms: " + (prepTime - startTime));
 			
-			// Asetetaan parametrit; käytetään laskuria apuna
-			// Laskuria kasvatetaan jokaisen käyttökerran yhteydessä ++ -operaattorilla
+			// Asetetaan parametrit; kï¿½ytetï¿½ï¿½n laskuria apuna
+			// Laskuria kasvatetaan jokaisen kï¿½yttï¿½kerran yhteydessï¿½ ++ -operaattorilla
 			int paramNo = 1;
-			// päivämääriä on turha muodostaa joka kerta, joten otetaan talteen
+			// pï¿½ivï¿½mï¿½ï¿½riï¿½ on turha muodostaa joka kerta, joten otetaan talteen
 			java.sql.Date start = timescale.getSQLStartDate();
 			java.sql.Date end = timescale.getSQLEndDate();
 			
-			/* henkilön nimi, jos annettu */
+			/* henkilï¿½n nimi, jos annettu */
 			if(personName == null) {
 				prep.setString(paramNo++, "%");
 				prep.setString(paramNo++, "%");
@@ -751,7 +751,7 @@ public class NeroDatabase implements NeroObserver {
 					project != null || partTimeTeachersOnly) {
 				
 				/* sopimustyyppi:
-				 * S sivutoiminen, P päätoiminen, L laitostehtävä, D dosentuuri */
+				 * S sivutoiminen, P pï¿½ï¿½toiminen, L laitostehtï¿½vï¿½, D dosentuuri */
 				if(partTimeTeachersOnly) {
 					prep.setString(paramNo++, "S");
 				} else {
@@ -763,18 +763,18 @@ public class NeroDatabase implements NeroObserver {
 				} else {
 					prep.setString(paramNo++, project.getProjectID());
 				}
-				/* aikaväli*/
+				/* aikavï¿½li*/
 				prep.setDate(paramNo++, start);
 				prep.setDate(paramNo++, end);
 			}
 
-			/* työpisteettömät */
+			/* tyï¿½pisteettï¿½mï¿½t */
 			if(withoutPost && !showEndingContracts) {
 				prep.setDate(paramNo++, start);
 				prep.setDate(paramNo++, end);
 			}
 
-			/* päättyvät sopimukset */
+			/* pï¿½ï¿½ttyvï¿½t sopimukset */
 			if(showEndingContracts && !withoutPost) {
 				prep.setDate(paramNo++, start);
 				prep.setDate(paramNo++, end);
@@ -782,14 +782,14 @@ public class NeroDatabase implements NeroObserver {
 
 			ResultSet rs = prep.executeQuery();
 			while(rs.next()) {
-				// Yritetään käyttää tallessa olevaa henkilöä
+				// Yritetï¿½ï¿½n kï¿½yttï¿½ï¿½ tallessa olevaa henkilï¿½ï¿½
 				Person person = (Person) people.get(rs.getString("htunnus"));
-				if(person == null) { // ei löytynyt, täytyy luoda uusi
-                    /* contracts ja reservations saavat olla null uudella henkilöllä */
+				if(person == null) { // ei lï¿½ytynyt, tï¿½ytyy luoda uusi
+                    /* contracts ja reservations saavat olla null uudella henkilï¿½llï¿½ */
                     Contract[] contracts = null;
                     Date lastContractEnd = rs.getDate("loppupvm");
                     if(lastContractEnd == null || lastContractEnd.before(start)) {
-                        // haa, tiedetään ettei sopimusjaksoja ole aikavälillä
+                        // haa, tiedetï¿½ï¿½n ettei sopimusjaksoja ole aikavï¿½lillï¿½
                         // kerrotaan se Personille ettei se turhaan kysele
                         contracts = new Contract[0];
                     }
@@ -809,39 +809,39 @@ public class NeroDatabase implements NeroObserver {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		} 
 		this.session.waitState(false);
-		session.setStatusMessage("Löytyi " + filteredPeople.size() + " henkilöä.");
+		session.setStatusMessage("Lï¿½ytyi " + filteredPeople.size() + " henkilï¿½ï¿½.");
 		return (Person[]) filteredPeople.toArray(new Person[0]);
 	}
 
 	/**
-	 * Tarkista kuuluuko henkilö hakuehtojen mukaiseen listaan. Tarkistus tehdään, koska
+	 * Tarkista kuuluuko henkilï¿½ hakuehtojen mukaiseen listaan. Tarkistus tehdï¿½ï¿½n, koska
 	 * vastaavan seikan tarkistaminen SQL-kannassa on hyvin vaikeaa ja hidasta.
-	 * @param person henkilö
-	 * @param timescale tarkasteltava aikaväli
-	 * @param contractEndDate henkilö
-	 * @param showEndingContracts halutaanko päättyvät työsopimukset
-	 * @param withoutPost halutaanko työpisteettömät
-	 * @return Sopivatko annetut hakuehdot henkilöön
+	 * @param person henkilï¿½
+	 * @param timescale tarkasteltava aikavï¿½li
+	 * @param contractEndDate henkilï¿½
+	 * @param showEndingContracts halutaanko pï¿½ï¿½ttyvï¿½t tyï¿½sopimukset
+	 * @param withoutPost halutaanko tyï¿½pisteettï¿½mï¿½t
+	 * @return Sopivatko annetut hakuehdot henkilï¿½ï¿½n
 	 */
 	private boolean filterPerson(Person person, TimeSlice timescale, java.sql.Date contractEndDate, boolean showEndingContracts, boolean withoutPost) {
-		// jos ei pyydetty työpisteettömiä, ei filtteröintiä tarvita 
+		// jos ei pyydetty tyï¿½pisteettï¿½miï¿½, ei filtterï¿½intiï¿½ tarvita 
 		if(!withoutPost)
 			return true;
-		// jos pyydettiin päättyviä sopimuksia, tarkistetaan ensin ne
+		// jos pyydettiin pï¿½ï¿½ttyviï¿½ sopimuksia, tarkistetaan ensin ne
 		if(showEndingContracts && timescale.contains(contractEndDate))
 			return true;
-		// muussa tapauksessa täytyy tutkia tarkemmin henkilön varaukset
+		// muussa tapauksessa tï¿½ytyy tutkia tarkemmin henkilï¿½n varaukset
 		return person.getStatus();
 	}
 
-	/* --- Henkilöihin liittyvät metodit loppuu --- */ 
+	/* --- Henkilï¿½ihin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Työpisteisiin liittyvät metodit alkaa --- */ 
+	/* --- Tyï¿½pisteisiin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Poistaa työpisteen.
+	 * Poistaa tyï¿½pisteen.
 	 * 
-	 * @param post Poistettava työpiste
+	 * @param post Poistettava tyï¿½piste
 	 * @return Onnistuiko poisto.
 	 */
 	public boolean deletePost(Post post) {
@@ -867,16 +867,16 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Lisää työpisteen huoneeseen
+	 * Lisï¿½ï¿½ tyï¿½pisteen huoneeseen
 	 * 
-	 * @param post Työpiste joka lisätään.
-	 * @return Onnistuiko lisäys
+	 * @param post Tyï¿½piste joka lisï¿½tï¿½ï¿½n.
+	 * @return Onnistuiko lisï¿½ys
 	 */
 	public boolean createPost(Post post) {
 		boolean success = false;
 		this.session.waitState(true);
 		try {
-			/* seuraava vapaa ID _täytyy_ hakea ensin */
+			/* seuraava vapaa ID _tï¿½ytyy_ hakea ensin */
 			if(this.prepNextPostID == null) {
 				this.prepNextPostID = this.connection.prepareStatement(
 						"SELECT seq_tpiste_id.NEXTVAL FROM dual"
@@ -908,12 +908,12 @@ public class NeroDatabase implements NeroObserver {
 		return success;
 	}
 
-	/* --- Työpisteisiin liittyvät metodit loppuu --- */ 
+	/* --- Tyï¿½pisteisiin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Työhuoneisiin liittyvät metodit alkaa --- */ 
+	/* --- Tyï¿½huoneisiin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa kaikki järjestelmän tuntemat huoneet.
+	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat huoneet.
 	 * 
 	 * @return huoneet Room[]-oliona
 	 */
@@ -922,12 +922,12 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Hakee tietyn projektin henkilöille varatut huoneet tietyllä aikavälillä.
-	 * Jos projekti on null, palautetaan tyhjä huonetaulukko.
+	 * Hakee tietyn projektin henkilï¿½ille varatut huoneet tietyllï¿½ aikavï¿½lillï¿½.
+	 * Jos projekti on null, palautetaan tyhjï¿½ huonetaulukko.
 	 * 
-	 * @param project Projekti, jonka työhuoneita haetaan. Jos null,
-	 * palautetaan tyhjä lista.
-	 * @param timescale Aikaväli, jota varauksien tulee leikata.
+	 * @param project Projekti, jonka tyï¿½huoneita haetaan. Jos null,
+	 * palautetaan tyhjï¿½ lista.
+	 * @param timescale Aikavï¿½li, jota varauksien tulee leikata.
 	 * @return taulukko projektin huoneista
 	 */
 	public Room[] getRooms(Project project, TimeSlice timescale) {
@@ -943,8 +943,8 @@ public class NeroDatabase implements NeroObserver {
 					+ " WHERE h.ID = tp.RHUONE_ID AND tp.ID = tpv.TPISTE_ID"
 					+ " AND tpv.HENKLO_HTUNNUS = tsj.HENKLO_HTUNNUS"
 					+ " AND tsj.PRJKTI_KOODI = ?"
-					/* sekä työpistevarauksen että työsopimusjakson päivämäärät
-					 * pitää olla oikein */
+					/* sekï¿½ tyï¿½pistevarauksen ettï¿½ tyï¿½sopimusjakson pï¿½ivï¿½mï¿½ï¿½rï¿½t
+					 * pitï¿½ï¿½ olla oikein */
 					+ " AND ? <= tsj.LOPPUPVM_JAKSO AND ? >= tsj.ALKUPVM_JAKSO"
 					+ " AND ? <= tpv.LOPPUPVM AND ? >= tpv.ALKUPVM" 
 				);
@@ -971,13 +971,13 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Palauttaa ne huoneet, jotka täyttävät annetut hakuehdot.
+	 * Palauttaa ne huoneet, jotka tï¿½yttï¿½vï¿½t annetut hakuehdot.
 	 * 
 	 * @param roomFilter
-	 *            String jota etsitään huoneen nimestä ja numerosta.           
+	 *            String jota etsitï¿½ï¿½n huoneen nimestï¿½ ja numerosta.           
 	 * @param maxPosts
-	 *            Huoneen työpisteiden maksimilukumäärä. Jos pienempi kuin 0, ei rajaa tulosta.
-	 * @return Hakuehdot täyttävät huoneet Room[]-oliona
+	 *            Huoneen tyï¿½pisteiden maksimilukumï¿½ï¿½rï¿½. Jos pienempi kuin 0, ei rajaa tulosta.
+	 * @return Hakuehdot tï¿½yttï¿½vï¿½t huoneet Room[]-oliona
 	 */
 	public Room[] getRooms(String roomFilter, int maxPosts) {
 		String queryNormal, queryWithMaxPosts;
@@ -1031,18 +1031,18 @@ public class NeroDatabase implements NeroObserver {
 	/**
 	 * Palauttaa huoneolion huone-id:n perusteella.
 	 * @param roomID huoneen id
-	 * @return huoneolio tai null, jos kyseistä huonetta ei löydy
+	 * @return huoneolio tai null, jos kyseistï¿½ huonetta ei lï¿½ydy
 	 */
 	public Room getRoom(String roomID) {
 		return (Room) rooms.get(roomID);
 	}
 
-	/* --- Huoneisiin liittyvät metodit loppuu --- */ 
+	/* --- Huoneisiin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Puhelinnumeroihin liittyvät metodit alkaa --- */ 
+	/* --- Puhelinnumeroihin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa kaikki järjestelmän tuntemat puhelinnumerot järjestettynä
+	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat puhelinnumerot jï¿½rjestettynï¿½
 	 * PhoneNumber[] -taulukkona.
 	 * @return PhoneNumber[] -taulukko.
 	 */
@@ -1058,11 +1058,11 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Päivittää tietokannassa olevan puhelinnumero-olion annetun mallin
+	 * Pï¿½ivittï¿½ï¿½ tietokannassa olevan puhelinnumero-olion annetun mallin
 	 * mukaiseksi.
 	 * 
-	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
-	 * @return Onnistuiko päivitys.
+	 * @param phone Uusi versio puhelinnumerosta (uusi tyï¿½piste id).
+	 * @return Onnistuiko pï¿½ivitys.
 	 */
 	public boolean updatePhoneNumber(PhoneNumber phone) {
 		boolean success = false;
@@ -1096,13 +1096,13 @@ public class NeroDatabase implements NeroObserver {
 	}
 	
 	/**
-	 * Palauttaa annetun työhuoneen puhelinnumerot.
-	 * @param post Työhuone <code>Post</code> oliona.
+	 * Palauttaa annetun tyï¿½huoneen puhelinnumerot.
+	 * @param post Tyï¿½huone <code>Post</code> oliona.
 	 * @return Puhelinnumerot <code>PhoneNumber[]</code> oliona.
 	 */
 	public PhoneNumber[] getPhoneNumbers(Post post) {
 		/*
-		// Menisi kutakuinkin näin jos käytettäisiin kantaa eikä omaa tietorakennetta
+		// Menisi kutakuinkin nï¿½in jos kï¿½ytettï¿½isiin kantaa eikï¿½ omaa tietorakennetta
 		Collection numbers = new Vector();
 
 		try {
@@ -1137,30 +1137,30 @@ public class NeroDatabase implements NeroObserver {
 		return numbers;
 	}
 	
-	/* --- Puhelinnumeroihin liittyvät metodit loppuu --- */ 
+	/* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Projekteihin liittyvät metodit alkaa --- */ 
+	/* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa kaikki järjestelmän tuntemat projektit järjestettynä
+	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat projektit jï¿½rjestettynï¿½
 	 * Project[] -taulukkona.
 	 * 
 	 * @return projektit <code>Project[]</code> oliona
 	 */
 	public Project[] getProjects() {
 		Project[] projs = (Project[]) projects.values().toArray(new Project[0]);
-		/* HashTable hukkaa järjestyksen, joten sortataan */
+		/* HashTable hukkaa jï¿½rjestyksen, joten sortataan */
 		Arrays.sort(projs);
 		return projs;
 	}
 
-	/* --- Projekteihin liittyvät metodit loppuu --- */ 
+	/* --- Projekteihin liittyvï¿½t metodit loppuu --- */ 
 
 	/* --- Muut metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa tietokantayhteyden. Käytä varovaisesti, tarkoitettu lähinnä
-	 * testejä varten.
+	 * Palauttaa tietokantayhteyden. Kï¿½ytï¿½ varovaisesti, tarkoitettu lï¿½hinnï¿½
+	 * testejï¿½ varten.
 	 * @return Yhteys <code>Connection</code> oliona.
 	 */
 	public Connection getConnection() {
@@ -1168,15 +1168,15 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * NeroObserver-kuuntelija. Käytännössä kuuntelee vain TIMESCALE ja ROOMS
-	 * tyyppejä, mutta ei tarkista mikä tyyppi vastaanotettiin.
+	 * NeroObserver-kuuntelija. Kï¿½ytï¿½nnï¿½ssï¿½ kuuntelee vain TIMESCALE ja ROOMS
+	 * tyyppejï¿½, mutta ei tarkista mikï¿½ tyyppi vastaanotettiin.
 	 * @param type Kuuntelijatyyppi, ei vaikutusta. 
 	 * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
 	 */
 	public void updateObserved(int type) {
-		// Aikajakso tai huonetiedot ovat muuttuneet. Tiedot henkilöistä eivät enää
+		// Aikajakso tai huonetiedot ovat muuttuneet. Tiedot henkilï¿½istï¿½ eivï¿½t enï¿½ï¿½
 		// ole ajan tasalla.
-		//System.err.println("DB: heitetään pois tiedot henkilöistä");
+		//System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
 		people.clear();
 	}
 	
@@ -1196,7 +1196,7 @@ public class NeroDatabase implements NeroObserver {
 		System.out.println(ndb.connection.getMetaData().getDriverVersion());
 		System.out.println(ndb.connection.getMetaData()
 				.getDatabaseProductVersion());
-		// testailusälä poistettu, riippuvaista kannan vanhasta sisällöstä.
+		// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
 		System.out.println("done.");
 	}
 
