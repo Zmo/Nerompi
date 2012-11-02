@@ -20,7 +20,7 @@ public class NeroApplication {
     /**
      * Oletuskonfiguraatiotiedoston nimi
      */
-    public static final String DEFAULT_INI = "nero.ini"; 
+    public static final String DEFAULT_INI = "/cs/fs/home/skolppo/NetBeansProjects/Nerompi/Nerompi2/nero.ini"; 
 
     /**
      * Konfiguraation parsiva olio
@@ -65,15 +65,16 @@ public class NeroApplication {
      * @param args komentoriviparametrit
      */
 	public static void main(String[] args) {
-             if (args.length > 0) {
-                readIni(args[0]);
-            }
-	    else {
-                readIni(DEFAULT_INI);
-            }
-            
-	        
+	    if (args.length > 0)
+		    readIni(args[0]);
+	    else
+	        readIni(DEFAULT_INI);
+	    
         Session session = new Session();
-             NeroUI ui = new NeroUI(session);
+        NeroDatabase db = new NeroDatabase(session,
+        		getProperty("db_class"), getProperty("db_connection"),
+        		getProperty("db_username"), getProperty("db_password"));
+        session.setDatabase(db);
+        NeroUI ui = new NeroUI(session);
 	}
 }

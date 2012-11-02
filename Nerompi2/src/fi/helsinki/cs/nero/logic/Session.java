@@ -1,5 +1,6 @@
-package fi.helsinki.cs.nero.logic;
 
+package fi.helsinki.cs.nero.logic;
+    
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,103 +19,99 @@ import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
 
 /**
- * Sessio, joka kuvaa k�ynniss� olevan ohjelman tilaa. Toimii linkkin�
- * k�ytt�liittym�n ja tietokannan v�lill�.
+ * Sessio, joka kuvaa k�ynniss� olevan ohjelman tilaa. Toimii linkkin� k�ytt�liittym�n
+ * ja tietokannan v�lill�. 
  */
 public class Session {
-
-    /**
-     * Pit�� kirjaa tarkkailijoista, jotka hoitavat p�ivitykset k�ytt�liittym�n
-     * n�kym��n.
-     */
+	
+	/**
+	 * Pit�� kirjaa tarkkailijoista, jotka hoitavat p�ivitykset k�ytt�liittym�n n�kym��n.
+	 */
     private NeroObserverManager obsman;
+    
     /**
      * Tietokantaolio, jonka kautta tietokantaoperaatiot kulkevat.
      */
-    // private NeroDatabase db;
+    private NeroDatabase db;
+
+    
     /* henkil�ihin (getFilteredPeople) vaikuttavat hakuehdot */
+    
     /**
      * Aikajakso, hakuehto. Ei voi olla null.
      */
     private TimeSlice timescale;
+    
     /**
-     * Henkil�n nimi, hakuehto. Voi olla tyhj� merkkijono, mutta ei voi olla
-     * null.
+     * Henkil�n nimi, hakuehto. Voi olla tyhj� merkkijono, mutta ei voi olla null.
      */
-    private String personName;
-    /**
-     * Projekti, hakuehto. Voi olla null, jolloin projektia ei ole.
-     */
-    private Project project;
-    /**
-     * N�ytet��nk� vain p��ttyv�t sopimukset?
-     */
-    private boolean showEndingContracts;
-    /**
-     * N�ytet��nk� vain ne, joilta puuttuu ty�piste?
-     */
-    private boolean withoutPost;
-    /**
-     * N�ytet��nk� vain osa-aikaiset ?
-     */
-    private boolean partTimeTeachersOnly;
-    /* huoneisiin (getFilteredRooms) vaikuttavat hakuehdot */
-    /**
-     * Tarkasteltavan aikajakson osa, aikajanakomponentista muutettavissa. Ei
-     * voi olla null.
-     */
-    private TimeSlice timescaleSlice;
-    private TimeSlice temporaryTimescaleSlice;
-    /**
-     * Huoneen nimi, hakuehto. Voi olla tyhj� merkkijono. Ei voi olla null.
-     */
-    private String roomName;
-    /**
-     * Montako ty�pistett� maksimissaan ty�huoneessa, hakuehto. Jos arvo on -1,
-     * ei ty�pisteiden m��r� rajaa hakua.
-     */
-    private int maxPosts;
-    /**
-     * Aktiivinen huone, eli huone joka on valittu tarkasteltavaksi. Voi olla
-     * null, jolloin aktiivista huonetta ei ole.
-     */
-    private Room activeRoom;
-    /**
-     * Vapaiden ty�pisteiden minimim��r�, jonka perusteella voidaan esitt��
-     * huone vapaana. Yleens� 1, mutta voi olla enemm�n.
-     */
-    private int freePosts;
-    /**
-     * Viimeisin statusviesti.
-     */
-    private String statusMessage;
-    private int cursortype;
-    private boolean cursorlocked;
-    // testausta varten
-    // person
-    Person person1;
-    Person person2;
-    Person person3;
-    // contract
-    Contract contract1, contract2, contract3;
-    // timeslice
-    // room
-    Room room1, room2, room3;
-    // Post
-    Post post1, post2, post3, post4;
-    // reservation
-    Reservation[] reservations;
-    Reservation reservation1, reservation2;
-    // project      
-    Project project1;
-    // phone numbers
-    PhoneNumber phoneNumber1, phoneNumber2, phoneNumber3, phoneNumber4;
+	private String personName;
+	
+	/**
+	 * Projekti, hakuehto. Voi olla null, jolloin projektia ei ole.
+	 */
+	private Project project;
+	
+	/**
+	 * N�ytet��nk� vain p��ttyv�t sopimukset? 
+	 */
+	private boolean showEndingContracts;
+	
+	/**
+	 * N�ytet��nk� vain ne, joilta puuttuu ty�piste? 
+	 */
+	private boolean withoutPost;
+	
+	/**
+	 * N�ytet��nk� vain osa-aikaiset ?
+	 */
+	private boolean partTimeTeachersOnly;
 
-    /**
-     * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman
-     * k�ynnistyess�.
-     */
-    public Session() {
+	
+	/* huoneisiin (getFilteredRooms) vaikuttavat hakuehdot */
+	/**
+	 * Tarkasteltavan aikajakson osa, aikajanakomponentista muutettavissa.
+     * Ei voi olla null.
+	 */
+	private TimeSlice timescaleSlice;
+	
+	private TimeSlice temporaryTimescaleSlice;
+	
+	/**
+	 * Huoneen nimi, hakuehto. Voi olla tyhj� merkkijono. Ei voi olla null.
+	 */
+	private String roomName;
+	
+	/**
+	 * Montako ty�pistett� maksimissaan ty�huoneessa, hakuehto.
+     * Jos arvo on -1, ei ty�pisteiden m��r� rajaa hakua.
+	 */
+	private int maxPosts;
+
+	/**
+	 * Aktiivinen huone, eli huone joka on valittu tarkasteltavaksi.
+     * Voi olla null, jolloin aktiivista huonetta ei ole.
+	 */
+	private Room activeRoom;
+
+	/**
+	 * Vapaiden ty�pisteiden minimim��r�, jonka perusteella voidaan esitt�� huone
+	 * vapaana. Yleens� 1, mutta voi olla enemm�n.
+	 */
+	private int freePosts;
+
+	/**
+	 * Viimeisin statusviesti.
+	 */
+	private String statusMessage;
+	
+	private int cursortype;
+	private boolean cursorlocked;
+	
+	/**
+	 * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman k�ynnistyess�.
+	 */
+	public Session() {
         obsman = new NeroObserverManager();
         this.resetTimescale();		// vakioaikav�li
         personName = "";            // ei henkil�n nime�
@@ -125,63 +122,22 @@ public class Session {
         roomName = "";              // ei huoneen nime�
         maxPosts = -1;              // ei ty�pisteiden maksimim��r��
         activeRoom = null;          // ei aktiivista huonetta
-        freePosts = 1;              // haetaan yht� vapaata ty�pistett�
-        statusMessage = "";
-        cursortype = java.awt.Cursor.DEFAULT_CURSOR;
-        cursorlocked = false;
-
-        // stubia varten dummy-muuttujat
-
-
-        // person
-        person1 = new Person(this, "12", "name1", null, null);
-        person2 = new Person(this, "13", "name2", null, null);
-        person3 = new Person(this, "14", "name3", null, null);
-
-        // contract
-        contract1 = new Contract(this, "ID 1", project, person1, "title 1", 100, new TimeSlice(new Date(2011, 5, 15), new Date(2015, 5, 15)));
-        contract2 = new Contract(this, "ID 2", project, person2, "title 2", 100, new TimeSlice(new Date(2012, 5, 15), new Date(2013, 9, 15)));
-        contract3 = new Contract(this, "ID 3", project, person3, "title 3", 40, new TimeSlice(new Date(2012, 6, 15), new Date(2013, 5, 15)));
-
-        // timeslice
-
-        // room
-        room1 = new Room(this, "ID 1", "building name", "3", "15", "room name 1", 10, "pieni koppi");
-        room2 = new Room(this, "ID 2", "building name", "3", "16", "room name 2", 15, "description");
-        room3 = new Room(this, "ID 3", "building name", "3", "17", "room name 3", 50, "iso huone");
-
-        // Post
-        post1 = new Post(this, "post 1", room1, 1);
-        post2 = new Post(this, "post 2", room2, 2);
-        post3 = new Post(this, "post 3", room3, 3);
-        post4 = new Post(this, "post 4", room3, 4);
-
-        // reservation
-        reservations = new Reservation[2];
-        reservation1 = new Reservation(this, "ID1", post1, person1, new TimeSlice(new Date(2012, 6, 18), new Date(2012, 6, 25)), 23, "testi");
-        reservation2 = new Reservation(this, "ID2", post2, person3, new TimeSlice(new Date(2012, 6, 18), new Date(2012, 6, 20)), 23, "testi 2");
-
-        // project      
-        project1 = new Project(this, "project ID", "projekti 1", "Manageri", new TimeSlice(new Date(2012, 5, 15), new Date(2013, 9, 15)));
-
-        //phonenumbers
-        phoneNumber1 = new PhoneNumber(this, "pnid", post1, "2346789");
-        phoneNumber2 = new PhoneNumber(this, "pnid2", post2, "23429");
-        phoneNumber3 = new PhoneNumber(this, "pnid3", post3, "123856");
-        phoneNumber4 = new PhoneNumber(this, "pnid4", post4, "0237538");
-
-    }
-
-    /**
-     * Asettaa tarkasteltavan aikav�lin takaisin vakioksi, eli t�st� p�iv�st�
-     * kolme kuukautta eteenp�in
-     */
-    public void resetTimescale() {
+		freePosts = 1;              // haetaan yht� vapaata ty�pistett�
+		statusMessage = new String("");
+		cursortype = java.awt.Cursor.DEFAULT_CURSOR;
+		cursorlocked = false;
+	}
+	
+	/**
+	 * Asettaa tarkasteltavan aikav�lin takaisin vakioksi,
+	 * eli t�st� p�iv�st� kolme kuukautta eteenp�in
+	 */
+	public void resetTimescale() {
         Calendar nowCal = Calendar.getInstance();
         Calendar cal = new GregorianCalendar(nowCal.get(Calendar.YEAR),
                 nowCal.get(Calendar.MONTH),
                 nowCal.get(Calendar.DAY_OF_MONTH));
-        Calendar cal2 = (Calendar) cal.clone();
+        Calendar cal2 = (Calendar)cal.clone();
         // t�st� p�iv�st� kolme kuukautta eteenp�in
         cal2.add(Calendar.MONTH, 3);
         this.timescale = new TimeSlice(cal.getTime(), cal2.getTime());
@@ -189,79 +145,75 @@ public class Session {
         this.timescaleSlice = this.timescale;
         obsman.notifyObservers(NeroObserverTypes.TIMESCALE);
         obsman.notifyObservers(NeroObserverTypes.TIMESCALESLICE);
-    }
-
+	}
+	
     /**
      * Asettaa k�ytett�v�n tietokantayhteyden. Metodia voi kutsua vain kerran,
      * sen j�lkeen se heitt�� poikkeuksen.
-     *
      * @param db k�ytett�v� tietokantayhteys
      * @throws IllegalArgumentException jos annettu tk-yhteys on null
      * @throws IllegalStateException jos metodia kutsutaan uudelleen
      */
-//    public void setDatabase(NeroDatabase db) {
-//        if(db == null) {
-//            throw new IllegalArgumentException();
-//        }
-//        if(this.db != null) {
-//            throw new IllegalStateException();
-//        }
-//        this.db = db;
-//    }
+    public void setDatabase(NeroDatabase db) {
+        if(db == null) {
+            throw new IllegalArgumentException();
+        }
+        if(this.db != null) {
+            throw new IllegalStateException();
+        }
+        this.db = db;
+    }
+    
     /**
      * Palauttaa k�ytett�v�n tietokantayhteyden.
-     *
      * @return k�ytett�v� tietokantayhteys
      */
-//    public NeroDatabase getDatabase() {
-//    	return db;
-//    }
-//    
-    /**
+    public NeroDatabase getDatabase() {
+    	return db;
+    }
+    
+	/**
      * Asettaa tarkasteltavan aikav�lin.
-     *
      * @param timescale uusi tarkasteltava aikav�li
      * @throws IllegalArgumentException jos annettu aikav�li on null
      */
     public void setFilterTimescale(TimeSlice timescale) {
-        if (timescale == null) {
+        if(timescale == null) {
             throw new IllegalArgumentException();
         }
-        this.timescale = timescale;
-
+    	this.timescale = timescale;
+        
         // jos osa-aikav�li ei mahdu uuden aikav�lin sis�lle, typist� sit�
         boolean sliceChanged = false;
-        if (timescaleSlice.getStartDate().compareTo(timescale.getStartDate()) < 0) {
+        if(timescaleSlice.getStartDate().compareTo(timescale.getStartDate()) < 0) {
             timescaleSlice.setStartDate(timescale.getStartDate());
             sliceChanged = true;
         }
-        if (timescaleSlice.getEndDate().compareTo(timescale.getEndDate()) > 0) {
+        if(timescaleSlice.getEndDate().compareTo(timescale.getEndDate()) > 0) {
             timescaleSlice.setEndDate(timescale.getEndDate());
             sliceChanged = true;
         }
 
-        // Tyhjenn� ty�pisteiden tallettama tieto niihin liittyvist� varauksista, koska
-        // aikav�li on muuttunut ja sen vuoksi varaukset pit�� hakea uudelleen
+    	// Tyhjenn� ty�pisteiden tallettama tieto niihin liittyvist� varauksista, koska
+    	// aikav�li on muuttunut ja sen vuoksi varaukset pit�� hakea uudelleen
         // NOTE junit-testien aikana db saattaa olla null
-//        if (db != null) {
-//            Room[] rooms = db.getRooms();
-//            for (int i = 0; i < rooms.length; ++i) {
-//                Post[] posts = rooms[i].getPosts();
-//                for (int j = 0; j < posts.length; ++j) {
-//                    posts[j].clearReservations();
-//                }
-//            }
-//        }
-
-        obsman.notifyObservers(NeroObserverTypes.TIMESCALE);
-        if (sliceChanged) {
+        if(db != null) {
+        	Room[] rooms = db.getRooms();
+        	for(int i=0; i<rooms.length; ++i) {
+        		Post[] posts = rooms[i].getPosts();
+        		for(int j=0; j<posts.length; ++j)
+        			posts[j].clearReservations();
+        	}
+        }
+    	
+    	obsman.notifyObservers(NeroObserverTypes.TIMESCALE);
+        if(sliceChanged) {
             obsman.notifyObservers(NeroObserverTypes.TIMESCALESLICE);
         }
     }
 
     /**
      * Palauttaa tarkasteltavan aikav�lin.
-     *
      * @return Aikav�li TimeSlice-oliona.
      */
     public TimeSlice getFilterTimescale() {
@@ -269,21 +221,18 @@ public class Session {
     }
 
     /**
-     * Asettaa hakuehtoja rajaavan projektin. Parametri voi olla null, jolloin
-     * projektia ei ole.
-     *
+     * Asettaa hakuehtoja rajaavan projektin. Parametri voi olla null, jolloin projektia ei ole.
      * @param project Projekti
      */
     public void setFilterProject(Project project) {
-        this.project = project;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_PROJECT);
-        // tarvitaanko? kyll� tarvitaan, PersonScrollPane ei kuuntele projektia
-        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    	this.project = project;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_PROJECT);
+    	 // tarvitaanko? kyll� tarvitaan, PersonScrollPane ei kuuntele projektia
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
-
+    
     /**
      * Palauttaa hakuehtoja rajaavan projektin.
-     *
      * @return hakuehtoja rajaava projekti tai null, jos projektia ei ole
      */
     public Project getFilterProject() {
@@ -292,282 +241,247 @@ public class Session {
 
     /**
      * Asettaa hakuehtoja rajaavan henkil�n nimen.
-     *
      * @param personName Henkil�n nimi.
      * @throws IllegalArgumentException jos annettu nimi on null
      */
     public void setFilterPersonName(String personName) {
-        if (personName == null) {
+        if(personName == null) {
             throw new IllegalArgumentException();
         }
-        this.personName = personName;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    	this.personName = personName;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
-
+    
     /**
-     * Palauttaa hakuehtoja rajaavan henkil�n nimi
-     *
+     * Palauttaa hakuehtoja rajaavan henkil�n nimi 
      * @return henkil�n nimi
      */
     public String getFilterPersonName() {
-        return personName;
+    	return personName;
     }
-
+    
     /**
      * Asettaa hakuehtoja rajaavan huoneen.
-     *
-     * @param roomName Huoneen nimi Exactumin huonekoodien muodossa, esim A212,
-     * tai huoneen lempinimi, esim "sininen huone".
+     * @param roomName Huoneen nimi Exactumin huonekoodien muodossa, esim A212, tai huoneen lempinimi, esim "sininen huone".
      * @throws IllegalArgumentException jos annettu nimi on null
      */
     public void setFilterRoomName(String roomName) {
-        if (roomName == null) {
+        if(roomName == null) {
             throw new IllegalArgumentException();
         }
-        this.roomName = roomName;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_ROOMS);
+    	this.roomName = roomName;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_ROOMS);
     }
-
+    
     /**
      * Palauttaa hakuehtoja rajaavan huoneen
-     *
      * @return huoneen nimi, esim. "A212" tai "sininen huone"
      */
     public String getFilterRoomName() {
-        return roomName;
+    	return roomName;
     }
 
     /**
-     * Asettaa hakuehtoja rajaavan arvon sille, n�ytet��nk� vain ne henkil�t
-     * joiden ty�sopimukset ovat loppumassa tarkasteltavalla aikav�lill�.
-     *
+     * Asettaa hakuehtoja rajaavan arvon sille, n�ytet��nk� vain ne
+     * henkil�t joiden ty�sopimukset ovat loppumassa tarkasteltavalla aikav�lill�.
      * @param showEndingContracts Rajataanko haku.
      */
     public void setFilterEndingContracts(boolean showEndingContracts) {
-        this.showEndingContracts = showEndingContracts;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    	this.showEndingContracts = showEndingContracts;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
-
+    
     /**
-     * Palauttaa tiedon siit�, n�ytet��nk� vain ne henkil�t, joiden
-     * ty�sopimukset ovat loppumassa tarkasteltavalla aikav�lill�.
-     *
+     * Palauttaa tiedon siit�, n�ytet��nk� vain ne henkil�t, joiden ty�sopimukset ovat
+     * loppumassa tarkasteltavalla aikav�lill�.
      * @return rajataanko haku
      */
     public boolean getFilterEndingContracts() {
-        return showEndingContracts;
+    	return showEndingContracts;
     }
 
     /**
-     * Asettaa hakuehtoja rajaavan huoneen ty�pisteiden maksimim��r�n. Jos
-     * parametri on -1, ei ty�pisteiden m��r�� rajata.
-     *
+     * Asettaa hakuehtoja rajaavan huoneen ty�pisteiden maksimim��r�n. Jos parametri
+     * on -1, ei ty�pisteiden m��r�� rajata.
      * @param maxPosts Ty�pisteiden lukum��r� tai -1
-     * @throws IllegalArgumentException jos annetaan virheellinen lukum��r�
-     * (alle -1)
+     * @throws IllegalArgumentException jos annetaan virheellinen lukum��r� (alle -1)
      */
     public void setFilterMaxPosts(int maxPosts) {
-        if (maxPosts < -1) {
+        if(maxPosts < -1) {
             throw new IllegalArgumentException();
         }
-        this.maxPosts = maxPosts;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_ROOMS);
+    	this.maxPosts = maxPosts;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_ROOMS);
     }
 
     /**
      * Palauttaa hakuehtoja rajaavan huoneen ty�pisteiden maksimim��r�n.
-     *
      * @return ty�pisteiden lukum��r� tai -1, jos m��r�� ei ole rajattu
      */
     public int getFilterMaxPosts() {
-        return maxPosts;
+    	return maxPosts;
     }
-
+    
     /**
-     * Asettaa hakuehtoja rajaavan m�r�een, jonka mukaan n�ytet��n vain ne
-     * joilla ei ole ty�pistevarausta aikav�lin ty�sopimusten osalta.
-     *
+     * Asettaa hakuehtoja rajaavan m�r�een, jonka mukaan n�ytet��n
+     * vain ne joilla ei ole ty�pistevarausta aikav�lin ty�sopimusten
+     * osalta.
      * @param withoutPost haetaanko vain ne henkil�t, joilla ei ole tp-varausta
      */
     public void setFilterWithoutPost(boolean withoutPost) {
-        this.withoutPost = withoutPost;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    	this.withoutPost = withoutPost;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
+    
 
     public boolean getFilterWithoutPost() {
-        return this.withoutPost;
+    	return this.withoutPost;
     }
-
+    
+    
+    
+    
     /**
-     * Asettaa ehdon, jonka mukaan vapaina esitet��n vain ne huoneet, joissa on
-     * v�hint��n x vapaata ty�pistett�.
-     *
+     * Asettaa ehdon, jonka mukaan vapaina esitet��n vain ne huoneet, joissa on v�hint��n
+     * x vapaata ty�pistett�.
      * @param freePosts
      * @throws IllegalArgumentException jos huonem��r� ei ole positiivinen luku
      */
     public void setFilterFreePosts(int freePosts) {
-        if (freePosts <= 0) {
+        if(freePosts <= 0) {
             throw new IllegalArgumentException();
         }
-        this.freePosts = freePosts;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_ROOMS);
-    }
+    	this.freePosts = freePosts;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_ROOMS);
+	}
+
+	/**
+	 * Palauttaa huoneessa olevien vapaiden ty�pisteiden minimim��r�n, joka on edellytyksen�
+	 * sille, ett� huone esitet��n vapaana.
+	 * @return vapaiden ty�pisteiden minimim��e�
+	 */
+	public int getFilterFreePosts() {
+		return freePosts;
+	}
 
     /**
-     * Palauttaa huoneessa olevien vapaiden ty�pisteiden minimim��r�n, joka on
-     * edellytyksen� sille, ett� huone esitet��n vapaana.
-     *
-     * @return vapaiden ty�pisteiden minimim��e�
-     */
-    public int getFilterFreePosts() {
-        return freePosts;
-    }
-
-    /**
-     * Asettaa rajauksen, jonka mukaan n�ytet��n ainoastaan sivutoimiset
-     * tuntiopettajat.
-     *
+     * Asettaa rajauksen, jonka mukaan n�ytet��n ainoastaan sivutoimiset tuntiopettajat.
      * @param partTimeTeachersOnly
      */
     public void setFilterPartTimeTeachers(boolean partTimeTeachersOnly) {
-        this.partTimeTeachersOnly = partTimeTeachersOnly;
-        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    	this.partTimeTeachersOnly = partTimeTeachersOnly;
+    	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
 
     public boolean getFilterPartTimeTeachers() {
-        return this.partTimeTeachersOnly;
+    	return this.partTimeTeachersOnly;
     }
 
+    
+    
     /**
      * Palauttaa listan jossa on kaikki j�rjestelm�n tuntemat projektit.
-     *
      * @return J�rjestelm�n tuntemat projektit <code>Project[]</code>-oliona.
      */
     public Project[] getProjects() {
-        Project[] projects = new Project[1];
-        projects[0] = project1;
-    	return projects;
+    	return db.getProjects();
     }
+
     /**
-     * Asettaa tarkasteltavalta aikav�lilt� tarkasteltavan osa-aikav�lin. Metodi
-     * tarkistaa, ett� osa-aikav�li on tarkisteltavan aikav�lin sis�ll�.
-     *
+     * Asettaa tarkasteltavalta aikav�lilt� tarkasteltavan osa-aikav�lin.
+     * Metodi tarkistaa, ett� osa-aikav�li on tarkisteltavan aikav�lin sis�ll�.
      * @param timescaleSlice Tarkasteltava osa-aikav�li.
-     * @param stillMoving Ei l�het� timescaleslicen muuttumisviesti� vaan
-     * toisenlaisen tiedottamaan, ett� ollaan liikuttelemassa arvoa
-     * @throws IllegalArgumentException jos osa-aikav�li ei ole aikav�lin
-     * sis�ll� tai on null
+     * @param stillMoving Ei l�het� timescaleslicen muuttumisviesti� vaan toisenlaisen tiedottamaan, ett� ollaan liikuttelemassa arvoa
+     * @throws IllegalArgumentException jos osa-aikav�li ei ole aikav�lin sis�ll� tai on null
      */
     public void setTimeScaleSlice(TimeSlice timescaleSlice, boolean stillMoving) {
-        if (timescaleSlice == null) {
+    	if(timescaleSlice == null) {
             throw new IllegalArgumentException("osa-aikav�li ei saa olla null");
         }
-        if (timescaleSlice.getStartDate().compareTo(
-                this.timescale.getStartDate()) < 0) {
+    	if(timescaleSlice.getStartDate().compareTo(
+    			this.timescale.getStartDate()) < 0) {
             throw new IllegalArgumentException("osa-aikav�li ei saa alkaa ennen aikav�li�");
         }
-        if (timescaleSlice.getEndDate().compareTo(
-                this.timescale.getEndDate()) > 0) {
+    	if(timescaleSlice.getEndDate().compareTo(
+    			this.timescale.getEndDate()) > 0) {
             throw new IllegalArgumentException("osa-aikav�li ei saa p��tty� my�hemmin kuin aikav�li");
         }
-        this.timescaleSlice = timescaleSlice;
-        if (stillMoving) {
+    	this.timescaleSlice = timescaleSlice;
+    	if (stillMoving) {
             obsman.notifyObservers(NeroObserverTypes.TIMESCALESLICEUPDATING);
-        } else {
+        }
+    	else {
             obsman.notifyObservers(NeroObserverTypes.TIMESCALESLICE);
         }
     }
-
+    
     /**
      * Palauttaa tarkasteltavan osa-aikav�lin.
-     *
      * @return tarkasteltava osa-aikav�li TimeSlice-oliona
      */
     public TimeSlice getTimeScaleSlice() {
-        return timescaleSlice;
+    	return timescaleSlice;
     }
-
+    
     /**
      * Palauttaa kaikki j�rjestelm�n tuntemat huoneet.
-     *
      * @return taulukko huoneista
      */
+
     public Room[] getRooms() {
-        //return db.getRooms(roomName, maxPosts);
-        Room[] rooms = new Room[3];
-        rooms[0] = room1;
-        rooms[1] = room2;
-        rooms[2] = room3;
-        return rooms;
+        return db.getRooms();
     }
 
     /**
      * Palauttaa hakuehtojen mukaiset huoneet.
-     *
      * @return taulukko hakuehtojen mukaisista huoneista
      */
+
     public Room[] getFilteredRooms() {
-        //return db.getRooms(roomName, maxPosts);
-        Room[] rooms = new Room[3];
-        rooms[0] = room1;
-        rooms[1] = room2;
-        return rooms;
+    	return db.getRooms(roomName, maxPosts);
     }
 
     /**
-     * Palauttaa ne huoneet, joihin on sijoitettu hakuehtojen mukaisen projektin
-     * ty�ntekij�it� tarkasteltavalla osa-aikav�lill�.
-     *
+     * Palauttaa ne huoneet, joihin on sijoitettu hakuehtojen mukaisen
+     * projektin ty�ntekij�it� tarkasteltavalla osa-aikav�lill�.
      * @return taulukko projektin huoneista
      */
+
     public Room[] getProjectRooms() {
-        //return db.getRooms(roomName, maxPosts);
-        Room[] rooms = new Room[2];
-        rooms[0] = room1;
-        return rooms;
+        return db.getRooms(project, timescale);
     }
 
     /**
      * Palauttaa listan sen hetkisten hakuehtojen mukaisista henkil�ist�.
-     *
      * @return taulukko henkil�olioista
      */
     public Person[] getFilteredPeople() {
-        Person[] persons = new Person[2];
-        persons[0] = person1;
-        persons[1] = person2;
-        return persons;
-        //  return db.getPeople(timescale, personName, project, showEndingContracts, withoutPost, partTimeTeachersOnly);
+        return db.getPeople(timescale, personName, project, showEndingContracts, withoutPost, partTimeTeachersOnly);
     }
-
+    
     /**
      * Palauttaa ty�pisteen puhelinnumerot
-     *
      * @param post Ty�piste jonka numerot haetaan
      * @return Puhelinnumerot <code>PhoneNumber[]</code> Oliona.
      * @throws IllegalArgumentException jos ty�piste on null
      */
-    public PhoneNumber[] getPhoneNumbers(Post post) {
-        PhoneNumber[] pnumbers = new PhoneNumber[1];
-        pnumbers[0] = phoneNumber1;
-        return pnumbers;
+    public PhoneNumber[] getPhoneNumbers(Post post){
+        if(post == null) {
+            throw new IllegalArgumentException();
+        }
+    	return db.getPhoneNumbers(post);
     }
-
+    
     /**
-     * Palauttaa "kaikki" puhelinnumerot ks. db:n vastaava metodi
+     * Palauttaa "kaikki" puhelinnumerot
+     * ks. db:n vastaava metodi
      */
     public PhoneNumber[] getAllPhoneNumbers() {
-        PhoneNumber[] pnumbers = new PhoneNumber[4];
-        pnumbers[0] = phoneNumber1;
-        pnumbers[1] = phoneNumber2;
-        pnumbers[2] = phoneNumber3;
-        pnumbers[3] = phoneNumber4;
-        return pnumbers;
+    	return db.getAllPhoneNumbers();
     }
 
     /**
      * Palauttaa aktiivisen huoneen.
-     *
      * @return aktiivinen huone
      */
     public Room getActiveRoom() {
@@ -576,79 +490,77 @@ public class Session {
 
     /**
      * Asettaa valitun huoneen.
-     *
-     * @param activeRoom uusi valittu huone, tai null, jos halutaan ettei
-     * valittua huonetta ole
+     * @param activeRoom uusi valittu huone, tai null, jos halutaan ettei valittua huonetta ole
      */
+
     public void setActiveRoom(Room activeRoom) {
-        this.activeRoom = activeRoom;
-        obsman.notifyObservers(NeroObserverTypes.ACTIVE_ROOM);
+    	this.activeRoom = activeRoom;
+    	obsman.notifyObservers(NeroObserverTypes.ACTIVE_ROOM);
     }
 
     /**
      * P�ivitt�� varausjakson esimerkin mukaiseksi.
-     *
      * @param reservation varausjakso, joka p�ivitet��n
      * @throws IllegalArgumentException jos varaus on null
      */
+
     public void updateReservation(Reservation reservation) {
-        if (reservation == null) {
+        if(reservation == null) {
             throw new IllegalArgumentException("varaus ei voi olla null");
         }
-     //   boolean success = db.updateReservation(reservation);
-        boolean success = true;
-        if (!success) {
-            setStatusMessage("Ty�pistevarauksen muuttaminen ei onnistunut.");
+    	boolean success = db.updateReservation(reservation);
+        if(!success) {
+        	setStatusMessage("Ty�pistevarauksen muuttaminen ei onnistunut.");
             return;
         }
-        // kerrotaan ty�pisteelle ett� sen varaukset ovat muuttuneet
-        reservation.getTargetPost().clearReservations();
-        // varausten ja henkil�iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
-        obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
-        // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee my�s RESERVATIONSia. Joten turha...
-        //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
-        setStatusMessage("Ty�pistevarausta muutettu.");
+    	// kerrotaan ty�pisteelle ett� sen varaukset ovat muuttuneet
+    	reservation.getTargetPost().clearReservations();
+    	// varausten ja henkil�iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
+    	obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
+    	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee my�s RESERVATIONSia. Joten turha...
+    	//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    	setStatusMessage("Ty�pistevarausta muutettu.");
     }
 
     /**
      * Poistaa varausjakson.
-     *
      * @param reservation poistettava varausjakso
      * @throws IllegalArgumentException jos ty�piste on null
      */
     public void deleteReservation(Reservation reservation) {
-        if (reservation == null) {
+        if(reservation == null) {
             throw new IllegalArgumentException();
         }
-        if (true) {
-            reservation.getTargetPost().clearReservations();
-            // varausten ja henkil�iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
-            // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee my�s RESERVATIONSia. Joten turha...
-            //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
-            setStatusMessage("Ty�pistevaraus poistettu.");
-        } else {
-            setStatusMessage("Ty�pistevarauksen poistaminen ep�onnistui.");
-        }
+    	if(db.deleteReservation(reservation)) {
+    		reservation.getTargetPost().clearReservations();
+    		// varausten ja henkil�iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
+    		obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
+        	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee my�s RESERVATIONSia. Joten turha...
+    		//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    		setStatusMessage("Ty�pistevaraus poistettu.");
+    	} else {
+    		setStatusMessage("Ty�pistevarauksen poistaminen ep�onnistui.");
+    	}
     }
 
     /**
-     * Luo uuden varauksen annettuun ty�pisteeseen ty�sopimusjakson perusteella.
-     * Jos ty�sopimusjakson henkil�ll� ei ole ty�pistevarauksia jakson ajaksi,
-     * tehd��n ty�pistevaraus koko jakson mittaiseksi. Jos henkil�ll� on
-     * varauksia osalle jaksosta, tehd��n ty�pistevaraus ensimm�iselle
-     * varauksettomalle osalle ty�sopimusjaksosta. Jos henkil�ll� on varauksia
-     * koko jaksolle, ei tehd� mit��n.
+     * Luo uuden varauksen annettuun ty�pisteeseen ty�sopimusjakson
+     * perusteella. Jos ty�sopimusjakson henkil�ll� ei ole ty�pistevarauksia
+     * jakson ajaksi, tehd��n ty�pistevaraus koko jakson mittaiseksi.
+     * Jos henkil�ll� on varauksia osalle jaksosta, tehd��n ty�pistevaraus
+     * ensimm�iselle varauksettomalle osalle ty�sopimusjaksosta.
+     * Jos henkil�ll� on varauksia koko jaksolle, ei tehd� mit��n.
      *
      * @param post ty�piste, johon varaus luodaan
      * @param contract ty�sopimusjakso, jonka perusteella varaus luodaan
      * @throws IllegalArgumentException jos ty�piste tai sopimus on null
      */
+
     public void createReservation(Post post, Contract contract) {
-        if (post == null) {
+        if(post == null) {
             throw new IllegalArgumentException("ty�piste ei saa olla null");
         }
-        if (contract == null) {
+        if(contract == null) {
             throw new IllegalArgumentException("sopimus ei saa olla null");
         }
         createReservation(post, contract.getPerson(), contract.getTimeSlice());
@@ -656,164 +568,169 @@ public class Session {
 
     /**
      * Luo uuden varauksen annettuun ty�pisteeseen t�m�nhetkiselle
-     * osa-aikav�lille. Varaus tehd��n henkil�lle ty�sopimusjaksoihin
-     * katsomatta. Jos henkil�ll� ei ole varauksia tarkasteltavalla
-     * osa-aikav�lill�, tehd��n varaus koko osa-aikav�lin mittaiseksi. Jos
-     * henkil�ll� on varauksia osalle osa-aikav�list�, tehd��n varaus
-     * ensimm�iselle varauksettomalle osalle osa-aikav�list�. Jos henkil�ll� on
-     * varauksia koko osa-aikav�lille, ei tehd� mit��n.
-     *
+     * osa-aikav�lille. Varaus tehd��n henkil�lle ty�sopimusjaksoihin 
+     * katsomatta. Jos henkil�ll� ei ole varauksia tarkasteltavalla 
+     * osa-aikav�lill�, tehd��n varaus koko osa-aikav�lin mittaiseksi.
+     * Jos henkil�ll� on varauksia osalle osa-aikav�list�, tehd��n varaus
+     * ensimm�iselle varauksettomalle osalle osa-aikav�list�. Jos 
+     * henkil�ll� on varauksia koko osa-aikav�lille, ei tehd� mit��n.
+     * 
      * @param post ty�piste, johon varaus luodaan
      * @param person henkil�, jolle varaus luodaan
      * @throws IllegalArgumentException jos ty�piste tai henkil� on null
      */
-    public void createReservation(Post post, Person person) {
-        createReservation(post, person, timescaleSlice);
-    }
 
+    public void createReservation(Post post, Person person) {
+    	createReservation(post, person, timescaleSlice);
+    }
+    
     /**
-     * Luo uuden varauksen annettuun ty�pisteeseen annetulle aikav�lille. Varaus
-     * tehd��n henkil�lle ty�sopimusjaksoihin katsomatta. Jos henkil�ll� ei ole
-     * varauksia annetulla aikav�lill�, tehd��n varaus koko aikav�lin
-     * mittaiseksi. Jos henkil�ll� on varauksia osalle aikav�list�, tehd��n
-     * varaus ensimm�iselle varauksettomalle osalle aikav�list�. Jos henkil�ll�
-     * on varauksia koko aikav�lille, ei tehd� mit��n.
-     *
+     * Luo uuden varauksen annettuun ty�pisteeseen annetulle aikav�lille.
+     * Varaus tehd��n henkil�lle ty�sopimusjaksoihin katsomatta. Jos
+     * henkil�ll� ei ole varauksia annetulla aikav�lill�, tehd��n 
+     * varaus koko aikav�lin mittaiseksi. Jos henkil�ll� on varauksia osalle
+     * aikav�list�, tehd��n varaus ensimm�iselle varauksettomalle
+     * osalle aikav�list�. Jos henkil�ll� on varauksia koko aikav�lille,
+     * ei tehd� mit��n.
+     * 
      * @param post ty�piste, johon varaus luodaan
      * @param person henkil�, jolle varaus luodaan
      * @param timeSlice aikav�li, jolle varaus luodaan
-     * @throws IllegalArgumentException jos ty�piste, henkil� tai aikav�li on
-     * null
+     * @throws IllegalArgumentException jos ty�piste, henkil� tai aikav�li on null
      */
+    
     public void createReservation(Post post, Person person, TimeSlice timeSlice) {
-        if (post == null) {
+        if(post == null) {
             throw new IllegalArgumentException("ty�piste ei saa olla null");
         }
-        if (person == null) {
+        if(person == null) {
             throw new IllegalArgumentException("henkil� ei saa olla null");
         }
-        if (timescaleSlice == null) {
+        if(timescaleSlice == null) {
             throw new IllegalArgumentException("aikav�li ei saa olla null");
         }
-
+        
         // Rajataan tarvittaessa aikav�li tarkasteltavan aikajakson sis�lle
         Date start = timeSlice.getStartDate();
         Date end = timeSlice.getEndDate();
-        if (!timescale.contains(start)) {
+        if(!timescale.contains(start)) {
             start = timescale.getStartDate();
         }
-        if (!timescale.contains(end)) {
+        if(!timescale.contains(end)) {
             end = timescale.getEndDate();
         }
-
+        
         // Etsit��n vapaa jakso
         Reservation[] res = person.getReservations();
         int i;
-        for (i = 0; i < res.length && res[i].getTimeSlice().contains(start); ++i) {
-            // siirret��n alkup�iv� varauksen p��ttymist� seuraavaan p�iv��n
-            start = new Date(res[i].getTimeSlice().getEndDate().getTime() + TimeSlice.ONEDAY);
+        for(i=0; i<res.length && res[i].getTimeSlice().contains(start); ++i) {
+        	// siirret��n alkup�iv� varauksen p��ttymist� seuraavaan p�iv��n
+        	start = new Date(res[i].getTimeSlice().getEndDate().getTime() + TimeSlice.ONEDAY);
         }
-
-        if (i < res.length) { // varauksia on viel� lis��
-            // siirret��n loppup�iv� seuraavan varauksen alkamista edelt�v��n p�iv��n
-            end = new Date(res[i].getTimeSlice().getStartDate().getTime() - TimeSlice.ONEDAY);
+        
+        if(i < res.length) { // varauksia on viel� lis��
+        	// siirret��n loppup�iv� seuraavan varauksen alkamista edelt�v��n p�iv��n
+        	end = new Date(res[i].getTimeSlice().getStartDate().getTime() - TimeSlice.ONEDAY);
         }
 
         TimeSlice reservationTime = new TimeSlice(start, end);
-        if (reservationTime.length() < 1) {
-            setStatusMessage("Henkil�ll� on jo ty�piste aikav�lill� " + timeSlice);
-            return;
+        if(reservationTime.length() < 1) {
+        	setStatusMessage("Henkil�ll� on jo ty�piste aikav�lill� " + timeSlice);
+        	return;
         }
-
+        
         Reservation newRes = new Reservation(this, null, post, person, reservationTime, 0.0, "");
-        if (true) {
-            newRes.getTargetPost().clearReservations();
-            // huoneiden ja henkil�iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
-            // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee my�s RESERVATIONSia. Joten turha...
-            //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);    	
+        if(db.createReservation(newRes)) {
+        	newRes.getTargetPost().clearReservations();
+        	// huoneiden ja henkil�iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
+        	obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
+        	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee my�s RESERVATIONSia. Joten turha...
+        	//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);    	
             setStatusMessage("Ty�pistevaraus luotu.");
         } else {
             setStatusMessage("Ty�pistevarauksen luonti ep�onnistui.");
         }
     }
-
+    	
     /**
      * Poistaa ty�pisteen.
      *
      * @param post poistettava ty�piste
      * @throws IllegalArgumentException jos ty�piste on null
      */
+
     public void deletePost(Post post) {
-        if (post == null) {
+        if(post == null) {
             throw new IllegalArgumentException();
         }
-        if (true) {
-            switchActiveRoom();
-            // nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.ROOMS);
-            setStatusMessage("Ty�piste " + post + " poistettu.");
+        if(db.deletePost(post)) {
+        	switchActiveRoom();
+        	// nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
+        	obsman.notifyObservers(NeroObserverTypes.ROOMS);
+        	setStatusMessage("Ty�piste " + post + " poistettu.");
         } else {
-            setStatusMessage("Ty�pisteen " + post + " poistaminen ep�onnistui.");
+        	setStatusMessage("Ty�pisteen " + post + " poistaminen ep�onnistui.");
         }
     }
 
-    /**
+	/**
      * Luo aktiiviseen(valittuun) huoneeseen uuden ty�pisteen.
      *
      */
+
     public void createPost() {
-        if (this.activeRoom == null) {
+        if(this.activeRoom == null) {
             throw new IllegalArgumentException();
         }
-        Post newPost = new Post(this, null, this.activeRoom, 0);
-        if (true) {
-            switchActiveRoom();
-            // nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.ROOMS);
-            setStatusMessage("Uusi ty�piste luotu huoneeseen " + activeRoom);
-        } else {
-            setStatusMessage("Uuden ty�pisteen luominen ep�onnistui.");
+    	Post newPost = new Post(this, null, this.activeRoom, 0);
+    	if(db.createPost(newPost)) {
+    		switchActiveRoom();
+    		// nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
+    		obsman.notifyObservers(NeroObserverTypes.ROOMS);
+    		setStatusMessage("Uusi ty�piste luotu huoneeseen " + activeRoom);
+    	} else {
+    		setStatusMessage("Uuden ty�pisteen luominen ep�onnistui.");
         }
     }
 
     /**
-     * Vaihtaa aktiivisen huoneen kannasta haettuun uudempaan versioon. Metodia
-     * kutsutaan kun on todenn�k�ist�, ett� aktiivisen huoneen tiedot (mm.
-     * ty�pisteet) ovat vanhentuneet.
-     */
-    private void switchActiveRoom() {
-        // pyydet��n db:lt� uudempi versio samasta huoneesta
-        String roomID = activeRoom.getRoomID();
-        activeRoom = room2;
-    }
+	 * Vaihtaa aktiivisen huoneen kannasta haettuun uudempaan versioon. Metodia kutsutaan
+	 * kun on todenn�k�ist�, ett� aktiivisen huoneen tiedot (mm. ty�pisteet) ovat
+	 * vanhentuneet.
+	 */
+	private void switchActiveRoom() {
+		// pyydet��n db:lt� uudempi versio samasta huoneesta
+		String roomID = activeRoom.getRoomID();
+		activeRoom = db.getRoom(roomID);
+	}
 
     /**
-     * Lis�� ty�pisteeseen puhelinnumeron. Jos puhelinnumero on jo jollakin
-     * muulla ty�pisteell�, se siirtyy.
+     * Lis�� ty�pisteeseen puhelinnumeron. Jos puhelinnumero on jo
+     * jollakin muulla ty�pisteell�, se siirtyy.
      *
      * @param post ty�piste
      * @param phone lis�tt�v� puhelinnumero
      * @throws IllegalArgumentException jos ty�piste tai puhelinnumero on null
      */
+
     public void addPhoneNumber(Post post, PhoneNumber phone) {
-        if (post == null) {
+        if(post == null) {
             throw new IllegalArgumentException("ty�piste ei saa olla null");
         }
-        if (phone == null) {
+        if(phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
         }
-        // luodaan puhelinnumero-oliosta versio, joka viittaa uuteen ty�pisteeseen
-        PhoneNumber newPhone = new PhoneNumber(phone, post);
-        if (true) {
-            // jos ollaan n�ytt�m�ss� t�t� samaa huonetta, p�ivitet��n sen tiedot
-            if (this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
-                this.switchActiveRoom();
-            }
-            // nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.ROOMS);
+    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen ty�pisteeseen
+    	PhoneNumber newPhone = new PhoneNumber(phone, post);
+    	if(db.updatePhoneNumber(newPhone)) {
+    		// jos ollaan n�ytt�m�ss� t�t� samaa huonetta, p�ivitet��n sen tiedot
+    		if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
+    			this.switchActiveRoom();
+    		}
+    		// nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
+    		obsman.notifyObservers(NeroObserverTypes.ROOMS);
             setStatusMessage("Puhelinnumero liitetty ty�pisteeseen.");
-        } else {
+    	} else {
             setStatusMessage("Puhelinnumeron liitt�minen ep�onnistui.");
         }
     }
@@ -824,139 +741,133 @@ public class Session {
      * @param phone poistettava puhelinnumero
      * @throws IllegalArgumentException jos puhelinnumero on null
      */
+
     public void deletePhoneNumber(PhoneNumber phone) {
-        if (phone == null) {
+        if(phone == null) {
             throw new IllegalArgumentException();
         }
-        // luodaan puhelinnumero-oliosta versio, joka ei viittaa mihink��n ty�pisteeseen
-        PhoneNumber newPhone = new PhoneNumber(phone, null);
-        if (true) {
-            // ei tietoa ollaanko juuri t�t� n�ytt�m�ss, mutta p�ivitet��n silti
-            // vrt. tarkastukset updatePhoneNumberissa ^^
-            this.switchActiveRoom();
-            // nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.ROOMS);
+    	// luodaan puhelinnumero-oliosta versio, joka ei viittaa mihink��n ty�pisteeseen
+    	PhoneNumber newPhone = new PhoneNumber(phone, null);
+    	if(db.updatePhoneNumber(newPhone)) {
+    		// ei tietoa ollaanko juuri t�t� n�ytt�m�ss, mutta p�ivitet��n silti
+    		// vrt. tarkastukset updatePhoneNumberissa ^^
+    		this.switchActiveRoom();
+    		// nyt huoneiden tila on muuttunut, joten t�ytyy ilmoittaa kuuntelijoille
+    		obsman.notifyObservers(NeroObserverTypes.ROOMS);
             setStatusMessage("Puhelinnumero poistettu ty�pisteest�.");
-        } else {
+    	} else {
             setStatusMessage("Puhelinnumeron poistaminen ep�onnistui.");
-        }
+    	}
     }
 
     /* Dataolioiden tarvitsemat tiedonhakuoperaatiot */
-    /**
-     * Palauttaa henkil��n liittyv�t ty�sopimukset t�m�nhetkisell� aikav�lill�.
-     *
-     * @param person henkil�, jonka ty�sopimukset halutaan
-     * @return henkil�n ty�sopimukset
+    
+	/**
+	 * Palauttaa henkil��n liittyv�t ty�sopimukset t�m�nhetkisell� aikav�lill�.
+	 * @param person henkil�, jonka ty�sopimukset halutaan
+	 * @return henkil�n ty�sopimukset
      * @throws IllegalArgumentException jos henkil� on null
-     */
-    public Contract[] getContracts(Person person) {
-       Contract[] contracts = new Contract[1];
-       contracts[0] = contract3;
-        return contracts;
-    }
+	 */
+	public Contract[] getContracts(Person person) {
+        if(person == null) {
+                throw new IllegalArgumentException();
+            }
+		return db.getContracts(person, timescale);
+	}
+	
+	/**
+	 *  Sama annetulle aikav�lille
+	 * @param person henkil�, jonka ty�sopimukset halutaan
+	 * @param timeslice aikav�li
+	 * @return sopimukset
+	 */
+	public Contract[] getContracts(Person person, TimeSlice timeslice){
+		return db.getContracts(person, timeslice);
+	}
 
-    /**
-     * Sama annetulle aikav�lille
-     *
-     * @param person henkil�, jonka ty�sopimukset halutaan
-     * @param timeslice aikav�li
-     * @return sopimukset
-     */
-    public Contract[] getContracts(Person person, TimeSlice timeslice) {
-        Contract[] contracts = new Contract[1];
-        contracts[0] = contract2;
-        return contracts;
-    }
-
-    /**
-     * Palauttaa henkil��n liittyv�t ty�pistevaraukset t�m�nhetkisell�
-     * aikav�lill�.
-     *
-     * @param person henkil�, jonka ty�pistevaraukset halutaan
-     * @return henkil�n ty�pistevaraukset
+	/**
+	 * Palauttaa henkil��n liittyv�t ty�pistevaraukset t�m�nhetkisell� aikav�lill�.
+	 * @param person henkil�, jonka ty�pistevaraukset halutaan
+	 * @return henkil�n ty�pistevaraukset
      * @throws IllegalArgumentException jos henkil� on null
-     */
-    public Reservation[] getReservations(Person person) {
-        if (person == null) {
-            throw new IllegalArgumentException();
-        }
-        return reservations;
-    }
+	 */
+	public Reservation[] getReservations(Person person) {
+        if(person == null) {
+                throw new IllegalArgumentException();
+            }
+        return db.getReservations(person, timescale);
+	}
 
-    /**
-     * Palauttaa ty�pisteeseen liittyv�t ty�pistevaraukset t�m�nhetkisell�
-     * aikav�lill�. Varaukset palautetaan j�rjestettyn� ensisijaisesti
-     * alkuajankohdan, toissijaisesti loppuajankohdan mukaan.
-     *
-     * @param post ty�piste, jonka ty�pistevaraukset halutaan
-     * @return ty�pisteen varaukset
+	/**
+	 * Palauttaa ty�pisteeseen liittyv�t ty�pistevaraukset t�m�nhetkisell� aikav�lill�.
+     * Varaukset palautetaan j�rjestettyn� ensisijaisesti alkuajankohdan, toissijaisesti
+     * loppuajankohdan mukaan.
+	 * @param post ty�piste, jonka ty�pistevaraukset halutaan
+	 * @return ty�pisteen varaukset
      * @throws IllegalArgumentException jos ty�piste on null
-     */
-    public Reservation[] getReservations(Post post) {
-        if (post == null) {
-            throw new IllegalArgumentException();
-        }
-        return reservations;
-    }
+	 */
+	public Reservation[] getReservations(Post post) {
+        if(post == null) {
+                throw new IllegalArgumentException();
+            }
+		return db.getReservations(post, timescale);
+	}
 
-    /**
-     * Asettaa tekstimuotoisen viestin k�ytt�liittym�n n�ytett�v�ksi ja tulostaa
-     * sen System.out.println():ll�
-     *
-     * @param message viesti
-     */
-    public void setStatusMessage(String message) {
-        statusMessage = message;
-        obsman.notifyObservers(NeroObserverTypes.STATUSBAR);
-        System.out.println(message);
-    }
-
-    /**
-     * Asettaa tekstimuotoisen viestin k�ytt�liittym�n n�ytett�v�ksi.
-     *
-     * @param message viesti
-     */
-    public void setStatusMessageNoPrint(String message) {
-        statusMessage = message;
-        obsman.notifyObservers(NeroObserverTypes.STATUSBAR);
-    }
-
-    /**
-     * Palauttaa asetetun tekstimuotoisen viestin.
-     *
-     * @return viesti
-     */
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void waitState(boolean on) {
-        if (on) {
-            this.changeCursorType(java.awt.Cursor.WAIT_CURSOR);
-        } else {
-            this.changeCursorType(java.awt.Cursor.DEFAULT_CURSOR);
-        }
-    }
-
-    public void setCursorLock(boolean lock) {
-        this.cursorlocked = lock;
-    }
-
-    public void changeCursorType(int cursortype) {
-        // ei aseteta jos lukittu tai kursori oli jo sama
-        if (this.cursorlocked || this.cursortype == cursortype) {
-            return;
-        }
-        this.cursortype = cursortype;
-        obsman.notifyObservers(NeroObserverTypes.CURSORCHANGE);
-    }
-
-    public int getCursorType() {
-        return this.cursortype;
-    }
-
-    /* Kuuntelijoihin liittyv�t operaatiot */
+	/**
+	 * Asettaa tekstimuotoisen viestin k�ytt�liittym�n n�ytett�v�ksi ja
+	 * tulostaa sen System.out.println():ll�
+	 * @param message viesti
+	 */
+	public void setStatusMessage(String message) {
+	    statusMessage = message;
+	    obsman.notifyObservers(NeroObserverTypes.STATUSBAR);
+	    System.out.println(message);
+	}
+	
+	/**
+	 * Asettaa tekstimuotoisen viestin k�ytt�liittym�n n�ytett�v�ksi.
+	 * @param message viesti
+	 */
+	public void setStatusMessageNoPrint(String message) {
+	    statusMessage = message;
+	    obsman.notifyObservers(NeroObserverTypes.STATUSBAR);		
+	}
+	
+	/**
+	 * Palauttaa asetetun tekstimuotoisen viestin.
+	 * @return viesti
+	 */
+	public String getStatusMessage() {
+	    return statusMessage;
+	}
+	
+	public void waitState(boolean on) {
+		if(on) {
+			this.changeCursorType(java.awt.Cursor.WAIT_CURSOR);
+		} else {
+			this.changeCursorType(java.awt.Cursor.DEFAULT_CURSOR);			
+		}
+	}
+	
+	public void setCursorLock(boolean lock) {
+		this.cursorlocked = lock;
+	}
+	
+	public void changeCursorType(int cursortype) {
+		// ei aseteta jos lukittu tai kursori oli jo sama
+		if(this.cursorlocked || this.cursortype == cursortype) {
+                return;
+            }
+		this.cursortype = cursortype;
+		obsman.notifyObservers(NeroObserverTypes.CURSORCHANGE);
+	}
+	
+	public int getCursorType() {
+		return this.cursortype;
+	}
+	
+	/* Kuuntelijoihin liittyv�t operaatiot */
+	
     /**
      * Rekister�i kuuntelijan jollekin tapahtumatyypille. Kuuntelijalle
      * ilmoitetaan, kun valituntyyppinen muutos tapahtuu.
@@ -967,10 +878,12 @@ public class Session {
      * @see fi.helsinki.cs.nero.event.NeroObserver
      * @see fi.helsinki.cs.nero.event.NeroObserverTypes
      */
+
     public void registerObserver(int type, NeroObserver observer) {
-        if (observer == null) {
+        if(observer == null) {
             throw new IllegalArgumentException();
         }
-        obsman.addObserver(type, observer);
+    	obsman.addObserver(type, observer);
     }
+
 }
