@@ -124,7 +124,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 		super(mainPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		this.sessio = sessio;
+                this.sessio = sessio;
 		this.timeScale = this.sessio.getFilterTimescale();
 		this.persons = sessio.getFilteredPeople();
 		
@@ -151,9 +151,10 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 		
 		dateSlider.setSliderWidth(this.ROW_LENGTH + 1);
 		tsip.setMaxWidth(this.ROW_LENGTH + 1);
-		
+                this.getVerticalScrollBar().setUnitIncrement(16); // nopeuttaa scrollausta
+                
 		updateScale();
-		this.generate();      
+		this.generate();
 	}
 	
 	/**
