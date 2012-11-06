@@ -1,5 +1,17 @@
 package fi.helsinki.cs.nero.db;
 
+import fi.helsinki.cs.nero.NeroApplication;
+import fi.helsinki.cs.nero.data.Contract;
+import fi.helsinki.cs.nero.data.Person;
+import fi.helsinki.cs.nero.data.PhoneNumber;
+import fi.helsinki.cs.nero.data.Post;
+import fi.helsinki.cs.nero.data.Project;
+import fi.helsinki.cs.nero.data.Reservation;
+import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.TimeSlice;
+import fi.helsinki.cs.nero.event.NeroObserver;
+import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.logic.Session;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,19 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Vector;
-
-import fi.helsinki.cs.nero.NeroApplication;
-import fi.helsinki.cs.nero.data.Contract;
-import fi.helsinki.cs.nero.data.Person;
-import fi.helsinki.cs.nero.data.PhoneNumber;
-import fi.helsinki.cs.nero.data.Post;
-import fi.helsinki.cs.nero.data.Project;
-import fi.helsinki.cs.nero.data.Reservation;
-import fi.helsinki.cs.nero.data.Room;
-import fi.helsinki.cs.nero.data.TimeSlice;
-import fi.helsinki.cs.nero.event.NeroObserver;
-import fi.helsinki.cs.nero.event.NeroObserverTypes;
-import fi.helsinki.cs.nero.logic.Session;
 
 /**
  * @author Jyrki Muukkonen

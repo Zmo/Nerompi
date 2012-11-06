@@ -65,10 +65,12 @@ public class NeroApplication {
      * @param args komentoriviparametrit
      */
 	public static void main(String[] args) {
-	    if (args.length > 0)
-		    readIni(args[0]);
-	    else
-	        readIni(DEFAULT_INI);
+	    if (args.length > 0) {
+                readIni(args[0]);
+            }
+	    else {
+                readIni(DEFAULT_INI);
+            }
 	    
         Session session = new Session();
         NeroDatabase db = new NeroDatabase(session,
