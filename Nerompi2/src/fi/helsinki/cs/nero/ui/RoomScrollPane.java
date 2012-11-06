@@ -133,6 +133,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         this.ROW_LENGTH = NeroUI.RIGHT_WIDTH - JMultiSlider.SIDE_WIDTH -
     		borderWidth - this.getVerticalScrollBar().getMaximumSize().width;
 
+        this.getVerticalScrollBar().setUnitIncrement(16); // nopeuttaa scrollaamista
         this.generate();
     }
     
