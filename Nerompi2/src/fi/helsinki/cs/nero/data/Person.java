@@ -27,7 +27,10 @@ public class Person implements Comparable {
 	
 	/**Henkilön huonevaraukset.*/
 	private Reservation[] reservations;
-
+        
+        /**Henkilön työhuone*/
+        private String room;
+        
 	private Session session;
 	
 	
@@ -42,7 +45,7 @@ public class Person implements Comparable {
 	 * @throws IllegalArgumentException Jos annettu Session tai personID null.
 	 */
 	public Person(Session session, String personID, String name, Contract[] contracts,
-			Reservation[] reservations)
+			Reservation[] reservations, String room)
 	{
 		if (session == null || personID == null || name == null) {
 			throw new IllegalArgumentException();
@@ -52,6 +55,7 @@ public class Person implements Comparable {
 		this.name = name;
 		this.contracts = contracts;
 		this.reservations = reservations;
+                this.room = room;
 	}
 	
 	
@@ -72,7 +76,20 @@ public class Person implements Comparable {
 		return name;
 	}
 	
-	
+	/**
+         * Palauttaa henkilön työhuoneen
+         * @return room Stringinä
+         */
+        public String getRoom() {
+            return this.room;
+        }
+        /**
+         * 
+         */
+        public void setRoom(String room) {
+            this.room = room;
+        }
+        
 	/**
 	 * Palauttaa henkilön työsopimukset sessiossa määrätyllä aikavälillä.
 	 * @return projects Sopimukset <code>Contract[]</code> oliona.
