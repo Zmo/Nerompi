@@ -28,6 +28,9 @@ import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
 import fi.helsinki.cs.nero.logic.Session;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 
 /**
  * <p>
@@ -218,9 +221,26 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			header.add(faceIcon);
 			
 			//Lisätään henkilön yhteystiedot.
-			JLabel labelText = new JLabel(person.getPerson().getName());
-			header.add(labelText);
-			
+			//JLabel labelText = new JLabel(person.getPerson().getName());             
+			//header.add(labelText);
+                        //Lisätään nappula joka avaa tieto ikkunan henkilöstä
+                        JButton tiedot = new JButton(person.getPerson().getName());
+                        //hae sessiosta henkilö
+                        header.add(tiedot);
+                        //nappulan toiminnallisuus
+                        tiedot.addActionListener(new ActionListener() 
+                        {
+                            public void actionPerformed(ActionEvent e)
+                            {
+                                //Execute when button is pressed
+                                //painetun nappulan tietoja
+                                JButton nimi = (JButton)e.getSource();
+                                System.out.println(nimi.getText());
+                                //hae id
+                                //new PersonInfoFrame(e.getSource().);
+                            }
+                        });        
+
 			//Extraheader ylimmäksi, myös extraheader pitää laittaa panelin sisään Layout syistä
 			//Extraheader2 on extraeaderin jatkopalanen
 			JPanel extraHeader = new JPanel(new BorderLayout());

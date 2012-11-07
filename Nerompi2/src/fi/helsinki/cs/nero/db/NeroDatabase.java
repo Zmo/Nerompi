@@ -676,7 +676,7 @@ public class NeroDatabase implements NeroObserver {
 				+ ")"
 				*/
 		);
-
+                
 		// Kootaan SQL-kysely paloista
 		// Yhteinen alkuosa
 		String sqlQuery = "SELECT DISTINCT h.htunnus, h.sukunimi, h.etunimet, "
@@ -1132,6 +1132,10 @@ public class NeroDatabase implements NeroObserver {
 			key = post.getPostID();
 		} 
 		Collection c = (Collection)this.phoneNumbers.get(key);
+                if (c == null) {
+                    return new PhoneNumber[0];
+                }
+                //yrittää tehdä null collectionista arrayn
 		PhoneNumber[] numbers = (PhoneNumber[])c.toArray(new PhoneNumber[0]);
 		Arrays.sort(numbers);
 		return numbers;
@@ -1179,7 +1183,7 @@ public class NeroDatabase implements NeroObserver {
 		//System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
 		people.clear();
 	}
-	
+        
 	/**
 	 * Main-metodi pienimuotoista testailua varten.
 	 * @param args Komentoriviparametrit.
