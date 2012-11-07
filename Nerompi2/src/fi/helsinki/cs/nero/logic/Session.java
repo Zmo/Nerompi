@@ -1,10 +1,6 @@
 
 package fi.helsinki.cs.nero.logic;
     
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import fi.helsinki.cs.nero.data.Contract;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
@@ -17,6 +13,9 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Sessio, joka kuvaa k�ynniss� olevan ohjelman tilaa. Toimii linkkin� k�ytt�liittym�n
