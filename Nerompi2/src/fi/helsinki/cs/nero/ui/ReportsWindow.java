@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.Session;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -32,6 +33,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private DefaultTableColumnModel roomColumnModel;
     private DefaultTableColumnModel peopleColumnModel;
     private DefaultTableColumnModel lockerColumnmodel;
+    private HashMap<String, TableColumn> roomTableColumns;
+    
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -639,6 +642,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         // lis‰‰ columnit modeliin
         
         roomColumnModel = new DefaultTableColumnModel();
+        roomTableColumns = new HashMap<>();
+        roomTableColumns.put("roomNumber", new TableColumn(0));
+        roomTableColumns.put("floor", new TableColumn(1));
+        roomTableColumns.put("postCount", new TableColumn(2));
         
 
         /*Dropdown menu models - currently not used*/
