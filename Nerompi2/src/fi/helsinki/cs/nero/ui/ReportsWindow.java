@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.Session;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -26,12 +27,14 @@ public class ReportsWindow extends javax.swing.JFrame {
     private ArrayList<JComponent> roomComponents;
     private ArrayList<JComponent> peopleComponents;
     private ArrayList<JComponent> lockerComponents;
-    private DefaultTableModel defaultRoomTable;
+    private DefaultTableModel roomTableModel;
     private DefaultTableModel defaultPeopleTable;
     private DefaultTableModel defaultLockerTable;
     private DefaultTableColumnModel roomColumnModel;
     private DefaultTableColumnModel peopleColumnModel;
     private DefaultTableColumnModel lockerColumnmodel;
+    private HashMap<String, TableColumn> roomColumns;
+    
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -463,12 +466,12 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showPostCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPostCountActionPerformed
         if (showPostCount.isSelected()) {
-            defaultRoomTable.addColumn("Työpisteiden lkm");
+            roomColumnModel.addColumn(roomColumns.get("postCount"));
             Room[] rooms = session.getRooms();
             for (int i = 0; i < rooms.length; i++) {
                 Object[] rowData = {rooms[i].getRoomNumber(), rooms[i].getFloor(), 
                                     rooms[i].getPosts().length};
-                defaultRoomTable.insertRow(i, rowData);
+                roomTableModel.insertRow(i, rowData);
         }
         } else {
            TableColumn tcol = Data.getColumnModel().getColumn(2);
@@ -481,11 +484,14 @@ public class ReportsWindow extends javax.swing.JFrame {
       //  insertContents(roomComponents, checkboxContainer);
      //   redrawContainer(checkboxContainer);
       //  redrawContainer(tableContainer);
-        Data.setModel(defaultRoomTable);
+        roomColumnModel.addColumn(roomColumns.get("roomNumber"));
+        roomColumnModel.addColumn(roomColumns.get("floor"));
+        Data.setColumnModel(roomColumnModel);
+        Data.setModel(roomTableModel);
         Room[] rooms = session.getRooms();
         for (int i = 0; i < rooms.length; i++) {
             Object[] rowData = {rooms[i].getRoomNumber(), rooms[i].getFloor()};
-            defaultRoomTable.insertRow(i, rowData);
+            roomTableModel.insertRow(i, rowData);
         }
 
     }//GEN-LAST:event_RoomsMouseReleased
@@ -628,7 +634,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void initModels() {
 
         /* Table Models */
-        defaultRoomTable = new DefaultTableModel(new Object[][]{},
+        roomTableModel = new DefaultTableModel(new Object[][]{},
                 new String[]{"Huoneen nro.", "Kerros"});
         defaultPeopleTable = new DefaultTableModel(new Object[][]{},
                 new String[]{"Nimi", "Titteli"});
@@ -639,6 +645,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         // lisää columnit modeliin
         
         roomColumnModel = new DefaultTableColumnModel();
+        roomColumns = new HashMap<>();
+        roomColumns.put("roomNumber", new TableColumn());
+        roomColumns.put("floor", new TableColumn());
+        roomColumns.put("postCount", new TableColumn());
+        roomColumns.get("floor").setHeaderValue("Kerros");
+        roomColumns.get("roomNumber").setHeaderValue("Huonenumero");
+        roomColumns.get("postCount").setHeaderValue("Työpisteiden lkm");
         
 
         /*Dropdown menu models - currently not used*/
