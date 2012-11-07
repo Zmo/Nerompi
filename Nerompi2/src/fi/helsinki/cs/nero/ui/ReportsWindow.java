@@ -18,6 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class ReportsWindow extends javax.swing.JFrame {
 
@@ -463,8 +464,15 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void showPostCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPostCountActionPerformed
         if (showPostCount.isSelected()) {
             defaultRoomTable.addColumn("Työpisteiden lkm");
+            Room[] rooms = session.getRooms();
+            for (int i = 0; i < rooms.length; i++) {
+                Object[] rowData = {rooms[i].getRoomNumber(), rooms[i].getFloor(), 
+                                    rooms[i].getPosts().length};
+                defaultRoomTable.insertRow(i, rowData);
+        }
         } else {
-            
+           TableColumn tcol = Data.getColumnModel().getColumn(2);
+           Data.getColumnModel().removeColumn(tcol);
         }
     }//GEN-LAST:event_showPostCountActionPerformed
 
