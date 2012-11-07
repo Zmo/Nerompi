@@ -833,34 +833,42 @@ public class NeroDatabase implements NeroObserver {
 		return person.getStatus();
 	}
         
-        public boolean addRoomToPerson(Person person, String room) {
-            /*String sqlQuery = "select h.huone_nro"
-                            + "from HENKILÖ h"
-                            + "where h.htunnus='?'";
-            PreparedStatement prep = connection.prepareStatement(sqlQuery);
-            prep.setString(1, person.getPersonID());
-            ResultSet result = prep.executeQuery();*/
-            if(person.getRoom()==null) {
-                String setroom = "update henkilo"
-                               + "set huone_nro='?'"
-                               + "where henkilo.htunnus='?'";
-                try {
-                    PreparedStatement ins = this.connection.prepareStatement(setroom);
-                    ins.setString(1, room);
-                    ins.setString(2, person.getPersonID());
-                    ins.executeQuery();
-                    return true;
-                } catch(SQLException e) {
-                    System.err.println("Tietokantavirhe: " + e.getMessage());
-                    return false;
-                }
-            } else
-                return false;                      
+        public boolean addRoomToPerson(Person person, String room) { // Nerompi
+            if(person.getRoom()!=null) {
+                this.removeRoomFromPerson(person);
+            }
+            String prep = "update henkilo"
+                        + " set HUONE_NRO=?"
+                        + " where HTUNNUS=?";
+            try {
+                PreparedStatement ins = this.connection.prepareStatement(prep);
+                ins.setString(1, room);
+                ins.setString(2, person.getPersonID());
+                ins.executeQuery();
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
         }
         
-        //public boolean removeRoomFromPerson(Person person) {
-            
-        //}
+        public boolean removeRoomFromPerson(Person person) { // Nerompi
+            if(person.getRoom()==null) {
+                return false;
+            }
+            String prep = "update henkilo"
+                        + " set huone_nro=null"
+                        + " where henkilo.tunnus=?";
+            try {
+                PreparedStatement ins = this.connection.prepareStatement(prep);
+                ins.setString(1, person.getPersonID());
+                ins.executeQuery();
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
+        }
 
 	/* --- Henkilï¿½ihin liittyvï¿½t metodit loppuu --- */ 
 
