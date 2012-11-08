@@ -77,6 +77,7 @@ public class NeroApplication {
         		getProperty("db_class"), getProperty("db_connection"),
         		getProperty("db_username"), getProperty("db_password"));
         session.setDatabase(db);
+        db.updateRooms();
         NeroUI ui = new NeroUI(session);
 	}
 }

@@ -833,18 +833,49 @@ public class NeroDatabase implements NeroObserver {
 		return person.getStatus();
 	}
         
+        /** Nerompi
+         * Lisää tietokannan henkilo-taulun huone_nro-kenttään annettu arvo.
+         * @param person Henkilö, jolle huone lisätään
+         * @param room Lisättävän huoneen nimi
+         * @return Onnistuiko lisääminen
+         */
         public boolean addRoomToPerson(Person person, String room) { // Nerompi
             if(person.getRoom()!=null) {
                 this.removeRoomFromPerson(person);
             }
-            String prep = "update henkilo"
+            String sqlQuery = "update henkilo"
                         + " set HUONE_NRO=?"
                         + " where HTUNNUS=?";
             try {
-                PreparedStatement ins = this.connection.prepareStatement(prep);
-                ins.setString(1, room);
-                ins.setString(2, person.getPersonID());
-                ins.executeQuery();
+                PreparedStatement prep = this.connection.prepareStatement(sqlQuery);
+                prep.setString(1, room);
+                prep.setString(2, person.getPersonID());
+                prep.executeQuery();
+                person.setRoom(room);
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
+        }
+        /** Nerompi
+         * Korvaa tietokannan henkilo-taulun huone_nro-kentän arvo null-arvolla.
+         * @param person Henkilö, jolta huone poistetaan.
+         * @return Onnistuiko poistaminen.
+         */
+        
+        public boolean removeRoomFromPerson(Person person) {
+            if(person.getRoom()==null) {
+                return false;
+            }
+            String sqlQuery = "update henkilo"
+                        + " set huone_nro=null"
+                        + " where henkilo.htunnus=?";
+            try {
+                PreparedStatement prep = this.connection.prepareStatement(sqlQuery);
+                prep.setString(1, person.getPersonID());
+                prep.executeQuery();
+                person.setRoom(null);
                 return true;
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -852,21 +883,27 @@ public class NeroDatabase implements NeroObserver {
             }
         }
         
-        public boolean removeRoomFromPerson(Person person) { // Nerompi
-            if(person.getRoom()==null) {
-                return false;
-            }
-            String prep = "update henkilo"
-                        + " set huone_nro=null"
-                        + " where henkilo.tunnus=?";
+        /** Nerompi
+         * Hakee tietokannasta umpeutuneet huonevaraukset ja poistaa huoneen näiden varausten henkilöiltä.
+         */
+        public void updateRooms() {
+            String selectQuery = "select henklo_htunnus"
+                               + " from tyopistevaraus"
+                               + " where loppupvm<CURRENT_TIMESTAMP";
+            
+            String updateQuery = "update henkilo"
+                               + " set huone_nro=null"
+                               + " where henkilo.htunnus=?";
             try {
-                PreparedStatement ins = this.connection.prepareStatement(prep);
-                ins.setString(1, person.getPersonID());
-                ins.executeQuery();
-                return true;
+                ResultSet rs = this.connection.prepareStatement(selectQuery).executeQuery();
+                while(rs.next()) {
+                    PreparedStatement prep = this.connection.prepareStatement(updateQuery);
+                    prep.setString(1, rs.getString("henklo_htunnus"));
+                    prep.executeQuery();
+                }
+                
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
-                return false;
             }
         }
 
