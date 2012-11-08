@@ -221,10 +221,10 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			header.add(faceIcon);
 			
 			//Lisätään henkilön yhteystiedot.
-			//JLabel labelText = new JLabel(person.getPerson().getName());             
-			//header.add(labelText);
+			JLabel labelText = new JLabel(person.getPerson().getName());             
+			header.add(labelText);
                         //Lisätään nappula joka avaa tieto ikkunan henkilöstä
-                        JButton tiedot = new JButton(person.getPerson().getName());
+                        JButton tiedot = new JButton(person.getPerson().getPersonID());
                         //hae sessiosta henkilö
                         header.add(tiedot);
                         //nappulan toiminnallisuus
@@ -234,8 +234,8 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                             {
                                 //Execute when button is pressed
                                 //painetun nappulan tietoja
-                                JButton nimi = (JButton)e.getSource();
-                                System.out.println(nimi.getText());
+                                JButton personIdButton = (JButton)e.getSource();
+                                System.out.println(personIdButton.getText());
                                 //hae id
                                 //new PersonInfoFrame(e.getSource().);
                             }

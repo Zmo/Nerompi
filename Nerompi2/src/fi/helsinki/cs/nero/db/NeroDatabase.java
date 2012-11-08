@@ -92,6 +92,10 @@ public class NeroDatabase implements NeroObserver {
 	 * getPersons()-metodin kï¿½yttï¿½mï¿½t PreparedStatementit.
 	 */
 	private PreparedStatement prepPersonContracts;
+        /**
+         * henkilötietohakuun käytettävä PreparedStatement.
+         */
+        private PreparedStatement prepPersonInfo;
 	/**
 	 * getRooms(Project project, TimeSlice timescale)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
@@ -656,6 +660,33 @@ public class NeroDatabase implements NeroObserver {
 	 *            projekti, jonka henkilï¿½t nï¿½ytetï¿½ï¿½n
 	 * @return henkilï¿½t <code>Person[]</code> oliona.
 	 */
+        public void getPersonInfo(String name) {
+            
+            try {
+                
+            this.prepPersonInfo = this.connection.prepareStatement("SELECT * FROM HENKILO WHERE htunnus="+name);
+            
+            ResultSet rs = this.prepPersonInfo.executeQuery();
+            /*
+		while (rs.next()) {
+			TimeSlice slice = null;
+			Date start = rs.getDate("alkupvm");
+			Date end = rs.getDate("loppupvm");
+
+			Project p = new Project(this.session, rs.getString("koodi"),
+								rs.getString("nimi"),
+								rs.getString("vastuuhenkilo"), slice);
+			this.projects.put(rs.getString("koodi"), p);
+		}
+            */
+		rs.close();
+        session.setStatusMessage("Ladattu henkilön tiedot");
+            
+            } catch (SQLException e) {
+			System.err.println("Tietokantavirhe: " + e.getMessage());
+            
+        }
+        }
 	public Person[] getPeople(TimeSlice timescale, String personName,
 			Project project, boolean showEndingContracts, boolean withoutPost,
 			boolean partTimeTeachersOnly
@@ -674,8 +705,7 @@ public class NeroDatabase implements NeroObserver {
 				+ ", osa-aikaiset: " + partTimeTeachersOnly
 				+ ")"
 				*/
-		);
-                
+		);          
 		// Kootaan SQL-kysely paloista
 		// Yhteinen alkuosa
 		String sqlQuery = "SELECT DISTINCT h.htunnus, h.sukunimi, h.etunimet, "
