@@ -411,7 +411,7 @@ public class NeroDatabase implements NeroObserver {
 	            this.prepPostReservations = this.connection.prepareStatement(
 					"SELECT DISTINCT tpv.id, tpv.alkupvm, tpv.loppupvm,"
 					+ " tpv.viikkotunnit, tpv.selite,"
-					+ " h.htunnus, h.etunimet, h.sukunimi"
+					+ " h.htunnus, h.etunimet, h.sukunimi, h.huone_nro"
 					+ " FROM TYOPISTEVARAUS tpv, HENKILO h"
 					+ " WHERE tpv.tpiste_id = ?"
 					+ " AND tpv.henklo_htunnus = h.htunnus"
@@ -428,7 +428,7 @@ public class NeroDatabase implements NeroObserver {
 				TimeSlice ts = new TimeSlice(start, end);
 				Person person = new Person(this.session, rs.getString("htunnus"),
 						rs.getString("sukunimi")+" "+rs.getString("etunimet"),
-						null, null);
+						null, null, rs.getString("huone_nro"));
 				
 				Reservation r = new Reservation(this.session,
 						rs.getString("id"), post, person, ts,
@@ -568,7 +568,7 @@ public class NeroDatabase implements NeroObserver {
 		this.session.waitState(false);
 		return success;
 	}
-
+        
 	/* --- Ty�pistevarauksiin liittyv�t metodit loppuu --- */ 
 
 	/* --- Sopimuksiin liittyv�t metodit alkaa --- */ 
@@ -708,7 +708,7 @@ public class NeroDatabase implements NeroObserver {
 		);          
 		// Kootaan SQL-kysely paloista
 		// Yhteinen alkuosa
-		String sqlQuery = "SELECT DISTINCT h.htunnus, h.sukunimi, h.etunimet, "
+		String sqlQuery = "SELECT DISTINCT h.htunnus, h.sukunimi, h.etunimet, h.huone_nro, "
 		    + "   max(tsj.loppupvm_jakso) as loppupvm"
 			+ " FROM TYOSOPIMUSJAKSO tsj, HENKILO h"
 			+ " WHERE (UPPER(h.sukunimi) LIKE UPPER(?)"
@@ -739,7 +739,7 @@ public class NeroDatabase implements NeroObserver {
 				+ ")";
 		
 		// Yhteinen GROUP BY -osa
-		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet";
+		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet, h.huone_nro";
 		
 		// jos n�ytet��n vain p��ttyv�t sopimukset, niin voidaan rajata jo nyt,
 		// mutta jos mukana ovat my�s ty�pisteett�m�t, niin t�ytyy rajaus tehd� my�hemmin
@@ -825,7 +825,7 @@ public class NeroDatabase implements NeroObserver {
                    	person = new Person(this.session, 
                    			rs.getString("htunnus"),
 							rs.getString("sukunimi")+" "+rs.getString("etunimet"),
-							contracts, null);
+							contracts, null, rs.getString("huone_nro"));
 					people.put(rs.getString("htunnus"), person);
 				}
 
@@ -862,6 +862,43 @@ public class NeroDatabase implements NeroObserver {
 		// muussa tapauksessa t�ytyy tutkia tarkemmin henkil�n varaukset
 		return person.getStatus();
 	}
+        
+        public boolean addRoomToPerson(Person person, String room) { // Nerompi
+            if(person.getRoom()!=null) {
+                this.removeRoomFromPerson(person);
+            }
+            String prep = "update henkilo"
+                        + " set HUONE_NRO=?"
+                        + " where HTUNNUS=?";
+            try {
+                PreparedStatement ins = this.connection.prepareStatement(prep);
+                ins.setString(1, room);
+                ins.setString(2, person.getPersonID());
+                ins.executeQuery();
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
+        }
+        
+        public boolean removeRoomFromPerson(Person person) { // Nerompi
+            if(person.getRoom()==null) {
+                return false;
+            }
+            String prep = "update henkilo"
+                        + " set huone_nro=null"
+                        + " where henkilo.tunnus=?";
+            try {
+                PreparedStatement ins = this.connection.prepareStatement(prep);
+                ins.setString(1, person.getPersonID());
+                ins.executeQuery();
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
+        }
 
 	/* --- Henkil�ihin liittyv�t metodit loppuu --- */ 
 
