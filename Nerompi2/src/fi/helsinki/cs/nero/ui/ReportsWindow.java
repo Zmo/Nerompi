@@ -553,7 +553,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_showFloorMouseReleased
 
     private void showRoomAndPostMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomAndPostMouseReleased
-        if (showContracts.isSelected()) {
+        if (showRoomAndPost.isSelected()) {
             showColumn("Huone", peopleColumnModel, hiddenPeopleColumns);
         } else {
             hideColumn("Huone", peopleColumnModel, hiddenPeopleColumns);
