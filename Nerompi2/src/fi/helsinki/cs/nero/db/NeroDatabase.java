@@ -900,7 +900,7 @@ public class NeroDatabase implements NeroObserver {
          * @param room Lisättävän huoneen nimi
          * @return Onnistuiko lisääminen
          */
-        public boolean addRoomToPerson(Person person, String room) { // Nerompi
+        public boolean addRoomToPerson(Person person, String room) {
             if(person.getRoom()!=null) {
                 this.removeRoomFromPerson(person);
             }
@@ -950,32 +950,62 @@ public class NeroDatabase implements NeroObserver {
         public void updateRooms() {
             
             // Hakee työpistevaraukset joiden varaus on mennyt umpeen
-            String selectQuery = "select henklo_htunnus"
-                               + " from tyopistevaraus"
-                               + " where loppupvm<CURRENT_TIMESTAMP";
+            String selectPersonQuery = "select henklo_htunnus"
+                                     + " from tyopistevaraus"
+                                     + " where loppupvm<CURRENT_TIMESTAMP";
             
             // Poistaa huoneen annetulta henkilöltä
-            String updateQuery = "update henkilo"
-                               + " set huone_nro=null"
-                               + " where henkilo.htunnus=?";
+            String removeRoomQuery = "update henkilo"
+                                   + " set huone_nro=null"
+                                   + " where htunnus=?";
             
             // Hakee työpistevaraukset joiden varaus on alkanut, mutta ei ole vielä loppunut
-            String selectQuery2 = "select henklo_htunnus"
-                                + " from tyopistevaraus"
-                                + " where alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP";
+            String selectPersonQuery2 = "select henklo_htunnus"
+                                      + " from tyopistevaraus"
+                                      + " where alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP";
+            
+            // Hakee annetun henkilön työpistevaraukseen liittyvän huoneen numeron
+            String selectRoomQuery = "select huone_nro"
+                                   + " from huone"
+                                   + " where huone_nro="
+                                       + " (select huone_nro"
+                                       + " from rhuone"
+                                       + " where id="
+                                           + " (select rhuone_id"
+                                           + " from tyopiste"
+                                           + " where id="
+                                               + " (select tpiste_id"
+                                               + " from tyopistevaraus"
+                                               + " where henklo_htunnus=?"
+                                               + " and alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP)))";
             
             // Laittaa annetulle henkilölle annetun huoneen
-            String updateQuery2 = "update henkilo"
+            String setRoomQuery = "update henkilo"
                                 + " set huone_nro=?"
-                                + " where henkilo.htunnus=?";
+                                + " where htunnus=?";
+            
+            PreparedStatement prep, prep2;
             try {
-                ResultSet rs = this.connection.prepareStatement(selectQuery).executeQuery();
-                while(rs.next()) {
-                    PreparedStatement prep = this.connection.prepareStatement(updateQuery);
-                    prep.setString(1, rs.getString("henklo_htunnus"));
+                ResultSet selectPersonResult = this.connection.prepareStatement(selectPersonQuery).executeQuery();
+                while(selectPersonResult.next()) { // Poistaa huoneen niiltä, joiden varaus on mennyt umpeen
+                    prep = this.connection.prepareStatement(removeRoomQuery);
+                    prep.setString(1, selectPersonResult.getString("henklo_htunnus"));
                     prep.executeQuery();
                 }
                 
+                ResultSet selectPersonResult2 = this.connection.prepareStatement(selectPersonQuery2).executeQuery();
+                
+                while(selectPersonResult2.next()) { // Päivittää työhuonenumeron niille, joiden varaus on alkanut, mutta ei vielä loppnut
+                    prep2 = this.connection.prepareStatement(selectRoomQuery);
+                    prep2.setString(1, selectPersonResult2.getString("henklo_htunnus"));
+                    ResultSet selectRoomResult = prep2.executeQuery();
+                    selectRoomResult.next();
+                    
+                    prep = this.connection.prepareStatement(setRoomQuery);
+                    prep.setString(1, selectRoomResult.getString("huone_nro"));
+                    prep.setString(2, selectPersonResult2.getString("henklo_htunnus"));
+                    prep.executeQuery();
+                }
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
             }
