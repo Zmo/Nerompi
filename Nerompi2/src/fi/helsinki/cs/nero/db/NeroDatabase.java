@@ -92,6 +92,10 @@ public class NeroDatabase implements NeroObserver {
 	 * getPersons()-metodin kï¿½yttï¿½mï¿½t PreparedStatementit.
 	 */
 	private PreparedStatement prepPersonContracts;
+        /**
+         * henkilötietohakuun käytettävä PreparedStatement.
+         */
+        private PreparedStatement prepPersonInfo;
 	/**
 	 * getRooms(Project project, TimeSlice timescale)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
@@ -405,14 +409,20 @@ public class NeroDatabase implements NeroObserver {
 		try {
             if(this.prepPostReservations == null)
 	            this.prepPostReservations = this.connection.prepareStatement(
-					"SELECT DISTINCT tpv.id, tpv.alkupvm, tpv.loppupvm,"
-					+ " tpv.viikkotunnit, tpv.selite,"
-					+ " h.htunnus, h.etunimet, h.sukunimi, h.huone_nro"
-					+ " FROM TYOPISTEVARAUS tpv, HENKILO h"
-					+ " WHERE tpv.tpiste_id = ?"
-					+ " AND tpv.henklo_htunnus = h.htunnus"
-					+ " AND ? <= tpv.loppupvm AND ? >= tpv.alkupvm"
-				);
+                            "SELECT DISTINCT tpv.id, tpv.alkupvm, tpv.loppupvm,"
+                            + " tpv.viikkotunnit, tpv.selite,"
+                            + " h.htunnus, h.etunimet, h.sukunimi, h.huone_nro," 
+                            + " h.kutsumanimi,"
+                            + " h.aktiivisuus, h.hetu, h.oppiarvo, h.titteli,"
+                            + " h.puhelin_tyo, h.puhelin_koti, h.katuosoite, h.katuosoite,"
+                            + " h.postinro, h.postitoimipaikka, h.valvontasaldo, h.sahkopostiosoite,"
+                            + " h.hallinnollinen_kommentti, h.opiskelija_kommentti, h.ktunnus,"
+                            + " h.kannykka, h.postilokerohuone, h.hy_tyosuhde, h.hy_puhelinluettelossa"
+                            + " FROM TYOPISTEVARAUS tpv, HENKILO h"
+                            + " WHERE tpv.tpiste_id = ?"
+                            + " AND tpv.henklo_htunnus = h.htunnus"
+                            + " AND ? <= tpv.loppupvm AND ? >= tpv.alkupvm"
+                    );
 			this.prepPostReservations.setString(1, post.getPostID());
 			this.prepPostReservations.setDate(2, timeslice.getSQLStartDate());
 			this.prepPostReservations.setDate(3, timeslice.getSQLEndDate());
@@ -423,8 +433,15 @@ public class NeroDatabase implements NeroObserver {
 				Date end = new Date(rs.getDate("loppupvm").getTime());
 				TimeSlice ts = new TimeSlice(start, end);
 				Person person = new Person(this.session, rs.getString("htunnus"),
-						rs.getString("sukunimi")+" "+rs.getString("etunimet"),
-						null, null, rs.getString("huone_nro"));
+                                        rs.getString("sukunimi")+" "+rs.getString("etunimet"),
+                                        null, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
+                                        rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
+                                        rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
+                                        rs.getString("katuosoite"), rs.getString("postinro"), rs.getString("postitoimipaikka"),
+                                        rs.getString("valvontasaldo"), rs.getString("sahkopostiosoite"),
+                                        rs.getString("hallinnollinen_kommentti"), rs.getString("opiskelija_kommentti"),
+                                        rs.getString("ktunnus"), rs.getString("kannykka"), rs.getString("postilokerohuone"),
+                                        rs.getString("hy_tyosuhde"), rs.getString("hy_puhelinluettelossa"));
 				
 				Reservation r = new Reservation(this.session,
 						rs.getString("id"), post, person, ts,
@@ -656,6 +673,33 @@ public class NeroDatabase implements NeroObserver {
 	 *            projekti, jonka henkilï¿½t nï¿½ytetï¿½ï¿½n
 	 * @return henkilï¿½t <code>Person[]</code> oliona.
 	 */
+        public void getPersonInfo(String name) {
+            
+            try {
+                
+            this.prepPersonInfo = this.connection.prepareStatement("SELECT * FROM HENKILO WHERE htunnus="+name);
+            
+            ResultSet rs = this.prepPersonInfo.executeQuery();
+            /*
+		while (rs.next()) {
+			TimeSlice slice = null;
+			Date start = rs.getDate("alkupvm");
+			Date end = rs.getDate("loppupvm");
+
+			Project p = new Project(this.session, rs.getString("koodi"),
+								rs.getString("nimi"),
+								rs.getString("vastuuhenkilo"), slice);
+			this.projects.put(rs.getString("koodi"), p);
+		}
+            */
+		rs.close();
+        session.setStatusMessage("Ladattu henkilön tiedot");
+            
+            } catch (SQLException e) {
+			System.err.println("Tietokantavirhe: " + e.getMessage());
+            
+            }
+        }
 	public Person[] getPeople(TimeSlice timescale, String personName,
 			Project project, boolean showEndingContracts, boolean withoutPost,
 			boolean partTimeTeachersOnly
@@ -674,15 +718,20 @@ public class NeroDatabase implements NeroObserver {
 				+ ", osa-aikaiset: " + partTimeTeachersOnly
 				+ ")"
 				*/
-		);
-
+		);          
 		// Kootaan SQL-kysely paloista
 		// Yhteinen alkuosa
-		String sqlQuery = "SELECT DISTINCT h.htunnus, h.sukunimi, h.etunimet, h.huone_nro, "
-		    + "   max(tsj.loppupvm_jakso) as loppupvm"
-			+ " FROM TYOSOPIMUSJAKSO tsj, HENKILO h"
-			+ " WHERE (UPPER(h.sukunimi) LIKE UPPER(?)"
-			+ " OR UPPER(h.etunimet) LIKE UPPER(?))";
+		String sqlQuery = "SELECT DISTINCT h.htunnus, h.sukunimi,"
+                    + " h.etunimet, h.huone_nro, h.kutsumanimi,"
+                    + " h.aktiivisuus, h.hetu, h.oppiarvo, h.titteli,"
+                    + " h.puhelin_tyo, h.puhelin_koti, h.katuosoite, h.katuosoite,"
+                    + " h.postinro, h.postitoimipaikka, h.valvontasaldo, h.sahkopostiosoite,"
+                    + " h.hallinnollinen_kommentti, h.opiskelija_kommentti, h.ktunnus,"
+                    + " h.kannykka, h.postilokerohuone, h.hy_tyosuhde, h.hy_puhelinluettelossa,"
+		    + " max(tsj.loppupvm_jakso) as loppupvm"
+                    + " FROM TYOSOPIMUSJAKSO tsj, HENKILO h"
+                    + " WHERE (UPPER(h.sukunimi) LIKE UPPER(?)"
+                    + " OR UPPER(h.etunimet) LIKE UPPER(?))";
 		
 		// tï¿½smï¿½llisemmissï¿½ hauissa tï¿½ytyy katsoa tyï¿½sopimusjaksoa
 		if(showEndingContracts || withoutPost ||
@@ -709,7 +758,12 @@ public class NeroDatabase implements NeroObserver {
 				+ ")";
 		
 		// Yhteinen GROUP BY -osa
-		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet, h.huone_nro";
+		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet, h.huone_nro, h.kutsumanimi,"
+                    + " h.aktiivisuus, h.hetu, h.oppiarvo, h.titteli,"
+                    + " h.puhelin_tyo, h.puhelin_koti, h.katuosoite, h.katuosoite,"
+                    + " h.postinro, h.postitoimipaikka, h.valvontasaldo, h.sahkopostiosoite,"
+                    + " h.hallinnollinen_kommentti, h.opiskelija_kommentti, h.ktunnus,"
+                    + " h.kannykka, h.postilokerohuone, h.hy_tyosuhde, h.hy_puhelinluettelossa";
 		
 		// jos nï¿½ytetï¿½ï¿½n vain pï¿½ï¿½ttyvï¿½t sopimukset, niin voidaan rajata jo nyt,
 		// mutta jos mukana ovat myï¿½s tyï¿½pisteettï¿½mï¿½t, niin tï¿½ytyy rajaus tehdï¿½ myï¿½hemmin
@@ -794,8 +848,15 @@ public class NeroDatabase implements NeroObserver {
                     }
                    	person = new Person(this.session, 
                    			rs.getString("htunnus"),
-							rs.getString("sukunimi")+" "+rs.getString("etunimet"),
-							contracts, null, rs.getString("huone_nro"));
+                                        rs.getString("sukunimi")+" "+rs.getString("etunimet"),
+                                        contracts, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
+                                        rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
+                                        rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
+                                        rs.getString("katuosoite"), rs.getString("postinro"), rs.getString("postitoimipaikka"),
+                                        rs.getString("valvontasaldo"), rs.getString("sahkopostiosoite"),
+                                        rs.getString("hallinnollinen_kommentti"), rs.getString("opiskelija_kommentti"),
+                                        rs.getString("ktunnus"), rs.getString("kannykka"), rs.getString("postilokerohuone"),
+                                        rs.getString("hy_tyosuhde"), rs.getString("hy_puhelinluettelossa"));
 					people.put(rs.getString("htunnus"), person);
 				}
 
@@ -1205,6 +1266,10 @@ public class NeroDatabase implements NeroObserver {
 			key = post.getPostID();
 		} 
 		Collection c = (Collection)this.phoneNumbers.get(key);
+                if (c == null) {
+                    return new PhoneNumber[0];
+                }
+                //yrittää tehdä null collectionista arrayn
 		PhoneNumber[] numbers = (PhoneNumber[])c.toArray(new PhoneNumber[0]);
 		Arrays.sort(numbers);
 		return numbers;
@@ -1252,7 +1317,7 @@ public class NeroDatabase implements NeroObserver {
 		//System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
 		people.clear();
 	}
-	
+        
 	/**
 	 * Main-metodi pienimuotoista testailua varten.
 	 * @param args Komentoriviparametrit.

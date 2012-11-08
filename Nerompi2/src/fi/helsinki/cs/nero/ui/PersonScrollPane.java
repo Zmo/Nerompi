@@ -28,6 +28,9 @@ import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
 import fi.helsinki.cs.nero.logic.Session;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 
 /**
  * <p>
@@ -154,14 +157,14 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                 this.getVerticalScrollBar().setUnitIncrement(16); // nopeuttaa scrollausta
                 
 		updateScale();
-		this.generate();
+		this.generate(this.sessio);
 	}
 	
 	/**
 	 * Päivittää esitettävien henkilöiden esityksen käyttöliittymässä.
 	 *
 	 */
-	private void generate() {
+	private void generate(Session sessio) {
 		
 		long startTime = System.currentTimeMillis();        
 		this.people = new LinkedList();
@@ -218,9 +221,31 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			header.add(faceIcon);
 			
 			//Lisätään henkilön yhteystiedot.
-			JLabel labelText = new JLabel(person.getPerson().getName());
+			JLabel labelText = new JLabel(person.getPerson().getName());             
 			header.add(labelText);
-			
+                        //Lisätään nappula joka avaa tieto ikkunan henkilöstä
+                        JButton tiedot = new JButton(person.getPerson().getPersonID());
+                        //hae sessiosta henkilö
+                        header.add(tiedot);
+                        //nappulan toiminnallisuus
+                        tiedot.addActionListener(new ActionListener() 
+                        {
+                            public void actionPerformed(ActionEvent e)
+                            {
+                                //Execute when button is pressed
+                                //painetun nappulan tietoja
+                                JButton personIdButton = (JButton)e.getSource();
+                                
+                                for (int i = 0; i < persons.length; i++) {
+                                    if (persons[i].getPersonID().equals(personIdButton.getText())) {
+                                        new PersonInfoFrame(persons[i]);
+                                    }
+                                }
+                                //hae id
+                                //new PersonInfoFrame(e.getSource().);
+                            }
+                        });        
+
 			//Extraheader ylimmäksi, myös extraheader pitää laittaa panelin sisään Layout syistä
 			//Extraheader2 on extraeaderin jatkopalanen
 			JPanel extraHeader = new JPanel(new BorderLayout());
@@ -298,14 +323,14 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			this.timeScale = this.sessio.getFilterTimescale();
 			this.updateScale();
 			this.persons = sessio.getFilteredPeople();
-			this.generate();
+			this.generate(sessio);
 			return; 
 		}
 		
 		//Jos näytettävät ihmiset on muuttuneet.
 		if(type == NeroObserverTypes.FILTER_PEOPLE || type == NeroObserverTypes.RESERVATIONS) {
 			this.persons = sessio.getFilteredPeople();
-			this.generate();
+			this.generate(sessio);
 			return; 
 		}
 	}
