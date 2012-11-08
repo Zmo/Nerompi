@@ -179,7 +179,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         showEmail.setText("Sähköposti");
 
-        showContracts.setText("Sopimukset");
+        showContracts.setText("ID");
         showContracts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showContractsMouseReleased(evt);
@@ -529,9 +529,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showRoomNameMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomNameMouseReleased
         if (showRoomName.isSelected()) {
-            showColumn("Huoneen nro", roomColumnModel, hiddenRoomColumns);
+            showColumn("Nimi", roomColumnModel, hiddenRoomColumns);
         } else {
-            hideColumn("Huoneen nro", roomColumnModel, hiddenRoomColumns);
+            hideColumn("Nimi", roomColumnModel, hiddenRoomColumns);
         }
     }//GEN-LAST:event_showRoomNameMouseReleased
 
