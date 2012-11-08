@@ -162,9 +162,6 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Siipi"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showWingActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="showRoomName">
               <Properties>
@@ -233,7 +230,7 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="showContracts">
               <Properties>
-                <Property name="text" type="java.lang.String" value="ID"/>
+                <Property name="text" type="java.lang.String" value="Sopimus"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showContractsMouseReleased"/>
@@ -255,7 +252,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="showRoom" min="-2" max="-2" attributes="0"/>
-                          <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
+                          <Component id="showPhone2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -267,7 +264,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showRoom" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
+                      <Component id="showPhone2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -279,13 +276,16 @@
                 <Property name="text" type="java.lang.String" value="Ty&#xf6;huone"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRoomActionPerformed"/>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showRoomMouseReleased"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="jCheckBox2">
+            <Component class="javax.swing.JCheckBox" name="showPhone2">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Puhelinnumero"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showPhone2MouseReleased"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -381,9 +381,6 @@
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="wingDropdownActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="floor">
               <Properties>
@@ -401,7 +398,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="floorDropdownActionPerformed"/>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="floorDropdownItemStateChanged"/>
               </Events>
             </Component>
             <Component class="javax.swing.JComboBox" name="lockerDropdown">
@@ -475,6 +472,8 @@
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="rowSelectionAllowed" type="boolean" value="false"/>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
@@ -502,7 +501,6 @@
       </Properties>
       <Events>
         <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="roomButtonMouseReleased"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="roomButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
