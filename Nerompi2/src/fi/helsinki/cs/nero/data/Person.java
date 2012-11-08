@@ -282,11 +282,28 @@ public class Person implements Comparable {
 	 * @return projects Sopimukset <code>Contract[]</code> oliona.
 	 */
 	public Contract[] getContracts() {
-		if(this.contracts == null)
-			this.contracts = session.getContracts(this);
+		if(this.contracts == null) {
+                this.contracts = session.getContracts(this);
+            }
 		return this.contracts;
 	}
 	
+        /**
+         * Palauttaa henkilön työsopimukset String-muodossa
+         * 
+         */
+        public String getContractsAsString() {
+            if(this.contracts == null) {
+                this.contracts = session.getContracts(this);
+            } 
+            
+            String contractString = "";
+            for (int i = 0; i < contracts.length; i++) {
+                contractString.concat(" " + contracts[i].toString());
+            }
+            
+            return contractString;
+        }
 	
 	/**
 	 * Palauttaa henkilön työpistevaraukset sessiossa määrätyllä aikavälillä.
