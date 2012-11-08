@@ -14,9 +14,10 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class ReportsWindow extends javax.swing.JFrame {
 
@@ -38,6 +39,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Vector<String> peopleColumnNames;
     private Vector<Vector<String>> lockerData;
     private Vector<String> lockerColumnNames;
+    private TableRowSorter<TableModel> rowSorter;
+    
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -121,11 +124,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showWing.setText("Siipi");
-        showWing.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showWingActionPerformed(evt);
-            }
-        });
 
         showRoomName.setText("Huoneen nimi");
         showRoomName.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -252,18 +250,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         wingDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D" }));
         wingDropdown.setToolTipText("");
-        wingDropdown.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wingDropdownActionPerformed(evt);
-            }
-        });
 
         floor.setText("Kerros");
 
         floorDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3" }));
-        floorDropdown.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                floorDropdownActionPerformed(evt);
+        floorDropdown.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                floorDropdownItemStateChanged(evt);
             }
         });
 
@@ -391,6 +384,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
             }
         ));
+        Data.setEnabled(false);
+        Data.setRowSelectionAllowed(false);
         tableContainer.setViewportView(Data);
 
         viewButtons.add(lockerButton);
@@ -406,11 +401,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 roomButtonMouseReleased(evt);
-            }
-        });
-        roomButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                roomButtonActionPerformed(evt);
             }
         });
 
@@ -471,6 +461,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data = new JTable(roomData, roomColumnNames);
         roomColumnModel = Data.getColumnModel();
         setSelected(roomComponents);
+        addSorter();
         tableContainer.setViewportView(Data);
     }//GEN-LAST:event_roomButtonMouseReleased
 
@@ -478,6 +469,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data = new JTable(peopleData, peopleColumnNames);
         peopleColumnModel = Data.getColumnModel();
         setSelected(peopleComponents);
+        addSorter();
         tableContainer.setViewportView(Data);
     }//GEN-LAST:event_peopleButtonMouseReleased
 
@@ -485,29 +477,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_saveButtonActionPerformed
 
-    private void showWingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showWingActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_showWingActionPerformed
-
     private void lockerButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lockerButtonMouseReleased
         Data = new JTable(lockerData, lockerColumnNames);
         lockerColumnModel = Data.getColumnModel();
         setSelected(lockerComponents);
+        addSorter();
         tableContainer.setViewportView(Data);
 
     }//GEN-LAST:event_lockerButtonMouseReleased
-
-    private void roomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roomButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_roomButtonActionPerformed
-
-    private void floorDropdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_floorDropdownActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_floorDropdownActionPerformed
-
-    private void wingDropdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wingDropdownActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_wingDropdownActionPerformed
 
     private void showRoomNameMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomNameMouseReleased
         if (showRoomName.isSelected()) {
@@ -557,6 +534,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             hideColumn("Puhelinnumero", lockerColumnModel, hiddenLockerColumns);
         }
     }//GEN-LAST:event_showPhone2MouseReleased
+
+    private void floorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_floorDropdownItemStateChanged
+        //floorDropdown.
+    }//GEN-LAST:event_floorDropdownItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -669,13 +650,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (int i = 0; i < floors.length; i++) {
             wingsModel.addElement(wings[i]);
         }
-
-
+        
     }
 
     private void initColumnData() {
         
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
+        //TODO: muuta Vectorin tyyppi Objectiksi, että kaikilla sarakkeilla voi olla oikea tyyppi -> voidaan filtteröidä järkevästi
 
         // alustetaan data huoneiden tietojen näyttämistä varten
         // ideana se, että data taustalla pysyy aina samana ja se sidotaan
@@ -757,5 +738,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (JCheckBox jcomp : components) {
             jcomp.setSelected(true);
         }
+    }
+    
+    private void addSorter() {
+        rowSorter = new TableRowSorter<>(Data.getModel());
+        Data.setRowSorter(rowSorter);
     }
 }
