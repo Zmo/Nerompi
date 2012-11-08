@@ -948,13 +948,26 @@ public class NeroDatabase implements NeroObserver {
          * Hakee tietokannasta umpeutuneet huonevaraukset ja poistaa huoneen näiden varausten henkilöiltä.
          */
         public void updateRooms() {
+            
+            // Hakee työpistevaraukset joiden varaus on mennyt umpeen
             String selectQuery = "select henklo_htunnus"
                                + " from tyopistevaraus"
                                + " where loppupvm<CURRENT_TIMESTAMP";
             
+            // Poistaa huoneen annetulta henkilöltä
             String updateQuery = "update henkilo"
                                + " set huone_nro=null"
                                + " where henkilo.htunnus=?";
+            
+            // Hakee työpistevaraukset joiden varaus on alkanut, mutta ei ole vielä loppunut
+            String selectQuery2 = "select henklo_htunnus"
+                                + " from tyopistevaraus"
+                                + " where alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP";
+            
+            // Laittaa annetulle henkilölle annetun huoneen
+            String updateQuery2 = "update henkilo"
+                                + " set huone_nro=?"
+                                + " where henkilo.htunnus=?";
             try {
                 ResultSet rs = this.connection.prepareStatement(selectQuery).executeQuery();
                 while(rs.next()) {
