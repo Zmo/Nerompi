@@ -192,7 +192,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="shoRoomAndPost" min="-2" max="-2" attributes="0"/>
+                          <Component id="showRoomAndPost" min="-2" max="-2" attributes="0"/>
                           <Component id="showPhone" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="showContracts" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="showEmail" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -205,7 +205,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="shoRoomAndPost" min="-2" max="-2" attributes="0"/>
+                      <Component id="showRoomAndPost" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showPhone" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -218,10 +218,13 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JCheckBox" name="shoRoomAndPost">
+            <Component class="javax.swing.JCheckBox" name="showRoomAndPost">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Huone/ty&#xf6;piste"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showRoomAndPostMouseReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="showEmail">
               <Properties>
