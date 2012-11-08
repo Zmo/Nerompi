@@ -179,7 +179,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         showEmail.setText("Sähköposti");
 
-        showContracts.setText("ID");
+        showContracts.setText("Sopimus");
         showContracts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showContractsMouseReleased(evt);
@@ -537,9 +537,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showContractsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showContractsMouseReleased
         if (showContracts.isSelected()) {
-            showColumn("ID", peopleColumnModel, hiddenRoomColumns);
+            showColumn("Sopimus", peopleColumnModel, hiddenRoomColumns);
         } else {
-            hideColumn("ID", peopleColumnModel, hiddenRoomColumns);
+            hideColumn("Sopimus", peopleColumnModel, hiddenRoomColumns);
         }
     }//GEN-LAST:event_showContractsMouseReleased
 
@@ -698,14 +698,14 @@ public class ReportsWindow extends javax.swing.JFrame {
             Vector<String> v = new Vector<>();
             v.add(people[i].getName());
             v.add(people[i].getRoom());
-            v.add(people[i].getPersonID());
+            v.add(people[i].getContractLengthAsString());
             peopleData.add(i, v);
         }
 
         peopleColumnNames = new Vector<>();
         peopleColumnNames.add("Nimi");
         peopleColumnNames.add("Huone");
-        peopleColumnNames.add("ID");
+        peopleColumnNames.add("Sopimus");
 
     }
 
