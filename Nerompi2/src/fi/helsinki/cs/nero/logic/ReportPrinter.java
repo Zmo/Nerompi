@@ -42,4 +42,19 @@ public class ReportPrinter {
         }
     }
     
+    public void print(Object[][] tableData) {
+        try {
+            for(int i = 0; i < tableData.length; i++) {
+                for(int j = 0; j < tableData[i].length; j++) {
+                writer.append(tableData[i][j].toString());
+                writer.append(" ");
+                }
+            writer.newLine();
+            }
+            writer.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(ReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }
