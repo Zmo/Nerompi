@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -40,7 +43,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Vector<Vector<String>> lockerData;
     private Vector<String> lockerColumnNames;
     private TableRowSorter<TableModel> rowSorter;
-    
+    private RowFilter regexFilter;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -253,7 +256,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         floor.setText("Kerros");
 
-        floorDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3" }));
+        floorDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "Kaikki" }));
         floorDropdown.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 floorDropdownItemStateChanged(evt);
@@ -269,6 +272,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         jLabel2.setText("Varauksen loppu");
 
         jLabel3.setText("Nimi");
+
+        restrictByName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByNameActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
@@ -520,24 +529,46 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_showRoomAndPostMouseReleased
 
     private void showRoomMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomMouseReleased
-        if (showRoom.isSelected()){
-            showColumn("Huone", lockerColumnModel, hiddenLockerColumns);            
+        if (showRoom.isSelected()) {
+            showColumn("Huone", lockerColumnModel, hiddenLockerColumns);
         } else {
             hideColumn("Huone", lockerColumnModel, hiddenLockerColumns);
         }
     }//GEN-LAST:event_showRoomMouseReleased
 
     private void showPhone2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPhone2MouseReleased
-        if (showPhone2.isSelected()){
-            showColumn("Puhelinnumero", lockerColumnModel, hiddenLockerColumns);            
+        if (showPhone2.isSelected()) {
+            showColumn("Puhelinnumero", lockerColumnModel, hiddenLockerColumns);
         } else {
             hideColumn("Puhelinnumero", lockerColumnModel, hiddenLockerColumns);
         }
     }//GEN-LAST:event_showPhone2MouseReleased
 
     private void floorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_floorDropdownItemStateChanged
-        //floorDropdown.
+        String value = floorDropdown.getSelectedItem().toString();
+        if (value.equals("Kaikki")) {
+            regexFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Kerros"));
+        } else {
+            regexFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Kerros"));
+            
+        }
+            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+            sorter.setRowFilter(regexFilter);
+            Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_floorDropdownItemStateChanged
+
+    private void restrictByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByNameActionPerformed
+        String value = restrictByName.getText();
+        if (value == null || value.isEmpty()) {
+            regexFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Nimi"));
+        } else {
+            regexFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Nimi"));
+            
+        }
+            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+            sorter.setRowFilter(regexFilter);
+            Data.setRowSorter(rowSorter);
+    }//GEN-LAST:event_restrictByNameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -650,11 +681,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (int i = 0; i < floors.length; i++) {
             wingsModel.addElement(wings[i]);
         }
-        
+
     }
 
     private void initColumnData() {
-        
+
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
         //TODO: muuta Vectorin tyyppi Objectiksi, että kaikilla sarakkeilla voi olla oikea tyyppi -> voidaan filtteröidä järkevästi
 
@@ -663,7 +694,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         // tiettyihin sarakkeihin (sarakkeiden identifierit tulevat nimivektorista)
         // käyttäjän inputista riippuen näytetään tai piilotetaan tietty sarake,
         // mutta data taustalla pysyy samana
-        
+
         // huone-tarkastelun data ja sarakkeet
         roomData = new Vector<>();
         for (int i = 0; i < rooms.length; i++) {
@@ -680,11 +711,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomColumnNames.add("Kerros");
         roomColumnNames.add("Työpisteiden lkm");
         roomColumnNames.add("Nimi");
-        
+
         // henkilö-tarkastelun data ja sarakkeet
         // laitetaan samalla data myös postilokero-näkymän dataan
         peopleData = new Vector<>();
-        lockerData = new Vector<>();       
+        lockerData = new Vector<>();
         for (int i = 0; i < people.length; i++) {
             Vector<String> peopleRow = new Vector<>();
             Vector<String> l = new Vector<>();
@@ -709,8 +740,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         lockerColumnNames.add("Postihuone");
         lockerColumnNames.add("Huone");
         lockerColumnNames.add("Puhelinnumero");
-        
-        
+
+
     }
 
     private void showColumn(String name, TableColumnModel model,
@@ -739,7 +770,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             jcomp.setSelected(true);
         }
     }
-    
+
     private void addSorter() {
         rowSorter = new TableRowSorter<>(Data.getModel());
         Data.setRowSorter(rowSorter);
