@@ -273,6 +273,12 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         jLabel3.setText("Nimi");
 
+        restrictByName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByNameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
         restrictionsContainerLayout.setHorizontalGroup(
@@ -550,6 +556,19 @@ public class ReportsWindow extends javax.swing.JFrame {
             sorter.setRowFilter(regexFilter);
             Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_floorDropdownItemStateChanged
+
+    private void restrictByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByNameActionPerformed
+        String value = restrictByName.getText();
+        if (value == null || value.isEmpty()) {
+            regexFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Nimi"));
+        } else {
+            regexFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Nimi"));
+            
+        }
+            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+            sorter.setRowFilter(regexFilter);
+            Data.setRowSorter(rowSorter);
+    }//GEN-LAST:event_restrictByNameActionPerformed
 
     /**
      * @param args the command line arguments
