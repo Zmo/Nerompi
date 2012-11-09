@@ -7,6 +7,7 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
+import fi.helsinki.cs.nero.logic.ReportPrinter;
 import fi.helsinki.cs.nero.logic.Session;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +17,6 @@ import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
-import javax.swing.RowSorter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -43,7 +43,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Vector<Vector<String>> lockerData;
     private Vector<String> lockerColumnNames;
     private TableRowSorter<TableModel> rowSorter;
-    private RowFilter regexFilter;
+    private RowFilter generalFilter;
+    private ReportPrinter printer;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -110,6 +111,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         restrictByName = new javax.swing.JTextField();
+        restrictByDate = new javax.swing.JTextField();
         peopleButton = new javax.swing.JRadioButton();
         saveButton = new javax.swing.JButton();
         tableContainer = new javax.swing.JScrollPane();
@@ -264,6 +266,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         lockerDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kaikki", "Lokerottomat", "Lokerolliset" }));
+        lockerDropdown.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                lockerDropdownItemStateChanged(evt);
+            }
+        });
 
         rajauksetHeader.setText("Rajaukset");
 
@@ -276,6 +283,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         restrictByName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 restrictByNameActionPerformed(evt);
+            }
+        });
+
+        restrictByDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByDateActionPerformed(evt);
             }
         });
 
@@ -295,20 +308,22 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 515, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(76, 76, 76))
-                    .addGroup(restrictionsContainerLayout.createSequentialGroup()
+                        .addGap(101, 101, 101)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, restrictionsContainerLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(restrictByDate, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(76, 76, 76))
         );
         restrictionsContainerLayout.setVerticalGroup(
             restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,7 +341,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(wing)
-                            .addComponent(jLabel2))
+                            .addComponent(jLabel2)
+                            .addComponent(restrictByDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -376,9 +392,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         saveButton.setText("Tallenna raportti");
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
+        saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                saveButtonMouseReleased(evt);
             }
         });
 
@@ -419,11 +435,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(saveButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(checkboxContainer, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -437,6 +449,10 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lockerButton)
                 .addGap(160, 160, 160))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(saveButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -449,8 +465,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(checkboxContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 769, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveButton)
                 .addContainerGap())
         );
@@ -481,10 +497,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         addSorter();
         tableContainer.setViewportView(Data);
     }//GEN-LAST:event_peopleButtonMouseReleased
-
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_saveButtonActionPerformed
 
     private void lockerButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lockerButtonMouseReleased
         Data = new JTable(lockerData, lockerColumnNames);
@@ -547,28 +559,54 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void floorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_floorDropdownItemStateChanged
         String value = floorDropdown.getSelectedItem().toString();
         if (value.equals("Kaikki")) {
-            regexFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Kerros"));
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Kerros"));
         } else {
-            regexFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Kerros"));
-            
+            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Kerros"));
+
         }
-            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-            sorter.setRowFilter(regexFilter);
-            Data.setRowSorter(rowSorter);
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_floorDropdownItemStateChanged
 
     private void restrictByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByNameActionPerformed
         String value = restrictByName.getText();
         if (value == null || value.isEmpty()) {
-            regexFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Nimi"));
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Nimi"));
         } else {
-            regexFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Nimi"));
-            
+            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Nimi"));
         }
-            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-            sorter.setRowFilter(regexFilter);
-            Data.setRowSorter(rowSorter);
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByNameActionPerformed
+
+    private void lockerDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lockerDropdownItemStateChanged
+        int index = lockerDropdown.getSelectedIndex();
+        if (index == 0) {
+            // kaikki
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Postihuone"));
+        } else if (index == 1) {
+            // lokerottomat
+            generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex("Postihuone"));
+        } else {
+            // lokerolliset
+            RowFilter regexFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex("Postihuone"));
+            generalFilter = RowFilter.notFilter(regexFilter);
+        }
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
+    }//GEN-LAST:event_lockerDropdownItemStateChanged
+
+    private void restrictByDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByDateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_restrictByDateActionPerformed
+
+    private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
+        printer = new ReportPrinter("testifilu");
+        printer.print(Data.getColumnModel().getColumns());
+    }//GEN-LAST:event_saveButtonMouseReleased
 
     /**
      * @param args the command line arguments
@@ -619,6 +657,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JRadioButton peopleButton;
     private javax.swing.JPanel personAttributes;
     private javax.swing.JLabel rajauksetHeader;
+    private javax.swing.JTextField restrictByDate;
     private javax.swing.JTextField restrictByName;
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JPanel roomAttributes;
