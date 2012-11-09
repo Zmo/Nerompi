@@ -52,83 +52,6 @@ public class Person implements Comparable {
         private String hyPuhelinluettelossa;
         
 	private Session session;
-
-    public String getCallName() {
-        return callName;
-    }
-
-    public String getActivity() {
-        return activity;
-    }
-
-    public String getHetu() {
-        return hetu;
-    }
-
-    public String getOppiarvo() {
-        return oppiarvo;
-    }
-
-    public String getTitteli() {
-        return titteli;
-    }
-
-    public String getWorkPhone() {
-        return workPhone;
-    }
-
-    public String getHomePhone() {
-        return homePhone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getPostnumber() {
-        return postnumber;
-    }
-
-    public String getPostitoimiPaikka() {
-        return postitoimiPaikka;
-    }
-
-    public String getValvontaSaldo() {
-        return valvontaSaldo;
-    }
-
-    public String getSahkoposti() {
-        return sahkoposti;
-    }
-
-    public String getHallinnollinenKommentti() {
-        return hallinnollinenKommentti;
-    }
-
-    public String getOpiskelijaKommentti() {
-        return opiskelijaKommentti;
-    }
-
-    public String getkTunnus() {
-        return kTunnus;
-    }
-
-    public String getKannykka() {
-        return kannykka;
-    }
-
-    public String getPostilokeroHuone() {
-        return postilokeroHuone;
-    }
-
-    public String getHyTyosuhde() {
-        return hyTyosuhde;
-    }
-
-    public String getHyPuhelinluettelossa() {
-        return hyPuhelinluettelossa;
-    }
-        
         
 	
 	
@@ -178,90 +101,165 @@ public class Person implements Comparable {
 	public String getName() {
 		return name;
 	}
+        public String getCallName() {
+        return callName;
+        }
 
-    public void setContracts(Contract[] contracts) {
-        this.contracts = contracts;
-    }
+        public String getActivity() {
+            return activity;
+        }
 
-    public void setReservations(Reservation[] reservations) {
-        this.reservations = reservations;
-    }
+        public String getHetu() {
+            return hetu;
+        }
 
-    public void setCallName(String callName) {
-        this.callName = callName;
-    }
+        public String getOppiarvo() {
+            return oppiarvo;
+        }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
-    }
+        public String getTitteli() {
+            return titteli;
+        }
 
-    public void setHetu(String hetu) {
-        this.hetu = hetu;
-    }
+        public String getWorkPhone() {
+            return workPhone;
+        }
 
-    public void setOppiarvo(String oppiarvo) {
-        this.oppiarvo = oppiarvo;
-    }
+        public String getHomePhone() {
+            return homePhone;
+        }
 
-    public void setTitteli(String titteli) {
-        this.titteli = titteli;
-    }
+        public String getAddress() {
+            return address;
+        }
 
-    public void setWorkPhone(String workPhone) {
-        this.workPhone = workPhone;
-    }
+        public String getPostnumber() {
+            return postnumber;
+        }
 
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
+        public String getPostitoimiPaikka() {
+            return postitoimiPaikka;
+        }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+        public String getValvontaSaldo() {
+            return valvontaSaldo;
+        }
 
-    public void setPostnumber(String postnumber) {
-        this.postnumber = postnumber;
-    }
+        public String getSahkoposti() {
+            return sahkoposti;
+        }
 
-    public void setPostitoimiPaikka(String postitoimiPaikka) {
-        this.postitoimiPaikka = postitoimiPaikka;
-    }
+        public String getHallinnollinenKommentti() {
+            return hallinnollinenKommentti;
+        }
 
-    public void setValvontaSaldo(String valvontaSaldo) {
-        this.valvontaSaldo = valvontaSaldo;
-    }
+        public String getOpiskelijaKommentti() {
+            return opiskelijaKommentti;
+        }
 
-    public void setSahkoposti(String sahkoposti) {
-        this.sahkoposti = sahkoposti;
-    }
+        public String getkTunnus() {
+            return kTunnus;
+        }
 
-    public void setHallinnollinenKommentti(String hallinnollinenKommentti) {
-        this.hallinnollinenKommentti = hallinnollinenKommentti;
-    }
+        public String getKannykka() {
+            return kannykka;
+        }
 
-    public void setOpiskelijaKommentti(String opiskelijaKommentti) {
-        this.opiskelijaKommentti = opiskelijaKommentti;
-    }
+        public String getPostilokeroHuone() {
+            return postilokeroHuone;
+        }
 
-    public void setkTunnus(String kTunnus) {
-        this.kTunnus = kTunnus;
-    }
+        public String getHyTyosuhde() {
+            return hyTyosuhde;
+        }
 
-    public void setKannykka(String kannykka) {
-        this.kannykka = kannykka;
-    }
+        public String getHyPuhelinluettelossa() {
+            return hyPuhelinluettelossa;
+        }
 
-    public void setPostilokeroHuone(String postilokeroHuone) {
-        this.postilokeroHuone = postilokeroHuone;
-    }
+        public void setContracts(Contract[] contracts) {
+            this.contracts = contracts;
+        }
 
-    public void setHyTyosuhde(String hyTyosuhde) {
-        this.hyTyosuhde = hyTyosuhde;
-    }
+        public void setReservations(Reservation[] reservations) {
+            this.reservations = reservations;
+        }
 
-    public void setHyPuhelinluettelossa(String hyPuhelinluettelossa) {
-        this.hyPuhelinluettelossa = hyPuhelinluettelossa;
-    }
+        public void setCallName(String callName) {
+            this.callName = callName;
+        }
+
+        public void setActivity(String activity) {
+            this.activity = activity;
+        }
+
+        public void setHetu(String hetu) {
+            this.hetu = hetu;
+        }
+
+        public void setOppiarvo(String oppiarvo) {
+            this.oppiarvo = oppiarvo;
+        }
+
+        public void setTitteli(String titteli) {
+            this.titteli = titteli;
+        }
+
+        public void setWorkPhone(String workPhone) {
+            this.workPhone = workPhone;
+        }
+
+        public void setHomePhone(String homePhone) {
+            this.homePhone = homePhone;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public void setPostnumber(String postnumber) {
+            this.postnumber = postnumber;
+        }
+
+        public void setPostitoimiPaikka(String postitoimiPaikka) {
+            this.postitoimiPaikka = postitoimiPaikka;
+        }
+
+        public void setValvontaSaldo(String valvontaSaldo) {
+            this.valvontaSaldo = valvontaSaldo;
+        }
+
+        public void setSahkoposti(String sahkoposti) {
+            this.sahkoposti = sahkoposti;
+        }
+
+        public void setHallinnollinenKommentti(String hallinnollinenKommentti) {
+            this.hallinnollinenKommentti = hallinnollinenKommentti;
+        }
+
+        public void setOpiskelijaKommentti(String opiskelijaKommentti) {
+            this.opiskelijaKommentti = opiskelijaKommentti;
+        }
+
+        public void setkTunnus(String kTunnus) {
+            this.kTunnus = kTunnus;
+        }
+
+        public void setKannykka(String kannykka) {
+            this.kannykka = kannykka;
+        }
+
+        public void setPostilokeroHuone(String postilokeroHuone) {
+            this.postilokeroHuone = postilokeroHuone;
+        }
+
+        public void setHyTyosuhde(String hyTyosuhde) {
+            this.hyTyosuhde = hyTyosuhde;
+        }
+
+        public void setHyPuhelinluettelossa(String hyPuhelinluettelossa) {
+            this.hyPuhelinluettelossa = hyPuhelinluettelossa;
+        }
 	
 	/**
          * Palauttaa henkilön työhuoneen

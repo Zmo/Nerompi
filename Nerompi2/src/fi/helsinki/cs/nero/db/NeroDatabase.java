@@ -952,6 +952,28 @@ public class NeroDatabase implements NeroObserver {
         }
         
         /** Nerompi
+         * Päivittää henkilo-taulun tyopuhelinnumero-kentän
+         * @param name Päivitettävän henkilön nimi
+         * @param number Henkilölle asetettava työpuhelinnumero
+         * @return Onnistuiko päivittäminen
+         */
+        public boolean updateWorkPhone(String name, String number) {
+            String updatePhoneQuery = "update henkilo"
+                                    + " set puhelin_tyo=?"
+                                    + " where henkilo=?";
+            try {
+                PreparedStatement prep = this.connection.prepareStatement(updatePhoneQuery);
+                prep.setString(1, number);
+                prep.setString(2, name);
+                prep.executeQuery();
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
+        }
+        
+        /** Nerompi
          * Hakee tietokannasta umpeutuneet huonevaraukset ja poistaa huoneen näiden varausten henkilöiltä.
          */
         public void updateRooms() {
