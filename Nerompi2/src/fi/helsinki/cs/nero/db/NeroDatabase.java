@@ -951,6 +951,12 @@ public class NeroDatabase implements NeroObserver {
             }
         }
         
+        /** Nerompi
+         * Päivittää henkilo-taulun tyopuhelinnumero-kentän
+         * @param name Päivitettävän henkilön nimi
+         * @param number Henkilölle asetettava työpuhelinnumero
+         * @return Onnistuiko päivittäminen
+         */
         public boolean updateWorkPhone(String name, String number) {
             String updatePhoneQuery = "update henkilo"
                                     + " set puhelin_tyo=?"
