@@ -96,6 +96,7 @@ public class NeroDatabase implements NeroObserver {
          * henkilötietohakuun käytettävä PreparedStatement.
          */
         private PreparedStatement prepPersonInfo;
+
 	/**
 	 * getRooms(Project project, TimeSlice timescale)-metodin kï¿½yttï¿½mï¿½t
 	 * PreparedStatementit.
@@ -481,13 +482,13 @@ public class NeroDatabase implements NeroObserver {
 			// voisi asettaa annetulle Reservationille ID:n jos olisi tarve 
 			
 			if(this.prepAddReservation == null) {
-				this.prepAddReservation = this.connection.prepareStatement(
-						" INSERT INTO tyopistevaraus"
-						+ " (id, tpiste_id, henklo_htunnus, viikkotunnit,"
-						+ "  selite, alkupvm, loppupvm, lisayspvm)"
-						/* TRUNC lyhentï¿½ï¿½ ajan pelkï¿½ksi pï¿½ivï¿½mï¿½ï¿½rï¿½ksi */
-						+ " VALUES (?, ?, ?, ?, ?, TRUNC(?), TRUNC(?), SYSDATE)"
-				);
+                                this.prepAddReservation = this.connection.prepareStatement(
+                                        " INSERT INTO tyopistevaraus"
+                                        + " (id, tpiste_id, henklo_htunnus, viikkotunnit,"
+                                        + "  selite, alkupvm, loppupvm, lisayspvm)"
+                                        /* TRUNC lyhentï¿½ï¿½ ajan pelkï¿½ksi pï¿½ivï¿½mï¿½ï¿½rï¿½ksi */
+                                        + " VALUES (?, ?, ?, ?, ?, TRUNC(?), TRUNC(?), SYSDATE)"
+                            );
 			}
 			this.prepAddReservation.setInt(1, nextID);
 			this.prepAddReservation.setString(2, reservation.getTargetPost().getPostID());
@@ -673,33 +674,6 @@ public class NeroDatabase implements NeroObserver {
 	 *            projekti, jonka henkilï¿½t nï¿½ytetï¿½ï¿½n
 	 * @return henkilï¿½t <code>Person[]</code> oliona.
 	 */
-        public void getPersonInfo(String name) {
-            
-            try {
-                
-            this.prepPersonInfo = this.connection.prepareStatement("SELECT * FROM HENKILO WHERE htunnus="+name);
-            
-            ResultSet rs = this.prepPersonInfo.executeQuery();
-            /*
-		while (rs.next()) {
-			TimeSlice slice = null;
-			Date start = rs.getDate("alkupvm");
-			Date end = rs.getDate("loppupvm");
-
-			Project p = new Project(this.session, rs.getString("koodi"),
-								rs.getString("nimi"),
-								rs.getString("vastuuhenkilo"), slice);
-			this.projects.put(rs.getString("koodi"), p);
-		}
-            */
-		rs.close();
-        session.setStatusMessage("Ladattu henkilön tiedot");
-            
-            } catch (SQLException e) {
-			System.err.println("Tietokantavirhe: " + e.getMessage());
-            
-            }
-        }
 	public Person[] getPeople(TimeSlice timescale, String personName,
 			Project project, boolean showEndingContracts, boolean withoutPost,
 			boolean partTimeTeachersOnly
@@ -872,6 +846,39 @@ public class NeroDatabase implements NeroObserver {
 		session.setStatusMessage("Lï¿½ytyi " + filteredPeople.size() + " henkilï¿½ï¿½.");
 		return (Person[]) filteredPeople.toArray(new Person[0]);
 	}
+        public void savePersonInfo(Person person) {
+            boolean success = false;
+            this.session.waitState(true);
+            try {
+                PreparedStatement prepNextPersonId = this.connection.prepareStatement("SELECT * FROM henkilo WHERE htunnus="+person.getPersonID());       
+                
+                PreparedStatement prepModifyperson = this.connection.prepareStatement(
+                        " INSERT INTO henkilo"
+                        + " (htunnus, etunumet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
+                        + " hetu, oppiarvo, titteli, puhelin_tyo, puhelin_koti, katuosoite,"
+                        + " postinro, postitoimipaikka, valvontasaldo, sahkopostiosoite, hallinnollinen_kommentti"
+                        + " opiskelija_kommentti, ktunnus, kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa)"
+                        /* TRUNC lyhentï¿½ï¿½ ajan pelkï¿½ksi pï¿½ivï¿½mï¿½ï¿½rï¿½ksi */
+                        // 23 arvoa
+                        + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                );
+                /**      
+                this.prepAddReservation.setString(1, nextID);
+                this.prepAddReservation.setString(2, reservation.getTargetPost().getPostID());
+                this.prepAddReservation.setString(3, reservation.getReservingPerson().getPersonID());
+                this.prepAddReservation.SetString(4, reservation.getWeeklyHours());
+                this.prepAddReservation.setString(5, reservation.getDescription());
+                this.prepAddReservation.setString(6, reservation.getTimeSlice().getSQLStartDate());
+                this.prepAddReservation.setString(7, reservation.getTimeSlice().getSQLEndDate());
+
+                if(this.prepAddReservation.executeUpdate() > 0) {
+                        success = true;
+                }
+                * */
+            } catch (SQLException e) {
+			System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+        }
 
 	/**
 	 * Tarkista kuuluuko henkilï¿½ hakuehtojen mukaiseen listaan. Tarkistus tehdï¿½ï¿½n, koska
