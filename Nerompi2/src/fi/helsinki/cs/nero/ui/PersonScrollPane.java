@@ -31,6 +31,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JTextField;
 
 /**
  * <p>
@@ -274,9 +275,37 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 				row.resetIterator();
 				
 				while(row.hasNext()) {
-					TimelineElement post = (TimelineElement)row.next();
-					
-					rowPanel.add(post);
+					TimelineElement post = (TimelineElement)row.next();                                  
+    /* LISAYS */
+                                        JPanel paivat = new JPanel(new FlowLayout());
+                                        
+                                        Kalenterinappi alkukalenteri = new Kalenterinappi(post.getTimeSlice().getStartDate());
+                                        Kalenterinappi loppukalenteri = new Kalenterinappi(post.getTimeSlice().getEndDate());
+                                        
+                                        JTextField paivavali = new JTextField(13);
+                                        paivavali.setEditable(false);
+                                        if (post.getTimeSlice().getStartDate().after(post.getTimeSlice().getEndDate())){
+                                        }
+                                        else{
+                                            if ((post.getTimeSlice().getEndDate().getYear() 
+                                                    - post.getTimeSlice().getStartDate().getYear()) 
+                                                    > 60){
+                                                paivavali.setText("Vakituinen");
+                                                paivat.add(paivavali);
+                                            }
+                                            else {
+                                                paivavali.setText(" - ");
+                                                paivat.add(alkukalenteri);
+                                                paivat.add(paivavali);
+                                                paivat.add(loppukalenteri);
+                                                paivat.setBorder(lineBorder);
+                                                paivat.setBackground(BG);
+                                            }
+                                        }
+                                        
+                                        rowPanel.add(BorderLayout.WEST, paivat);
+    /* /LISAYS*/				
+                		 //rowPanel.add(post);
 				}
 				personsInfo.add(rowPanel);
 			}              
