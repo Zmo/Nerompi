@@ -292,14 +292,14 @@ public class Person implements Comparable {
          * Palauttaa henkilön työsopimukset String-muodossa
          * 
          */
-        public String getContractsAsString() {
+        public String getContractLengthAsString() {
             if(this.contracts == null) {
                 this.contracts = session.getContracts(this);
             } 
             
             String contractString = "";
             for (int i = 0; i < contracts.length; i++) {
-                contractString.concat(" " + contracts[i].toString());
+                contractString = contractString.concat(" " + contracts[i].getTimeSlice());
             }
             
             return contractString;

@@ -20,7 +20,7 @@ public class NeroApplication {
     /**
      * Oletuskonfiguraatiotiedoston nimi
      */
-    public static final String DEFAULT_INI = "/cs/fs/home/ssinisal/Nerompi/Nerompi2/nero.ini"; 
+    public static final String DEFAULT_INI = "/cs/fs/home/skolppo/NetBeansProjects/Nerompi/Nerompi2/nero.ini"; 
 
     /**
      * Konfiguraation parsiva olio
@@ -77,6 +77,7 @@ public class NeroApplication {
         		getProperty("db_class"), getProperty("db_connection"),
         		getProperty("db_username"), getProperty("db_password"));
         session.setDatabase(db);
+        db.updateRooms();
         NeroUI ui = new NeroUI(session);
 	}
 }

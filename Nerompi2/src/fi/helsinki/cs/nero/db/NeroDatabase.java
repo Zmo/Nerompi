@@ -901,18 +901,49 @@ public class NeroDatabase implements NeroObserver {
 		return person.getStatus();
 	}
         
-        public boolean addRoomToPerson(Person person, String room) { // Nerompi
+        /** Nerompi
+         * Lisää tietokannan henkilo-taulun huone_nro-kenttään annettu arvo.
+         * @param person Henkilö, jolle huone lisätään
+         * @param room Lisättävän huoneen nimi
+         * @return Onnistuiko lisääminen
+         */
+        public boolean addRoomToPerson(Person person, String room) {
             if(person.getRoom()!=null) {
                 this.removeRoomFromPerson(person);
             }
-            String prep = "update henkilo"
+            String sqlQuery = "update henkilo"
                         + " set HUONE_NRO=?"
                         + " where HTUNNUS=?";
             try {
-                PreparedStatement ins = this.connection.prepareStatement(prep);
-                ins.setString(1, room);
-                ins.setString(2, person.getPersonID());
-                ins.executeQuery();
+                PreparedStatement prep = this.connection.prepareStatement(sqlQuery);
+                prep.setString(1, room);
+                prep.setString(2, person.getPersonID());
+                prep.executeQuery();
+                person.setRoom(room);
+                return true;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return false;
+            }
+        }
+        /** Nerompi
+         * Korvaa tietokannan henkilo-taulun huone_nro-kentän arvo null-arvolla.
+         * @param person Henkilö, jolta huone poistetaan.
+         * @return Onnistuiko poistaminen.
+         */
+        
+        public boolean removeRoomFromPerson(Person person) {
+            if(person.getRoom()==null) {
+                return false;
+            }
+            String sqlQuery = "update henkilo"
+                        + " set huone_nro=null"
+                        + " where henkilo.htunnus=?";
+            try {
+                PreparedStatement prep = this.connection.prepareStatement(sqlQuery);
+                prep.setString(1, person.getPersonID());
+                prep.executeQuery();
+                person.setRoom(null);
                 return true;
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -920,21 +951,70 @@ public class NeroDatabase implements NeroObserver {
             }
         }
         
-        public boolean removeRoomFromPerson(Person person) { // Nerompi
-            if(person.getRoom()==null) {
-                return false;
-            }
-            String prep = "update henkilo"
-                        + " set huone_nro=null"
-                        + " where henkilo.tunnus=?";
+        /** Nerompi
+         * Hakee tietokannasta umpeutuneet huonevaraukset ja poistaa huoneen näiden varausten henkilöiltä.
+         */
+        public void updateRooms() {
+            
+            // Hakee työpistevaraukset joiden varaus on mennyt umpeen
+            String selectPersonQuery = "select henklo_htunnus"
+                                     + " from tyopistevaraus"
+                                     + " where loppupvm<CURRENT_TIMESTAMP";
+            
+            // Poistaa huoneen annetulta henkilöltä
+            String removeRoomQuery = "update henkilo"
+                                   + " set huone_nro=null"
+                                   + " where htunnus=?";
+            
+            // Hakee työpistevaraukset joiden varaus on alkanut, mutta ei ole vielä loppunut
+            String selectPersonQuery2 = "select henklo_htunnus"
+                                      + " from tyopistevaraus"
+                                      + " where alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP";
+            
+            // Hakee annetun henkilön työpistevaraukseen liittyvän huoneen numeron
+            String selectRoomQuery = "select huone_nro"
+                                   + " from huone"
+                                   + " where huone_nro="
+                                       + " (select huone_nro"
+                                       + " from rhuone"
+                                       + " where id="
+                                           + " (select rhuone_id"
+                                           + " from tyopiste"
+                                           + " where id="
+                                               + " (select tpiste_id"
+                                               + " from tyopistevaraus"
+                                               + " where henklo_htunnus=?"
+                                               + " and alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP)))";
+            
+            // Laittaa annetulle henkilölle annetun huoneen
+            String setRoomQuery = "update henkilo"
+                                + " set huone_nro=?"
+                                + " where htunnus=?";
+            
+            PreparedStatement prep, prep2;
             try {
-                PreparedStatement ins = this.connection.prepareStatement(prep);
-                ins.setString(1, person.getPersonID());
-                ins.executeQuery();
-                return true;
+                ResultSet selectPersonResult = this.connection.prepareStatement(selectPersonQuery).executeQuery();
+                while(selectPersonResult.next()) { // Poistaa huoneen niiltä, joiden varaus on mennyt umpeen
+                    prep = this.connection.prepareStatement(removeRoomQuery);
+                    prep.setString(1, selectPersonResult.getString("henklo_htunnus"));
+                    prep.executeQuery();
+                }
+                
+                ResultSet selectPersonResult2 = this.connection.prepareStatement(selectPersonQuery2).executeQuery();
+                
+                while(selectPersonResult2.next()) { // Päivittää työhuonenumeron niille, joiden varaus on alkanut, mutta ei vielä loppnut
+                    prep2 = this.connection.prepareStatement(selectRoomQuery);
+                    prep2.setString(1, selectPersonResult2.getString("henklo_htunnus"));
+                    ResultSet selectRoomResult = prep2.executeQuery();
+                    selectRoomResult.next();
+                    
+                    prep = this.connection.prepareStatement(setRoomQuery);
+                    prep.setString(1, selectRoomResult.getString("huone_nro"));
+                    prep.setString(2, selectPersonResult2.getString("henklo_htunnus"));
+                    prep.executeQuery();
+                }
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
-                return false;
             }
         }
 
