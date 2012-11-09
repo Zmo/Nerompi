@@ -849,15 +849,17 @@ public class NeroDatabase implements NeroObserver {
         public void savePersonInfo(Person person) {
             boolean success = false;
             this.session.waitState(true);
+            
             try {
-                PreparedStatement prepNextPersonId = this.connection.prepareStatement("SELECT * FROM henkilo WHERE htunnus="+person.getPersonID());       
+                PreparedStatement prepNextPersonId = this.connection.prepareStatement("SELECT * FROM henkilo WHERE htunnus="+person.getPersonID()).exe;       
                 
                 PreparedStatement prepModifyperson = this.connection.prepareStatement(
-                        " INSERT INTO henkilo"
-                        + " (htunnus, etunumet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
+                          " UPDATE henkilo"
+                        + " SET (htunnus, etunumet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
                         + " hetu, oppiarvo, titteli, puhelin_tyo, puhelin_koti, katuosoite,"
                         + " postinro, postitoimipaikka, valvontasaldo, sahkopostiosoite, hallinnollinen_kommentti"
                         + " opiskelija_kommentti, ktunnus, kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa)"
+                        + " WHERE htunnus="+person.getPersonID()
                         /* TRUNC lyhent�� ajan pelk�ksi p�iv�m��r�ksi */
                         // 23 arvoa
                         + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
