@@ -7,14 +7,19 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
-import fi.helsinki.cs.nero.logic.ReportPrinter;
+import fi.helsinki.cs.nero.logic.ReportWriter;
+import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import fi.helsinki.cs.nero.logic.Session;
+import fi.helsinki.cs.nero.logic.XMLReportPrinter;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -45,7 +50,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Vector<String> lockerColumnNames;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
-    private ReportPrinter printer;
+    private ReportWriter printer;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -87,6 +92,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         viewButtons = new javax.swing.ButtonGroup();
+        fileChooserDialog = new javax.swing.JFileChooser();
+        overwriteCheck = new javax.swing.JOptionPane();
         checkboxContainer = new javax.swing.JPanel();
         roomAttributes = new javax.swing.JPanel();
         showPostCount = new javax.swing.JCheckBox();
@@ -119,6 +126,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data = new javax.swing.JTable();
         lockerButton = new javax.swing.JRadioButton();
         roomButton = new javax.swing.JRadioButton();
+        fileTypeChooser = new javax.swing.JComboBox();
+
+        fileChooserDialog.setDialogTitle("Tallenna");
+
+        overwriteCheck.setMessage("Ylikirjoitetaanko?");
+        overwriteCheck.setMessageType(JOptionPane.QUESTION_MESSAGE);
+        overwriteCheck.setOptionType(JOptionPane.YES_NO_OPTION);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -287,12 +301,6 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        restrictByDate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                restrictByDateActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
         restrictionsContainerLayout.setHorizontalGroup(
@@ -392,7 +400,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        saveButton.setText("Tallenna raportti");
+        saveButton.setText("Tallenna");
         saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 saveButtonMouseReleased(evt);
@@ -430,6 +438,8 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
+        fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "XML" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -453,6 +463,8 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(saveButton)
+                .addGap(18, 18, 18)
+                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -468,7 +480,9 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(saveButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(saveButton)
+                    .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -600,24 +614,37 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_lockerDropdownItemStateChanged
 
-    private void restrictByDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByDateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_restrictByDateActionPerformed
-
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
-        printer = new ReportPrinter("testifilu");
-        printer.print(Data.getColumnModel().getColumns());
-        printer = new ReportPrinter("testi2");
-        printer.print(getTableData());
+        int option = fileChooserDialog.showSaveDialog(Data);
+        // tallennus vain, jos on painettu "OK/Tallenna"
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File f = fileChooserDialog.getSelectedFile();
+            // jos tiedosto on olemassa, tallennetaan sen p‰‰lle, vain jos OK k‰ytt‰j‰lle
+            if (f.exists()) {
+                option = JOptionPane.showConfirmDialog(fileChooserDialog,
+                        "Ylikirjoita?", "Tiedosto on jo olemassa",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (option == JOptionPane.OK_OPTION) {
+
+                    if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
+                        printer = new XMLReportPrinter();
+                    } else {
+                        printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
+                    }
+                    printer.print(getTableData(), Data.getColumnModel().getColumns());
+                }
+            }
+        }
     }//GEN-LAST:event_saveButtonMouseReleased
 
     public Object[][] getTableData() {
-        DefaultTableModel dtm = (DefaultTableModel) Data.getModel();
-        int nRow = dtm.getRowCount(), nCol = dtm.getColumnCount();
-        Object[][] tableData = new Object[nRow][nCol];
-        for (int i = 0; i < nRow; i++) {
-            for (int j = 0; j < nCol; j++) {
-                tableData[i][j] = dtm.getValueAt(i, j);
+        DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
+        int rowData = tableModel.getRowCount();
+        int columnData = tableModel.getColumnCount();
+        Object[][] tableData = new Object[rowData][columnData];
+        for (int i = 0; i < rowData; i++) {
+            for (int j = 0; j < columnData; j++) {
+                tableData[i][j] = tableModel.getValueAt(i, j);
             }
         }
         return tableData;
@@ -667,6 +694,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Data;
     private javax.swing.JPanel checkboxContainer;
+    private javax.swing.JFileChooser fileChooserDialog;
+    private javax.swing.JComboBox fileTypeChooser;
     private javax.swing.JLabel floor;
     private javax.swing.JComboBox floorDropdown;
     private javax.swing.JLabel jLabel1;
@@ -675,6 +704,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel lockerAttributes;
     private javax.swing.JRadioButton lockerButton;
     private javax.swing.JComboBox lockerDropdown;
+    private javax.swing.JOptionPane overwriteCheck;
     private javax.swing.JRadioButton peopleButton;
     private javax.swing.JPanel personAttributes;
     private javax.swing.JLabel rajauksetHeader;
