@@ -7,7 +7,7 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
-import fi.helsinki.cs.nero.logic.ReportPrinter;
+import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import fi.helsinki.cs.nero.logic.Session;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Vector<String> lockerColumnNames;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
-    private ReportPrinter printer;
+    private TxtReportPrinter printer;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -87,6 +87,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         viewButtons = new javax.swing.ButtonGroup();
+        fileChooserDialog = new javax.swing.JFileChooser();
         checkboxContainer = new javax.swing.JPanel();
         roomAttributes = new javax.swing.JPanel();
         showPostCount = new javax.swing.JCheckBox();
@@ -119,6 +120,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data = new javax.swing.JTable();
         lockerButton = new javax.swing.JRadioButton();
         roomButton = new javax.swing.JRadioButton();
+        fileTypeChooser = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -392,7 +394,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        saveButton.setText("Tallenna raportti");
+        saveButton.setText("Tallenna");
         saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 saveButtonMouseReleased(evt);
@@ -430,6 +432,8 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
+        fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "XML" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -453,6 +457,8 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(saveButton)
+                .addGap(18, 18, 18)
+                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -468,7 +474,9 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(saveButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(saveButton)
+                    .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -605,10 +613,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_restrictByDateActionPerformed
 
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
-        printer = new ReportPrinter("testifilu");
-        printer.print(Data.getColumnModel().getColumns());
-        printer = new ReportPrinter("testi2");
-        printer.print(getTableData());
+        fileChooserDialog.showDialog(Data, "Tallenna");
+        printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
+        printer.print(getTableData(), Data.getColumnModel().getColumns());
     }//GEN-LAST:event_saveButtonMouseReleased
 
     public Object[][] getTableData() {
@@ -667,6 +674,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Data;
     private javax.swing.JPanel checkboxContainer;
+    private javax.swing.JFileChooser fileChooserDialog;
+    private javax.swing.JComboBox fileTypeChooser;
     private javax.swing.JLabel floor;
     private javax.swing.JComboBox floorDropdown;
     private javax.swing.JLabel jLabel1;
