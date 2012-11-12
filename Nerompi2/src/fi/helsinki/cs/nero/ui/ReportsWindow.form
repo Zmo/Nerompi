@@ -5,6 +5,22 @@
     <Component class="javax.swing.ButtonGroup" name="viewButtons">
     </Component>
     <Component class="javax.swing.JFileChooser" name="fileChooserDialog">
+      <Properties>
+        <Property name="dialogTitle" type="java.lang.String" value="Tallenna"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JOptionPane" name="overwriteCheck">
+      <Properties>
+        <Property name="message" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="&quot;Ylikirjoitetaanko?&quot;" type="code"/>
+        </Property>
+        <Property name="messageType" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="JOptionPane.QUESTION_MESSAGE" type="code"/>
+        </Property>
+        <Property name="optionType" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="JOptionPane.YES_NO_OPTION" type="code"/>
+        </Property>
+      </Properties>
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -451,9 +467,6 @@
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="restrictByDate">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="restrictByDateActionPerformed"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>
