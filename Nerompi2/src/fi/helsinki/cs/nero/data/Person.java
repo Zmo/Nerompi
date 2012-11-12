@@ -83,24 +83,45 @@ public class Person implements Comparable {
 	 * @param reservations Henkilön työpistevaraukset <code>Reservations[]</code> oliona.
 	 * @throws IllegalArgumentException Jos annettu Session tai personID null.
 	 */
-	public Person(Session session, String personID, String name, String etunimi, String sukunimi, Contract[] contracts,
+    public Person(Session session, String personID, String name, String etunimi, String sukunimi, Contract[] contracts,
                 Reservation[] reservations, String room, String callName,
                     String activity, String hetu, String oppiarvo, String titteli, 
                         String workPhone, String homePhone, String address, String postnumber,
                             String postitoimiPaikka, String valvontaSaldo, String sahkoposti, String hallinnollinenKommentti,
                                 String opiskelijaKommentti, String kTunnus, String kannykka, String postilokeroHuone, String hyTyosuhde,
-                                    String hyPuhelinluettelossa)
-	{
-		if (session == null || personID == null || name == null) {
+                                    String hyPuhelinluettelossa) {
+        
+        if (session == null || personID == null || name == null) {
 			throw new IllegalArgumentException();
 		}	
-		this.session = session;
-		this.personID = personID;
-		this.name = name;
-		this.contracts = contracts;
-		this.reservations = reservations;
-                this.room = room;
-	}
+        this.personID = personID;
+        this.name = name;
+        this.contracts = contracts;
+        this.reservations = reservations;
+        this.room = room;
+        this.callName = callName;
+        this.activity = activity;
+        this.hetu = hetu;
+        this.oppiarvo = oppiarvo;
+        this.titteli = titteli;
+        this.workPhone = workPhone;
+        this.homePhone = homePhone;
+        this.address = address;
+        this.postnumber = postnumber;
+        this.postitoimiPaikka = postitoimiPaikka;
+        this.valvontaSaldo = valvontaSaldo;
+        this.sahkoposti = sahkoposti;
+        this.hallinnollinenKommentti = hallinnollinenKommentti;
+        this.opiskelijaKommentti = opiskelijaKommentti;
+        this.kTunnus = kTunnus;
+        this.kannykka = kannykka;
+        this.postilokeroHuone = postilokeroHuone;
+        this.hyTyosuhde = hyTyosuhde;
+        this.hyPuhelinluettelossa = hyPuhelinluettelossa;
+        this.etunimi = etunimi;
+        this.sukunimi = sukunimi;
+        this.session = session;
+    }
 	
 	
 	/**
