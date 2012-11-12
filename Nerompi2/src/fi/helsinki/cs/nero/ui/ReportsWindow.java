@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.XMLReportPrinter;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
@@ -637,19 +638,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_saveButtonMouseReleased
 
-    public Object[][] getTableData() {
-        DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
-        int rowData = tableModel.getRowCount();
-        int columnData = tableModel.getColumnCount();
-        Object[][] tableData = new Object[rowData][columnData];
-        for (int i = 0; i < rowData; i++) {
-            for (int j = 0; j < columnData; j++) {
-                tableData[i][j] = tableModel.getValueAt(i, j);
-            }
-        }
-        return tableData;
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -864,5 +852,39 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void addSorter() {
         rowSorter = new TableRowSorter<>(Data.getModel());
         Data.setRowSorter(rowSorter);
+    }
+
+    private Object[][] getTableData() {
+        DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
+        int rowLength = tableModel.getRowCount();
+        int columnLength = Data.getColumnCount();
+        Object[][] tableData = new Object[rowLength][columnLength];
+
+        // indeksit niille sarakkeille, jotka ovat tällä hetkellä näkyvissä 
+        // sarakemallissa
+        int[] neededIndexes = new int[Data.getColumnCount()];
+        // käydään läpi kaikki sarakemallin sarakkeet, ja otetaan ylös niiden indeksit
+        Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
+        int z = 0;
+        while (e.hasMoreElements()) {
+            String s = e.nextElement().getIdentifier().toString();
+            neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
+        }
+
+        for (int i = 0; i < rowLength; i++) {
+            for (int j = 0; j < columnLength; j++) {
+                // TODO: tee tämä jotenkin järkevämmin...
+                // esim. map rivinumero -> rivin data
+                // älä laita rivin dataan niitä, joilla ei ole saraketta
+                // mitä ei haluta? tämän tiedon saa columnModelilta..
+                // esim. pyydä identifierin indeksi, laita tauluun vain 
+                // ne indeksit, jotka löytyvät columnModelista
+                // pitääkö convertaa?
+
+                // kirjoitetaan tabledataan tieto vain niistä sarakkeista, jotka näkyvillä               
+                tableData[i][j] = tableModel.getValueAt(i, neededIndexes[j]);
+            }
+        }
+        return tableData;
     }
 }
