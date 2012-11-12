@@ -50,6 +50,24 @@ public class Person implements Comparable {
         private String postilokeroHuone;
         private String hyTyosuhde;
         private String hyPuhelinluettelossa;
+        private String etunimi;
+        private String sukunimi;
+
+    public String getEtunimi() {
+        return etunimi;
+    }
+
+    public void setEtunimi(String etunimi) {
+        this.etunimi = etunimi;
+    }
+
+    public String getSukunimi() {
+        return sukunimi;
+    }
+
+    public void setSukunimi(String sukunimi) {
+        this.sukunimi = sukunimi;
+    }
         
 	private Session session;
         
@@ -65,7 +83,7 @@ public class Person implements Comparable {
 	 * @param reservations Henkilön työpistevaraukset <code>Reservations[]</code> oliona.
 	 * @throws IllegalArgumentException Jos annettu Session tai personID null.
 	 */
-	public Person(Session session, String personID, String name, Contract[] contracts,
+	public Person(Session session, String personID, String name, String etunimi, String sukunimi, Contract[] contracts,
                 Reservation[] reservations, String room, String callName,
                     String activity, String hetu, String oppiarvo, String titteli, 
                         String workPhone, String homePhone, String address, String postnumber,

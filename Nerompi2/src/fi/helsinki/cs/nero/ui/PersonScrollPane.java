@@ -231,6 +231,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         //nappulan toiminnallisuus
                         tiedot.addActionListener(new ActionListener() 
                         {
+                            //Mieti uudestaan koko setti herp a derp a durr
                             public void actionPerformed(ActionEvent e)
                             {
                                 //Execute when button is pressed
@@ -346,6 +347,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 	 * </p>
 	 * @param type Tapahtuman tyyppi.
 	 */
+        
 	public void updateObserved(int type) {
 		//Jos aikaväli on muuttunut.
 		if(type == NeroObserverTypes.TIMESCALE) {        

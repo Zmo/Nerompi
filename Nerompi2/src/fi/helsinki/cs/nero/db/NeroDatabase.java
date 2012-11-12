@@ -435,6 +435,7 @@ public class NeroDatabase implements NeroObserver {
 				TimeSlice ts = new TimeSlice(start, end);
 				Person person = new Person(this.session, rs.getString("htunnus"),
                                         rs.getString("sukunimi")+" "+rs.getString("etunimet"),
+                                        rs.getString("etunimet"), rs.getString("sukunimi"),
                                         null, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
                                         rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
                                         rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
@@ -823,6 +824,7 @@ public class NeroDatabase implements NeroObserver {
                    	person = new Person(this.session, 
                    			rs.getString("htunnus"),
                                         rs.getString("sukunimi")+" "+rs.getString("etunimet"),
+                                        rs.getString("etunimet"), rs.getString("sukunimi"),
                                         contracts, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
                                         rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
                                         rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
@@ -849,20 +851,18 @@ public class NeroDatabase implements NeroObserver {
         public void savePersonInfo(Person person) {
             boolean success = false;
             this.session.waitState(true);
+            
             try {
-                PreparedStatement prepNextPersonId = this.connection.prepareStatement("SELECT * FROM henkilo WHERE htunnus="+person.getPersonID());       
-                
                 PreparedStatement prepModifyperson = this.connection.prepareStatement(
-                        " INSERT INTO henkilo"
-                        + " (htunnus, etunumet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
-                        + " hetu, oppiarvo, titteli, puhelin_tyo, puhelin_koti, katuosoite,"
-                        + " postinro, postitoimipaikka, valvontasaldo, sahkopostiosoite, hallinnollinen_kommentti"
-                        + " opiskelija_kommentti, ktunnus, kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa)"
-                        /* TRUNC lyhent�� ajan pelk�ksi p�iv�m��r�ksi */
-                        // 23 arvoa
-                        + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                          " UPDATE henkilo"
+                        + " SET (htunnus="+person.getPersonID()+", etunumet="+person.getEtunimi()+", sukunimi="+person.getSukunimi()+", kutsumanimi="+person.getCallName()+", aktiivisuus="+person.getActivity()+", huone_nro="+person.getRoom()+","
+                        + " hetu="+person.getHetu()+", oppiarvo="+person.getOppiarvo()+", titteli="+person.getTitteli()+", puhelin_tyo="+person.getWorkPhone()+", puhelin_koti="+person.getHomePhone()+", katuosoite="+person.getAddress()+","
+                        + " postinro="+person.getPostnumber()+", postitoimipaikka="+person.getPostitoimiPaikka()+", sahkopostiosoite="+person.getSahkoposti()+", hallinnollinen_kommentti="+person.getHallinnollinenKommentti()+","
+                        + " ktunnus="+person.getkTunnus()+", kannykka="+person.getKannykka()+", postilokerohuone="+person.getPostilokeroHuone()+", hy_tyosuhde="+person.getHyTyosuhde()+", hy_puhelinluettelossa="+person.getHyPuhelinluettelossa()+")"
+                        + " WHERE htunnus="+person.getPersonID()+" AND etunimet="+person.getEtunimi()+" AND sukunimi="+person.getSukunimi()
                 );
-                /**      
+                prepModifyperson.executeUpdate();
+                /**
                 this.prepAddReservation.setString(1, nextID);
                 this.prepAddReservation.setString(2, reservation.getTargetPost().getPostID());
                 this.prepAddReservation.setString(3, reservation.getReservingPerson().getPersonID());
@@ -874,10 +874,11 @@ public class NeroDatabase implements NeroObserver {
                 if(this.prepAddReservation.executeUpdate() > 0) {
                         success = true;
                 }
-                * */
+                */
             } catch (SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
             }
+            
         }
 
 	/**

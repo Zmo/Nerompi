@@ -6,6 +6,7 @@ package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.logic.Session;
 
 /**
  *
