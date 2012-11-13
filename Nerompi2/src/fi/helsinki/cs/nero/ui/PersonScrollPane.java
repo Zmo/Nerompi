@@ -240,7 +240,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 
                                 for (int i = 0; i < persons.length; i++) {
                                     if (persons[i].getPersonID().equals(personIdButton.getText())) {
-                                        new PersonInfoFrame(persons[i]);
+                                        new PersonInfoFrame(persons[i], new Session());
                                     }
                                 }
                                 //hae id
