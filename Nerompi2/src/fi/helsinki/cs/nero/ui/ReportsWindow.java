@@ -626,14 +626,22 @@ public class ReportsWindow extends javax.swing.JFrame {
                         "Ylikirjoita?", "Tiedosto on jo olemassa",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (option == JOptionPane.OK_OPTION) {
-
                     if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
                         printer = new XMLReportPrinter();
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                     }
                     printer.print(getTableData(), Data.getColumnModel().getColumns());
+
                 }
+            } else {
+                if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
+                    printer = new XMLReportPrinter();
+                } else {
+                    printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
+                }
+                printer.print(getTableData(), Data.getColumnModel().getColumns());
+
             }
         }
     }//GEN-LAST:event_saveButtonMouseReleased
@@ -882,7 +890,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 // pitääkö convertaa?
 
                 // kirjoitetaan tabledataan tieto vain niistä sarakkeista, jotka näkyvillä               
-                tableData[i][j] = tableModel.getValueAt(i, neededIndexes[j]);
+                tableData[i][j] = tableModel.getValueAt(i, Data.convertColumnIndexToModel(neededIndexes[j]));
             }
         }
         return tableData;
