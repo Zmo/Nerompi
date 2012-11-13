@@ -169,12 +169,10 @@ public class TimelineElement extends JPanel {
     }
     
     /**
-     * NEROMPI-LISÄYS:
-     * KALENTERINAPPI
-     * 
+     * NEROMPI-LISÄYS: KALENTERINAPPI
+     * @param label Varattu huone ja työpiste 
      */
-/*LISAYS*/
-    JPanel kalenapit;
+    JPanel kalenterinapit;
 
     private void kalenterinappipari(String label) {;
 
@@ -211,14 +209,14 @@ public class TimelineElement extends JPanel {
 
             }
         }
-        this.kalenapit = paivat;
+        this.kalenterinapit = paivat;
     }
 
     public JPanel getKalenterinapit() {
-        if (this.kalenapit == null) {
+        if (this.kalenterinapit == null) {
             return null;
         }
-        return this.kalenapit;
+        return this.kalenterinapit;
     }
 /* /LISAYS*/
     
