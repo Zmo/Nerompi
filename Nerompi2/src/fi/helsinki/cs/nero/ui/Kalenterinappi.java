@@ -15,11 +15,16 @@ import org.sourceforge.jcalendarbutton.*;
 public class Kalenterinappi extends JCalendarButton {
 
     private static String[] kuulyhenteet = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
+    private TimelineElement element;
+    
     public Kalenterinappi(Date dateTarget) {
         super(dateTarget);
         this.setIcon(null);
         this.asetaAikaTeksti();
+    }
+    public Kalenterinappi(Date dateTarget, TimelineElement element){
+        this(dateTarget);
+        this.element = element;
     }
 
     @Override
@@ -52,6 +57,9 @@ public class Kalenterinappi extends JCalendarButton {
 
                 this.asetaAikaTeksti();
                 System.out.println(" - - Paivavalinta muuttui - -");
+/* VAARALLINEN MUUTOS */
+//                this.element.storeToDB();
+/* / VAARALLINEN MUUTOS */
             }
         }
     }

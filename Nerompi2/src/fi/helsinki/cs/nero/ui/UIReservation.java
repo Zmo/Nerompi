@@ -1,13 +1,14 @@
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.data.Reservation;
+import fi.helsinki.cs.nero.logic.Session;
 import java.awt.Color;
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-import fi.helsinki.cs.nero.data.Reservation;
-import fi.helsinki.cs.nero.logic.Session;
 /**
  * Esittää yhden työpistevarauksen.
  */
@@ -45,14 +46,18 @@ public class UIReservation extends TimelineElement {
         super(reservation.getTimeSlice(), scale, BG_COLOR, reservation.getReservingPerson().getName(), reservation.getSession());
         this.setBorder(BORDER);
         this.reservation = reservation;        
-
+        
     }
     
     /**
      * Tallettaa elementintiedot tietokantaan.
      */
+    @Override
     public void storeToDB() {
         //Jos elementin kokoa saa muuttaa on se ylipäätänsä voinut muuttua.
+/* VAARALLINEN MUUTOS */
+//        this.updateNappiPaivays();
+/* / VAARALLINEN MUUTOS */
         if(this.resizable) {
             this.reservation.getSession().updateReservation(this.reservation);
         }
@@ -61,6 +66,7 @@ public class UIReservation extends TimelineElement {
     /**
      * Asettaa aktiivisen huoneen.
      */
+    @Override
     public void setActiveRoom(){
     		this.reservation.getSession().setActiveRoom(this.reservation.getTargetPost().getRoom());
     }

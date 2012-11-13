@@ -16,6 +16,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 
+import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.logic.Session;
 import java.awt.BorderLayout;
@@ -76,6 +77,12 @@ public class TimelineElement extends JPanel {
      * Käytettävä TooltipManager.
      */
     private static ToolTipManager  manager = ToolTipManager.sharedInstance();
+
+    /**
+     * Kalenterinapit
+     */
+    private Kalenterinappi alkukalenteri;
+    private Kalenterinappi loppukalenteri;
     
     private static Color BG_COLOR = new Color(39,177,39);
     /**
@@ -175,13 +182,13 @@ public class TimelineElement extends JPanel {
     JPanel kalenterinapit;
 
     private void kalenterinappipari(String label) {;
-
+        
         JPanel paivat = new JPanel(new FlowLayout());
 
 
-        Kalenterinappi alkukalenteri = new Kalenterinappi(this.timeSlice.getStartDate());
-        Kalenterinappi loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate());
-
+        this.alkukalenteri = new Kalenterinappi(this.timeSlice.getStartDate(), this);
+        this.loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate(), this);
+        
         JLabel huoneKentta = new JLabel(" ");
         if (this.getTimeSlice().getStartDate().after(this.getTimeSlice().getEndDate())) {
         } else {
@@ -217,6 +224,11 @@ public class TimelineElement extends JPanel {
             return null;
         }
         return this.kalenterinapit;
+    }
+    
+    public void updateNappiPaivays(){
+        this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
+        this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
     }
 /* /LISAYS*/
     
