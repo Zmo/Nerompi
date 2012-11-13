@@ -626,14 +626,22 @@ public class ReportsWindow extends javax.swing.JFrame {
                         "Ylikirjoita?", "Tiedosto on jo olemassa",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (option == JOptionPane.OK_OPTION) {
-
                     if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
                         printer = new XMLReportPrinter();
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                     }
                     printer.print(getTableData(), Data.getColumnModel().getColumns());
+
                 }
+            } else {
+                if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
+                    printer = new XMLReportPrinter();
+                } else {
+                    printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
+                }
+                printer.print(getTableData(), Data.getColumnModel().getColumns());
+
             }
         }
     }//GEN-LAST:event_saveButtonMouseReleased
@@ -856,10 +864,11 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private Object[][] getTableData() {
         DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
-        int rowLength = tableModel.getRowCount();
-        int columnLength = Data.getColumnCount();
-        Object[][] tableData = new Object[rowLength][columnLength];
+        int rowCount = tableModel.getRowCount();
+        int columnCount = Data.getColumnCount();
+        Object[][] tableData = new Object[rowCount+1][columnCount];
 
+        // TODO: tarkista onko malli tyhjä äläkä tee mitään, jos on...
         // indeksit niille sarakkeille, jotka ovat tällä hetkellä näkyvissä 
         // sarakemallissa
         int[] neededIndexes = new int[Data.getColumnCount()];
@@ -869,20 +878,18 @@ public class ReportsWindow extends javax.swing.JFrame {
         while (e.hasMoreElements()) {
             String s = e.nextElement().getIdentifier().toString();
             neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
+            tableData[0][z] = s;
+            z++;
         }
 
-        for (int i = 0; i < rowLength; i++) {
-            for (int j = 0; j < columnLength; j++) {
+        for (int i = 1; i < rowCount; i++) {
+            for (int j = 0; j < columnCount; j++) {
                 // TODO: tee tämä jotenkin järkevämmin...
                 // esim. map rivinumero -> rivin data
-                // älä laita rivin dataan niitä, joilla ei ole saraketta
-                // mitä ei haluta? tämän tiedon saa columnModelilta..
-                // esim. pyydä identifierin indeksi, laita tauluun vain 
-                // ne indeksit, jotka löytyvät columnModelista
-                // pitääkö convertaa?
 
-                // kirjoitetaan tabledataan tieto vain niistä sarakkeista, jotka näkyvillä               
-                tableData[i][j] = tableModel.getValueAt(i, neededIndexes[j]);
+                // kirjoitetaan vain ne sarakkeet, jotka näkyvillä
+                // oikea sarake saadaan, kun muutetaan datamallin indeksi sarakemallin indeksiksi
+                tableData[i][j] = tableModel.getValueAt(i, Data.convertColumnIndexToModel(neededIndexes[j]));
             }
         }
         return tableData;
