@@ -18,6 +18,10 @@ import javax.swing.border.Border;
 
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.logic.Session;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * <p>
@@ -73,7 +77,7 @@ public class TimelineElement extends JPanel {
      */
     private static ToolTipManager  manager = ToolTipManager.sharedInstance();
     
-    
+    private static Color BG_COLOR = new Color(39,177,39);
     /**
      * Konstruktori.
      * @param timeSlice Elementin esittämän aikavälin pituus.
@@ -143,6 +147,7 @@ public class TimelineElement extends JPanel {
         this.ownResize();
         Border blackline = BorderFactory.createLineBorder(Color.black);
         this.setBorder(blackline);
+        this.kalenterinappipari(label);
       
         //Listenerit.
         MouseListener listener = new DragMouseAdapter();
@@ -162,6 +167,60 @@ public class TimelineElement extends JPanel {
     public TimelineElement() {
         super();
     }
+    
+    /**
+     * NEROMPI-LISÄYS:
+     * KALENTERINAPPI
+     * 
+     */
+/*LISAYS*/
+    JPanel kalenapit;
+
+    private void kalenterinappipari(String label) {;
+
+        JPanel paivat = new JPanel(new FlowLayout());
+
+
+        Kalenterinappi alkukalenteri = new Kalenterinappi(this.timeSlice.getStartDate());
+        Kalenterinappi loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate());
+
+        JLabel huoneKentta = new JLabel(" ");
+        if (this.getTimeSlice().getStartDate().after(this.getTimeSlice().getEndDate())) {
+        } else {
+            if (this.getTimeSlice().getStartDate() == null || this.getTimeSlice().getEndDate() == null) {
+                huoneKentta.setText(" ");
+                paivat.add(huoneKentta);
+            } else if ((this.getTimeSlice().getEndDate().getYear()
+                    - this.getTimeSlice().getStartDate().getYear())
+                    > 60) {
+                huoneKentta.setText(/*person.getPerson().getTitteli()*/"Tittelikenttä");
+
+
+                paivat.add(huoneKentta);
+            } else {
+                JLabel valimerkki = new JLabel(" - ");
+                huoneKentta.setText(label + " ");
+                //paivat.setBackground(new Color(255,240,192));
+                alkukalenteri.setBackground(BG_COLOR);
+                loppukalenteri.setBackground(BG_COLOR);
+                
+                paivat.add(huoneKentta);
+                paivat.add(alkukalenteri);
+                paivat.add(valimerkki);
+                paivat.add(loppukalenteri);
+
+            }
+        }
+        this.kalenapit = paivat;
+    }
+
+    public JPanel getKalenterinapit() {
+        if (this.kalenapit == null) {
+            return null;
+        }
+        return this.kalenapit;
+    }
+/* /LISAYS*/
     
     /**
      * Luo tälle TimelineElementille labelin.
