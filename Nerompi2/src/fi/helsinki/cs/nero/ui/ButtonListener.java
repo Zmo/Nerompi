@@ -63,7 +63,7 @@ public class ButtonListener implements ActionListener {
                 }
                 
                 if(e.getActionCommand().equals("addPerson")) {
-                    
+                    PersonInfoFrame infoframe = new PersonInfoFrame();
                 }
                 
                 if(e.getActionCommand().equals("reports")) {
