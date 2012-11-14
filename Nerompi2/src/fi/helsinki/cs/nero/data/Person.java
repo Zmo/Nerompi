@@ -308,16 +308,10 @@ public class Person implements Comparable {
             this.hyPuhelinluettelossa = hyPuhelinluettelossa;
         }
 	
-	/**
-         * Palauttaa henkilön työhuoneen
-         * @return room Stringinä
-         */
         public String getRoom() {
             return this.room;
         }
-        /**
-         * 
-         */
+        
         public void setRoom(String room) {
             this.room = room;
         }

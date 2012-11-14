@@ -126,7 +126,6 @@ public class Session {
             project = null;             // ei projektia
             showEndingContracts = true; // nï¿½ytetï¿½ï¿½n pï¿½ï¿½ttyvï¿½t sopimukset
             withoutPost = true;         // nï¿½ytetï¿½ï¿½n tyï¿½pisteettï¿½mï¿½t
-            //partTimeTeachersOnly = false;   // ei rajata sivut.tuntiop:iin
             activeEmployeesOnly = true; // oletusarvoisesti näytetään vain aktiiviset henkilöt
             contract = false;           // oletusarvoisesti näytetään myös henkilöt, joilla ei ole voimassaolevaa työsopimusta
             roomName = "";              // ei huoneen nimeï¿½
@@ -373,19 +372,6 @@ public class Session {
 	public int getFilterFreePosts() {
 		return freePosts;
 	}
-
-    /**
-     * Asettaa rajauksen, jonka mukaan nï¿½ytetï¿½ï¿½n ainoastaan sivutoimiset tuntiopettajat.
-     * @param partTimeTeachersOnly
-     *
-    public void setFilterPartTimeTeachers(boolean partTimeTeachersOnly) {
-    	this.partTimeTeachersOnly = partTimeTeachersOnly;
-    	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
-    }
-
-    public boolean getFilterPartTimeTeachers() {
-    	return this.partTimeTeachersOnly;
-    }*/
         
     /**
      * Voidaan rajata listattavia henkilöitä heidän aktiivisuuden perusteella

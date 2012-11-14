@@ -229,17 +229,6 @@ public class TestSession extends TestCase implements NeroObserver {
     	assertEquals(limit-1, this.notifications[NeroObserverTypes.FILTER_ROOMS]);
     }
     
-    public void testFilterPartTimeTeachers() {
-    	session.registerObserver(NeroObserverTypes.FILTER_PEOPLE, this);
-    	
-    	session.setFilterPartTimeTeachers(true);
-    	assertTrue(session.getFilterPartTimeTeachers());
-    	session.setFilterPartTimeTeachers(false);
-    	assertFalse(session.getFilterPartTimeTeachers());
-
-    	assertEquals(2, this.notifications[NeroObserverTypes.FILTER_PEOPLE]);
-    }
-    
     public void testTimeScaleSlice() {
     	session.setFilterTimescale(this.timeSlice);
     	

@@ -16,9 +16,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
@@ -73,14 +77,33 @@ public class NeroUI {
         frame.setSize(1280, HEIGHT + 40);
         frame.setResizable(true);
         
-		try{
+        // Tehdään valikkopalkki, siihen nappi ja nappiin valikko
+        JMenuItem addPerson = new JMenuItem("Lisää henkilö");
+        JMenuItem reports = new JMenuItem("Raportit");
+        addPerson.setActionCommand("addPerson");
+        reports.setActionCommand("reports");
+        ButtonListener listener = new ButtonListener(this.session);
+        addPerson.addActionListener(listener);
+        reports.addActionListener(listener);
+        
+        JMenu menu = new JMenu("Herp a Derp");
+        menu.add(addPerson);
+        menu.add(reports);
+        
+        JMenuBar menubar = new JMenuBar();
+        menubar.add(menu);
+        
+        frame.add(menubar);
+        frame.setJMenuBar(menubar);
+        
+	try{
             Plastic3DLookAndFeel.setMyCurrentTheme(new DesertBluer());
- 			UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-			SwingUtilities.updateComponentTreeUI(frame);
-		}
-		catch(Exception e){
+            UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+            SwingUtilities.updateComponentTreeUI(frame);
+	}
+	catch(Exception e) {
 		   //pitï¿½iskï¿½s sitten jotain muka tehï¿½?
-		}
+	}
         
         JPanel fullPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         

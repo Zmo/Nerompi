@@ -61,5 +61,13 @@ public class ButtonListener implements ActionListener {
 			}
 			return;
                 }
+                
+                if(e.getActionCommand().equals("addPerson")) {
+                    
+                }
+                
+                if(e.getActionCommand().equals("reports")) {
+                    ReportsWindow reports = new ReportsWindow();
+                }
 	}
 }

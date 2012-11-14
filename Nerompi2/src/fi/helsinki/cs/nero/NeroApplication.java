@@ -20,11 +20,7 @@ public class NeroApplication {
     /**
      * Oletuskonfiguraatiotiedoston nimi
      */
-<<<<<<< HEAD
-    public static final String DEFAULT_INI = "/cs/fs/home/skolppo/NetBeansProjects/Nerompi/Nerompi2/nero.ini"; 
-=======
-    public static final String DEFAULT_INI = "/cs/fs/home/rkolagus/Desktop/nero.ini"; 
->>>>>>> e6ff033bdedfe134cf8ad2e060e60ab5b8fdac0e
+    public static final String DEFAULT_INI = "nero.ini"; 
 
     /**
      * Konfiguraation parsiva olio
