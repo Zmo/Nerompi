@@ -138,8 +138,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         overwriteCheck.setMessageType(JOptionPane.QUESTION_MESSAGE);
         overwriteCheck.setOptionType(JOptionPane.YES_NO_OPTION);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         showPostCount.setText("Työpisteiden lkm");
         showPostCount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
