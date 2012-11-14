@@ -16,15 +16,17 @@ public class Kalenterinappi extends JCalendarButton {
 
     private static String[] kuulyhenteet = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private TimelineElement element;
+    private boolean onkoAlku;
     
     public Kalenterinappi(Date dateTarget) {
         super(dateTarget);
         this.setIcon(null);
         this.asetaAikaTeksti();
     }
-    public Kalenterinappi(Date dateTarget, TimelineElement element){
+    public Kalenterinappi(Date dateTarget, TimelineElement element, boolean onkoAlku){
         this(dateTarget);
         this.element = element;
+        this.onkoAlku = onkoAlku;
     }
 
     @Override
@@ -49,16 +51,17 @@ public class Kalenterinappi extends JCalendarButton {
                 } catch (Exception e) {
                     System.out.println(" - VIRHE - Kalenterinappi.propertyChange: " + e);
                 }
+                if ((this.onkoAlku && this.element.updateNappiPaivays(tulos, element.getLoppukalenteri().getTargetDate())) ||
+                   (!(this.onkoAlku) && this.element.updateNappiPaivays(element.getAlkukalenteri().getTargetDate(), tulos))) {
+                    this.setTargetDate(tulos);
 
-                this.setTargetDate(tulos);
+                    System.out.println("Muutettu kohde: " + this.getTargetDate());
 
-                System.out.println("Muutettu kohde: " + this.getTargetDate());
-
-
-                this.asetaAikaTeksti();
-                System.out.println(" - - Paivavalinta muuttui - -");
-/* VAARALLINEN MUUTOS */
-                this.element.storeToDB();
+                    this.asetaAikaTeksti();
+                    System.out.println(" - - Paivavalinta muuttui - -");
+                    /* VAARALLINEN MUUTOS */
+                    this.element.storeToDB();
+                }
 /* / VAARALLINEN MUUTOS */
             }
         }
