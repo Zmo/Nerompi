@@ -21,7 +21,7 @@ public class NeroApplication {
      * Oletuskonfiguraatiotiedoston nimi
      */
 
-    public static final String DEFAULT_INI = "/cs/fs/home/rkolagus/Desktop/nero.ini"; 
+    public static final String DEFAULT_INI = "nero.ini"; 
 
 
     /**

@@ -270,6 +270,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Nimike"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showJobTitleMouseReleased"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
