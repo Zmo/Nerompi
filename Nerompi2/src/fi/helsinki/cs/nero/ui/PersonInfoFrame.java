@@ -312,6 +312,8 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
         person.setRoom(huoneField.getText());
+        person.setOppiarvo(oppiarvoField.getText());
+        person.setTitteli(titteliField.getText());
         person.getSession().updatePerson(person);
     }//GEN-LAST:event_saveButtonActionPerformed
 
