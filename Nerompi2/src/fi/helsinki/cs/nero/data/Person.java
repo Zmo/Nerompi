@@ -25,6 +25,8 @@ public class Person implements Comparable {
 	/**Henkilön nimi*/
 	private final String name;			
 
+    
+
 	/**Henkilön työsopimukset*/
 	private Contract[] contracts;
 	
@@ -306,6 +308,14 @@ public class Person implements Comparable {
 
         public void setHyPuhelinluettelossa(String hyPuhelinluettelossa) {
             this.hyPuhelinluettelossa = hyPuhelinluettelossa;
+        }
+        
+        public Session getSession() {
+        return session;
+        }
+
+        public void setSession(Session session) {
+            this.session = session;
         }
 	
 	/**

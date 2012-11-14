@@ -888,5 +888,11 @@ public class Session {
         }
     	obsman.addObserver(type, observer);
     }
+    public void saveNewPerson(Person person) {
+        db.createPerson(person);
+    }
+    public void updatePerson(Person person) {
+        db.updatePersonInfo(person);
+    }
 
 }
