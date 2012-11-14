@@ -81,7 +81,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         initContainerData();
         initModels();
         initColumnData();
-
+        this.setVisible(true);
     }
 
     /**
@@ -137,7 +137,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         overwriteCheck.setMessageType(JOptionPane.QUESTION_MESSAGE);
         overwriteCheck.setOptionType(JOptionPane.YES_NO_OPTION);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         showPostCount.setText("Työpisteiden lkm");
         showPostCount.addActionListener(new java.awt.event.ActionListener() {
@@ -208,6 +208,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         showPhone.setText("Puhelinnumero");
 
         showJobTitle.setText("Nimike");
+        showJobTitle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showJobTitleMouseReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout personAttributesLayout = new javax.swing.GroupLayout(personAttributes);
         personAttributes.setLayout(personAttributesLayout);
@@ -652,6 +657,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_saveButtonMouseReleased
 
+    private void showJobTitleMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showJobTitleMouseReleased
+        if (showJobTitle.isSelected()) {
+            showColumn("Titteli", roomColumnModel, hiddenRoomColumns);
+        } else {
+            hideColumn("Titteli", roomColumnModel, hiddenRoomColumns);
+        }
+    }//GEN-LAST:event_showJobTitleMouseReleased
+
     /**
      * @param args the command line arguments
      */
@@ -748,6 +761,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleComponents.add(showPhone);
         peopleComponents.add(showRoomAndPost);
         peopleComponents.add(showContracts);
+        peopleComponents.add(showJobTitle);
 
         /*Components for post locker report*/
         lockerComponents = new ArrayList<>();
@@ -782,11 +796,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
         //TODO: muuta Vectorin tyyppi Objectiksi, että kaikilla sarakkeilla voi olla oikea tyyppi -> voidaan filtteröidä järkevästi
 
-        // alustetaan data huoneiden tietojen näyttämistä varten
-        // ideana se, että data taustalla pysyy aina samana ja se sidotaan
-        // tiettyihin sarakkeihin (sarakkeiden identifierit tulevat nimivektorista)
-        // käyttäjän inputista riippuen näytetään tai piilotetaan tietty sarake,
-        // mutta data taustalla pysyy samana
+        /* alustetaan data huoneiden tietojen näyttämistä varten
+         ideana se, että data taustalla pysyy aina samana ja se sidotaan
+         tiettyihin sarakkeisiin (sarakkeiden identifierit tulevat nimivektorista)
+         käyttäjän inputista riippuen näytetään tai piilotetaan tietty sarake,
+         mutta data taustalla pysyy samana */
 
         // huone-tarkastelun data ja sarakkeet
         roomData = new Vector<>();
@@ -816,9 +830,11 @@ public class ReportsWindow extends javax.swing.JFrame {
             l.add(people[i].getPostilokeroHuone());
             l.add(people[i].getRoom());
             l.add(people[i].getWorkPhone());
+            l.add(people[i].getTitteli());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
             peopleRow.add(people[i].getContractLengthAsString());
+            peopleRow.add(people[i].getTitteli());
             peopleData.add(i, peopleRow);
         }
 
@@ -826,6 +842,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnNames.add("Nimi");
         peopleColumnNames.add("Huone");
         peopleColumnNames.add("Sopimus");
+        peopleColumnNames.add("Titteli");
 
         // postilokero-näkymän sarakkeet        
         lockerColumnNames = new Vector<>();
@@ -850,7 +867,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     private void hideColumn(String name, TableColumnModel model,
-            HashMap<String, IndexedColumn> hiddenColumns) {
+        HashMap<String, IndexedColumn> hiddenColumns) {
         int index = model.getColumnIndex(name);
         TableColumn newColumn = model.getColumn(index);
         IndexedColumn ic = new IndexedColumn(index, newColumn);
@@ -869,20 +886,32 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSorter(rowSorter);
     }
 
+    private int[] listShownColumnsByIndex() {
+        Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
+        int[] neededIndexes = new int[Data.getColumnCount()];
+        int z = 0;
+        while (e.hasMoreElements()) {
+            String s = e.nextElement().getIdentifier().toString();
+            neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
+            z++;
+        }
+        return neededIndexes;
+    }
+
     private HashMap<Integer, Object[]> getTableDataAsMap() {
+
         HashMap<Integer, Object[]> map = new HashMap<>();
-
-
         DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
         int rowCount = tableModel.getRowCount();
         int columnCount = Data.getColumnCount();
 
         // TODO: tarkista onko malli tyhjä äläkä tee mitään, jos on...
         // pitäisikö tämän ehkä olla treemap, että olisi sorted..?
-        
-        // tässä siis otetaan talteen sarakkeiden nimet sekä tieto siitä,
-        // mitkä niiden indeksit ovat, jotta tiedetään, mitä dataa halutaan tiedostoon
-        int[] neededIndexes = new int[Data.getColumnCount()];
+
+        /*Tässä siis otetaan talteen sarakkeiden nimet sekä tieto siitä,
+         mitkä niiden indeksit ovat, jotta tiedetään, mitä dataa halutaan tiedostoon.
+         Lisäksi otetaan ylös sarakkeiden nimet. */
+        int[] neededIndexes = listShownColumnsByIndex();
         Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
         int z = 0;
         Object[] rowData = new Object[columnCount];
@@ -892,7 +921,6 @@ public class ReportsWindow extends javax.swing.JFrame {
             rowData[z] = s;
             z++;
         }
-        // laitetaan kartan ekaksi riviksi
         map.put(0, rowData);
 
         RowSorter rs = Data.getRowSorter();
@@ -907,7 +935,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     // kirjoitetaan vain ne sarakkeet, jotka näkyvillä
                     // oikea sarake saadaan, kun muutetaan 
                     // datamallin indeksi sarakemallin indeksiksi
-                    rowData[j] = tableModel.getValueAt(i, 
+                    rowData[j] = tableModel.getValueAt(i,
                             Data.convertColumnIndexToModel(neededIndexes[j]));
                 }
                 rowInReturnTable = rowIndex;
@@ -916,5 +944,4 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
         return map;
     }
-
 }

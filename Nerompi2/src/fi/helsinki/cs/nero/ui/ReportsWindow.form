@@ -24,7 +24,7 @@
     </Component>
   </NonVisualComponents>
   <Properties>
-    <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="defaultCloseOperation" type="int" value="2"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -270,6 +270,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Nimike"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showJobTitleMouseReleased"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
