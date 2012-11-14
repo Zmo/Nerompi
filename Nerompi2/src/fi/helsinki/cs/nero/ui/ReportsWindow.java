@@ -23,6 +23,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -106,6 +107,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showEmail = new javax.swing.JCheckBox();
         showContracts = new javax.swing.JCheckBox();
         showPhone = new javax.swing.JCheckBox();
+        showJobTitle = new javax.swing.JCheckBox();
         lockerAttributes = new javax.swing.JPanel();
         showRoom = new javax.swing.JCheckBox();
         showPhone2 = new javax.swing.JCheckBox();
@@ -205,6 +207,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         showPhone.setText("Puhelinnumero");
 
+        showJobTitle.setText("Nimike");
+
         javax.swing.GroupLayout personAttributesLayout = new javax.swing.GroupLayout(personAttributes);
         personAttributes.setLayout(personAttributesLayout);
         personAttributesLayout.setHorizontalGroup(
@@ -215,7 +219,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                     .addComponent(showRoomAndPost)
                     .addComponent(showPhone)
                     .addComponent(showContracts)
-                    .addComponent(showEmail))
+                    .addComponent(showEmail)
+                    .addComponent(showJobTitle))
                 .addContainerGap())
         );
         personAttributesLayout.setVerticalGroup(
@@ -229,6 +234,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addComponent(showContracts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showEmail)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showJobTitle)
                 .addContainerGap())
         );
 
@@ -292,7 +299,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Näytä");
 
-        jLabel2.setText("Varauksen loppu");
+        jLabel2.setText("Työsuhde päättyy aikavälillä");
 
         jLabel3.setText("Nimi");
 
@@ -318,14 +325,13 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(12, 12, 12)
+                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                        .addGap(101, 101, 101)
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, restrictionsContainerLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                    .addGroup(restrictionsContainerLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(restrictByDate, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -631,7 +637,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                     }
-                    printer.print(getTableData(), Data.getColumnModel().getColumns());
+                    printer.print(getTableDataAsMap());
 
                 }
             } else {
@@ -640,7 +646,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 } else {
                     printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                 }
-                printer.print(getTableData(), Data.getColumnModel().getColumns());
+                printer.print(getTableDataAsMap());
 
             }
         }
@@ -713,6 +719,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JCheckBox showContracts;
     private javax.swing.JCheckBox showEmail;
     private javax.swing.JCheckBox showFloor;
+    private javax.swing.JCheckBox showJobTitle;
     private javax.swing.JCheckBox showPhone;
     private javax.swing.JCheckBox showPhone2;
     private javax.swing.JCheckBox showPostCount;
@@ -862,36 +869,52 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSorter(rowSorter);
     }
 
-    private Object[][] getTableData() {
+    private HashMap<Integer, Object[]> getTableDataAsMap() {
+        HashMap<Integer, Object[]> map = new HashMap<>();
+
+
         DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
         int rowCount = tableModel.getRowCount();
         int columnCount = Data.getColumnCount();
-        Object[][] tableData = new Object[rowCount+1][columnCount];
 
         // TODO: tarkista onko malli tyhjä äläkä tee mitään, jos on...
-        // indeksit niille sarakkeille, jotka ovat tällä hetkellä näkyvissä 
-        // sarakemallissa
+        // pitäisikö tämän ehkä olla treemap, että olisi sorted..?
+        
+        // tässä siis otetaan talteen sarakkeiden nimet sekä tieto siitä,
+        // mitkä niiden indeksit ovat, jotta tiedetään, mitä dataa halutaan tiedostoon
         int[] neededIndexes = new int[Data.getColumnCount()];
-        // käydään läpi kaikki sarakemallin sarakkeet, ja otetaan ylös niiden indeksit
         Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
         int z = 0;
+        Object[] rowData = new Object[columnCount];
         while (e.hasMoreElements()) {
             String s = e.nextElement().getIdentifier().toString();
             neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
-            tableData[0][z] = s;
+            rowData[z] = s;
             z++;
         }
+        // laitetaan kartan ekaksi riviksi
+        map.put(0, rowData);
 
-        for (int i = 1; i < rowCount; i++) {
-            for (int j = 0; j < columnCount; j++) {
-                // TODO: tee tämä jotenkin järkevämmin...
-                // esim. map rivinumero -> rivin data
-
-                // kirjoitetaan vain ne sarakkeet, jotka näkyvillä
-                // oikea sarake saadaan, kun muutetaan datamallin indeksi sarakemallin indeksiksi
-                tableData[i][j] = tableModel.getValueAt(i, Data.convertColumnIndexToModel(neededIndexes[j]));
+        RowSorter rs = Data.getRowSorter();
+        int rowInReturnTable = 1;
+        for (int i = 0; i < rowCount; i++) {
+            // jos converter palauttaa -1, rivi ei ole näkyvä -> ei lisätä sitä mapiin
+            // tämän jälkeen pitäisi vielä saada rivit oikeille kohdille..
+            int rowIndex = rs.convertRowIndexToView(i);
+            if (rowIndex > -1) {
+                rowData = new Object[columnCount];
+                for (int j = 0; j < columnCount; j++) {
+                    // kirjoitetaan vain ne sarakkeet, jotka näkyvillä
+                    // oikea sarake saadaan, kun muutetaan 
+                    // datamallin indeksi sarakemallin indeksiksi
+                    rowData[j] = tableModel.getValueAt(i, 
+                            Data.convertColumnIndexToModel(neededIndexes[j]));
+                }
+                rowInReturnTable = rowIndex;
+                map.put(rowInReturnTable, rowData);
             }
         }
-        return tableData;
+        return map;
     }
+
 }

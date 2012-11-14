@@ -4,10 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.TableColumn;
 
 /**
  *
@@ -38,51 +38,20 @@ public class TxtReportPrinter implements ReportWriter {
         }
     }
 
-    public void print(Enumeration<TableColumn> columns) {
-        try {
-            while (columns.hasMoreElements()) {
-                writer.append(columns.nextElement().getHeaderValue().toString());
-                writer.newLine();
-            }
-            writer.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void print(Object[][] tableData) {
-        try {
-            for (int i = 0; i < tableData.length; i++) {
-                for (int j = 0; j < tableData[i].length; j++) {
-                    Object entry = tableData[i][j];
-                    if (entry != null) {
-                        writer.append(entry.toString());
-                    } else {
-                        writer.append("ei ole");
-                    }
-                    writer.append(" ");
-                }
-                writer.newLine();
-            }
-            writer.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     @Override
-    public void print(Object[][] tableData, Enumeration<TableColumn> columns) {
+    public void print(HashMap<Integer, Object[]> data) {
+
         try {
-            for (int i = 0; i < tableData.length; i++) {
-                for (int j = 0; j < tableData[i].length; j++) {
-                    Object entry = tableData[i][j];
-                    if (entry != null) {
-                        writer.append(" * " + entry.toString());
+            TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
+            for (Integer i : sortedSet) {
+                Object[] row = data.get(i);
+                for (int j = 0; j < row.length; j++) {
+                    if (row[j] != null) {
+                        writer.append(row[j].toString() + " ");
                     } else {
-                        // jos kenttää ei ole määritelty, tulostetaan jotain muuta
-                        writer.append("* ei ole");
+                        writer.append("ei ole ");
                     }
-                    writer.append(" ");
                 }
                 writer.newLine();
             }
@@ -91,4 +60,5 @@ public class TxtReportPrinter implements ReportWriter {
             Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
