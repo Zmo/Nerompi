@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.XMLReportPrinter;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Vector;
@@ -122,7 +123,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         restrictByName = new javax.swing.JTextField();
-        restrictByDate = new javax.swing.JTextField();
+        restrictByFirstDate = new javax.swing.JTextField();
+        restrictByLastDate = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         peopleButton = new javax.swing.JRadioButton();
         saveButton = new javax.swing.JButton();
         tableContainer = new javax.swing.JScrollPane();
@@ -314,42 +318,67 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
+        restrictByFirstDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByFirstDateActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Alkupvm.");
+
+        jLabel5.setText("Loppupvm.");
+
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
         restrictionsContainerLayout.setHorizontalGroup(
             restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                .addComponent(rajauksetHeader)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                .addGap(0, 12, Short.MAX_VALUE)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(floor)
-                    .addComponent(wing))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(floor)
+                            .addComponent(wing))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(87, 87, 87))
+                    .addGroup(restrictionsContainerLayout.createSequentialGroup()
+                        .addComponent(rajauksetHeader)
+                        .addGap(157, 157, 157)))
+                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(restrictByDate, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(restrictionsContainerLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(restrictionsContainerLayout.createSequentialGroup()
+                                .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(restrictByLastDate, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 399, Short.MAX_VALUE)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(76, 76, 76))
+                            .addGroup(restrictionsContainerLayout.createSequentialGroup()
+                                .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         restrictionsContainerLayout.setVerticalGroup(
             restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                .addComponent(rajauksetHeader)
+                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(rajauksetHeader)
+                    .addComponent(jLabel2))
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -362,8 +391,10 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(wing)
-                            .addComponent(jLabel2)
-                            .addComponent(restrictByDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(restrictByLastDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -665,6 +696,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showJobTitleMouseReleased
 
+    private void restrictByFirstDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByFirstDateActionPerformed
+        String value = restrictByFirstDate.getText();
+        // tätä datea ei tarvinne, pitää korvata se tuolla kalenterinapilla
+        Date date = parseDate(value);
+        if (value == null || value.isEmpty()) {
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Sopimus"));
+        } else {
+            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Sopimus"));
+        }
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
+    }//GEN-LAST:event_restrictByFirstDateActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -716,6 +761,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel lockerAttributes;
     private javax.swing.JRadioButton lockerButton;
     private javax.swing.JComboBox lockerDropdown;
@@ -723,7 +770,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JRadioButton peopleButton;
     private javax.swing.JPanel personAttributes;
     private javax.swing.JLabel rajauksetHeader;
-    private javax.swing.JTextField restrictByDate;
+    private javax.swing.JTextField restrictByFirstDate;
+    private javax.swing.JTextField restrictByLastDate;
     private javax.swing.JTextField restrictByName;
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JPanel roomAttributes;
@@ -936,10 +984,28 @@ public class ReportsWindow extends javax.swing.JFrame {
                     rowData[j] = tableModel.getValueAt(i,
                             Data.convertColumnIndexToModel(neededIndexes[j]));
                 }
-                rowInReturnTable = rowIndex;
+                rowInReturnTable = rowIndex+1;
                 map.put(rowInReturnTable, rowData);
             }
         }
         return map;
+    }
+
+    private Date parseDate(String value) {
+        // tämä on sitä varten, että saadaan työsuhteen loppupäivä
+        // taulukossa siis timeslice-luokan ilmentymä
+        // 
+        // näkymässä työsuhteen loppuajan alkupäivämäärä ja loppupäivämäärä
+        // -> jos molemmat asetettu, muodostetaan timeslice
+        // ja katsotaan sijoittuuko loppupäivä tälle välille
+        //  * TimeSlicen startDayAfter? / contains?
+        // -> jos loppu asetettu, katsotaan, onko loppupäivä ennen välin loppua
+        //  * Daten before / after
+        // -> jos alku asetettu, katso onko loppupäivä alun jälkeen
+        
+        
+        String endDate = value.split("-")[1];
+        
+        return new Date();
     }
 }
