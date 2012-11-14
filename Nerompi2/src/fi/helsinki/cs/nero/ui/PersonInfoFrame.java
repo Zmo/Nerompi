@@ -34,6 +34,15 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         MoreField.setVisible(false);
         this.setVisible(true);
     }
+    
+    public PersonInfoFrame() {
+        initComponents();
+        this.person = null;
+        
+        this.setSize(680, 400);
+        MoreField.setVisible(false);
+        this.setVisible(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

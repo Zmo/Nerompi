@@ -247,7 +247,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 //hae id
                                 //new PersonInfoFrame(e.getSource().);
                             }
-                        });        
+                        });
 
 			//Extraheader ylimmäksi, myös extraheader pitää laittaa panelin sisään Layout syistä
 			//Extraheader2 on extraeaderin jatkopalanen
