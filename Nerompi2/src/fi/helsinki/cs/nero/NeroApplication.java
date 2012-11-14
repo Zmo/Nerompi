@@ -22,8 +22,6 @@ public class NeroApplication {
      */
 
     public static final String DEFAULT_INI = "nero.ini"; 
-
-
     /**
      * Konfiguraation parsiva olio
      */
