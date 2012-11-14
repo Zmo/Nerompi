@@ -4,15 +4,14 @@
  */
 package fi.helsinki.cs.nero.logic;
 
-import java.util.Enumeration;
-import javax.swing.table.TableColumn;
+import java.util.HashMap;
 
 /**
  *
  * @author lpesola
  */
 public interface ReportWriter {
-
-    void print(Object[][] tableData, Enumeration<TableColumn> columns);
+    
+    void print(HashMap<Integer, Object[]> data);
     
 }

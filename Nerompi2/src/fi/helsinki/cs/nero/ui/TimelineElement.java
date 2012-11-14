@@ -83,6 +83,7 @@ public class TimelineElement extends JPanel {
      */
     private Kalenterinappi alkukalenteri;
     private Kalenterinappi loppukalenteri;
+    private JPanel kalenterinapit;    
     
     private static Color BG_COLOR = new Color(39,177,39);
     /**
@@ -179,15 +180,14 @@ public class TimelineElement extends JPanel {
      * NEROMPI-LISÄYS: KALENTERINAPPIPARI
      * @param label Varattu huone ja työpiste 
      */
-    JPanel kalenterinapit;
 
     private void kalenterinappipari(String label) {;
         
         JPanel paivat = new JPanel(new FlowLayout());
 
 
-        this.alkukalenteri = new Kalenterinappi(this.timeSlice.getStartDate(), this);
-        this.loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate(), this);
+        this.alkukalenteri = new Kalenterinappi(this.timeSlice.getStartDate(), this, true);
+        this.loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate(), this, false);
         
         JLabel huoneKentta = new JLabel(" ");
 //        if (this.getTimeSlice().getStartDate().after(this.getTimeSlice().getEndDate())) {
@@ -233,11 +233,9 @@ public class TimelineElement extends JPanel {
         return this.loppukalenteri;
     }
     
-    public boolean updateNappiPaivays(){
-        if (this.alkukalenteri.getTargetDate().after(this.loppukalenteri.getTargetDate())){
+    public boolean updateNappiPaivays(Date alku, Date loppu){
+        if (alku.after(loppu)){
             System.out.println("VIRHE - TimelineElement - alkamispäivä yritetty siirtää loppumispäivän jälkeen.");
-            this.alkukalenteri.setTargetDate(this.loppukalenteri.getTargetDate());
-            this.alkukalenteri.asetaAikaTeksti();
             return false;
         }
         else {

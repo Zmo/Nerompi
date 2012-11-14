@@ -920,26 +920,44 @@ public class NeroDatabase implements NeroObserver {
             try {
                 PreparedStatement prepModifyperson = this.connection.prepareStatement(
                           " UPDATE henkilo"
-                        + " SET (htunnus="+person.getPersonID()+", etunumet="+person.getEtunimi()+", sukunimi="+person.getSukunimi()+", kutsumanimi="+person.getCallName()+", aktiivisuus="+person.getActivity()+", huone_nro="+person.getRoom()+","
-                        + " hetu="+person.getHetu()+", oppiarvo="+person.getOppiarvo()+", titteli="+person.getTitteli()+", puhelin_tyo="+person.getWorkPhone()+", puhelin_koti="+person.getHomePhone()+", katuosoite="+person.getAddress()+","
-                        + " postinro="+person.getPostnumber()+", postitoimipaikka="+person.getPostitoimiPaikka()+", sahkopostiosoite="+person.getSahkoposti()+", hallinnollinen_kommentti="+person.getHallinnollinenKommentti()+","
-                        + " ktunnus="+person.getkTunnus()+", kannykka="+person.getKannykka()+", postilokerohuone="+person.getPostilokeroHuone()+", hy_tyosuhde="+person.getHyTyosuhde()+", hy_puhelinluettelossa="+person.getHyPuhelinluettelossa()+")"
-                        + " WHERE htunnus="+person.getPersonID()+" AND etunimet="+person.getEtunimi()+" AND sukunimi="+person.getSukunimi()
+                        + " SET htunnus = ?, etunimet = ?, sukunimi = ?, kutsumanimi = ?, aktiivisuus = ?, huone_nro = ?,"
+                        + " hetu = ?, oppiarvo = ?, titteli = ?, puhelin_tyo = ?, puhelin_koti = ?, katuosoite = ?,"
+                        + " postinro = ?, postitoimipaikka = ?, sahkopostiosoite = ?, hallinnollinen_kommentti = ?,"
+                        + " ktunnus = ?, kannykka = ?, postilokerohuone = ?, hy_tyosuhde = ?, hy_puhelinluettelossa = ?"
+                        + " WHERE htunnus = ? AND etunimet = ? AND sukunimi = ?"
                 );
-                prepModifyperson.executeUpdate();
-                /**
-                this.prepAddReservation.setString(1, nextID);
-                this.prepAddReservation.setString(2, reservation.getTargetPost().getPostID());
-                this.prepAddReservation.setString(3, reservation.getReservingPerson().getPersonID());
-                this.prepAddReservation.SetString(4, reservation.getWeeklyHours());
-                this.prepAddReservation.setString(5, reservation.getDescription());
-                this.prepAddReservation.setString(6, reservation.getTimeSlice().getSQLStartDate());
-                this.prepAddReservation.setString(7, reservation.getTimeSlice().getSQLEndDate());
+               
+                
+                prepModifyperson.setString(1, person.getPersonID());
+                prepModifyperson.setString(2, person.getEtunimi());
+                prepModifyperson.setString(3, person.getSukunimi());
+                prepModifyperson.setString(4, person.getCallName());
+                prepModifyperson.setString(5, person.getActivity());
+                prepModifyperson.setString(6, person.getRoom());
+                prepModifyperson.setString(7, person.getHetu());
+                prepModifyperson.setString(8, person.getOppiarvo());
+                prepModifyperson.setString(9, person.getTitteli());
+                prepModifyperson.setString(10, person.getWorkPhone());
+                prepModifyperson.setString(11, person.getHomePhone());
+                prepModifyperson.setString(12, person.getAddress());
+                prepModifyperson.setString(13, person.getPostnumber());
+                prepModifyperson.setString(14, person.getPostitoimiPaikka());
+                prepModifyperson.setString(15, person.getSahkoposti());
+                prepModifyperson.setString(16, person.getHallinnollinenKommentti());
+                prepModifyperson.setString(17, person.getkTunnus());
+                prepModifyperson.setString(18, person.getKannykka());
+                prepModifyperson.setString(19, person.getPostilokeroHuone());
+                prepModifyperson.setString(20, person.getHyTyosuhde());
+                prepModifyperson.setString(21, person.getHyPuhelinluettelossa());
+                prepModifyperson.setString(22, person.getPersonID());
+                prepModifyperson.setString(23, person.getEtunimi());
+                prepModifyperson.setString(24, person.getSukunimi());
+                
 
-                if(this.prepAddReservation.executeUpdate() > 0) {
+                if(prepModifyperson.executeUpdate() > 0) {
                         success = true;
                 }
-                */
+               
             } catch (SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
             }

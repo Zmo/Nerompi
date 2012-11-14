@@ -17,15 +17,20 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     /**
      * Creates new form PersonInfoFrame
      */
-    public PersonInfoFrame(Person person, Session sessio) {
+    private Person person;
+    
+    public PersonInfoFrame(Person person) {
         initComponents();
+        this.person = person;
+        
         nameField.setText(person.getName());
         huoneField.setText(person.getRoom());
         oppiarvoField.setText(person.getOppiarvo());
         titteliField.setText(person.getTitteli());
         //if (person.getActivity().equals("k"))
         //    aktiivinenBox.setEnabled(rootPaneCheckingEnabled);
-        this.setSize(600, 400);
+        
+        this.setSize(680, 400);
         MoreField.setVisible(false);
         this.setVisible(true);
     }
@@ -306,7 +311,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
-        System.out.println("megadurr");
+        person.setRoom(huoneField.getText());
+        person.setOppiarvo(oppiarvoField.getText());
+        person.setTitteli(titteliField.getText());
+        person.getSession().updatePerson(person);
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void MoreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoreButtonActionPerformed

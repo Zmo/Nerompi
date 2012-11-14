@@ -239,9 +239,9 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 //painetun nappulan tietoja
                                 JButton personIdButton = (JButton)e.getSource();
                                 
-                                for (int i = 0; i < persons.length; i++) {
-                                    if (persons[i].getPersonID().equals(personIdButton.getText())) {
-                                        new PersonInfoFrame(persons[i], new Session());
+                                for (int i = 0; i < persons.length; i++) {                          
+                                    if (persons[i].getPersonID().equals(personIdButton.getText())) {           
+                                        new PersonInfoFrame(persons[i]);
                                     }
                                 }
                                 //hae id
