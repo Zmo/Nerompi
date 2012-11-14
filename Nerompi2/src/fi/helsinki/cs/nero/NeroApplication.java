@@ -21,7 +21,8 @@ public class NeroApplication {
      * Oletuskonfiguraatiotiedoston nimi
      */
 
-    public static final String DEFAULT_INI = "/cs/fs/home/ssinisal/Nerompi/Nerompi2/nero.ini";    
+    public static final String DEFAULT_INI = "nero.ini"; 
+   
     /**
      * Konfiguraation parsiva olio
      */
