@@ -215,6 +215,7 @@
                           <Component id="showPhone" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="showContracts" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="showEmail" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="showJobTitle" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -231,6 +232,8 @@
                       <Component id="showContracts" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showEmail" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="showJobTitle" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -261,6 +264,11 @@
             <Component class="javax.swing.JCheckBox" name="showPhone">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Puhelinnumero"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="showJobTitle">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Nimike"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -331,15 +339,14 @@
                           <Component id="wingDropdown" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="floorDropdown" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="restrictByName" min="-2" pref="179" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="restrictByDate" min="-2" pref="178" max="-2" attributes="0"/>
@@ -453,7 +460,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel2">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Varauksen loppu"/>
+                <Property name="text" type="java.lang.String" value="Ty&#xf6;suhde p&#xe4;&#xe4;ttyy aikav&#xe4;lill&#xe4;"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">
