@@ -44,14 +44,22 @@ public class ButtonListener implements ActionListener {
 			return;
 		}
 
-		if (e.getActionCommand().equals("partTime")) {
+		if (e.getActionCommand().equals("active")) {
 			if (((JCheckBox) e.getSource()).isSelected()) {
-				session.setFilterPartTimeTeachers(true);
+				session.setFilterActiveEmployees(true);
 			} else {
-				session.setFilterPartTimeTeachers(false);
+				session.setFilterActiveEmployees(false);
 			}
 			return;
 		}
-		
+                
+                if(e.getActionCommand().equals("contract")) {
+                    if (((JCheckBox) e.getSource()).isSelected()) {
+				session.setFilterContract(true);
+			} else {
+				session.setFilterContract(false);
+			}
+			return;
+                }
 	}
 }

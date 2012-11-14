@@ -138,27 +138,36 @@ public class SearchPanel extends JPanel implements PropertyChangeListener, Actio
 		personNameField.getDocument().addDocumentListener(new FilterEventListener(this.session));
 		
 		// Projektilista
-		JLabel projectNameLabel = new JLabel("projekti:");
+		/*JLabel projectNameLabel = new JLabel("projekti:");
 		JComboBox projectList = new JComboBox(session.getProjects());
 		// Lisätään alkuun tyhjä valinta
 		projectList.insertItemAt("-", 0);
 		projectList.setSelectedIndex(0);
 		projectList.setName("projectList");
-		projectList.addActionListener(this);
+		projectList.addActionListener(this);*/
 		
 		// Sivutoimiset
-		JLabel partTimeLabel = new JLabel("sivutoimiset");
-		JCheckBox partTimeButton = new JCheckBox();
-		partTimeButton.setSelected(session.getFilterPartTimeTeachers());
-		partTimeButton.setActionCommand("partTime");
-		partTimeButton.addActionListener(buttonListener);
+		JLabel activeLabel = new JLabel("Aktiiviset");
+		JCheckBox activeButton = new JCheckBox();
+		activeButton.setSelected(session.getFilterActiveEmployees());
+		activeButton.setActionCommand("active");
+		activeButton.addActionListener(buttonListener);
+                
+                //Työsuhteessa
+                JLabel contractLabel = new JLabel("Voimassaoleva työsopimus");
+		JCheckBox contractButton = new JCheckBox();
+		contractButton.setSelected(session.getFilterContract());
+		contractButton.setActionCommand("contract");
+		contractButton.addActionListener(buttonListener);
 		
 		restrictionPanel.add(personNameLabel);
-		restrictionPanel.add(personNameField);		
-		restrictionPanel.add(projectNameLabel);
-		restrictionPanel.add(projectList);
-		restrictionPanel.add(partTimeLabel);
-		restrictionPanel.add(partTimeButton);
+		restrictionPanel.add(personNameField);
+		//restrictionPanel.add(projectNameLabel);
+		//restrictionPanel.add(projectList);
+		restrictionPanel.add(activeLabel);
+		restrictionPanel.add(activeButton);
+                restrictionPanel.add(contractLabel);
+                restrictionPanel.add(contractButton);
 		
 		/* Huonepalkki */
 		JPanel roomPanel = new JPanel();

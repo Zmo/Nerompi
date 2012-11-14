@@ -4,9 +4,11 @@
 	"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg width="700" height="720">
   <g id="buttons">
+    <rect class="button" id="button4" x="594" y="85" width="22" height="25"/>
     <rect class="button" id="button1" x="594" y="60" width="22" height="25"/>
     <rect class="button" id="button2" x="594" y="35" width="22" height="25"/>
     <rect class="button" id="button3" x="594" y="10" width="22" height="25"/>
+    <text x="600" y="104" pointer-events="none">A</text>
     <text x="600" y="79" pointer-events="none">1</text>
     <text x="600" y="54" pointer-events="none">2</text>
     <text x="600" y="29" pointer-events="none">3</text>
@@ -924,6 +926,12 @@
 			328.17,138.879 266,138.772 266,20.328 179,20.372 179,138.172 115.564,138.473
 			115.387,19.372 30.2,19.915"
 		 style="fill:none;stroke:rgb(0,0,0);stroke-width:4"/>
+  </g>
+  <g id="floor4">
+      <polygon
+		points="15,15 15,600 550,600 550,15"
+		 style="visibility:visible;fill:rgb(192,192,192);stroke:rgb(0,0,0);stroke-width:4"/>
+      <rect id="A1" x="15" y="15" width="535" height="585" class="room"/>
   </g>
   <g id="legend">
     <rect class="room occupied" x="10" y="635" width="20" height="20" />

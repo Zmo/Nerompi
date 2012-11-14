@@ -901,7 +901,7 @@ public class NeroDatabase implements NeroObserver {
                                           people.put(rs.getString("htunnus"), person);
 				}
 
-				if(filterPerson(person, timescale, rs.getDate("loppupvm"), showEndingContracts, withoutPost))
+				if(filterPerson(person, timescale, rs.getDate("loppupvm"), showEndingContracts, withoutPost, session.getFilterActiveEmployees(), session.getFilterContract()))
 					filteredPeople.add(person);
 			}
 			rs.close();
@@ -996,8 +996,14 @@ public class NeroDatabase implements NeroObserver {
 	 * @param withoutPost halutaanko tyï¿½pisteettï¿½mï¿½t
 	 * @return Sopivatko annetut hakuehdot henkilï¿½ï¿½n
 	 */
-	private boolean filterPerson(Person person, TimeSlice timescale, java.sql.Date contractEndDate, boolean showEndingContracts, boolean withoutPost) {
-		// jos ei pyydetty tyï¿½pisteettï¿½miï¿½, ei filtterï¿½intiï¿½ tarvita 
+	private boolean filterPerson(Person person, TimeSlice timescale, java.sql.Date contractEndDate, boolean showEndingContracts, boolean withoutPost, boolean activeOnly, boolean contractsOnly) {
+                // Tarkistetaan tarvitseeko henkilöä filtteröidä aktiivisuuden perusteella
+                if(activeOnly && person.getActivity().equalsIgnoreCase("E"))
+                    return false;
+                // Tarkistetaan, että tarvitseeko henkilöä filtteröidä työsopimuksen perusteella
+                if(contractsOnly && person.getHyTyosuhde().equalsIgnoreCase("E"))
+                    return false;
+                // jos ei pyydetty tyï¿½pisteettï¿½miï¿½, ei filtterï¿½intiï¿½ tarvita 
 		if(!withoutPost)
 			return true;
 		// jos pyydettiin pï¿½ï¿½ttyviï¿½ sopimuksia, tarkistetaan ensin ne
