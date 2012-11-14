@@ -82,7 +82,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         initModels();
         initColumnData();
         this.setVisible(true);
-
     }
 
     /**
