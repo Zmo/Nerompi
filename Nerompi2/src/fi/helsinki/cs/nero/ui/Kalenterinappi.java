@@ -58,13 +58,13 @@ public class Kalenterinappi extends JCalendarButton {
                 this.asetaAikaTeksti();
                 System.out.println(" - - Paivavalinta muuttui - -");
 /* VAARALLINEN MUUTOS */
-//                this.element.storeToDB();
+                this.element.storeToDB();
 /* / VAARALLINEN MUUTOS */
             }
         }
     }
 
-    private void asetaAikaTeksti() {
+    public void asetaAikaTeksti() {
         this.setText(this.getTargetDate().getDate() + "."
                 + (1 + this.getTargetDate().getMonth()) + "."
                 + (1900 + this.getTargetDate().getYear()));

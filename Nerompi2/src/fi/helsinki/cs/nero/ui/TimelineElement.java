@@ -176,7 +176,7 @@ public class TimelineElement extends JPanel {
     }
     
     /**
-     * NEROMPI-LISÄYS: KALENTERINAPPI
+     * NEROMPI-LISÄYS: KALENTERINAPPIPARI
      * @param label Varattu huone ja työpiste 
      */
     JPanel kalenterinapit;
@@ -190,8 +190,8 @@ public class TimelineElement extends JPanel {
         this.loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate(), this);
         
         JLabel huoneKentta = new JLabel(" ");
-        if (this.getTimeSlice().getStartDate().after(this.getTimeSlice().getEndDate())) {
-        } else {
+//        if (this.getTimeSlice().getStartDate().after(this.getTimeSlice().getEndDate())) {
+//        } else {
             if (this.getTimeSlice().getStartDate() == null || this.getTimeSlice().getEndDate() == null) {
                 huoneKentta.setText(" ");
                 paivat.add(huoneKentta);
@@ -215,7 +215,7 @@ public class TimelineElement extends JPanel {
                 paivat.add(loppukalenteri);
 
             }
-        }
+//  }
         this.kalenterinapit = paivat;
     }
 
@@ -225,10 +225,26 @@ public class TimelineElement extends JPanel {
         }
         return this.kalenterinapit;
     }
+    public Kalenterinappi getAlkukalenteri(){
+        return this.alkukalenteri;
+    }
+
+    public Kalenterinappi getLoppukalenteri(){
+        return this.loppukalenteri;
+    }
     
-    public void updateNappiPaivays(){
-        this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
-        this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
+    public boolean updateNappiPaivays(){
+        if (this.alkukalenteri.getTargetDate().after(this.loppukalenteri.getTargetDate())){
+            System.out.println("VIRHE - TimelineElement - alkamispäivä yritetty siirtää loppumispäivän jälkeen.");
+            this.alkukalenteri.setTargetDate(this.loppukalenteri.getTargetDate());
+            this.alkukalenteri.asetaAikaTeksti();
+            return false;
+        }
+        else {
+            //this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
+            //this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
+            return true;
+        }
     }
 /* /LISAYS*/
     
