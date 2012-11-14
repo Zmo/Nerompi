@@ -137,7 +137,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         overwriteCheck.setMessageType(JOptionPane.QUESTION_MESSAGE);
         overwriteCheck.setOptionType(JOptionPane.YES_NO_OPTION);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         showPostCount.setText("Työpisteiden lkm");
         showPostCount.addActionListener(new java.awt.event.ActionListener() {
@@ -544,9 +544,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showContractsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showContractsMouseReleased
         if (showContracts.isSelected()) {
-            showColumn("Sopimus", peopleColumnModel, hiddenRoomColumns);
+            showColumn("Sopimus", peopleColumnModel, hiddenPeopleColumns);
         } else {
-            hideColumn("Sopimus", peopleColumnModel, hiddenRoomColumns);
+            hideColumn("Sopimus", peopleColumnModel, hiddenPeopleColumns);
         }
     }//GEN-LAST:event_showContractsMouseReleased
 
@@ -659,9 +659,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showJobTitleMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showJobTitleMouseReleased
         if (showJobTitle.isSelected()) {
-            showColumn("Titteli", roomColumnModel, hiddenRoomColumns);
+            showColumn("Nimike", peopleColumnModel, hiddenPeopleColumns);
         } else {
-            hideColumn("Titteli", roomColumnModel, hiddenRoomColumns);
+            hideColumn("Nimike", peopleColumnModel, hiddenPeopleColumns);
         }
     }//GEN-LAST:event_showJobTitleMouseReleased
 
@@ -842,7 +842,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnNames.add("Nimi");
         peopleColumnNames.add("Huone");
         peopleColumnNames.add("Sopimus");
-        peopleColumnNames.add("Titteli");
+        peopleColumnNames.add("Nimike");
 
         // postilokero-näkymän sarakkeet        
         lockerColumnNames = new Vector<>();
@@ -850,8 +850,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         lockerColumnNames.add("Postihuone");
         lockerColumnNames.add("Huone");
         lockerColumnNames.add("Puhelinnumero");
-
-
     }
 
     private void showColumn(String name, TableColumnModel model,
@@ -867,7 +865,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     private void hideColumn(String name, TableColumnModel model,
-        HashMap<String, IndexedColumn> hiddenColumns) {
+            HashMap<String, IndexedColumn> hiddenColumns) {
         int index = model.getColumnIndex(name);
         TableColumn newColumn = model.getColumn(index);
         IndexedColumn ic = new IndexedColumn(index, newColumn);

@@ -24,7 +24,7 @@ import fi.helsinki.cs.nero.logic.Session;
  * @author Timi Tuohenmaa
  *
  */
-<<<<<<< HEAD
+
 public class TestSession extends TestCase implements NeroObserver {
     
     private Session session;
@@ -402,7 +402,7 @@ public class TestSession extends TestCase implements NeroObserver {
     // block	28%  (242/874)
     // line		34%  (74/220)
 }
-=======
+
 //public class TestSession extends TestCase implements NeroObserver {
 //    
 //    private Session session;
@@ -791,4 +791,4 @@ public class TestSession extends TestCase implements NeroObserver {
 //    // block	28%  (242/874)
 //    // line		34%  (74/220)
 //}
->>>>>>> cc96b3037c11cb857e075a636a728ca8bddee763
+
