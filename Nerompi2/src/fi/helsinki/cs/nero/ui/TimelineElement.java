@@ -588,6 +588,10 @@ public class TimelineElement extends JPanel {
     public TimeSlice getTimeSlice() {
         return this.timeSlice;
     }
+    
+    public Reservation getReservation(){
+        return null;
+    }
    
     /**
      * <p>

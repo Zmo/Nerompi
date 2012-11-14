@@ -61,6 +61,20 @@ public class Kalenterinappi extends JCalendarButton {
                     System.out.println(" - - Paivavalinta muuttui - -");
                     /* VAARALLINEN MUUTOS */
                     this.element.storeToDB();
+/* AIKATARKASTUKSIA - TYÖN ALLA*/
+/*                    for (int a = 0; a < this.element.getReservation().getReservingPerson().getReservations().length; a++){
+                        
+                        if (this.element.getReservation().getReservingPerson().getReservations()[a].getReservationID().equals(this.element.getReservation().getReservationID())){
+                        }
+                        else {
+                            if(this.onkoAlku && this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice().getEndDate().after(tulos)){
+                                tulos = this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice().getEndDate();
+                            }
+                        }
+                        
+                         
+                    }*/
+                    /* /AIKATARKASTUKSIA */
                 }
 /* / VAARALLINEN MUUTOS */
             }
