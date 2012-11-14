@@ -65,7 +65,16 @@ public class Session {
 	 * Nï¿½ytetï¿½ï¿½nkï¿½ vain osa-aikaiset ?
 	 */
 	private boolean partTimeTeachersOnly;
-
+        
+        /**
+         * Näytetäänkö vain aktiiviset työntekijät
+         */
+        private boolean activeEmployeesOnly;
+        
+        /**
+         * Rajataanko henkilölistää voimassaolevan työsopimuksen perusteella
+         */
+        private boolean contract;
 	
 	/* huoneisiin (getFilteredRooms) vaikuttavat hakuehdot */
 	/**
@@ -111,20 +120,22 @@ public class Session {
 	 * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman kï¿½ynnistyessï¿½.
 	 */
 	public Session() {
-        obsman = new NeroObserverManager();
-        this.resetTimescale();		// vakioaikavï¿½li
-        personName = "";            // ei henkilï¿½n nimeï¿½
-        project = null;             // ei projektia
-        showEndingContracts = true; // nï¿½ytetï¿½ï¿½n pï¿½ï¿½ttyvï¿½t sopimukset
-        withoutPost = true;         // nï¿½ytetï¿½ï¿½n tyï¿½pisteettï¿½mï¿½t
-        partTimeTeachersOnly = false;   // ei rajata sivut.tuntiop:iin
-        roomName = "";              // ei huoneen nimeï¿½
-        maxPosts = -1;              // ei tyï¿½pisteiden maksimimï¿½ï¿½rï¿½ï¿½
-        activeRoom = null;          // ei aktiivista huonetta
-		freePosts = 1;              // haetaan yhtï¿½ vapaata tyï¿½pistettï¿½
-		statusMessage = new String("");
-		cursortype = java.awt.Cursor.DEFAULT_CURSOR;
-		cursorlocked = false;
+            obsman = new NeroObserverManager();
+            this.resetTimescale();		// vakioaikavï¿½li
+            personName = "";            // ei henkilï¿½n nimeï¿½
+            project = null;             // ei projektia
+            showEndingContracts = true; // nï¿½ytetï¿½ï¿½n pï¿½ï¿½ttyvï¿½t sopimukset
+            withoutPost = true;         // nï¿½ytetï¿½ï¿½n tyï¿½pisteettï¿½mï¿½t
+            //partTimeTeachersOnly = false;   // ei rajata sivut.tuntiop:iin
+            activeEmployeesOnly = true; // oletusarvoisesti näytetään vain aktiiviset henkilöt
+            contract = false;           // oletusarvoisesti näytetään myös henkilöt, joilla ei ole voimassaolevaa työsopimusta
+            roomName = "";              // ei huoneen nimeï¿½
+            maxPosts = -1;              // ei tyï¿½pisteiden maksimimï¿½ï¿½rï¿½ï¿½
+            activeRoom = null;          // ei aktiivista huonetta
+            freePosts = 1;              // haetaan yhtï¿½ vapaata tyï¿½pistettï¿½
+            statusMessage = new String("");
+            cursortype = java.awt.Cursor.DEFAULT_CURSOR;
+            cursorlocked = false;
 	}
 	
 	/**
@@ -366,7 +377,7 @@ public class Session {
     /**
      * Asettaa rajauksen, jonka mukaan nï¿½ytetï¿½ï¿½n ainoastaan sivutoimiset tuntiopettajat.
      * @param partTimeTeachersOnly
-     */
+     *
     public void setFilterPartTimeTeachers(boolean partTimeTeachersOnly) {
     	this.partTimeTeachersOnly = partTimeTeachersOnly;
     	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
@@ -374,9 +385,33 @@ public class Session {
 
     public boolean getFilterPartTimeTeachers() {
     	return this.partTimeTeachersOnly;
+    }*/
+        
+    /**
+     * Voidaan rajata listattavia henkilöitä heidän aktiivisuuden perusteella
+     * @param activeEmployeesOnly 
+     */
+    public void setFilterActiveEmployees(boolean activeEmployeesOnly) {
+        this.activeEmployeesOnly = activeEmployeesOnly;
+        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
-
     
+    public boolean getFilterActiveEmployees() {
+        return this.activeEmployeesOnly;
+    }
+    
+    /**
+     * Voidaan rajata listattavia henkilöitä voimassaolevan työsopimuksen perusteella
+     * @param contract 
+     */
+    public void setFilterContract(boolean contract) {
+        this.contract = contract;
+        obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+    }
+    
+    public boolean getFilterContract() {
+        return this.contract;
+    }
     
     /**
      * Palauttaa listan jossa on kaikki jï¿½rjestelmï¿½n tuntemat projektit.

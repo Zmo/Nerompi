@@ -61,7 +61,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	 * Kartan kerrosten tunnukset. Merkkijonon jokainen merkki vastaa
      * yht� kerrosta.
 	 */
-	private static final String FLOORS = "123";
+	private static final String FLOORS = "1234";
 	
 	/**
 	 * Kartta-SVG:n nappien ryhm�n id.
@@ -331,62 +331,62 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	 * Batikin tapahtumak�sittelij�s�ikeest�.
 	 */
 	private void updateFilteredRooms(Room[] rooms, int[] roomStatuses) {
-        // kerrosten tila: maksimiarvo huoneiden vapaustiloista
-        // Room.NO_POSTS on oletustila, jota ei merkit�
-        int[] floorStatus = new int[FLOORS.length()];
-        for(int i=0; i<floorStatus.length; ++i)
-            floorStatus[i] = Room.NO_POSTS;
+            // kerrosten tila: maksimiarvo huoneiden vapaustiloista
+            // Room.NO_POSTS on oletustila, jota ei merkit�
+            int[] floorStatus = new int[FLOORS.length()];
+            for(int i=0; i<floorStatus.length; ++i)
+                floorStatus[i] = Room.NO_POSTS;
 
-        for(int i=0; i<rooms.length; ++i) {
-			Element el = document.getElementById(rooms[i].getRoomNumber());
-			assert(el != null);
-            String cl = "";
-			switch(roomStatuses[i]) {
-            case Room.NO_POSTS:
-                cl = "noposts"; break;
-			case Post.OCCUPIED:
-                cl = "occupied"; break;
-			case Post.PARTLY_FREE:
-                cl = "partfree"; break;
-			case Post.FREE:
-                cl = "free"; break;
-			default:
-				assert(false);
-			}
-            el.setAttribute("class", "room filtered " + cl);
-            
-            // pidet��n yll� kerroskohtaista maksimiarvoa statuksesta
-            int floorIdx = FLOORS.indexOf(rooms[i].getFloor());
-            if(floorStatus[floorIdx] < roomStatuses[i])
-                floorStatus[floorIdx] = roomStatuses[i];
-		}
-        
-		// merkkaa kerrosnappulat
-        for(int i=0; i<floorStatus.length; ++i) {
-            String cl = "";
-            switch(floorStatus[i]) {
-            case Room.NO_POSTS:
-                break;
-            case Post.OCCUPIED:
-                cl = "occupied"; break;
-            case Post.PARTLY_FREE:
-                cl = "partfree"; break;
-            case Post.FREE:
-                cl = "free"; break;
-            default:
-                assert(false);
+            for(int i=0; i<rooms.length; ++i) {
+            	Element el = document.getElementById(rooms[i].getRoomNumber());
+		assert(el != null);
+                String cl = "";
+		switch(roomStatuses[i]) {
+                    case Room.NO_POSTS:
+                        cl = "noposts"; break;
+                    case Post.OCCUPIED:
+                        cl = "occupied"; break;
+                    case Post.PARTLY_FREE:
+                        cl = "partfree"; break;
+                    case Post.FREE:
+                        cl = "free"; break;
+                    default:
+			assert(false);
             }
+                el.setAttribute("class", "room filtered " + cl);
             
-            if(FLOORS.charAt(i) == activeFloor)
-            	if(cl.equals(""))
+                // pidet��n yll� kerroskohtaista maksimiarvoa statuksesta
+                int floorIdx = FLOORS.indexOf(rooms[i].getFloor());
+                if(floorStatus[floorIdx] < roomStatuses[i])
+                floorStatus[floorIdx] = roomStatuses[i];
+            }
+        
+            // merkkaa kerrosnappulat
+            for(int i=0; i<floorStatus.length; ++i) {
+                String cl = "";
+                switch(floorStatus[i]) {
+                    case Room.NO_POSTS:
+                        break;
+                    case Post.OCCUPIED:
+                        cl = "occupied"; break;
+                    case Post.PARTLY_FREE:
+                        cl = "partfree"; break;
+                    case Post.FREE:
+                        cl = "free"; break;
+                    default:
+                        assert(false);
+                }
+            
+                if(FLOORS.charAt(i) == activeFloor)
+                    if(cl.equals(""))
             		cl = "active";
-            	else
+                    else
             		cl = cl + " " + "active";
 
-            Element btn = document.getElementById(BUTTON_PREFIX + FLOORS.charAt(i));
-            btn.setAttribute("class", BUTTON_CLASS + " " + cl);
+                Element btn = document.getElementById(BUTTON_PREFIX + FLOORS.charAt(i));
+                btn.setAttribute("class", BUTTON_CLASS + " " + cl); // BUTTON_CLASS == "button"
+            }
         }
-	}
 	
 	/**
 	 * Asettaa aktiivisen kerroksen. Piilottaa muut kerrokset n�kyvist�.
