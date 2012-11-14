@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -130,6 +131,10 @@ public class NeroDatabase implements NeroObserver {
 	 */
 	private PreparedStatement prepPostPhoneNumbers;
 	private PreparedStatement prepUpdatePhoneNumber;
+        
+        private HashMap<String, String> henkiloHash;
+        private HashMap<String, String> varausHash;
+        
 	
 	/**
 	 * Konstruktori. Luo yhteyden tietokantaan ja esilataa tiedot huoneista,
@@ -433,17 +438,48 @@ public class NeroDatabase implements NeroObserver {
 				Date start = new Date(rs.getDate("alkupvm").getTime());
 				Date end = new Date(rs.getDate("loppupvm").getTime());
 				TimeSlice ts = new TimeSlice(start, end);
-				Person person = new Person(this.session, rs.getString("htunnus"),
-                                        rs.getString("sukunimi")+" "+rs.getString("etunimet"),
-                                        rs.getString("etunimet"), rs.getString("sukunimi"),
-                                        null, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
-                                        rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
-                                        rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
-                                        rs.getString("katuosoite"), rs.getString("postinro"), rs.getString("postitoimipaikka"),
-                                        rs.getString("valvontasaldo"), rs.getString("sahkopostiosoite"),
-                                        rs.getString("hallinnollinen_kommentti"), rs.getString("opiskelija_kommentti"),
-                                        rs.getString("ktunnus"), rs.getString("kannykka"), rs.getString("postilokerohuone"),
-                                        rs.getString("hy_tyosuhde"), rs.getString("hy_puhelinluettelossa"));
+                                
+                        varausHash = new HashMap();
+                        varausHash.put("htunnus", rs.getString("htunnus"));
+                        varausHash.put("kokonimi", (rs.getString("sukunimi")+" "+rs.getString("etunimet")));
+                        varausHash.put("etunimet", rs.getString("etunimet"));
+                        varausHash.put("sukunimi", rs.getString("sukunimi"));
+                        varausHash.put("huone_nro", rs.getString("huone_nro"));
+                        varausHash.put("kutsumanimi", rs.getString("kutsumanimi"));
+                        varausHash.put("aktiivisuus", rs.getString("aktiivisuus"));
+                        varausHash.put("hetu", rs.getString("hetu"));
+                        varausHash.put("oppiarvo", rs.getString("oppiarvo"));
+                        varausHash.put("titteli", rs.getString("titteli"));
+                        varausHash.put("puhelin_tyo", rs.getString("puhelin_tyo"));
+                        varausHash.put("puhelin_koti", rs.getString("puhelin_koti"));
+                        varausHash.put("katuosoite", rs.getString("katuosoite"));
+                        varausHash.put("postinro", rs.getString("postinro"));
+                        varausHash.put("postitoimipaikka", rs.getString("postitoimipaikka"));
+                        varausHash.put("valvontasaldo", rs.getString("valvontasaldo"));
+                        varausHash.put("sahkopostiosoite", rs.getString("sahkopostiosoite"));
+                        varausHash.put("hallinnollinen_kommentti", rs.getString("hallinnollinen_kommentti"));
+                        varausHash.put("opiskelija_kommentti", rs.getString("opiskelija_kommentti"));
+                        varausHash.put("ktunnus", rs.getString("ktunnus"));
+                        varausHash.put("kannykka", rs.getString("kannykka"));
+                        varausHash.put("postilokerohuone", rs.getString("postilokerohuone"));
+                        varausHash.put("hy_tyosuhde", rs.getString("hy_tyosuhde"));
+                        varausHash.put("hy_puhelinluettelossa", rs.getString("hy_puhelinluettelossa"));
+                        
+                        
+                   	Person person = new Person(this.session, henkiloHash, null, null);
+                                
+                                
+//				Person person = new Person(this.session, rs.getString("htunnus"),
+//                                        rs.getString("sukunimi")+" "+rs.getString("etunimet"),
+//                                        rs.getString("etunimet"), rs.getString("sukunimi"),
+//                                        null, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
+//                                        rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
+//                                        rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
+//                                        rs.getString("katuosoite"), rs.getString("postinro"), rs.getString("postitoimipaikka"),
+//                                        rs.getString("valvontasaldo"), rs.getString("sahkopostiosoite"),
+//                                        rs.getString("hallinnollinen_kommentti"), rs.getString("opiskelija_kommentti"),
+//                                        rs.getString("ktunnus"), rs.getString("kannykka"), rs.getString("postilokerohuone"),
+//                                        rs.getString("hy_tyosuhde"), rs.getString("hy_puhelinluettelossa"));
 				
 				Reservation r = new Reservation(this.session,
 						rs.getString("id"), post, person, ts,
@@ -820,20 +856,49 @@ public class NeroDatabase implements NeroObserver {
                         // haa, tiedet��n ettei sopimusjaksoja ole aikav�lill�
                         // kerrotaan se Personille ettei se turhaan kysele
                         contracts = new Contract[0];
-                    }
-                   	person = new Person(this.session, 
-                   			rs.getString("htunnus"),
-                                        rs.getString("sukunimi")+" "+rs.getString("etunimet"),
-                                        rs.getString("etunimet"), rs.getString("sukunimi"),
-                                        contracts, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
-                                        rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
-                                        rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
-                                        rs.getString("katuosoite"), rs.getString("postinro"), rs.getString("postitoimipaikka"),
-                                        rs.getString("valvontasaldo"), rs.getString("sahkopostiosoite"),
-                                        rs.getString("hallinnollinen_kommentti"), rs.getString("opiskelija_kommentti"),
-                                        rs.getString("ktunnus"), rs.getString("kannykka"), rs.getString("postilokerohuone"),
-                                        rs.getString("hy_tyosuhde"), rs.getString("hy_puhelinluettelossa"));
-					people.put(rs.getString("htunnus"), person);
+                    }                
+                        henkiloHash = new HashMap();
+                        henkiloHash.put("htunnus", rs.getString("htunnus"));
+                        henkiloHash.put("kokonimi", (rs.getString("sukunimi")+" "+rs.getString("etunimet")));
+                        henkiloHash.put("etunimet", rs.getString("etunimet"));
+                        henkiloHash.put("sukunimi", rs.getString("sukunimi"));
+                        henkiloHash.put("huone_nro", rs.getString("huone_nro"));
+                        henkiloHash.put("kutsumanimi", rs.getString("kutsumanimi"));
+                        henkiloHash.put("aktiivisuus", rs.getString("aktiivisuus"));
+                        henkiloHash.put("hetu", rs.getString("hetu"));
+                        henkiloHash.put("oppiarvo", rs.getString("oppiarvo"));
+                        henkiloHash.put("titteli", rs.getString("titteli"));
+                        henkiloHash.put("puhelin_tyo", rs.getString("puhelin_tyo"));
+                        henkiloHash.put("puhelin_koti", rs.getString("puhelin_koti"));
+                        henkiloHash.put("katuosoite", rs.getString("katuosoite"));
+                        henkiloHash.put("postinro", rs.getString("postinro"));
+                        henkiloHash.put("postitoimipaikka", rs.getString("postitoimipaikka"));
+                        henkiloHash.put("valvontasaldo", rs.getString("valvontasaldo"));
+                        henkiloHash.put("sahkopostiosoite", rs.getString("sahkopostiosoite"));
+                        henkiloHash.put("hallinnollinen_kommentti", rs.getString("hallinnollinen_kommentti"));
+                        henkiloHash.put("opiskelija_kommentti", rs.getString("opiskelija_kommentti"));
+                        henkiloHash.put("ktunnus", rs.getString("ktunnus"));
+                        henkiloHash.put("kannykka", rs.getString("kannykka"));
+                        henkiloHash.put("postilokerohuone", rs.getString("postilokerohuone"));
+                        henkiloHash.put("hy_tyosuhde", rs.getString("hy_tyosuhde"));
+                        henkiloHash.put("hy_puhelinluettelossa", rs.getString("hy_puhelinluettelossa"));
+                        
+                        
+                   	person = new Person(this.session, henkiloHash, contracts, null);
+                        
+                        
+//                   			  rs.getString("htunnus"),
+//                                        rs.getString("sukunimi")+" "+rs.getString("etunimet"),
+//                                        rs.getString("etunimet"), rs.getString("sukunimi"),
+//                                        contracts, null, rs.getString("huone_nro"), rs.getString("kutsumanimi"),
+//                                        rs.getString("aktiivisuus"), rs.getString("hetu"), rs.getString("oppiarvo"),
+//                                        rs.getString("titteli"), rs.getString("puhelin_tyo"), rs.getString("puhelin_koti"),
+//                                        rs.getString("katuosoite"), rs.getString("postinro"), rs.getString("postitoimipaikka"),
+//                                        rs.getString("valvontasaldo"), rs.getString("sahkopostiosoite"),
+//                                        rs.getString("hallinnollinen_kommentti"), rs.getString("opiskelija_kommentti"),
+//                                        rs.getString("ktunnus"), rs.getString("kannykka"), rs.getString("postilokerohuone"),
+//                                        rs.getString("hy_tyosuhde"), rs.getString("hy_puhelinluettelossa"));
+                                          people.put(rs.getString("htunnus"), person);
 				}
 
 				if(filterPerson(person, timescale, rs.getDate("loppupvm"), showEndingContracts, withoutPost, session.getFilterActiveEmployees(), session.getFilterContract()))
@@ -848,7 +913,7 @@ public class NeroDatabase implements NeroObserver {
 		session.setStatusMessage("L�ytyi " + filteredPeople.size() + " henkil��.");
 		return (Person[]) filteredPeople.toArray(new Person[0]);
 	}
-        public void savePersonInfo(Person person) {
+        public void updatePersonInfo(Person person) {
             boolean success = false;
             this.session.waitState(true);
             
@@ -878,7 +943,29 @@ public class NeroDatabase implements NeroObserver {
             } catch (SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
             }
+            this.session.waitState(false);      
+        }
+        public void createPerson(Person person) {
+            this.session.waitState(true);
             
+            try {
+                PreparedStatement prepCreateperson = this.connection.prepareStatement(
+                          " INSERT INTO henkilo"
+                        + " VALUES ("+person.getPersonID()+","+person.getEtunimi()+","+person.getSukunimi()+","+person.getCallName()+","+person.getActivity()+","+person.getRoom()+","
+                        + person.getHetu()+","+person.getOppiarvo()+","+person.getTitteli()+","+person.getWorkPhone()+","+person.getHomePhone()+","+person.getAddress()+","
+                        + person.getPostnumber()+","+person.getPostitoimiPaikka()+",'null',"+person.getSahkoposti()+","+person.getHallinnollinenKommentti()+","
+                        + "'null',"+person.getkTunnus()+","+person.getKannykka()+","+person.getPostilokeroHuone()+","+person.getHyTyosuhde()+","+person.getHyPuhelinluettelossa()+")"
+                );
+                prepCreateperson.executeUpdate();
+                /**
+                if(this.prepAddReservation.executeUpdate() > 0) {
+                        success = true;
+                }
+                */
+            } catch (SQLException e) {
+			System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+            this.session.waitState(false);      
         }
 
 	/**

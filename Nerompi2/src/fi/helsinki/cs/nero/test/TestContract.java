@@ -18,6 +18,7 @@ import fi.helsinki.cs.nero.logic.Session;
  * Testiluokka Contract-luokalle
  */
 public class TestContract extends TestCase {
+    
 //    
 //    /* tarvittavat muuttujat yms. */
 //	private Contract contract1, contract2, contract3;
@@ -153,5 +154,5 @@ public class TestContract extends TestCase {
 //    	assertNotNull(contract3.toString());
 //    }
 //
-//    
+    
 }

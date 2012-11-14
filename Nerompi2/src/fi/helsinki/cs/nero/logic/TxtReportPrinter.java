@@ -73,20 +73,14 @@ public class TxtReportPrinter implements ReportWriter {
     @Override
     public void print(Object[][] tableData, Enumeration<TableColumn> columns) {
         try {
-            // lis‰t‰‰n sarakkeiden nimet
-            while (columns.hasMoreElements()) {
-                writer.append(columns.nextElement().getHeaderValue().toString() + " ");
-            }
-            writer.newLine();
-            // kirjoitetaan data
             for (int i = 0; i < tableData.length; i++) {
                 for (int j = 0; j < tableData[i].length; j++) {
                     Object entry = tableData[i][j];
                     if (entry != null) {
-                        writer.append(entry.toString());
+                        writer.append(" * " + entry.toString());
                     } else {
                         // jos kentt‰‰ ei ole m‰‰ritelty, tulostetaan jotain muuta
-                        writer.append("ei ole");
+                        writer.append("* ei ole");
                     }
                     writer.append(" ");
                 }

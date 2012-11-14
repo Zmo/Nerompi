@@ -16,8 +16,13 @@ import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 
+import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.logic.Session;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * <p>
@@ -72,8 +77,14 @@ public class TimelineElement extends JPanel {
      * K‰ytett‰v‰ TooltipManager.
      */
     private static ToolTipManager  manager = ToolTipManager.sharedInstance();
+
+    /**
+     * Kalenterinapit
+     */
+    private Kalenterinappi alkukalenteri;
+    private Kalenterinappi loppukalenteri;
     
-    
+    private static Color BG_COLOR = new Color(39,177,39);
     /**
      * Konstruktori.
      * @param timeSlice Elementin esitt‰m‰n aikav‰lin pituus.
@@ -143,6 +154,7 @@ public class TimelineElement extends JPanel {
         this.ownResize();
         Border blackline = BorderFactory.createLineBorder(Color.black);
         this.setBorder(blackline);
+        this.kalenterinappipari(label);
       
         //Listenerit.
         MouseListener listener = new DragMouseAdapter();
@@ -162,6 +174,79 @@ public class TimelineElement extends JPanel {
     public TimelineElement() {
         super();
     }
+    
+    /**
+     * NEROMPI-LISƒYS: KALENTERINAPPIPARI
+     * @param label Varattu huone ja tyˆpiste 
+     */
+    JPanel kalenterinapit;
+
+    private void kalenterinappipari(String label) {;
+        
+        JPanel paivat = new JPanel(new FlowLayout());
+
+
+        this.alkukalenteri = new Kalenterinappi(this.timeSlice.getStartDate(), this);
+        this.loppukalenteri = new Kalenterinappi(this.timeSlice.getEndDate(), this);
+        
+        JLabel huoneKentta = new JLabel(" ");
+//        if (this.getTimeSlice().getStartDate().after(this.getTimeSlice().getEndDate())) {
+//        } else {
+            if (this.getTimeSlice().getStartDate() == null || this.getTimeSlice().getEndDate() == null) {
+                huoneKentta.setText(" ");
+                paivat.add(huoneKentta);
+            } else if ((this.getTimeSlice().getEndDate().getYear()
+                    - this.getTimeSlice().getStartDate().getYear())
+                    > 60) {
+                huoneKentta.setText(/*person.getPerson().getTitteli()*/"Tittelikentt‰");
+
+
+                paivat.add(huoneKentta);
+            } else {
+                JLabel valimerkki = new JLabel(" - ");
+                huoneKentta.setText(label + " ");
+                //paivat.setBackground(new Color(255,240,192));
+                alkukalenteri.setBackground(BG_COLOR);
+                loppukalenteri.setBackground(BG_COLOR);
+                
+                paivat.add(huoneKentta);
+                paivat.add(alkukalenteri);
+                paivat.add(valimerkki);
+                paivat.add(loppukalenteri);
+
+            }
+//  }
+        this.kalenterinapit = paivat;
+    }
+
+    public JPanel getKalenterinapit() {
+        if (this.kalenterinapit == null) {
+            return null;
+        }
+        return this.kalenterinapit;
+    }
+    public Kalenterinappi getAlkukalenteri(){
+        return this.alkukalenteri;
+    }
+
+    public Kalenterinappi getLoppukalenteri(){
+        return this.loppukalenteri;
+    }
+    
+    public boolean updateNappiPaivays(){
+        if (this.alkukalenteri.getTargetDate().after(this.loppukalenteri.getTargetDate())){
+            System.out.println("VIRHE - TimelineElement - alkamisp‰iv‰ yritetty siirt‰‰ loppumisp‰iv‰n j‰lkeen.");
+            this.alkukalenteri.setTargetDate(this.loppukalenteri.getTargetDate());
+            this.alkukalenteri.asetaAikaTeksti();
+            return false;
+        }
+        else {
+            //this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
+            //this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
+            return true;
+        }
+    }
+/* /LISAYS*/
     
     /**
      * Luo t‰lle TimelineElementille labelin.

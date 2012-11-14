@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import sun.util.calendar.CalendarDate;
 
 /**
  * <p>
@@ -240,7 +241,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 
                                 for (int i = 0; i < persons.length; i++) {
                                     if (persons[i].getPersonID().equals(personIdButton.getText())) {
-                                        new PersonInfoFrame(persons[i]);
+                                        new PersonInfoFrame(persons[i], new Session());
                                     }
                                 }
                                 //hae id
@@ -277,28 +278,36 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 				
 				while(row.hasNext()) {
 					TimelineElement post = (TimelineElement)row.next();                                  
-    /* LISAYS */
+    /* LISAYS 
                                         JPanel paivat = new JPanel(new FlowLayout());
                                         
                                         Kalenterinappi alkukalenteri = new Kalenterinappi(post.getTimeSlice().getStartDate());
                                         Kalenterinappi loppukalenteri = new Kalenterinappi(post.getTimeSlice().getEndDate());
                                         
-                                        JTextField paivavali = new JTextField(13);
-                                        paivavali.setEditable(false);
+                                        JLabel paivavali = new JLabel(" ");
                                         if (post.getTimeSlice().getStartDate().after(post.getTimeSlice().getEndDate())){
                                         }
                                         else{
-                                            if ((post.getTimeSlice().getEndDate().getYear() 
+                                            if(post.getTimeSlice().getStartDate() == null || post.getTimeSlice().getEndDate() == null){
+                                                paivavali.setText("EI!");
+                                                paivat.add(paivavali);
+                                            }
+                                            
+                                            else if ((post.getTimeSlice().getEndDate().getYear() 
                                                     - post.getTimeSlice().getStartDate().getYear()) 
                                                     > 60){
-                                                paivavali.setText("Vakituinen");
+                                                paivavali.setText(person.getPerson().getTitteli()); 
                                                 paivat.add(paivavali);
                                             }
                                             else {
-                                                paivavali.setText(" - ");
+                                                JLabel alkumerkki = new JLabel("A- ");
+                                                JLabel loppumerkki = new JLabel("-L");
+                                                paivavali.setText("-");
+                                                paivat.add(alkumerkki);
                                                 paivat.add(alkukalenteri);
                                                 paivat.add(paivavali);
                                                 paivat.add(loppukalenteri);
+                                                paivat.add(loppumerkki);
                                                 paivat.setBorder(lineBorder);
                                                 paivat.setBackground(BG);
                                             }
@@ -306,11 +315,17 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                         
                                         rowPanel.add(BorderLayout.WEST, paivat);
     /* /LISAYS*/				
-                		 //rowPanel.add(post);
+                                        if (post.getKalenterinapit() != null){
+                                            rowPanel.add(post.getKalenterinapit());
 				}
+                                // rowPanel.add(post);
+				}
+				rowPanel.setBackground(HEADER_BG);
 				personsInfo.add(rowPanel);
 			}              
-			this.personPanel.add(personsInfo);
+                        personsInfo.add(new JLabel(person.getPerson().getTitteli()));
+                        personsInfo.setBackground(HEADER_BG);
+			this.personPanel.add(BorderLayout.CENTER, personsInfo);
 			
 			//footer
 			JPanel footer = new JPanel(new BorderLayout());
