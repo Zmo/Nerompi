@@ -18,10 +18,12 @@ public class PersonInfoFrame extends javax.swing.JFrame {
      * Creates new form PersonInfoFrame
      */
     private Person person;
+    private boolean newPerson;
     
     public PersonInfoFrame(Person person) {
         initComponents();
         this.person = person;
+        this.newPerson = false;
         
         nameField.setText(person.getName());
         huoneField.setText(person.getRoom());
@@ -29,6 +31,16 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         titteliField.setText(person.getTitteli());
         //if (person.getActivity().equals("k"))
         //    aktiivinenBox.setEnabled(rootPaneCheckingEnabled);
+        
+        this.setSize(680, 400);
+        MoreField.setVisible(false);
+        this.setVisible(true);
+    }
+    
+    public PersonInfoFrame() {
+        initComponents();
+        this.person = null;
+        this.newPerson = true;
         
         this.setSize(680, 400);
         MoreField.setVisible(false);
@@ -325,7 +337,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         person.setRoom(huoneField.getText());
         person.setOppiarvo(oppiarvoField.getText());
         person.setTitteli(titteliField.getText());
-        person.getSession().updatePerson(person);
+        if(this.newPerson)
+            person.getSession().saveNewPerson(this.person);
+        else
+            person.getSession().updatePerson(person);
         
         this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed

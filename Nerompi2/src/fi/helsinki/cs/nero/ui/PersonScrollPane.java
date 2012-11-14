@@ -247,7 +247,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 //hae id
                                 //new PersonInfoFrame(e.getSource().);
                             }
-                        });        
+                        });
 
 			//Extraheader ylimmäksi, myös extraheader pitää laittaa panelin sisään Layout syistä
 			//Extraheader2 on extraeaderin jatkopalanen
@@ -277,48 +277,11 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 				row.resetIterator();
 				
 				while(row.hasNext()) {
-					TimelineElement post = (TimelineElement)row.next();                                  
-    /* LISAYS 
-                                        JPanel paivat = new JPanel(new FlowLayout());
-                                        
-                                        Kalenterinappi alkukalenteri = new Kalenterinappi(post.getTimeSlice().getStartDate());
-                                        Kalenterinappi loppukalenteri = new Kalenterinappi(post.getTimeSlice().getEndDate());
-                                        
-                                        JLabel paivavali = new JLabel(" ");
-                                        if (post.getTimeSlice().getStartDate().after(post.getTimeSlice().getEndDate())){
-                                        }
-                                        else{
-                                            if(post.getTimeSlice().getStartDate() == null || post.getTimeSlice().getEndDate() == null){
-                                                paivavali.setText("EI!");
-                                                paivat.add(paivavali);
-                                            }
-                                            
-                                            else if ((post.getTimeSlice().getEndDate().getYear() 
-                                                    - post.getTimeSlice().getStartDate().getYear()) 
-                                                    > 60){
-                                                paivavali.setText(person.getPerson().getTitteli()); 
-                                                paivat.add(paivavali);
-                                            }
-                                            else {
-                                                JLabel alkumerkki = new JLabel("A- ");
-                                                JLabel loppumerkki = new JLabel("-L");
-                                                paivavali.setText("-");
-                                                paivat.add(alkumerkki);
-                                                paivat.add(alkukalenteri);
-                                                paivat.add(paivavali);
-                                                paivat.add(loppukalenteri);
-                                                paivat.add(loppumerkki);
-                                                paivat.setBorder(lineBorder);
-                                                paivat.setBackground(BG);
-                                            }
-                                        }
-                                        
-                                        rowPanel.add(BorderLayout.WEST, paivat);
-    /* /LISAYS*/				
+					TimelineElement post = (TimelineElement)row.next();
                                         if (post.getKalenterinapit() != null){
                                             rowPanel.add(post.getKalenterinapit());
-				}
-                                // rowPanel.add(post);
+                                        }
+                                        // rowPanel.add(post);
 				}
 				rowPanel.setBackground(HEADER_BG);
 				personsInfo.add(rowPanel);

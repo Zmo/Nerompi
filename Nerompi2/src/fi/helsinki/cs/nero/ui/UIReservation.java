@@ -83,6 +83,7 @@ public class UIReservation extends TimelineElement {
      * Palauttaa elementin esittämän vqrauksen.
      * @return Viitteen <code>reservation</code> olioon.
      */
+    @Override
     public Reservation getReservation() {
         return this.reservation;
     }
