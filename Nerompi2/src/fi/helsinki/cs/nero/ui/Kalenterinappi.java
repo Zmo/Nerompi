@@ -17,6 +17,7 @@ public class Kalenterinappi extends JCalendarButton {
     private static String[] kuulyhenteet = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private TimelineElement element;
     private boolean onkoAlku;
+    private Date tamaAika;
 
     public Kalenterinappi(Date dateTarget) {
         super(dateTarget);
@@ -28,15 +29,19 @@ public class Kalenterinappi extends JCalendarButton {
         this(dateTarget);
         this.element = element;
         this.onkoAlku = onkoAlku;
+        this.tamaAika = dateTarget;
     }
+    
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        
         if (evt.getPropertyName().equalsIgnoreCase("date")) {
             Date tulos;
             tulos = this.parseAika(evt);
-            if ((this.onkoAlku && this.element.onkoAlkuEnnenLoppua(tulos, this.element.getLoppukalenteri().getTargetDate()))
-                    || (!(this.onkoAlku) && this.element.onkoAlkuEnnenLoppua(this.element.getAlkukalenteri().getTargetDate(), tulos))) {
+            if ((this.onkoAlku && this.onkoAlkuEnnenLoppua(tulos, this.element.getLoppukalenteri().getTargetDate()))
+                    || (!(this.onkoAlku) && this.onkoAlkuEnnenLoppua(this.element.getAlkukalenteri().getTargetDate(), tulos))) {
                 this.setTargetDate(tulos);
                 this.asetaAikaTeksti();
                 System.out.println("Muutettu kohde: " + this.getTargetDate() + "\n - - Paivavalinta muuttui - -");
@@ -53,15 +58,18 @@ public class Kalenterinappi extends JCalendarButton {
 
                 }*/
                 /* /AIKATARKASTUKSIA */
+                this.tamaAika = this.getTargetDate();
                 this.element.storeToDB();
             }
             else {
+                this.setTargetDate(tamaAika);
+                
                 System.out.println("VIRHE - TimelineElement - alkamisp‰iv‰ yritetty siirt‰‰ loppumisp‰iv‰n j‰lkeen.");
                 
             }
         }
     }
-
+    
     private Date parseAika(PropertyChangeEvent evt) {
         Date aika;
         aika = this.getTargetDate();
@@ -87,5 +95,13 @@ public class Kalenterinappi extends JCalendarButton {
         this.setText(this.getTargetDate().getDate() + "."
                 + (1 + this.getTargetDate().getMonth()) + "."
                 + (1900 + this.getTargetDate().getYear()));
+    }
+    
+    public boolean onkoAlkuEnnenLoppua(Date alku, Date loppu) {
+        if (alku.after(loppu)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

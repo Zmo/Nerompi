@@ -233,15 +233,6 @@ public class TimelineElement extends JPanel {
         return this.loppukalenteri;
     }
     
-    public boolean onkoAlkuEnnenLoppua(Date alku, Date loppu){
-        if (alku.after(loppu)){
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    
     public void updateNappiKalenteri(){
         //this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
         //this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
