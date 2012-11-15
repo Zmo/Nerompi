@@ -86,7 +86,7 @@ public class NeroUI {
         addPerson.addActionListener(listener);
         reports.addActionListener(listener);
         
-        JMenu menu = new JMenu("Herp a Derp");
+        JMenu menu = new JMenu("Valikko");
         menu.add(addPerson);
         menu.add(reports);
         
