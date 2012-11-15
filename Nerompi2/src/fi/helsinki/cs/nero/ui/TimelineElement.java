@@ -233,17 +233,11 @@ public class TimelineElement extends JPanel {
         return this.loppukalenteri;
     }
     
-    public boolean updateNappiPaivays(Date alku, Date loppu){
-        if (alku.after(loppu)){
-            System.out.println("VIRHE - TimelineElement - alkamisp‰iv‰ yritetty siirt‰‰ loppumisp‰iv‰n j‰lkeen.");
-            return false;
-        }
-        else {
-            //this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
-            //this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
-            return true;
-        }
+    public void updateNappiKalenteri(){
+        //this.timeSlice.setStartDate(this.alkukalenteri.getTargetDate());
+        //this.timeSlice.setEndDate(this.loppukalenteri.getTargetDate());
     }
+    
 /* /LISAYS*/
     
     /**
