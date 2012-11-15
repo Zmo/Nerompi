@@ -5,6 +5,7 @@ package fi.helsinki.cs.nero.ui;
  * @author lpesola
  */
 import fi.helsinki.cs.nero.data.Person;
+import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ReportWriter;
@@ -47,13 +48,18 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Person[] people;
     private Vector<Vector<String>> roomData;
     private Vector<String> roomColumnNames;
-    private Vector<Vector<String>> peopleData;
+    private Vector<Vector<Object>> peopleData;
     private Vector<String> peopleColumnNames;
     private Vector<Vector<String>> lockerData;
     private Vector<String> lockerColumnNames;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
     private ReportWriter printer;
+    private Date today;
+    private String varaus, nimi, huone, nimike;
+    private String kayttaja, postihuone, puhelinnumero;
+    //testi
+    private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
     private DefaultComboBoxModel floorsModel;
@@ -76,8 +82,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         session.setDatabase(db);
         // testikoodin loppu
 
+        today = new Date();
         rooms = session.getRooms();
         people = session.getFilteredPeople();
+        initColumNameVariables();
         initComponents();
         initContainerData();
         initModels();
@@ -123,10 +131,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         restrictByName = new javax.swing.JTextField();
-        restrictByFirstDate = new javax.swing.JTextField();
-        restrictByLastDate = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        lastCalendar = new net.sourceforge.jcalendarbutton.JCalendarButton();
+        firstCalendar = new net.sourceforge.jcalendarbutton.JCalendarButton();
+        restrictByFirstDate = new javax.swing.JTextField();
+        restrictByLastDate = new javax.swing.JTextField();
         peopleButton = new javax.swing.JRadioButton();
         saveButton = new javax.swing.JButton();
         tableContainer = new javax.swing.JScrollPane();
@@ -173,11 +183,11 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(roomAttributesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showWing)
                     .addComponent(showFloor)
                     .addComponent(showPostCount)
-                    .addComponent(showRoomName))
-                .addContainerGap())
+                    .addComponent(showRoomName)
+                    .addComponent(showWing))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         roomAttributesLayout.setVerticalGroup(
             roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,7 +203,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        showRoomAndPost.setText("Huone/työpiste");
+        showRoomAndPost.setText(huone);
         showRoomAndPost.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showRoomAndPostMouseReleased(evt);
@@ -202,16 +212,16 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         showEmail.setText("Sähköposti");
 
-        showContracts.setText("Sopimus");
+        showContracts.setText(varaus);
         showContracts.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showContractsMouseReleased(evt);
             }
         });
 
-        showPhone.setText("Puhelinnumero");
+        showPhone.setText(puhelinnumero);
 
-        showJobTitle.setText("Nimike");
+        showJobTitle.setText(nimike);
         showJobTitle.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showJobTitleMouseReleased(evt);
@@ -308,7 +318,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Näytä");
 
-        jLabel2.setText("Työsuhde päättyy aikavälillä");
+        jLabel2.setText("Varaus päättyy aikavälillä");
+        jLabel2.setToolTipText("Aseta aikaväli, jonka aikana päättyvät varaukset näytetään");
 
         jLabel3.setText("Nimi");
 
@@ -318,15 +329,31 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        restrictByFirstDate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                restrictByFirstDateActionPerformed(evt);
-            }
-        });
-
         jLabel4.setText("Alkupvm.");
 
         jLabel5.setText("Loppupvm.");
+
+        lastCalendar.setToolTipText("Aikavälin viimeinen päivä");
+        lastCalendar.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                lastCalendarPropertyChange(evt);
+            }
+        });
+
+        firstCalendar.setToolTipText("Aikavälin ensimmäinen päivä");
+        firstCalendar.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                firstCalendarPropertyChange(evt);
+            }
+        });
+
+        restrictByFirstDate.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        restrictByFirstDate.setText(dateToShortString(today));
+        restrictByFirstDate.setToolTipText("Aikavälin ensimmäinen päivä muodossa DD.MM.YYYY");
+
+        restrictByLastDate.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        restrictByLastDate.setText("31.12.2112");
+        restrictByLastDate.setToolTipText("Aikavälin viimeinen päivä muodossa DD.MM.YYYY");
 
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
@@ -359,16 +386,20 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                                .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(restrictByFirstDate, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(firstCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(33, 33, 33)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(restrictByLastDate, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 399, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lastCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(62, 62, 62)
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76))
+                                .addGap(124, 124, 124))
                             .addGroup(restrictionsContainerLayout.createSequentialGroup()
                                 .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
@@ -379,29 +410,29 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(rajauksetHeader)
                     .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, restrictionsContainerLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5)
+                            .addComponent(restrictByLastDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lastCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(wing)
-                            .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(restrictByLastDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(floor)
-                            .addComponent(jLabel3)
-                            .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(49, 49, 49))))
+                            .addComponent(jLabel1)
+                            .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(firstCalendar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(wing)
+                        .addComponent(jLabel4)
+                        .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(floor)
+                    .addComponent(jLabel3)
+                    .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(49, 49, 49))
         );
 
         javax.swing.GroupLayout checkboxContainerLayout = new javax.swing.GroupLayout(checkboxContainer);
@@ -411,16 +442,14 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(checkboxContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(checkboxContainerLayout.createSequentialGroup()
-                        .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(checkboxContainerLayout.createSequentialGroup()
                         .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(168, 168, 168)
                         .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lockerAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(115, 115, 115))))
+                        .addGap(338, 338, 338)
+                        .addComponent(lockerAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(262, Short.MAX_VALUE))
         );
         checkboxContainerLayout.setVerticalGroup(
             checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -488,27 +517,28 @@ public class ReportsWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tableContainer)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(peopleButton)
                 .addGap(233, 233, 233)
                 .addComponent(roomButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lockerButton)
-                .addGap(160, 160, 160))
+                .addGap(412, 412, 412))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(saveButton)
                 .addGap(18, 18, 18)
                 .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(tableContainer)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -567,17 +597,17 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showRoomNameMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomNameMouseReleased
         if (showRoomName.isSelected()) {
-            showColumn("Nimi", roomColumnModel, hiddenRoomColumns);
+            showColumn(nimi, roomColumnModel, hiddenRoomColumns);
         } else {
-            hideColumn("Nimi", roomColumnModel, hiddenRoomColumns);
+            hideColumn(nimi, roomColumnModel, hiddenRoomColumns);
         }
     }//GEN-LAST:event_showRoomNameMouseReleased
 
     private void showContractsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showContractsMouseReleased
         if (showContracts.isSelected()) {
-            showColumn("Sopimus", peopleColumnModel, hiddenPeopleColumns);
+            showColumn(varaus, peopleColumnModel, hiddenPeopleColumns);
         } else {
-            hideColumn("Sopimus", peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(varaus, peopleColumnModel, hiddenPeopleColumns);
         }
     }//GEN-LAST:event_showContractsMouseReleased
 
@@ -592,25 +622,25 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showRoomAndPostMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomAndPostMouseReleased
         if (showRoomAndPost.isSelected()) {
-            showColumn("Huone", peopleColumnModel, hiddenPeopleColumns);
+            showColumn(huone, peopleColumnModel, hiddenPeopleColumns);
         } else {
-            hideColumn("Huone", peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(huone, peopleColumnModel, hiddenPeopleColumns);
         }
     }//GEN-LAST:event_showRoomAndPostMouseReleased
 
     private void showRoomMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomMouseReleased
         if (showRoom.isSelected()) {
-            showColumn("Huone", lockerColumnModel, hiddenLockerColumns);
+            showColumn(huone, lockerColumnModel, hiddenLockerColumns);
         } else {
-            hideColumn("Huone", lockerColumnModel, hiddenLockerColumns);
+            hideColumn(huone, lockerColumnModel, hiddenLockerColumns);
         }
     }//GEN-LAST:event_showRoomMouseReleased
 
     private void showPhone2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPhone2MouseReleased
         if (showPhone2.isSelected()) {
-            showColumn("Puhelinnumero", lockerColumnModel, hiddenLockerColumns);
+            showColumn(puhelinnumero, lockerColumnModel, hiddenLockerColumns);
         } else {
-            hideColumn("Puhelinnumero", lockerColumnModel, hiddenLockerColumns);
+            hideColumn(puhelinnumero, lockerColumnModel, hiddenLockerColumns);
         }
     }//GEN-LAST:event_showPhone2MouseReleased
 
@@ -630,9 +660,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void restrictByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByNameActionPerformed
         String value = restrictByName.getText();
         if (value == null || value.isEmpty()) {
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Nimi"));
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(nimi));
         } else {
-            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Nimi"));
+            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(nimi));
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
@@ -643,13 +673,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         int index = lockerDropdown.getSelectedIndex();
         if (index == 0) {
             // kaikki
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Postihuone"));
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 1) {
             // lokerottomat
-            generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex("Postihuone"));
+            generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
         } else {
             // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex("Postihuone"));
+            RowFilter regexFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
             generalFilter = RowFilter.notFilter(regexFilter);
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
@@ -690,25 +720,26 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showJobTitleMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showJobTitleMouseReleased
         if (showJobTitle.isSelected()) {
-            showColumn("Nimike", peopleColumnModel, hiddenPeopleColumns);
+            showColumn(nimike, peopleColumnModel, hiddenPeopleColumns);
         } else {
-            hideColumn("Nimike", peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(nimike, peopleColumnModel, hiddenPeopleColumns);
         }
     }//GEN-LAST:event_showJobTitleMouseReleased
 
-    private void restrictByFirstDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByFirstDateActionPerformed
-        String value = restrictByFirstDate.getText();
-        // tätä datea ei tarvinne, pitää korvata se tuolla kalenterinapilla
-        Date date = parseDate(value);
-        if (value == null || value.isEmpty()) {
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Sopimus"));
-        } else {
-            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Sopimus"));
+    private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
+
+        if (evt.getNewValue() instanceof Date) {
+            restrictByFirstDate.setText(dateToShortString(((Date) evt.getNewValue())));
+
+            setDateRestrictionAfter();
         }
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
-    }//GEN-LAST:event_restrictByFirstDateActionPerformed
+    }//GEN-LAST:event_firstCalendarPropertyChange
+
+    private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
+        if (evt.getNewValue() instanceof Date) {
+            restrictByLastDate.setText(dateToShortString(((Date) evt.getNewValue())));
+        }
+    }//GEN-LAST:event_lastCalendarPropertyChange
 
     /**
      * @param args the command line arguments
@@ -756,6 +787,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel checkboxContainer;
     private javax.swing.JFileChooser fileChooserDialog;
     private javax.swing.JComboBox fileTypeChooser;
+    private net.sourceforge.jcalendarbutton.JCalendarButton firstCalendar;
     private javax.swing.JLabel floor;
     private javax.swing.JComboBox floorDropdown;
     private javax.swing.JLabel jLabel1;
@@ -763,6 +795,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private net.sourceforge.jcalendarbutton.JCalendarButton lastCalendar;
     private javax.swing.JPanel lockerAttributes;
     private javax.swing.JRadioButton lockerButton;
     private javax.swing.JComboBox lockerDropdown;
@@ -841,6 +874,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void initColumnData() {
 
+
+
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
         //TODO: muuta Vectorin tyyppi Objectiksi, että kaikilla sarakkeilla voi olla oikea tyyppi -> voidaan filtteröidä järkevästi
 
@@ -865,14 +900,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomColumnNames.add("Huoneen nro");
         roomColumnNames.add("Kerros");
         roomColumnNames.add("Työpisteiden lkm");
-        roomColumnNames.add("Nimi");
+        roomColumnNames.add(nimi);
 
         // henkilö-tarkastelun data ja sarakkeet
         // laitetaan samalla data myös postilokero-näkymän dataan
         peopleData = new Vector<>();
         lockerData = new Vector<>();
         for (int i = 0; i < people.length; i++) {
-            Vector<String> peopleRow = new Vector<>();
+            Vector<Object> peopleRow = new Vector<>();
             Vector<String> l = new Vector<>();
             l.add(people[i].getName());
             l.add(people[i].getPostilokeroHuone());
@@ -881,23 +916,23 @@ public class ReportsWindow extends javax.swing.JFrame {
             l.add(people[i].getTitteli());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
-            peopleRow.add(people[i].getContractLengthAsString());
+            peopleRow.add(parseReservations(people[i].getReservations()));
             peopleRow.add(people[i].getTitteli());
             peopleData.add(i, peopleRow);
         }
 
         peopleColumnNames = new Vector<>();
-        peopleColumnNames.add("Nimi");
-        peopleColumnNames.add("Huone");
-        peopleColumnNames.add("Sopimus");
-        peopleColumnNames.add("Nimike");
+        peopleColumnNames.add(nimi);
+        peopleColumnNames.add(huone);
+        peopleColumnNames.add(varaus);
+        peopleColumnNames.add(nimike);
 
         // postilokero-näkymän sarakkeet        
         lockerColumnNames = new Vector<>();
-        lockerColumnNames.add("Käyttäjä");
-        lockerColumnNames.add("Postihuone");
-        lockerColumnNames.add("Huone");
-        lockerColumnNames.add("Puhelinnumero");
+        lockerColumnNames.add(kayttaja);
+        lockerColumnNames.add(postihuone);
+        lockerColumnNames.add(huone);
+        lockerColumnNames.add(puhelinnumero);
     }
 
     private void showColumn(String name, TableColumnModel model,
@@ -972,40 +1007,108 @@ public class ReportsWindow extends javax.swing.JFrame {
         RowSorter rs = Data.getRowSorter();
         int rowInReturnTable = 1;
         for (int i = 0; i < rowCount; i++) {
-            // jos converter palauttaa -1, rivi ei ole näkyvä -> ei lisätä sitä mapiin
-            // tämän jälkeen pitäisi vielä saada rivit oikeille kohdille..
+            /* jos converter palauttaa -1, rivi ei ole näkyvä -> ei lisätä sitä mapiin */
             int rowIndex = rs.convertRowIndexToView(i);
             if (rowIndex > -1) {
                 rowData = new Object[columnCount];
                 for (int j = 0; j < columnCount; j++) {
-                    // kirjoitetaan vain ne sarakkeet, jotka näkyvillä
-                    // oikea sarake saadaan, kun muutetaan 
-                    // datamallin indeksi sarakemallin indeksiksi
+                    /* Kirjoitetaan vain ne sarakkeet, jotka näkyvillä
+                     Oikea sarakenumero saadaan, kun muutetaan 
+                     datamallin indeksi sarakemallin indeksiksi */
                     rowData[j] = tableModel.getValueAt(i,
                             Data.convertColumnIndexToModel(neededIndexes[j]));
                 }
-                rowInReturnTable = rowIndex+1;
+                rowInReturnTable = rowIndex + 1;
                 map.put(rowInReturnTable, rowData);
             }
         }
         return map;
     }
 
-    private Date parseDate(String value) {
-        // tämä on sitä varten, että saadaan työsuhteen loppupäivä
-        // taulukossa siis timeslice-luokan ilmentymä
-        // 
+    private String dateToShortString(Date date) {
+        if (date != null) {
+            String dateString = "";
+            dateString = dateString.concat(date.getDate() + ".");
+            dateString = dateString.concat((1 + date.getMonth()) + ".");
+            dateString = dateString.concat(new Integer((date.getYear()) + 1900).toString());
+
+            return dateString;
+        } else {
+            return null;
+        }
+
+    }
+
+    private void setVisibleContracts() {
         // näkymässä työsuhteen loppuajan alkupäivämäärä ja loppupäivämäärä
-        // -> jos molemmat asetettu, muodostetaan timeslice
-        // ja katsotaan sijoittuuko loppupäivä tälle välille
+        // sekä kalenterit (näistä ei tartte välittää?)
+        // case 1-> jos molemmat asetettu, muodostetaan timeslice niistä
+        // ja katsotaan sijoittuuko taulukon contract-sarakkeessa oleva loppupäivä tälle välille
         //  * TimeSlicen startDayAfter? / contains?
-        // -> jos loppu asetettu, katsotaan, onko loppupäivä ennen välin loppua
+        //  * jos sijoittuu, näytetään rivi -> ei muita rivejä
+
+        // case 2-> jos vain loppu asetettu, katsotaan, onko loppupäivä ennen välin loppua
         //  * Daten before / after
-        // -> jos alku asetettu, katso onko loppupäivä alun jälkeen
-        
-        
-        String endDate = value.split("-")[1];
-        
-        return new Date();
+        //  * jos on, näytetään rivi
+        // case 3-> jos alku asetettu, katso onko loppupäivä alun jälkeen
+        //  * Daten before / after
+        //  * jos on, näytä rivi
+
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void setDateRestrictionAfter() {
+        Date date = parseDate(restrictByFirstDate.getText());
+        generalFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
+                date, Data.getColumnModel().getColumnIndex(varaus));
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
+
+    }
+
+    private boolean isDate(String s) {
+
+        return false;
+    }
+
+    private void initColumNameVariables() {
+        // henkilö
+        varaus = "Varaus päättyy";
+        nimi = "Nimi";
+        huone = "Huone";
+        nimike = "Nimike";
+
+        // postilokero    
+        kayttaja = "Käyttäjä";
+        postihuone = "Postihuone";
+        puhelinnumero = "Puhelinnumero";
+    }
+
+    private Date parseReservations(Reservation[] reservations) {
+        // etsitään viimeinen varauksista
+        // käytetään sitä päättymispäivänä -> kysyttävä kujalalta, onko tämä ok
+        int lastIndex = reservations.length;
+        if (lastIndex > 0) {
+            Reservation lastReservation = reservations[reservations.length - 1];
+            return lastReservation.getTimeSlice().getEndDate();
+        } else {
+            return null;
+        }
+    }
+
+    private Date parseDate(String text) {
+        Date date = new Date();
+        if (text != null) {
+            String[] split = text.split("\\.");
+            date.setDate(new Integer(split[0]));
+            date.setMonth(new Integer(split[1]) - 1);
+            date.setYear(new Integer(split[2]) - 1900);
+
+        }
+        return date;
+
+
+
     }
 }
