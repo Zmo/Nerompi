@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import fi.helsinki.cs.nero.NeroApplication;
+import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.logic.Session;
 
@@ -31,3 +32,4 @@ public class PhoneLabel extends JLabel {
 		return this.session;
 	}
 }
+

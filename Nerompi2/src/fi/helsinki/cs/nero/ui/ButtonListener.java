@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 import fi.helsinki.cs.nero.logic.Session;
+import javax.swing.JButton;
 
 public class ButtonListener implements ActionListener {
 
@@ -63,11 +64,16 @@ public class ButtonListener implements ActionListener {
                 }
                 
                 if(e.getActionCommand().equals("addPerson")) {
-                    PersonInfoFrame infoframe = new PersonInfoFrame();
+                    PersonInfoFrame infoframe = new PersonInfoFrame(this.session);
                 }
                 
                 if(e.getActionCommand().equals("reports")) {
                     ReportsWindow reports = new ReportsWindow();
                 }
+                
+//                if(e.getActionCommand().equals("henkilonLisatiedot")) {
+//                    JButton personIdButton = (JButton)e.getSource();
+//                    PersonInfoFrame infoframe = new PersonInfoFrame(personIdButton.getText());
+//                }
 	}
 }
