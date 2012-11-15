@@ -93,8 +93,7 @@ public class Post {
 	public String getPostID(){
 		
 		return this.postID;
-	}
-	
+	}	
 	/**
 	 * Palauttaa huoneen, jossa työpiste sijaitsee.
 	 * @return huone Room-oliona
@@ -102,7 +101,6 @@ public class Post {
 	public Room getRoom() {
 		return this.room;
 	}
-
 	/**
 	 * Palauttaa työpisteen numeron. Numero on huonekohtainen eli kunkin huoneen ensimmäinen
 	 * työpiste on 1, seuraava 2 jne.
@@ -110,8 +108,7 @@ public class Post {
 	 */
 	public int getPostNumber() {
 		return this.postNumber;
-	}
-	
+	}	
 	/**
 	 * Palauttaa työpisteen puhelinnumerot.
 	 * @return phoneNumbers Puhelinnumerot <code>PhoneNumber[]</code> oliona.

@@ -202,14 +202,14 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			header.setBackground(HEADER_BG);
 			
-			PersonsContracts person = (PersonsContracts)peopleIterator.next();
-			LinkedList rows = person.getRows();
+			PersonsContracts personIterator = (PersonsContracts)peopleIterator.next();
+			LinkedList rows = personIterator.getRows();
 			Iterator rowIterator = rows.iterator();
 			
 			JLabel faceIcon;
 			
 			//Lisätään naamankuva..
-			if(person.getPerson().getStatus()) {
+			if(personIterator.getPerson().getStatus()) {
 				faceIcon = new JLabel(NOT_HAPPY);
 			} else {
 				faceIcon = new JLabel(HAPPY);
@@ -223,31 +223,38 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			header.add(faceIcon);
 			
 			//Lisätään henkilön yhteystiedot.
-			JLabel labelText = new JLabel(person.getPerson().getName());             
-			header.add(labelText);
-                        //Lisätään nappula joka avaa tieto ikkunan henkilöstä
-                        JButton tiedot = new JButton(person.getPerson().getPersonID());
-                        //hae sessiosta henkilö
-                        header.add(tiedot);
-                        //nappulan toiminnallisuus
-                        tiedot.addActionListener(new ActionListener() 
-                        {
-                            //Mieti uudestaan koko setti herp a derp a durr
-                            public void actionPerformed(ActionEvent e)
-                            {
-                                //Execute when button is pressed
-                                //painetun nappulan tietoja
-                                JButton personIdButton = (JButton)e.getSource();
-                                
-                                for (int i = 0; i < persons.length; i++) {                          
-                                    if (persons[i].getPersonID().equals(personIdButton.getText())) {           
-                                        new PersonInfoFrame(persons[i]);
-                                    }
-                                }
-                                //hae id
-                                //new PersonInfoFrame(e.getSource().);
-                            }
-                        });
+                        PersonNameLabel personNameLabel = new PersonNameLabel(this.sessio, personIterator.getPerson());
+                        personNameLabel.setText(personIterator.getPerson().getName());
+                        personNameLabel.addMouseListener(new PersonNameLabelListener());
+                        header.add(personNameLabel);
+//			JLabel labelText = new JLabel(personIterator.getPerson().getName());             
+//			header.add(labelText);
+//                        
+//                        Lisätään nappula joka avaa tieto ikkunan henkilöstä
+//                        JButton tiedot = new JButton(personIterator.getPerson().getPersonID());
+//                        header.add(tiedot);
+//                        nappulan toiminnallisuus
+//                        ButtonListener listener = new ButtonListener(this.sessio);
+//                        tiedot.setActionCommand("henkilonLisatiedot");
+//                        tiedot.addActionListener(listener);
+//                                (new ActionListener() 
+//                        {
+//                            //Mieti uudestaan koko setti herp a derp a durr
+//                            public void actionPerformed(ActionEvent e)
+//                            {
+//                                //Execute when button is pressed
+//                                //painetun nappulan tietoja
+//                                JButton personIdButton = (JButton)e.getSource();
+//                                
+//                                for (int i = 0; i < persons.length; i++) {                          
+//                                    if (persons[i].getPersonID().equals(personIdButton.getText())) {           
+//                                        new PersonInfoFrame(persons[i]);
+//                                    }
+//                                }
+//                                //hae id
+//                                //new PersonInfoFrame(e.getSource().);
+//                            }
+//                        });
 
 			//Extraheader ylimmäksi, myös extraheader pitää laittaa panelin sisään Layout syistä
 			//Extraheader2 on extraeaderin jatkopalanen
@@ -286,7 +293,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 				rowPanel.setBackground(HEADER_BG);
 				personsInfo.add(rowPanel);
 			}              
-                        personsInfo.add(new JLabel(person.getPerson().getTitteli()));
+                        personsInfo.add(new JLabel(personIterator.getPerson().getTitteli()));
                         personsInfo.setBackground(HEADER_BG);
 			this.personPanel.add(BorderLayout.CENTER, personsInfo);
 			

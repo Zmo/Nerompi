@@ -128,11 +128,9 @@ public class Person implements Comparable {
         this.hyPuhelinluettelossa = henkiloHash.get("hy_puhelinluettelossa");
         this.etunimi = henkiloHash.get("etunimet");
         this.sukunimi = henkiloHash.get("sukunimi");
-        this.session = session;
-        
-        
+        this.session = session;                
     }
-	
+    
 	
 	/**
 	 * Palauttaa henkilön tunnuksen.
