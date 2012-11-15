@@ -914,7 +914,6 @@ public class NeroDatabase implements NeroObserver {
 		return (Person[]) filteredPeople.toArray(new Person[0]);
 	}
         public void updatePersonInfo(Person person) {
-            boolean success = false;
             this.session.waitState(true);
             
             try {
@@ -926,8 +925,7 @@ public class NeroDatabase implements NeroObserver {
                         + " ktunnus = ?, kannykka = ?, postilokerohuone = ?, hy_tyosuhde = ?, hy_puhelinluettelossa = ?"
                         + " WHERE htunnus = ? AND etunimet = ? AND sukunimi = ?"
                 );
-               
-                
+                               
                 prepModifyperson.setString(1, person.getPersonID());
                 prepModifyperson.setString(2, person.getEtunimi());
                 prepModifyperson.setString(3, person.getSukunimi());
@@ -953,10 +951,7 @@ public class NeroDatabase implements NeroObserver {
                 prepModifyperson.setString(23, person.getEtunimi());
                 prepModifyperson.setString(24, person.getSukunimi());
                 
-
-                if(prepModifyperson.executeUpdate() > 0) {
-                        success = true;
-                }
+                prepModifyperson.executeUpdate();
                
             } catch (SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -968,18 +963,40 @@ public class NeroDatabase implements NeroObserver {
             
             try {
                 PreparedStatement prepCreateperson = this.connection.prepareStatement(
-                          " INSERT INTO henkilo"
-                        + " VALUES ("+person.getPersonID()+","+person.getEtunimi()+","+person.getSukunimi()+","+person.getCallName()+","+person.getActivity()+","+person.getRoom()+","
-                        + person.getHetu()+","+person.getOppiarvo()+","+person.getTitteli()+","+person.getWorkPhone()+","+person.getHomePhone()+","+person.getAddress()+","
-                        + person.getPostnumber()+","+person.getPostitoimiPaikka()+",'null',"+person.getSahkoposti()+","+person.getHallinnollinenKommentti()+","
-                        + "'null',"+person.getkTunnus()+","+person.getKannykka()+","+person.getPostilokeroHuone()+","+person.getHyTyosuhde()+","+person.getHyPuhelinluettelossa()+")"
+                    " INSERT INTO henkilo (htunnus, etunimet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
+                            + " hetu, oppiarvo, titteli, puhelin_tyo, puhelin_koti, katuosoite,"
+                            + " postinro, postitoimipaikka, sahkopostiosoite, hallinnollinen_kommentti," 
+                            + " ktunnus, kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa)"
+                        + " VALUES (?, ?, ?, ?, ?, ?,"
+                            + " ?, ?, ?, ?, ?, ?,"
+                            + " ?, ?, ?, ?, ?, ?,"
+                            + " ?, ?, ?)"
                 );
+                              
+                prepCreateperson.setString(1, person.getPersonID());
+                prepCreateperson.setString(2, person.getEtunimi());
+                prepCreateperson.setString(3, person.getSukunimi());
+                prepCreateperson.setString(4, person.getCallName());
+                prepCreateperson.setString(5, person.getActivity());
+                prepCreateperson.setString(6, person.getRoom());
+                prepCreateperson.setString(7, person.getHetu());
+                prepCreateperson.setString(8, person.getOppiarvo());
+                prepCreateperson.setString(9, person.getTitteli());
+                prepCreateperson.setString(10, person.getWorkPhone());
+                prepCreateperson.setString(11, person.getHomePhone());
+                prepCreateperson.setString(12, person.getAddress());
+                prepCreateperson.setString(13, person.getPostnumber());
+                prepCreateperson.setString(14, person.getPostitoimiPaikka());
+                prepCreateperson.setString(15, person.getSahkoposti());
+                prepCreateperson.setString(16, person.getHallinnollinenKommentti());
+                prepCreateperson.setString(17, person.getkTunnus());
+                prepCreateperson.setString(18, person.getKannykka());
+                prepCreateperson.setString(19, person.getPostilokeroHuone());
+                prepCreateperson.setString(20, person.getHyTyosuhde());
+                prepCreateperson.setString(21, person.getHyPuhelinluettelossa());
+ 
                 prepCreateperson.executeUpdate();
-                /**
-                if(this.prepAddReservation.executeUpdate() > 0) {
-                        success = true;
-                }
-                */
+
             } catch (SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
             }
