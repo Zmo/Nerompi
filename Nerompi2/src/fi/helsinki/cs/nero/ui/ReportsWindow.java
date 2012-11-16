@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
@@ -1091,48 +1092,45 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
+        RowFilter filter;
         if (firstDate != null && lastDate != null) {
             // molemmissa päivämäärä
+            filter = setDateRestrictionContains(firstDate, lastDate);
         } else if (firstDate == null && lastDate != null) {
             // loppupäivämäärä on
-            setDateRestrictionBefore(lastDate);
+            filter = setDateRestrictionBefore(lastDate);
         } else if (firstDate != null && lastDate == null) {
             // alkupäivämäärä on
-            setDateRestrictionAfter(firstDate);
+            filter = setDateRestrictionAfter(firstDate);
         } else {
             // kumpaakaan ei asetettu -> poistetaan 
-            removeDateRestriction();
+            filter = removeDateRestriction();
         }
 
-
-    }
-
-    private void setDateRestrictionAfter(Date date) {
-        generalFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
-                date, Data.getColumnModel().getColumnIndex(varaus));
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
+        sorter.setRowFilter(filter);
         Data.setRowSorter(rowSorter);
-
     }
 
-    private void setDateRestrictionBefore(Date date) {
-        generalFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
+    private RowFilter setDateRestrictionAfter(Date date) {
+        RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
                 date, Data.getColumnModel().getColumnIndex(varaus));
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
-
+        return newFilter;
     }
 
-    private void setDateRestrictionContains() {
+    private RowFilter setDateRestrictionBefore(Date date) {
+        RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
+                date, Data.getColumnModel().getColumnIndex(varaus));
+        return newFilter;
+    }
+
+    private RowFilter setDateRestrictionContains(Date first, Date last) {
         // and filter 
-        /*   List<RowFilter<Object,Object>> filters = new ArrayList<RowFilter<Object,Object>>(2);
-         filters.add(RowFilter.regexFilter("foo"));
-         filters.add(RowFilter.regexFilter("bar"));
-         RowFilter<Object,Object> fooBarFilter = RowFilter.andFilter(filters);*/
-
-        throw new UnsupportedOperationException("Not yet implemented");
+        List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
+        filters.add(setDateRestrictionBefore(last));
+        filters.add(setDateRestrictionAfter(first));
+        RowFilter<Object, Object> newFilter = RowFilter.andFilter(filters);
+        return newFilter;
     }
 
     private Date hasDate(String s) {
@@ -1143,7 +1141,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else {
             return parseDate(s);
         }
-
     }
 
     private void initColumNameVariables() {
@@ -1179,19 +1176,12 @@ public class ReportsWindow extends javax.swing.JFrame {
             date.setDate(new Integer(split[0]));
             date.setMonth(new Integer(split[1]) - 1);
             date.setYear(new Integer(split[2]) - 1900);
-
         }
         return date;
-
-
-
     }
 
-    private void removeDateRestriction() {
-        generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(varaus));
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
-
+    private RowFilter removeDateRestriction() {
+        RowFilter newFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(varaus));
+        return newFilter;
     }
 }
