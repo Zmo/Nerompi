@@ -56,7 +56,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private RowFilter generalFilter;
     private ReportWriter printer;
     private Date today;
-    private String varaus, nimi, huone, nimike;
+    private String varaus, nimi, huone, nimike, sposti;
     private String kayttaja, postihuone, puhelinnumero;
     //testi
     private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
@@ -210,7 +210,12 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        showEmail.setText("Sähköposti");
+        showEmail.setText(sposti);
+        showEmail.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showEmailMouseReleased(evt);
+            }
+        });
 
         showContracts.setText(varaus);
         showContracts.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -350,10 +355,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         restrictByFirstDate.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         restrictByFirstDate.setText(dateToShortString(today));
         restrictByFirstDate.setToolTipText("Aikavälin ensimmäinen päivä muodossa DD.MM.YYYY");
+        restrictByFirstDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByFirstDateActionPerformed(evt);
+            }
+        });
 
         restrictByLastDate.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         restrictByLastDate.setText("31.12.2112");
         restrictByLastDate.setToolTipText("Aikavälin viimeinen päivä muodossa DD.MM.YYYY");
+        restrictByLastDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByLastDateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
@@ -730,16 +745,33 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         if (evt.getNewValue() instanceof Date) {
             restrictByFirstDate.setText(dateToShortString(((Date) evt.getNewValue())));
-
-            setDateRestrictionAfter();
+            determineDateRestriction();
         }
     }//GEN-LAST:event_firstCalendarPropertyChange
 
     private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
             restrictByLastDate.setText(dateToShortString(((Date) evt.getNewValue())));
+            // tsekataan pitääkö filteröidä jotenkin
+            determineDateRestriction();
         }
     }//GEN-LAST:event_lastCalendarPropertyChange
+
+    private void showEmailMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showEmailMouseReleased
+        if (showEmail.isSelected()) {
+            showColumn(sposti, peopleColumnModel, hiddenPeopleColumns);
+        } else {
+            hideColumn(sposti, peopleColumnModel, hiddenPeopleColumns);
+        }
+    }//GEN-LAST:event_showEmailMouseReleased
+
+    private void restrictByFirstDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByFirstDateActionPerformed
+        determineDateRestriction();
+    }//GEN-LAST:event_restrictByFirstDateActionPerformed
+
+    private void restrictByLastDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByLastDateActionPerformed
+        determineDateRestriction();
+    }//GEN-LAST:event_restrictByLastDateActionPerformed
 
     /**
      * @param args the command line arguments
@@ -914,10 +946,12 @@ public class ReportsWindow extends javax.swing.JFrame {
             l.add(people[i].getRoom());
             l.add(people[i].getWorkPhone());
             l.add(people[i].getTitteli());
+            l.add(people[i].getSahkoposti());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
             peopleRow.add(parseReservations(people[i].getReservations()));
             peopleRow.add(people[i].getTitteli());
+            peopleRow.add(people[i].getSahkoposti());
             peopleData.add(i, peopleRow);
         }
 
@@ -926,6 +960,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnNames.add(huone);
         peopleColumnNames.add(varaus);
         peopleColumnNames.add(nimike);
+        peopleColumnNames.add(sposti);
 
         // postilokero-näkymän sarakkeet        
         lockerColumnNames = new Vector<>();
@@ -1039,7 +1074,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
-    private void setVisibleContracts() {
+    private void determineDateRestriction() {
         // näkymässä työsuhteen loppuajan alkupäivämäärä ja loppupäivämäärä
         // sekä kalenterit (näistä ei tartte välittää?)
         // case 1-> jos molemmat asetettu, muodostetaan timeslice niistä
@@ -1054,11 +1089,25 @@ public class ReportsWindow extends javax.swing.JFrame {
         //  * Daten before / after
         //  * jos on, näytä rivi
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        Date firstDate = hasDate(restrictByFirstDate.getText());
+        Date lastDate = hasDate(restrictByLastDate.getText());
+        if (firstDate != null && lastDate != null) {
+            // molemmissa päivämäärä
+        } else if (firstDate == null && lastDate != null) {
+            // loppupäivämäärä on
+            setDateRestrictionBefore(lastDate);
+        } else if (firstDate != null && lastDate == null) {
+            // alkupäivämäärä on
+            setDateRestrictionAfter(firstDate);
+        } else {
+            // kumpaakaan ei asetettu -> poistetaan 
+            removeDateRestriction();
+        }
+
+
     }
 
-    private void setDateRestrictionAfter() {
-        Date date = parseDate(restrictByFirstDate.getText());
+    private void setDateRestrictionAfter(Date date) {
         generalFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
                 date, Data.getColumnModel().getColumnIndex(varaus));
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
@@ -1067,9 +1116,34 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
-    private boolean isDate(String s) {
+    private void setDateRestrictionBefore(Date date) {
+        generalFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
+                date, Data.getColumnModel().getColumnIndex(varaus));
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
 
-        return false;
+    }
+
+    private void setDateRestrictionContains() {
+        // and filter 
+        /*   List<RowFilter<Object,Object>> filters = new ArrayList<RowFilter<Object,Object>>(2);
+         filters.add(RowFilter.regexFilter("foo"));
+         filters.add(RowFilter.regexFilter("bar"));
+         RowFilter<Object,Object> fooBarFilter = RowFilter.andFilter(filters);*/
+
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private Date hasDate(String s) {
+        /* Palauttaa muotoa pp.kk.vvvv olevasta merkkijonosta muodostetun päivämäärän
+         Jos merkkijono on tyhjä tai syöte on null, palautetaan null*/
+        if (s == null | s.isEmpty()) {
+            return null;
+        } else {
+            return parseDate(s);
+        }
+
     }
 
     private void initColumNameVariables() {
@@ -1078,6 +1152,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         nimi = "Nimi";
         huone = "Huone";
         nimike = "Nimike";
+        sposti = "Sähköposti";
 
         // postilokero    
         kayttaja = "Käyttäjä";
@@ -1109,6 +1184,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         return date;
 
 
+
+    }
+
+    private void removeDateRestriction() {
+        generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(varaus));
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
 
     }
 }
