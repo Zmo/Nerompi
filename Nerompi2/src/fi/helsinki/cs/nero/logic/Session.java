@@ -740,7 +740,7 @@ public class Session {
 
     public void addPhoneNumber(Post post, PhoneNumber phone) {
         if(post == null) {
-            throw new IllegalArgumentException("tyï¿½piste ei saa olla null");
+            throw new IllegalArgumentException("työpiste ei saa olla null");
         }
         if(phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
@@ -754,9 +754,9 @@ public class Session {
     		}
     		// nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
     		obsman.notifyObservers(NeroObserverTypes.ROOMS);
-            setStatusMessage("Puhelinnumero liitetty tyï¿½pisteeseen.");
+            setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
     	} else {
-            setStatusMessage("Puhelinnumeron liittï¿½minen epï¿½onnistui.");
+            setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
         }
     }
 
@@ -772,16 +772,16 @@ public class Session {
             throw new IllegalArgumentException();
         }
     	// luodaan puhelinnumero-oliosta versio, joka ei viittaa mihinkï¿½ï¿½n tyï¿½pisteeseen
-    	PhoneNumber newPhone = new PhoneNumber(phone, null);
-    	if(db.updatePhoneNumber(newPhone)) {
+    	//PhoneNumber newPhone = new PhoneNumber(phone, null);
+    	if(db.removePhoneNumberFromPost(phone)) {
     		// ei tietoa ollaanko juuri tï¿½tï¿½ nï¿½yttï¿½mï¿½ss, mutta pï¿½ivitetï¿½ï¿½n silti
     		// vrt. tarkastukset updatePhoneNumberissa ^^
     		this.switchActiveRoom();
     		// nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
     		obsman.notifyObservers(NeroObserverTypes.ROOMS);
-            setStatusMessage("Puhelinnumero poistettu tyï¿½pisteestï¿½.");
+            setStatusMessage("Puhelinnumero poistettu työpisteestä.");
     	} else {
-            setStatusMessage("Puhelinnumeron poistaminen epï¿½onnistui.");
+            setStatusMessage("Puhelinnumeron poistaminen epäonnistui.");
     	}
     }
 
