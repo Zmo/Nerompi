@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -910,11 +911,10 @@ public class Session {
         }
     	obsman.addObserver(type, observer);
     }
-    public void saveNewPerson(Person person) {
+    public void saveNewPerson(Person person) throws SQLException {
         db.createPerson(person);
     }
-    public void updatePerson(Person person) {
+    public void updatePerson(Person person) throws SQLException {
         db.updatePersonInfo(person);
     }
-
 }
