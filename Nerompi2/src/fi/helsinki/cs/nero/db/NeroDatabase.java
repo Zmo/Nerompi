@@ -913,10 +913,9 @@ public class NeroDatabase implements NeroObserver {
 		session.setStatusMessage("L�ytyi " + filteredPeople.size() + " henkil��.");
 		return (Person[]) filteredPeople.toArray(new Person[0]);
 	}
-        public void updatePersonInfo(Person person) {
+        public void updatePersonInfo(Person person) throws SQLException {
             this.session.waitState(true);
             
-            try {
                 PreparedStatement prepModifyperson = this.connection.prepareStatement(
                           " UPDATE henkilo"
                         + " SET htunnus = ?, etunimet = ?, sukunimi = ?, kutsumanimi = ?, aktiivisuus = ?, huone_nro = ?,"
@@ -953,15 +952,12 @@ public class NeroDatabase implements NeroObserver {
                 
                 prepModifyperson.executeUpdate();
                
-            } catch (SQLException e) {
-			System.err.println("Tietokantavirhe: " + e.getMessage());
-            }
+
             this.session.waitState(false);      
         }
-        public void createPerson(Person person) {
+        public void createPerson(Person person) throws SQLException {
             this.session.waitState(true);
             
-            try {
                 PreparedStatement prepCreateperson = this.connection.prepareStatement(
                     " INSERT INTO henkilo (htunnus, etunimet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
                             + " hetu, oppiarvo, titteli, puhelin_tyo, puhelin_koti, katuosoite,"
@@ -997,9 +993,7 @@ public class NeroDatabase implements NeroObserver {
  
                 prepCreateperson.executeUpdate();
 
-            } catch (SQLException e) {
-			System.err.println("Tietokantavirhe: " + e.getMessage());
-            }
+
             this.session.waitState(false);      
         }
 

@@ -108,6 +108,14 @@ public class Person implements Comparable {
         } else {
             this.activity = "K";
         }
+        if (henkiloHash.get("hy_tyosuhde") == null || henkiloHash.get("hy_tyosuhde") == "E")
+        {
+            this.hyTyosuhde = "E";
+        } else {
+            this.hyTyosuhde = "K";
+        }
+        
+        this.hyTyosuhde = henkiloHash.get("hy_tyosuhde");
         
         this.hetu = henkiloHash.get("hetu");
         this.oppiarvo = henkiloHash.get("oppiarvo");
@@ -123,7 +131,7 @@ public class Person implements Comparable {
         this.opiskelijaKommentti = henkiloHash.get("opiskelija_kommentti");
         this.kTunnus = henkiloHash.get("ktunnus");
         this.kannykka = henkiloHash.get("kannykka");
-        this.postilokeroHuone = henkiloHash.get("postilokerohuone");
+        this.postilokeroHuone = henkiloHash.get("postilokerohuone");              
         this.hyTyosuhde = henkiloHash.get("hy_tyosuhde");
         this.hyPuhelinluettelossa = henkiloHash.get("hy_puhelinluettelossa");
         this.etunimi = henkiloHash.get("etunimet");
