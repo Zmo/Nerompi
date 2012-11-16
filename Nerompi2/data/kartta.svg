@@ -929,9 +929,9 @@
   </g>
   <g id="floor4">
       <polygon
-		points="15,15 15,600 550,600 550,15"
+		points="15,15 15,100 100,100 100,15"
 		 style="visibility:visible;fill:rgb(192,192,192);stroke:rgb(0,0,0);stroke-width:4"/>
-      <rect id="A1" x="15" y="15" width="535" height="585" class="room"/>
+      <rect id="A1" x="15" y="15" width="85" height="85" class="room"/>
   </g>
   <g id="legend">
     <rect class="room occupied" x="10" y="635" width="20" height="20" />

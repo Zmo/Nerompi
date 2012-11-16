@@ -252,8 +252,13 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="showEmail">
               <Properties>
-                <Property name="text" type="java.lang.String" value="S&#xe4;hk&#xf6;posti"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="sposti" type="code"/>
+                </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showEmailMouseReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="showContracts">
               <Properties>
@@ -547,6 +552,9 @@
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Aikav&#xe4;lin ensimm&#xe4;inen p&#xe4;iv&#xe4; muodossa DD.MM.YYYY"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="restrictByFirstDateActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="restrictByLastDate">
               <Properties>
@@ -554,6 +562,9 @@
                 <Property name="text" type="java.lang.String" value="31.12.2112"/>
                 <Property name="toolTipText" type="java.lang.String" value="Aikav&#xe4;lin viimeinen p&#xe4;iv&#xe4; muodossa DD.MM.YYYY"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="restrictByLastDateActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

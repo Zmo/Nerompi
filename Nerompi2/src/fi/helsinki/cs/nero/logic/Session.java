@@ -541,6 +541,7 @@ public class Session {
     	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myï¿½s RESERVATIONSia. Joten turha...
     	//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     	setStatusMessage("Tyï¿½pistevarausta muutettu.");
+        db.updateRooms();
     }
 
     /**
@@ -558,10 +559,10 @@ public class Session {
     		obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
         	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myï¿½s RESERVATIONSia. Joten turha...
     		//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
-    		setStatusMessage("Tyï¿½pistevaraus poistettu.");
-                db.removeRoomFromPerson(reservation.getReservingPerson());
+    		setStatusMessage("Työpistevaraus poistettu.");
+                db.updateRooms();
     	} else {
-    		setStatusMessage("Tyï¿½pistevarauksen poistaminen epï¿½onnistui.");
+    		setStatusMessage("Työpistevarauksen poistaminen epäonnistui.");
     	}
     }
 
@@ -580,13 +581,13 @@ public class Session {
 
     public void createReservation(Post post, Contract contract) {
         if(post == null) {
-            throw new IllegalArgumentException("tyï¿½piste ei saa olla null");
+            throw new IllegalArgumentException("työpiste ei saa olla null");
         }
         if(contract == null) {
             throw new IllegalArgumentException("sopimus ei saa olla null");
         }
         createReservation(post, contract.getPerson(), contract.getTimeSlice());
-        db.addRoomToPerson(contract.getPerson(), post.getRoom().getRoomName());
+        db.updateRooms();
     }
 
     /**

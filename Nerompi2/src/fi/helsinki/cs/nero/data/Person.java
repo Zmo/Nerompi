@@ -103,10 +103,10 @@ public class Person implements Comparable {
         this.room = henkiloHash.get("huone_nro");
         this.callName = henkiloHash.get("kutsumanimi");
         
-        if (henkiloHash.get("aktiivisuus") == null) {
-            this.activity = "E";
+        if (henkiloHash.get("aktiivisuus") != null) {
+            this.activity = henkiloHash.get("aktiivisuus");
         } else {
-            this.activity = "K";
+            this.activity = "E";
         }
         if (henkiloHash.get("hy_tyosuhde") == null || henkiloHash.get("hy_tyosuhde") == "E")
         {

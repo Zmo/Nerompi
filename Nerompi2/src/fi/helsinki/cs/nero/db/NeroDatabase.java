@@ -466,7 +466,7 @@ public class NeroDatabase implements NeroObserver {
                         varausHash.put("hy_puhelinluettelossa", rs.getString("hy_puhelinluettelossa"));
                         
                         
-                   	Person person = new Person(this.session, henkiloHash, null, null);
+                   	Person person = new Person(this.session, varausHash, null, null);
                                 
                                 
 //				Person person = new Person(this.session, rs.getString("htunnus"),
@@ -616,6 +616,8 @@ public class NeroDatabase implements NeroObserver {
 		
 		// poistetaan henkilï¿½n tiedot jotka ovat nyt vanhentuneet
 		people.remove(reservation.getReservingPerson().getPersonID());
+                // päivitetään henkilöiden huonetiedot
+                this.updateRooms();
 		this.session.waitState(false);
 		return success;
 	}
@@ -1080,14 +1082,14 @@ public class NeroDatabase implements NeroObserver {
          * @param number Henkilölle asetettava työpuhelinnumero
          * @return Onnistuiko päivittäminen
          */
-        public boolean updateWorkPhone(String name, String number) {
+        public boolean updateWorkPhone(String personID, String number) {
             String updatePhoneQuery = "update henkilo"
                                     + " set puhelin_tyo=?"
-                                    + " where henkilo=?";
+                                    + " where htunnus=?";
             try {
                 PreparedStatement prep = this.connection.prepareStatement(updatePhoneQuery);
                 prep.setString(1, number);
-                prep.setString(2, name);
+                prep.setString(2, personID);
                 prep.executeQuery();
                 return true;
             } catch(SQLException e) {
@@ -1147,7 +1149,7 @@ public class NeroDatabase implements NeroObserver {
                 
                 ResultSet selectPersonResult2 = this.connection.prepareStatement(selectPersonQuery2).executeQuery();
                 
-                while(selectPersonResult2.next()) { // Päivittää työhuonenumeron niille, joiden varaus on alkanut, mutta ei vielä loppnut
+                while(selectPersonResult2.next()) { // Päivittää työhuonenumeron niille, joiden varaus on alkanut, mutta ei vielä loppunut
                     prep2 = this.connection.prepareStatement(selectRoomQuery);
                     prep2.setString(1, selectPersonResult2.getString("henklo_htunnus"));
                     ResultSet selectRoomResult = prep2.executeQuery();
@@ -1390,38 +1392,66 @@ public class NeroDatabase implements NeroObserver {
 	 * Pï¿½ivittï¿½ï¿½ tietokannassa olevan puhelinnumero-olion annetun mallin
 	 * mukaiseksi.
 	 * 
-	 * @param phone Uusi versio puhelinnumerosta (uusi tyï¿½piste id).
+	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
 	 * @return Onnistuiko pï¿½ivitys.
 	 */
 	public boolean updatePhoneNumber(PhoneNumber phone) {
-		boolean success = false;
-		this.session.waitState(true);
-		try {
-			if(this.prepUpdatePhoneNumber == null) {
-				this.prepUpdatePhoneNumber = this.connection.prepareStatement(
-						"UPDATE PUHELINNUMERO SET tp_id  = ? WHERE id = ?"
-				);
-			}
-			Post post = phone.getPost();
-			if(post == null) {
-				this.prepUpdatePhoneNumber.setString(1, "");
-			} else {
-				this.prepUpdatePhoneNumber.setString(1, post.getPostID());
-			}
-			this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
-
-			int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
-			if(updatedRows > 0) {
-				success = true;
-				/* XXX Raskas operaatio */
-				loadRooms();
-				loadPhoneNumbers();
-			}
-		} catch (SQLException e) {
-			System.err.println("Tietokantavirhe: " + e.getMessage());
+            
+            String updateperson = "update HENKILO set PUHELIN_TYO=? where HTUNNUS=?";
+            
+            String getpersons = "select HENKLO_HTUNNUS"
+                                    + " from TYOPISTEVARAUS"
+                                    + " where ALKUPVM<CURRENT_TIMESTAMP"
+                                    + " AND LOPPUPVM>CURRENT_TIMESTAMP"
+                                    + " AND ID=?";
+            
+            this.updateWorkPhone(null, null);
+            boolean success = false;
+            this.session.waitState(true);
+            PreparedStatement prep, prep2;
+            
+            try {
+		if(this.prepUpdatePhoneNumber == null) {
+                    this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ? WHERE id = ?");
 		}
-		this.session.waitState(false);
-		return success;
+		Post post = phone.getPost();
+		if(post == null) {
+                    this.prepUpdatePhoneNumber.setString(1, "");
+		} else {
+                    this.prepUpdatePhoneNumber.setString(1, post.getPostID());
+		}
+		this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
+
+                int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
+		if(updatedRows > 0) {
+                    success = true;
+                    Reservation[] reservations = phone.getPost().getReservations();
+                    if(reservations!=null) {
+                        for(int i=0; i<reservations.length; ++i) {
+                            prep = this.connection.prepareStatement(getpersons);
+                            prep.setString(1, reservations[i].getReservationID());
+                            ResultSet persons = prep.executeQuery();
+                            persons.next();
+                            if(persons.getString("HENKLO_HTUNNUS")!=null) {
+                                prep2 = this.connection.prepareStatement(updateperson);
+                                prep2.setString(1, phone.getPhoneNumber());
+                                prep2.setString(2, persons.getString("HENKLO_HTUNNUS"));
+                                String temp = phone.getPhoneNumber();
+                                String temp2 = persons.getString("HENKLO_HTUNNUS");
+                                prep2.executeUpdate();
+                            }
+                        } 
+                    }
+                    //if(phone.getPost().getReservations())
+                    /* XXX Raskas operaatio */
+                    loadRooms();
+                    loadPhoneNumbers();
+		}
+            } catch (SQLException e) {
+            	System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+            this.session.waitState(false);
+            return success;
 	}
 	
 	/**
