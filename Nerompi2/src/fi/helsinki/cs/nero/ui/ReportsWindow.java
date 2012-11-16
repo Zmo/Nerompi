@@ -715,20 +715,23 @@ public class ReportsWindow extends javax.swing.JFrame {
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (option == JOptionPane.OK_OPTION) {
                     if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
-                        printer = new XMLReportPrinter();
+                        printer = new XMLReportPrinter(fileChooserDialog.getSelectedFile());
+                        printer.print(Data.getModel());
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
+                        printer.print(getTableDataAsMap()); 
                     }
-                    printer.print(getTableDataAsMap());
 
                 }
             } else {
                 if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
-                    printer = new XMLReportPrinter();
+                    printer = new XMLReportPrinter(fileChooserDialog.getSelectedFile());
+                    printer.print(Data.getModel());
                 } else {
                     printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
+                    printer.print(getTableDataAsMap());
                 }
-                printer.print(getTableDataAsMap());
+
 
             }
         }
@@ -743,7 +746,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_showJobTitleMouseReleased
 
     private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
-
         if (evt.getNewValue() instanceof Date) {
             restrictByFirstDate.setText(dateToShortString(((Date) evt.getNewValue())));
             determineDateRestriction();
@@ -1080,14 +1082,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         // sekä kalenterit (näistä ei tartte välittää?)
         // case 1-> jos molemmat asetettu, muodostetaan timeslice niistä
         // ja katsotaan sijoittuuko taulukon contract-sarakkeessa oleva loppupäivä tälle välille
-        //  * TimeSlicen startDayAfter? / contains?
         //  * jos sijoittuu, näytetään rivi -> ei muita rivejä
-
         // case 2-> jos vain loppu asetettu, katsotaan, onko loppupäivä ennen välin loppua
-        //  * Daten before / after
         //  * jos on, näytetään rivi
         // case 3-> jos alku asetettu, katso onko loppupäivä alun jälkeen
-        //  * Daten before / after
         //  * jos on, näytä rivi
 
         Date firstDate = hasDate(restrictByFirstDate.getText());

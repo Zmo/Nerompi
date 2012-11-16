@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -48,9 +49,9 @@ public class TxtReportPrinter implements ReportWriter {
                 Object[] row = data.get(i);
                 for (int j = 0; j < row.length; j++) {
                     if (row[j] != null) {
-                        writer.append(row[j].toString() + " ");
+                        writer.append(row[j].toString() + " | ");
                     } else {
-                        writer.append("ei ole ");
+                        writer.append("ei ole | ");
                     }
                 }
                 writer.newLine();
@@ -59,6 +60,11 @@ public class TxtReportPrinter implements ReportWriter {
         } catch (IOException ex) {
             Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void print(TableModel model) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
