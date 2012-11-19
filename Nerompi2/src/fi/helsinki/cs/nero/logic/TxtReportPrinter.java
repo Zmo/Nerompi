@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.TableModel;
@@ -39,17 +40,39 @@ public class TxtReportPrinter implements ReportWriter {
         }
     }
 
+ //   @Override
+ //   public void print(HashMap<Integer, Object[]> data) {
+//        TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
+//
+//        try {
+//            for (Integer i : sortedSet) {
+//                Object[] row = data.get(i);
+//                for (int j = 0; j < row.length; j++) {
+//                    if (row[j] != null) {
+//                        writer.append(row[j].toString() + " | ");
+//                    } else {
+//                        writer.append("ei ole | ");
+//                    }
+//                }
+//                writer.newLine();
+//            }
+//            writer.flush();
+//        } catch (IOException ex) {
+//            Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
+    
     @Override
-    public void print(HashMap<Integer, Object[]> data) {
+    public void print(HashMap<Integer, Vector<Object>> data) {
+        TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
 
         try {
-            TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
             for (Integer i : sortedSet) {
-                Object[] row = data.get(i);
-                for (int j = 0; j < row.length; j++) {
-                    if (row[j] != null) {
-                        writer.append(row[j].toString() + " | ");
+                Vector<Object> row = data.get(i);
+                for (int j = 0; j < row.size(); j++) {
+                    if (row.get(j) != null) {
+                        writer.append(row.get(j).toString() + " | ");
                     } else {
                         writer.append("ei ole | ");
                     }
@@ -67,4 +90,13 @@ public class TxtReportPrinter implements ReportWriter {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    private int getLongestWord() {
+
+        return 0;
+    }
+
+    private String padWord(String original, int longest) {
+
+        return "";
+    }
 }
