@@ -11,7 +11,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import fi.helsinki.cs.nero.logic.Session;
-import fi.helsinki.cs.nero.logic.XMLReportPrinter;
+import fi.helsinki.cs.nero.logic.ODTReportPrinter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -715,7 +715,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (option == JOptionPane.OK_OPTION) {
                     if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
-                        printer = new XMLReportPrinter(fileChooserDialog.getSelectedFile());
+                        printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
                         printer.print(Data.getModel());
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
@@ -725,7 +725,17 @@ public class ReportsWindow extends javax.swing.JFrame {
                 }
             } else {
                 if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
-                    printer = new XMLReportPrinter(fileChooserDialog.getSelectedFile());
+                    printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
+                /*    HashMap<Integer, Object[]> data = getTableDataAsMap();
+                    Object[] columnNames = data.remove(0);
+                    Object[][] rowData = new Object[columnNames.length][data.size()+10];
+                    int i = 0;
+                    for (Object[] o: data.values()) {
+                        rowData[i] = o;
+                        i++;
+                    }
+                    
+                    printer.print(new DefaultTableModel(rowData, columnNames)); */
                     printer.print(Data.getModel());
                 } else {
                     printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
