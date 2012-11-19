@@ -74,7 +74,7 @@ public class NeroUI {
         //Create and set up the window.
         JFrame frame = new JFrame("Nero");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280, HEIGHT + 40);
+        frame.setSize(1280, HEIGHT + 65);
         frame.setResizable(true);
         
         // Tehd‰‰n valikkopalkki, siihen nappi ja nappiin valikko

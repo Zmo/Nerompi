@@ -14,22 +14,24 @@ import org.sourceforge.jcalendarbutton.*;
  */
 public class Kalenterinappi extends JCalendarButton {
 
-    private static String[] kuulyhenteet = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private static final String[] kuulyhenteet = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private TimelineElement element;
     private boolean onkoAlku;
-    private Date tamaAika;
+    private int[] viimeAika;
 
     public Kalenterinappi(Date dateTarget) {
         super(dateTarget);
         this.setIcon(null);
-        this.asetaAikaTeksti();
+        this.setAikaTeksti();
+        this.viimeAika = new int[3];
+        this.setViimeAika();
     }
 
     public Kalenterinappi(Date dateTarget, TimelineElement element, boolean onkoAlku) {
         this(dateTarget);
         this.element = element;
         this.onkoAlku = onkoAlku;
-        this.tamaAika = dateTarget;
+
     }
     
 
@@ -38,13 +40,11 @@ public class Kalenterinappi extends JCalendarButton {
     public void propertyChange(PropertyChangeEvent evt) {
         
         if (evt.getPropertyName().equalsIgnoreCase("date")) {
+            System.out.println("<> Vanha aika: " + this.viimeAika[0] + "." + (this.viimeAika[1] + 1) + "." + (this.viimeAika[2] + 1900));
             Date tulos;
-            tulos = this.parseAika(evt);
-            if ((this.onkoAlku && this.onkoAlkuEnnenLoppua(tulos, this.element.getLoppukalenteri().getTargetDate()))
-                    || (!(this.onkoAlku) && this.onkoAlkuEnnenLoppua(this.element.getAlkukalenteri().getTargetDate(), tulos))) {
-                this.setTargetDate(tulos);
-                this.asetaAikaTeksti();
-                System.out.println("Muutettu kohde: " + this.getTargetDate() + "\n - - Paivavalinta muuttui - -");
+            tulos = this.parseAika(evt.getNewValue().toString(), this.getTargetDate());
+            if ((this.onkoAlku && (tulos.before(this.element.getLoppukalenteri().getTargetDate())))
+                    || (!(this.onkoAlku) && (tulos.after(this.element.getAlkukalenteri().getTargetDate())))) {
                 
                 /* AIKATARKASTUKSIA - TYÖN ALLA*/
                 /*for (int a = 0; a < this.element.getReservation().getReservingPerson().getReservations().length; a++) {
@@ -58,50 +58,59 @@ public class Kalenterinappi extends JCalendarButton {
 
                 }*/
                 /* /AIKATARKASTUKSIA */
-                this.tamaAika = this.getTargetDate();
+                this.setTargetDate(tulos);
+                this.setAikaTeksti();
+                this.setViimeAika();
+                System.out.println("Muutettu kohde: " + this.getTargetDate() + "\n - - Paivavalinta muuttui - -");
                 this.element.storeToDB();
+
             }
             else {
-                this.setTargetDate(tamaAika);
-                
+                this.palautaViimeAika();
                 System.out.println("VIRHE - TimelineElement - alkamispäivä yritetty siirtää loppumispäivän jälkeen.");
-                
+                // + Virhevalintakorjaus
             }
         }
     }
     
-    private Date parseAika(PropertyChangeEvent evt) {
+    private void setViimeAika(){
+        this.viimeAika[0] = this.getTargetDate().getDate();
+        this.viimeAika[1] = this.getTargetDate().getMonth();
+        this.viimeAika[2] = this.getTargetDate().getYear();
+    }
+    
+    private void palautaViimeAika(){
+        Date korjaus = this.getTargetDate();
+        korjaus.setDate(this.viimeAika[0]);
+        korjaus.setMonth(this.viimeAika[1]);
+        korjaus.setYear(this.viimeAika[2]);
+        this.setTargetDate(korjaus);
+    }
+    
+    private Date parseAika(String evt, Date date) {
         Date aika;
-        aika = this.getTargetDate();
+        aika = date;
         try {
             aika.setHours(12);
-            aika.setDate(Integer.parseInt(evt.getNewValue().toString().substring(8, 10)));
+            aika.setDate(Integer.parseInt(evt.substring(8, 10)));
             int kuunumero = -1;
             for (int i = 0; i < kuulyhenteet.length && (kuunumero == -1); i++) {
-                if (kuulyhenteet[i].equalsIgnoreCase(evt.getNewValue().toString().substring(4, 7))) {
+                if (kuulyhenteet[i].equalsIgnoreCase(evt.substring(4, 7))) {
                     kuunumero = i;
                 }
             }
             aika.setMonth(kuunumero);
-            aika.setYear(Integer.parseInt(evt.getNewValue().toString().substring(24, evt.getNewValue().toString().length())) - 1900);
+            aika.setYear(Integer.parseInt(evt.substring(evt.length()-4, evt.length())) - 1900);
             return aika;
         } catch (Exception e) {
-            System.out.println(" - VIRHE - Kalenterinappi.propertyChange: " + e);
-            return this.getTargetDate();
+            System.out.println(" - VIRHE - Kalenterinappi.parseAika: " + e);
+            return date;
         }
     }
 
-    public void asetaAikaTeksti() {
+    public void setAikaTeksti() {
         this.setText(this.getTargetDate().getDate() + "."
                 + (1 + this.getTargetDate().getMonth()) + "."
                 + (1900 + this.getTargetDate().getYear()));
-    }
-    
-    public boolean onkoAlkuEnnenLoppua(Date alku, Date loppu) {
-        if (alku.after(loppu)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }

@@ -1138,7 +1138,15 @@ public class NeroDatabase implements NeroObserver {
                                 + " set huone_nro=?"
                                 + " where htunnus=?";
             
-            PreparedStatement prep, prep2;
+            String getPhoneNumberQuery = "select puhelinnumero"
+                                       + " from puhelinnumero"
+                                       + " where tp_id="
+                                           + "(select tpiste_id"
+                                           + " from tyopistevaraus"
+                                           + " where henklo_htunnus=?"
+                                           + " and alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP)";
+            
+            PreparedStatement prep, prep2, prep3;
             try {
                 ResultSet selectPersonResult = this.connection.prepareStatement(selectPersonQuery).executeQuery();
                 while(selectPersonResult.next()) { // Poistaa huoneen niiltä, joiden varaus on mennyt umpeen
@@ -1159,6 +1167,11 @@ public class NeroDatabase implements NeroObserver {
                     prep.setString(1, selectRoomResult.getString("huone_nro"));
                     prep.setString(2, selectPersonResult2.getString("henklo_htunnus"));
                     prep.executeQuery();
+                    /*prep3 = this.connection.prepareStatement(getPhoneNumberQuery);
+                    prep3.setString(1, selectPersonResult2.getString("henklo_htunnus"));
+                    ResultSet rs = prep3.executeQuery();
+                    if(rs.next())
+                        this.updateWorkPhone(selectPersonResult2.getString("henklo_htunnus"), rs.getString("puhelinnumero"));*/
                 }
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -1390,57 +1403,89 @@ public class NeroDatabase implements NeroObserver {
 
 	/**
 	 * Pï¿½ivittï¿½ï¿½ tietokannassa olevan puhelinnumero-olion annetun mallin
-	 * mukaiseksi.
+	 * mukaiseksi ja päivittää puhelinnumeron työpisteen varaajalle jos sellainen on.
 	 * 
 	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
-	 * @return Onnistuiko pï¿½ivitys.
+	 * @return Onnistuiko päivitys.
 	 */
 	public boolean updatePhoneNumber(PhoneNumber phone) {
-            
-            String updateperson = "update HENKILO set PUHELIN_TYO=? where HTUNNUS=?";
             
             String getpersons = "select HENKLO_HTUNNUS"
                                     + " from TYOPISTEVARAUS"
                                     + " where ALKUPVM<CURRENT_TIMESTAMP"
                                     + " AND LOPPUPVM>CURRENT_TIMESTAMP"
-                                    + " AND ID=?";
+                                    + " AND TPISTE_ID=?";
             
-            this.updateWorkPhone(null, null);
             boolean success = false;
             this.session.waitState(true);
-            PreparedStatement prep, prep2;
+            PreparedStatement prep;
+            Post post = phone.getPost();
             
             try {
 		if(this.prepUpdatePhoneNumber == null) {
                     this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ? WHERE id = ?");
 		}
-		Post post = phone.getPost();
 		if(post == null) {
                     this.prepUpdatePhoneNumber.setString(1, "");
 		} else {
                     this.prepUpdatePhoneNumber.setString(1, post.getPostID());
 		}
 		this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
-
+                //Reservation[] reservations = phone.getPost().getReservations();
                 int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
-		if(updatedRows > 0) {
+		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
                     success = true;
-                    Reservation[] reservations = phone.getPost().getReservations();
-                    if(reservations!=null) {
-                        for(int i=0; i<reservations.length; ++i) {
-                            prep = this.connection.prepareStatement(getpersons);
-                            prep.setString(1, reservations[i].getReservationID());
-                            ResultSet persons = prep.executeQuery();
-                            persons.next();
-                            if(persons.getString("HENKLO_HTUNNUS")!=null) {
-                                prep2 = this.connection.prepareStatement(updateperson);
-                                prep2.setString(1, phone.getPhoneNumber());
-                                prep2.setString(2, persons.getString("HENKLO_HTUNNUS"));
-                                String temp = phone.getPhoneNumber();
-                                String temp2 = persons.getString("HENKLO_HTUNNUS");
-                                prep2.executeUpdate();
-                            }
-                        } 
+                    prep = this.connection.prepareStatement(getpersons);
+                    prep.setString(1, post.getPostID());
+                    ResultSet rs = prep.executeQuery();
+                    rs.next();
+                    if(rs.getString("HENKLO_HTUNNUS")!=null)
+                        this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
+                    /* XXX Raskas operaatio */
+                    loadRooms();
+                    loadPhoneNumbers();
+		}
+            } catch (SQLException e) {
+            	System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+            this.session.waitState(false);
+            return success;
+	}
+        
+	/**
+         * Poistaa työpisteeltä puhelinnumeron
+         * @param phone Puhelinnumero, jolta poistetaan työpiste
+         * @return Onnistuiko päivitys
+         */
+        public boolean removePhoneNumberFromPost(PhoneNumber phone) {
+            if(phone.getPost()==null)
+                throw new IllegalArgumentException();
+            
+            String updatePhoneNumber = "UPDATE PUHELINNUMERO SET tp_id='' WHERE id=?";
+            
+            String getpersons = "select HENKLO_HTUNNUS"
+                                    + " from TYOPISTEVARAUS"
+                                    + " where ALKUPVM<CURRENT_TIMESTAMP"
+                                    + " AND LOPPUPVM>CURRENT_TIMESTAMP"
+                                    + " AND TPISTE_ID=?";
+            
+            boolean success = false;
+            this.session.waitState(true);
+            PreparedStatement prep;
+            
+            try {
+		prep = this.connection.prepareStatement(updatePhoneNumber);
+                prep.setString(1, phone.getPhoneNumberID());
+                //Reservation[] reservations = phone.getPost().getReservations();
+                int updatedRows = prep.executeUpdate();
+		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
+                    success = true;
+                    prep = this.connection.prepareStatement(getpersons);
+                    prep.setString(1, phone.getPost().getPostID());
+                    ResultSet rs = prep.executeQuery();
+                    rs.next();
+                    if(rs.getString("HENKLO_HTUNNUS")!=null) {
+                        this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
                     }
                     //if(phone.getPost().getReservations())
                     /* XXX Raskas operaatio */
@@ -1453,7 +1498,7 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(false);
             return success;
 	}
-	
+        
 	/**
 	 * Palauttaa annetun tyï¿½huoneen puhelinnumerot.
 	 * @param post Tyï¿½huone <code>Post</code> oliona.
