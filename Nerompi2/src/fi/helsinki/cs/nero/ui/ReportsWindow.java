@@ -596,7 +596,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void peopleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peopleButtonMouseReleased
         //TODO: kirjoita oma tablemodel tätä varten -> saadaan oikea tyyppi date-sarakkeelle
-        
+
         Data = new JTable(peopleData, peopleColumnNames);
         peopleColumnModel = Data.getColumnModel();
         setSelected(peopleComponents);
@@ -718,7 +718,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 if (option == JOptionPane.OK_OPTION) {
                     if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
                         printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
-                        printer.print(Data.getModel());
+                        printer.print(getShownTableModel());
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                         printer.print(getTableDataAsMap());
@@ -728,25 +728,9 @@ public class ReportsWindow extends javax.swing.JFrame {
             } else {
                 if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
                     printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
-                     HashMap<Integer, Vector<Object>> data = getTableDataAsMap();
-                     // luodaan uusi TableModel, jolla
-                     // - columnNames on näkyvät sarakkeet
-                     // - datana on näkyvien sarakkeiden data
-                     // --> saadaan puljaamalla TableDataAsMapin palauttamaa mapia
-                     
-                     //avaimella 0 saadaan sarakkeiden nimet
-                     Vector<Object> columnNames = data.remove(0);
-                    
-                     // lopuilla avaimilla saadaan loppu data
-                     Vector<Vector<Object>> rowData = new Vector<>(data.size());
-                     int i = 0;
-                     for(Vector<Object> vector: data.values()) {
-                         rowData.add(i, vector);
-                         i++;
-                     }
-                    
-                     printer.print(new DefaultTableModel(rowData, columnNames));
-                    //printer.print(Data.getModel());
+                    DefaultTableModel printTable = getShownTableModel();
+                    printer.print(printTable);
+
                 } else {
                     printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                     printer.print(getTableDataAsMap());
@@ -1211,5 +1195,26 @@ public class ReportsWindow extends javax.swing.JFrame {
     private RowFilter removeDateRestriction() {
         RowFilter newFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(varaus));
         return newFilter;
+    }
+
+    private DefaultTableModel getShownTableModel() {
+        HashMap<Integer, Vector<Object>> data = getTableDataAsMap();
+        // luodaan uusi TableModel, jolla
+        // - columnNames on näkyvät sarakkeet
+        // - datana on näkyvien sarakkeiden data
+        // --> saadaan puljaamalla TableDataAsMapin palauttamaa mapia
+
+        //avaimella 0 saadaan sarakkeiden nimet
+        Vector<Object> columnNames = data.remove(0);
+
+        // lopuilla avaimilla saadaan loppu data
+        Vector<Vector<Object>> rowData = new Vector<>(data.size());
+        int i = 0;
+        for (Vector<Object> vector : data.values()) {
+            rowData.add(i, vector);
+            i++;
+        }
+        
+        return new DefaultTableModel(rowData, columnNames);
     }
 }
