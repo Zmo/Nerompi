@@ -7,11 +7,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.TableModel;
-import org.jdom.Element;
-import org.jopendocument.dom.ODDocument;
-import org.jopendocument.dom.ODPackage;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
-import org.jopendocument.dom.spreadsheet.Table;
 
 /**
  *

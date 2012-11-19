@@ -8,10 +8,10 @@ import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
-import fi.helsinki.cs.nero.logic.ReportWriter;
-import fi.helsinki.cs.nero.logic.TxtReportPrinter;
-import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
+import fi.helsinki.cs.nero.logic.ReportWriter;
+import fi.helsinki.cs.nero.logic.Session;
+import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -595,6 +595,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_roomButtonMouseReleased
 
     private void peopleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peopleButtonMouseReleased
+        //TODO: kirjoita oma tablemodel tätä varten -> saadaan oikea tyyppi date-sarakkeelle
+        
         Data = new JTable(peopleData, peopleColumnNames);
         peopleColumnModel = Data.getColumnModel();
         setSelected(peopleComponents);
@@ -719,24 +721,32 @@ public class ReportsWindow extends javax.swing.JFrame {
                         printer.print(Data.getModel());
                     } else {
                         printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
-                        printer.print(getTableDataAsMap()); 
+                        printer.print(getTableDataAsMap());
                     }
 
                 }
             } else {
                 if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
                     printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
-                /*    HashMap<Integer, Object[]> data = getTableDataAsMap();
-                    Object[] columnNames = data.remove(0);
-                    Object[][] rowData = new Object[columnNames.length][data.size()+10];
-                    int i = 0;
-                    for (Object[] o: data.values()) {
-                        rowData[i] = o;
-                        i++;
-                    }
+                     HashMap<Integer, Vector<Object>> data = getTableDataAsMap();
+                     // luodaan uusi TableModel, jolla
+                     // - columnNames on näkyvät sarakkeet
+                     // - datana on näkyvien sarakkeiden data
+                     // --> saadaan puljaamalla TableDataAsMapin palauttamaa mapia
+                     
+                     //avaimella 0 saadaan sarakkeiden nimet
+                     Vector<Object> columnNames = data.remove(0);
                     
-                    printer.print(new DefaultTableModel(rowData, columnNames)); */
-                    printer.print(Data.getModel());
+                     // lopuilla avaimilla saadaan loppu data
+                     Vector<Vector<Object>> rowData = new Vector<>(data.size());
+                     int i = 0;
+                     for(Vector<Object> vector: data.values()) {
+                         rowData.add(i, vector);
+                         i++;
+                     }
+                    
+                     printer.print(new DefaultTableModel(rowData, columnNames));
+                    //printer.print(Data.getModel());
                 } else {
                     printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
                     printer.print(getTableDataAsMap());
@@ -922,7 +932,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
 
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
-        //TODO: muuta Vectorin tyyppi Objectiksi, että kaikilla sarakkeilla voi olla oikea tyyppi -> voidaan filtteröidä järkevästi
+        // niin ja Date-column pitää saada palauttamaan Date getClassilla
 
         /* alustetaan data huoneiden tietojen näyttämistä varten
          ideana se, että data taustalla pysyy aina samana ja se sidotaan
@@ -1027,15 +1037,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         return neededIndexes;
     }
 
-    private HashMap<Integer, Object[]> getTableDataAsMap() {
+    private HashMap<Integer, Vector<Object>> getTableDataAsMap() {
 
-        HashMap<Integer, Object[]> map = new HashMap<>();
+        HashMap<Integer, Vector<Object>> map = new HashMap<>();
         DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
         int rowCount = tableModel.getRowCount();
         int columnCount = Data.getColumnCount();
 
         // TODO: tarkista onko malli tyhjä äläkä tee mitään, jos on...
         // pitäisikö tämän ehkä olla treemap, että olisi sorted..?
+        // pitäisi... ja sitä paitsi Object[]-> Vector<Object> mieluummin
 
         /*Tässä siis otetaan talteen sarakkeiden nimet sekä tieto siitä,
          mitkä niiden indeksit ovat, jotta tiedetään, mitä dataa halutaan tiedostoon.
@@ -1043,11 +1054,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         int[] neededIndexes = listShownColumnsByIndex();
         Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
         int z = 0;
-        Object[] rowData = new Object[columnCount];
+        Vector<Object> rowData = new Vector(columnCount);
         while (e.hasMoreElements()) {
             String s = e.nextElement().getIdentifier().toString();
             neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
-            rowData[z] = s;
+            rowData.add(z, s);
             z++;
         }
         map.put(0, rowData);
@@ -1058,13 +1069,13 @@ public class ReportsWindow extends javax.swing.JFrame {
             /* jos converter palauttaa -1, rivi ei ole näkyvä -> ei lisätä sitä mapiin */
             int rowIndex = rs.convertRowIndexToView(i);
             if (rowIndex > -1) {
-                rowData = new Object[columnCount];
+                rowData = new Vector(columnCount);
                 for (int j = 0; j < columnCount; j++) {
                     /* Kirjoitetaan vain ne sarakkeet, jotka näkyvillä
                      Oikea sarakenumero saadaan, kun muutetaan 
                      datamallin indeksi sarakemallin indeksiksi */
-                    rowData[j] = tableModel.getValueAt(i,
-                            Data.convertColumnIndexToModel(neededIndexes[j]));
+                    rowData.add(j, tableModel.getValueAt(i,
+                            Data.convertColumnIndexToModel(neededIndexes[j])));
                 }
                 rowInReturnTable = rowIndex + 1;
                 map.put(rowInReturnTable, rowData);
@@ -1166,12 +1177,21 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     private Date parseReservations(Reservation[] reservations) {
-        // etsitään viimeinen varauksista
-        // käytetään sitä päättymispäivänä -> kysyttävä kujalalta, onko tämä ok
-        int lastIndex = reservations.length;
-        if (lastIndex > 0) {
-            Reservation lastReservation = reservations[reservations.length - 1];
-            return lastReservation.getTimeSlice().getEndDate();
+        return getLastReservation(reservations);
+    }
+
+    private Date getLastReservation(Reservation[] reservations) {
+        // jos henkilöllä on useampi varaus, valitaan se, jonka päättymispäivä
+        // on viimeinen ja palautetaan ko. päättymispäivä
+        if (reservations.length > 0) {
+            Date current = reservations[0].getTimeSlice().getEndDate();
+            for (int i = 1; i < reservations.length; i++) {
+                Date next = reservations[i].getTimeSlice().getEndDate();
+                if (next.after(current)) {
+                    current = next;
+                }
+            }
+            return current;
         } else {
             return null;
         }
