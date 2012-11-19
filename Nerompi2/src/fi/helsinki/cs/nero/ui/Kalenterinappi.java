@@ -4,6 +4,7 @@
  */
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.data.TimeSlice;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
 import org.sourceforge.jcalendarbutton.*;
@@ -40,24 +41,32 @@ public class Kalenterinappi extends JCalendarButton {
     public void propertyChange(PropertyChangeEvent evt) {
         
         if (evt.getPropertyName().equalsIgnoreCase("date")) {
-            System.out.println("<> Vanha aika: " + this.viimeAika[0] + "." + (this.viimeAika[1] + 1) + "." + (this.viimeAika[2] + 1900));
             Date tulos;
             tulos = this.parseAika(evt.getNewValue().toString(), this.getTargetDate());
             if ((this.onkoAlku && (tulos.before(this.element.getLoppukalenteri().getTargetDate())))
                     || (!(this.onkoAlku) && (tulos.after(this.element.getAlkukalenteri().getTargetDate())))) {
                 
-                /* AIKATARKASTUKSIA - TYÖN ALLA*/
-                /*for (int a = 0; a < this.element.getReservation().getReservingPerson().getReservations().length; a++) {
-                    if (this.element.getReservation().getReservingPerson().getReservations()[a].getReservationID().equals(this.element.getReservation().getReservationID())) {
-                    } else {
-                        if (this.onkoAlku && this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice().getEndDate().after(tulos)) {
-                            tulos = this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice().getEndDate();
-                        }
-                    }
-
-
-                }*/
-                /* /AIKATARKASTUKSIA */
+//                /* AIKATARKASTUKSIA - TYÖN ALLA*/
+//                for (int a = 0; a < this.element.getReservation().getReservingPerson()/*getTargetPost()*/.getReservations().length; a++) {
+//                    System.out.println(this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice().getStartDate() + " - "
+//                            +  this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice().getEndDate());
+//                    if (this.element.getReservation().getReservingPerson()/*getTargetPost()*/.getReservations()[a].getReservationID().equals(this.element.getReservation().getReservationID())) {
+//                    } else {
+//                        
+//                        TimeSlice vertausaikavali = this.element.getReservation().getReservingPerson().getReservations()[a].getTimeSlice();
+//                        if (this.onkoAlku && vertausaikavali.getEndDate().after(tulos)) {
+//                            System.out.println(tulos);
+//                            System.out.println("PAIKKA 1");
+//                            tulos = vertausaikavali.getEndDate();
+//                        }
+//                        else if (vertausaikavali.getStartDate().before(tulos)){
+//                            System.out.println(tulos);
+//                            System.out.println("PAIKKA 2");
+//                            tulos = vertausaikavali.getStartDate();
+//                        }
+//                    }
+//                }
+//                /* /AIKATARKASTUKSIA */
                 this.setTargetDate(tulos);
                 this.setAikaTeksti();
                 this.setViimeAika();
@@ -108,7 +117,7 @@ public class Kalenterinappi extends JCalendarButton {
         }
     }
 
-    public void setAikaTeksti() {
+    private void setAikaTeksti() {
         this.setText(this.getTargetDate().getDate() + "."
                 + (1 + this.getTargetDate().getMonth()) + "."
                 + (1900 + this.getTargetDate().getYear()));
