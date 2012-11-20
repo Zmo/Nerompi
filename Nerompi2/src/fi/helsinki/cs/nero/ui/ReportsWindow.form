@@ -394,7 +394,7 @@
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lockerDropdown" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="restrictByHasLocker" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="restrictByPostRoom" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="124" max="-2" attributes="0"/>
@@ -422,7 +422,7 @@
                                       <Component id="lastCalendar" min="-2" max="-2" attributes="0"/>
                                       <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="lockerDropdown" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="restrictByHasLocker" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Component id="firstCalendar" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -493,7 +493,7 @@
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="floorDropdownItemStateChanged"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JComboBox" name="lockerDropdown">
+            <Component class="javax.swing.JComboBox" name="restrictByHasLocker">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="3">
@@ -504,7 +504,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="lockerDropdownItemStateChanged"/>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="restrictByHasLockerItemStateChanged"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="rajauksetHeader">
@@ -591,6 +591,9 @@
                   </StringArray>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="restrictByPostRoomItemStateChanged"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
