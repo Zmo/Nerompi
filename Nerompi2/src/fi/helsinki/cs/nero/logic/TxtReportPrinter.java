@@ -40,29 +40,6 @@ public class TxtReportPrinter implements ReportWriter {
         }
     }
 
- //   @Override
- //   public void print(HashMap<Integer, Object[]> data) {
-//        TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
-//
-//        try {
-//            for (Integer i : sortedSet) {
-//                Object[] row = data.get(i);
-//                for (int j = 0; j < row.length; j++) {
-//                    if (row[j] != null) {
-//                        writer.append(row[j].toString() + " | ");
-//                    } else {
-//                        writer.append("ei ole | ");
-//                    }
-//                }
-//                writer.newLine();
-//            }
-//            writer.flush();
-//        } catch (IOException ex) {
-//            Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-
-    
     @Override
     public void print(HashMap<Integer, Vector<Object>> data) {
         TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
@@ -90,9 +67,21 @@ public class TxtReportPrinter implements ReportWriter {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private int getLongestWord() {
+    private int[] getLongestWord(HashMap<Integer, Vector<Object>> data) {
+        int[] lengths = new int[data.get(0).size()];
+        TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
+        
+        
+        
 
-        return 0;
+        for (Integer i : sortedSet) {
+            Vector<Object> row = data.get(i);
+            for (int j = 0; j < row.size(); j++) {
+                
+            }
+        }
+
+        return lengths;
     }
 
     private String padWord(String original, int longest) {

@@ -126,7 +126,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         wingDropdown = new javax.swing.JComboBox();
         floor = new javax.swing.JLabel();
         floorDropdown = new javax.swing.JComboBox();
-        lockerDropdown = new javax.swing.JComboBox();
+        restrictByHasLocker = new javax.swing.JComboBox();
         rajauksetHeader = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -315,10 +315,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        lockerDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kaikki", "Lokerottomat", "Lokerolliset" }));
-        lockerDropdown.addItemListener(new java.awt.event.ItemListener() {
+        restrictByHasLocker.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kaikki", "Lokerottomat", "Lokerolliset" }));
+        restrictByHasLocker.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                lockerDropdownItemStateChanged(evt);
+                restrictByHasLockerItemStateChanged(evt);
             }
         });
 
@@ -374,6 +374,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         restrictByPostRoom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "Sivutoimiset" }));
+        restrictByPostRoom.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                restrictByPostRoomItemStateChanged(evt);
+            }
+        });
 
         jLabel6.setText("Postihuone");
 
@@ -425,7 +430,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                                 .addComponent(jLabel6)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lockerDropdown, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(restrictByHasLocker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(restrictByPostRoom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(124, 124, 124))))
         );
@@ -446,7 +451,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                                 .addComponent(lastCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel1)
-                                    .addComponent(lockerDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(restrictByHasLocker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(firstCalendar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -703,8 +708,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByNameActionPerformed
 
-    private void lockerDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lockerDropdownItemStateChanged
-        int index = lockerDropdown.getSelectedIndex();
+    private void restrictByHasLockerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByHasLockerItemStateChanged
+        int index = restrictByHasLocker.getSelectedIndex();
         if (index == 0) {
             // kaikki
             generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
@@ -713,13 +718,13 @@ public class ReportsWindow extends javax.swing.JFrame {
             generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 2){
             // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
+            RowFilter regexFilter = RowFilter.regexFilter("ei ", Data.getColumnModel().getColumnIndex(postihuone));
             generalFilter = RowFilter.notFilter(regexFilter);
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
         Data.setRowSorter(rowSorter);
-    }//GEN-LAST:event_lockerDropdownItemStateChanged
+    }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
         int option = fileChooserDialog.showSaveDialog(Data);
@@ -793,6 +798,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         determineDateRestriction();
     }//GEN-LAST:event_restrictByLastDateActionPerformed
 
+    private void restrictByPostRoomItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByPostRoomItemStateChanged
+        String room = restrictByPostRoom.getSelectedItem().toString();
+        if (room.isEmpty()) {
+            // kaikki
+            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
+        } else {
+            // lokeron numero
+            generalFilter = RowFilter.regexFilter(room, Data.getColumnModel().getColumnIndex(postihuone));
+        } 
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+        Data.setRowSorter(rowSorter);
+    }//GEN-LAST:event_restrictByPostRoomItemStateChanged
+
     /**
      * @param args the command line arguments
      */
@@ -851,12 +870,12 @@ public class ReportsWindow extends javax.swing.JFrame {
     private net.sourceforge.jcalendarbutton.JCalendarButton lastCalendar;
     private javax.swing.JPanel lockerAttributes;
     private javax.swing.JRadioButton lockerButton;
-    private javax.swing.JComboBox lockerDropdown;
     private javax.swing.JOptionPane overwriteCheck;
     private javax.swing.JRadioButton peopleButton;
     private javax.swing.JPanel personAttributes;
     private javax.swing.JLabel rajauksetHeader;
     private javax.swing.JTextField restrictByFirstDate;
+    private javax.swing.JComboBox restrictByHasLocker;
     private javax.swing.JTextField restrictByLastDate;
     private javax.swing.JTextField restrictByName;
     private javax.swing.JComboBox restrictByPostRoom;
