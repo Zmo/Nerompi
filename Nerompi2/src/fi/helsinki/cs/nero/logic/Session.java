@@ -8,6 +8,7 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Project;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.RoomReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.event.NeroObserver;
@@ -891,7 +892,15 @@ public class Session {
 	public int getCursorType() {
 		return this.cursortype;
 	}
-	
+        
+        public RoomReservation[] getRoomReservations() {
+            return db.getRoomReservations(activeRoom);
+        }
+        
+        public void addRoomReservation(Person person, TimeSlice timeslice) {
+            db.addRoomReservation(this.activeRoom, person, timeslice);
+        }
+        
 	/* Kuuntelijoihin liittyv�t operaatiot */
 	
     /**
