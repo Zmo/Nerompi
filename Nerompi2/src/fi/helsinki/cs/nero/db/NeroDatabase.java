@@ -8,7 +8,7 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Project;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
-import fi.helsinki.cs.nero.data.RoomReservation;
+import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
@@ -1100,7 +1100,7 @@ public class NeroDatabase implements NeroObserver {
         }
         
         /** Nerompi
-         * Hakee tietokannasta umpeutuneet huonevaraukset ja poistaa huoneen näiden varausten henkilöiltä.
+         * Hakee tietokannasta umpeutuneet huonevaraukset ja alkaneet huonevaraukset ja päivittää huoneen näille ihmisille.
          */
         public void updateRooms() {
             
@@ -1387,24 +1387,24 @@ public class NeroDatabase implements NeroObserver {
          * @param room huone, jonka varaukset halutaan hakea
          * @return Taulu varauksista
          */
-        public RoomReservation[] getRoomReservations(Room room) {
+        public RoomKeyReservation[] getRoomKeyReservations(Room room) {
             String sqlquery = "SELECT *"
                             + " FROM HUONEVARAUS"
                             + " WHERE RHUONE_ID=?";
             
-            RoomReservation[] reservations;
+            RoomKeyReservation[] reservations;
             try {
                 PreparedStatement prep = this.connection.prepareStatement(sqlquery);
                 prep.setString(1, room.getRoomID());
                 ResultSet rs = prep.executeQuery();
                 rs.last();
                 int size = rs.getRow();
-                reservations = new RoomReservation[size];
+                reservations = new RoomKeyReservation[size];
                 rs.beforeFirst();
                 for(int i=0; i<size; ++i) {
                     rs.next();
                     TimeSlice timeslice = new TimeSlice(rs.getDate("ALKUPVM"), rs.getDate("LOPPUPVM"));
-                    reservations[i] = new RoomReservation(rs.getInt("ID"), (Room)rooms.get(rs.getString("RHUONE_ID")), (Person)people.get(rs.getString("HTUNNUS")), timeslice);
+                    reservations[i] = new RoomKeyReservation(rs.getInt("ID"), (Room)rooms.get(rs.getString("RHUONE_ID")), (Person)people.get(rs.getString("HTUNNUS")), timeslice);
                 }
                 return reservations;
             } catch(SQLException e) {
@@ -1417,7 +1417,7 @@ public class NeroDatabase implements NeroObserver {
          * Lisää Huonevaraus -tauluun uuden huonevarauksen
          * @param reservation lisättävä huonevaraus
          */
-        public void addRoomReservation(Room room, Person person, TimeSlice timeslice) {
+        public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
             String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
             
             String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)";
@@ -1490,7 +1490,6 @@ public class NeroDatabase implements NeroObserver {
                     this.prepUpdatePhoneNumber.setString(1, post.getPostID());
 		}
 		this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
-                //Reservation[] reservations = phone.getPost().getReservations();
                 int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
 		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
                     success = true;
@@ -1535,18 +1534,14 @@ public class NeroDatabase implements NeroObserver {
             try {
 		prep = this.connection.prepareStatement(updatePhoneNumber);
                 prep.setString(1, phone.getPhoneNumberID());
-                //Reservation[] reservations = phone.getPost().getReservations();
                 int updatedRows = prep.executeUpdate();
-		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
+		if(updatedRows > 0) {
                     success = true;
                     prep = this.connection.prepareStatement(getpersons);
                     prep.setString(1, phone.getPost().getPostID());
                     ResultSet rs = prep.executeQuery();
-                    rs.next();
-                    if(rs.getString("HENKLO_HTUNNUS")!=null) {
+                    while(rs.next())
                         this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
-                    }
-                    //if(phone.getPost().getReservations())
                     /* XXX Raskas operaatio */
                     loadRooms();
                     loadPhoneNumbers();
