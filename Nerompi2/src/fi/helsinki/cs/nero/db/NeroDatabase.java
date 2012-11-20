@@ -8,6 +8,7 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Project;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.RoomReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
@@ -1382,30 +1383,30 @@ public class NeroDatabase implements NeroObserver {
 	}
         
         /** Nerompi
-         * Palauttaa huoneet joihin on tehty varauksia
+         * Palauttaa varaukset annettuun huoneeseen
          * @param room huone, jonka varaukset halutaan hakea
-         * @return Taulu ihmisistä, joilla on varaus huoneeseen
+         * @return Taulu varauksista
          */
-        public Person[] getRoomReservations(Room room) {
-            String sqlquery = "SELECT HTUNNUS"
+        public RoomReservation[] getRoomReservations(Room room) {
+            String sqlquery = "SELECT *"
                             + " FROM HUONEVARAUS"
                             + " WHERE RHUONE_ID=?";
             
-            Person[] persons;
+            RoomReservation[] reservations;
             try {
                 PreparedStatement prep = this.connection.prepareStatement(sqlquery);
                 prep.setString(1, room.getRoomID());
                 ResultSet rs = prep.executeQuery();
                 rs.last();
                 int size = rs.getRow();
-                persons = new Person[size];
+                reservations = new RoomReservation[size];
                 rs.beforeFirst();
                 for(int i=0; i<size; ++i) {
                     rs.next();
-                    if(this.people.containsKey(rs.getString("HTUNNUS")))
-                        persons[i] = (Person)this.people.get(rs.getString("HTUNNUS"));
+                    TimeSlice timeslice = new TimeSlice(rs.getDate("ALKUPVM"), rs.getDate("LOPPUPVM"));
+                    reservations[i] = new RoomReservation(rs.getInt("ID"), (Room)rooms.get(rs.getString("RHUONE_ID")), (Person)people.get(rs.getString("HTUNNUS")), timeslice);
                 }
-                return persons;
+                return reservations;
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
                 return null;
@@ -1414,13 +1415,12 @@ public class NeroDatabase implements NeroObserver {
         
         /** Nerompi
          * Lisää Huonevaraus -tauluun uuden huonevarauksen
-         * @param room Huone, joka on tarkoitus varata
-         * @param reserver Henkilö, jolle varaus tehdään
+         * @param reservation lisättävä huonevaraus
          */
-        public void addRoomReservation(Room room, Person reserver) {
-            String idquery = "SELECT MAX(ID) FROM HUONEVARAUS)";
+        public void addRoomReservation(Room room, Person person, TimeSlice timeslice) {
+            String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
             
-            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID) VALUES (?, ?, ?)";
+            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)";
             
             PreparedStatement prep;
             
@@ -1429,10 +1429,12 @@ public class NeroDatabase implements NeroObserver {
                 rs.next();
                 
                 prep = this.connection.prepareStatement(updatequery);
-                prep.setInt(1, rs.getInt("ID")+1);
-                prep.setString(2, reserver.getPersonID());
+                prep.setInt(1, rs.getInt("ID"));
+                prep.setString(2, person.getPersonID());
                 prep.setString(3, room.getRoomID());
-                prep.executeUpdate();                
+                prep.setDate(4, (java.sql.Date)timeslice.getStartDate());
+                prep.setDate(5, (java.sql.Date)timeslice.getEndDate());
+                prep.executeUpdate();
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
             }
