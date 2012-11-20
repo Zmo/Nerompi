@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.TableModel;
@@ -22,10 +23,6 @@ public class ODTReportPrinter implements ReportWriter {
         file = f;
     }
     
-    @Override
-    public void print(HashMap<Integer, Object[]> data) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public void print(TableModel model) {
@@ -36,5 +33,10 @@ public class ODTReportPrinter implements ReportWriter {
         } catch (IOException ex) {
             Logger.getLogger(ODTReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void print(HashMap<Integer, Vector<Object>> data) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

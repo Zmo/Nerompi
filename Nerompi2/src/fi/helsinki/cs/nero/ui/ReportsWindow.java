@@ -713,7 +713,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 2){
             // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
+            RowFilter regexFilter = RowFilter.regexFilter("ei ", Data.getColumnModel().getColumnIndex(postihuone));
             generalFilter = RowFilter.notFilter(regexFilter);
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
