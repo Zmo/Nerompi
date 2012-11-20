@@ -32,20 +32,27 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="errorMessageLabel" min="-2" pref="795" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="CancelButton" min="-2" pref="182" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="saveButton" min="-2" pref="178" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                      <Component id="MoreButton" min="-2" pref="176" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="kotipuhelinField" max="32767" attributes="0"/>
-                          <Component id="ktunnusField" alignment="0" pref="182" max="32767" attributes="0"/>
-                          <Component id="aktiivinenField" alignment="0" pref="182" max="32767" attributes="0"/>
                           <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="huoneField" alignment="0" pref="182" max="32767" attributes="0"/>
+                          <Component id="jLabel19" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="etunimiField" alignment="0" pref="182" max="32767" attributes="0"/>
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel20" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="ktunnusField" alignment="0" pref="200" max="32767" attributes="0"/>
+                          <Component id="aktiivinenField" alignment="0" max="32767" attributes="0"/>
+                          <Component id="etunimiField" alignment="0" max="32767" attributes="0"/>
+                          <Component id="kotipuhelinField" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="postilokeroField" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel17" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -64,15 +71,8 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="MoreField" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="CancelButton" min="-2" pref="182" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="saveButton" min="-2" pref="178" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                      <Component id="MoreButton" min="-2" pref="176" max="-2" attributes="0"/>
-                  </Group>
               </Group>
-              <EmptySpace min="106" pref="100" max="32767" attributes="0"/>
+              <EmptySpace pref="148" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -90,8 +90,8 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="huoneField" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel19" min="-2" pref="23" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jLabel3" min="-2" pref="18" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="aktiivinenField" min="-2" max="-2" attributes="0"/>
@@ -132,7 +132,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="errorMessageLabel" min="-2" pref="22" max="-2" attributes="0"/>
-              <EmptySpace pref="29" max="32767" attributes="0"/>
+              <EmptySpace pref="15" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                       <Component id="saveButton" alignment="3" max="32767" attributes="0"/>
@@ -140,7 +140,7 @@
                   </Group>
                   <Component id="CancelButton" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="48" max="32767" attributes="0"/>
+              <EmptySpace pref="21" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -152,8 +152,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Etunimi"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="huoneField">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -224,7 +222,7 @@
                       <Component id="katuosoiteField" alignment="0" max="32767" attributes="0"/>
                       <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="htunnusField" alignment="0" pref="176" max="32767" attributes="0"/>
@@ -413,6 +411,11 @@
           <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel19">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jLabel19"/>
       </Properties>
     </Component>
   </SubComponents>
