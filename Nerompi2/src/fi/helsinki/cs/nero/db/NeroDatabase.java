@@ -693,18 +693,18 @@ public class NeroDatabase implements NeroObserver {
 	/* --- Henkilï¿½ihin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa henkilï¿½t jotka tï¿½yttï¿½vï¿½t parametreinï¿½ annetut hakuehdot.
-	 * Hakuehtoja voi yhdistï¿½ï¿½, ja oliotyyppiset hakuehdot voivat olla null,
-	 * jolloin ne eivï¿½t rajaa tulosta.
+	 * Palauttaa henkilöt jotka täyttävät parametreina annetut hakuehdot.
+	 * Hakuehtoja voi yhdistää, ja oliotyyppiset hakuehdot voivat olla null,
+	 * jolloin ne eivät rajaa tulosta.
 	 * 
 	 * @param timescale
-	 *            Aikavï¿½li, jota henkilï¿½iden tyï¿½sopimusjaksojen tule leikata
+	 *            Aikaväli, jota henkilöiden työsopimusjaksojen tule leikata
 	 * @param personName
-	 *            Merkkijono, johon henkilï¿½n (suku?)nimeï¿½ verrataan.
+	 *            Merkkijono, johon henkilön (suku?)nimeï¿½ verrataan.
 	 * @param partTimeTeachersOnly
-	 *            jos tosi, nï¿½ytetï¿½ï¿½n vain sivutoimiset tuntiopettajat
+	 *            jos tosi, näytetään vain sivutoimiset tuntiopettajat
 	 * @param withoutPost
-	 *            jos tosi, nï¿½ytetï¿½ï¿½n vain ne, joilla on tyï¿½sopimusjakso ilman
+	 *            jos tosi, näytetään vain ne, joilla on tyï¿½sopimusjakso ilman
 	 *            samanaikaista tyï¿½pistevarausta
 	 * @param showEndingContracts
 	 *            jos tosi, nï¿½ytetï¿½ï¿½n vain ne, joiden viimeinen tyï¿½sopimusjakso
@@ -721,7 +721,7 @@ public class NeroDatabase implements NeroObserver {
 		long startTime = System.currentTimeMillis();
 		this.session.waitState(true);
 		
-		session.setStatusMessage("Haetaan henkilï¿½itï¿½..."
+		session.setStatusMessage("Haetaan henkilöitä..."
 				/*
 				+ " (aikavï¿½li: " + timescale
 				+ ", nimi: " + personName
@@ -1254,7 +1254,7 @@ public class NeroDatabase implements NeroObserver {
 
 	/* --- Tyï¿½pisteisiin liittyvï¿½t metodit loppuu --- */ 
 
-	/* --- Tyï¿½huoneisiin liittyvï¿½t metodit alkaa --- */ 
+	/* --- Työhuoneisiin liittyvät metodit alkaa --- */ 
 
 	/**
 	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat huoneet.
@@ -1380,6 +1380,63 @@ public class NeroDatabase implements NeroObserver {
 	public Room getRoom(String roomID) {
 		return (Room) rooms.get(roomID);
 	}
+        
+        /** Nerompi
+         * Palauttaa huoneet joihin on tehty varauksia
+         * @param room huone, jonka varaukset halutaan hakea
+         * @return Taulu ihmisistä, joilla on varaus huoneeseen
+         */
+        public Person[] getRoomReservations(Room room) {
+            String sqlquery = "SELECT HTUNNUS"
+                            + " FROM HUONEVARAUS"
+                            + " WHERE RHUONE_ID=?";
+            
+            Person[] persons;
+            try {
+                PreparedStatement prep = this.connection.prepareStatement(sqlquery);
+                prep.setString(1, room.getRoomID());
+                ResultSet rs = prep.executeQuery();
+                rs.last();
+                int size = rs.getRow();
+                persons = new Person[size];
+                rs.beforeFirst();
+                for(int i=0; i<size; ++i) {
+                    rs.next();
+                    if(this.people.containsKey(rs.getString("HTUNNUS")))
+                        persons[i] = (Person)this.people.get(rs.getString("HTUNNUS"));
+                }
+                return persons;
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+                return null;
+            }
+        }
+        
+        /** Nerompi
+         * Lisää Huonevaraus -tauluun uuden huonevarauksen
+         * @param room Huone, joka on tarkoitus varata
+         * @param reserver Henkilö, jolle varaus tehdään
+         */
+        public void addRoomReservation(Room room, Person reserver) {
+            String idquery = "SELECT MAX(ID) FROM HUONEVARAUS)";
+            
+            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID) VALUES (?, ?, ?)";
+            
+            PreparedStatement prep;
+            
+            try {
+                ResultSet rs = this.connection.prepareStatement(idquery).executeQuery();
+                rs.next();
+                
+                prep = this.connection.prepareStatement(updatequery);
+                prep.setInt(1, rs.getInt("ID")+1);
+                prep.setString(2, reserver.getPersonID());
+                prep.setString(3, room.getRoomID());
+                prep.executeUpdate();                
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+        }
 
 	/* --- Huoneisiin liittyvï¿½t metodit loppuu --- */ 
 
