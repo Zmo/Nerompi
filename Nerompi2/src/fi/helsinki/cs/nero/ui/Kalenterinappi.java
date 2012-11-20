@@ -44,39 +44,34 @@ public class Kalenterinappi extends JCalendarButton {
         if (evt.getPropertyName().equalsIgnoreCase("date")) {
             Date tulos;
             tulos = this.parseAika(evt.getNewValue().toString(), this.getTargetDate());
-            if ((this.onkoAlku && (tulos.before(this.element.getLoppukalenteri().getTargetDate())))
-                    || (!(this.onkoAlku) && (tulos.after(this.element.getAlkukalenteri().getTargetDate())))) {
-                
-                /* AIKATARKASTUKSIA - TYÖN ALLA*/
-                Reservation[] varaukset = this.element.getReservation().getReservingPerson().getReservations();
-                for (int a = 0; a < varaukset.length; a++) {
-                    System.out.println(varaukset[a].getTimeSlice().getStartDate() + " - "
-                            +  varaukset[a].getTimeSlice().getEndDate());
-                    if (varaukset[a].getReservationID().equals(this.element.getReservation().getReservationID())) {
-                    } else {
-                        TimeSlice vertausaikavali = varaukset[a].getTimeSlice();
-                        if (this.onkoAlku && vertausaikavali.getEndDate().after(tulos) && this.element.getTimeSlice().getEndDate().after(vertausaikavali.getEndDate())) {
-                            System.out.println("PAIKKA 1: " + tulos);
-                            this.palautaViimeAika();
-                            return;
-                        }
-                        else if (!(this.onkoAlku) && vertausaikavali.getStartDate().before(tulos) && this.element.getTimeSlice().getStartDate().before(vertausaikavali.getStartDate())){
-                            System.out.println("PAIKKA 2: " + tulos);
-                            this.palautaViimeAika();
-                            return;
-                        }
-                    }
-                }
-                /* /AIKATARKASTUKSIA */
+            tulos.setHours(0);
+            if (((this.onkoAlku && (tulos.before(this.element.getLoppukalenteri().getTargetDate())))
+                    || (!(this.onkoAlku) && (tulos.after(this.element.getAlkukalenteri().getTargetDate()))))
+                    && ((this.lapikayntiVertailu(this.element.getReservation().getReservingPerson().getReservations(), tulos)))) {
                 this.hyvaksyAikaMuutos(tulos);
-
             }
             else {
                 this.palautaViimeAika();
                 System.out.println("VIRHE - TimelineElement - alkamispäivä yritetty siirtää loppumispäivän jälkeen.");
-                // + Virhevalintakorjaus
             }
         }
+    }
+    
+    private boolean lapikayntiVertailu(Reservation[] saadutVaraukset, Date kohde) {
+        for (int a = 0; a < saadutVaraukset.length; a++) {
+            System.out.println(saadutVaraukset[a].getTimeSlice().getStartDate() + " - "
+                    + saadutVaraukset[a].getTimeSlice().getEndDate());
+            if (saadutVaraukset[a].getReservationID().equals(this.element.getReservation().getReservationID())) {
+            } else {
+                TimeSlice vertausaikavali = saadutVaraukset[a].getTimeSlice();
+                if ((this.onkoAlku && vertausaikavali.getEndDate().after(kohde) && this.element.getTimeSlice().getEndDate().after(vertausaikavali.getEndDate()))
+                        || (!(this.onkoAlku) && vertausaikavali.getStartDate().before(kohde) && this.element.getTimeSlice().getStartDate().before(vertausaikavali.getStartDate()))) {
+                    this.palautaViimeAika();
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     private void hyvaksyAikaMuutos(Date muutos){
