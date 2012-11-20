@@ -28,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -59,6 +60,11 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
     private String kayttaja, postihuone, puhelinnumero;
+    private String huonenumero, kerros, pisteiden_lkm;
+
+    
+    // TODO: pitäisikö olla yksi lista filtereistä ja pitää aina and-filteriä
+    // ja laittaa listaan aina uusi filteri -> voi filteröidä kaikilla rajoittimilla
     //testi
     private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
     // combobox models not used yet
@@ -91,6 +97,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         initContainerData();
         initModels();
         initColumnData();
+        initColumnNames();
         this.setVisible(true);
     }
 
@@ -616,10 +623,13 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_roomButtonMouseReleased
 
     private void peopleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peopleButtonMouseReleased
-        //TODO: kirjoita oma tablemodel tätä varten -> saadaan oikea tyyppi date-sarakkeelle
 
+        //TODO: kirjoita oma tablemodel tätä varten -> saadaan oikea tyyppi date-sarakkeelle
+        // tai sitten vaan asetetaan cellrenderer oikein..
         Data = new JTable(peopleData, peopleColumnNames);
         peopleColumnModel = Data.getColumnModel();
+        TableCellRenderer renderer = new DateCellRenderer();
+        peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
         setSelected(peopleComponents);
         addSorter();
         tableContainer.setViewportView(Data);
@@ -969,11 +979,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             roomData.add(i, v);
         }
 
-        roomColumnNames = new Vector<>();
-        roomColumnNames.add("Huoneen nro");
-        roomColumnNames.add("Kerros");
-        roomColumnNames.add("Työpisteiden lkm");
-        roomColumnNames.add(nimi);
+
 
         // henkilö-tarkastelun data ja sarakkeet
         // laitetaan samalla data myös postilokero-näkymän dataan
@@ -1001,6 +1007,17 @@ public class ReportsWindow extends javax.swing.JFrame {
             lockerData.add(i, lockerRow);
         }
 
+
+    }
+
+    private void initColumnNames() {
+        
+        roomColumnNames = new Vector<>();
+        roomColumnNames.add(huonenumero);
+        roomColumnNames.add(kerros);
+        roomColumnNames.add(pisteiden_lkm);
+        roomColumnNames.add(nimi);
+        
         peopleColumnNames = new Vector<>();
         peopleColumnNames.add(nimi);
         peopleColumnNames.add(huone);
@@ -1008,14 +1025,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnNames.add(nimike);
         peopleColumnNames.add(sposti);
 
-        // postilokero-näkymän sarakkeet        
         lockerColumnNames = new Vector<>();
         lockerColumnNames.add(kayttaja);
         lockerColumnNames.add(postihuone);
         lockerColumnNames.add(huone);
         lockerColumnNames.add(puhelinnumero);
+        
     }
-
     private void showColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
         IndexedColumn column = hiddenColumns.remove(name);
@@ -1192,6 +1208,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         huone = "Huone";
         nimike = "Nimike";
         sposti = "Sähköposti";
+        
+        // huone
+        huonenumero = "Huoneen nro";
+        kerros = "Kerros";
+        pisteiden_lkm = "Työpisteiden lkm";
 
         // postilokero    
         kayttaja = "Käyttäjä";
