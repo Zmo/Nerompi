@@ -295,7 +295,6 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                         rowPanel.add(post.getKalenterinapit());
 
                                         korkeus += 28;
-                                        System.out.println(post.getKalenterinapit().getHeight());
                                         rowPanel.setMinimumSize(new Dimension(ROW_LENGTH, korkeus));
                                         rowPanel.setPreferredSize(new Dimension(ROW_LENGTH, korkeus));
                                         rowPanel.setMaximumSize(new Dimension(ROW_LENGTH, korkeus));
