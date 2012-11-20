@@ -227,6 +227,8 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         personNameLabel.setText(personIterator.getPerson().getName());
                         personNameLabel.addMouseListener(new PersonNameLabelListener());
                         header.add(personNameLabel);
+
+                        
 //			JLabel labelText = new JLabel(personIterator.getPerson().getName());             
 //			header.add(labelText);
 //                        
@@ -282,12 +284,17 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 				boolean firstContract = true;
 				
 				row.resetIterator();
-				
+				int korkeus = 0;
 				while(row.hasNext()) {
-					TimelineElement post = (TimelineElement)row.next();
-                                        if (post.getKalenterinapit() != null){
-                                            rowPanel.add(post.getKalenterinapit());
-                                        }
+                                    TimelineElement post = (TimelineElement) row.next();
+                                    if (post.getKalenterinapit() != null) {
+                                        rowPanel.add(post.getKalenterinapit());
+
+                                        korkeus += 28;
+                                        rowPanel.setMinimumSize(new Dimension(ROW_LENGTH, korkeus));
+                                        rowPanel.setPreferredSize(new Dimension(ROW_LENGTH, korkeus));
+                                        rowPanel.setMaximumSize(new Dimension(ROW_LENGTH, korkeus));
+                                    }
                                         // rowPanel.add(post);
 				}
 				rowPanel.setBackground(HEADER_BG);

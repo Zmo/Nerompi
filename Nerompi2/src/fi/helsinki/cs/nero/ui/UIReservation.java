@@ -56,10 +56,9 @@ public class UIReservation extends TimelineElement {
     public void storeToDB() {
         //Jos elementin kokoa saa muuttaa on se ylip‰‰t‰ns‰ voinut muuttua.
 /* VAARALLINEN MUUTOS */
-        //if (this.onkoAlkuEnnenLoppua()){
-        //if(this.resizable) {
-//            this.reservation.getSession().updateReservation(this.reservation);
-        //}
+        if(this.resizable) {
+            this.reservation.getSession().updateReservation(this.reservation);
+        }
 /* / VAARALLINEN MUUTOS */
     }
     
