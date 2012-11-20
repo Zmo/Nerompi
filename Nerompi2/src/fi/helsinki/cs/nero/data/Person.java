@@ -25,8 +25,6 @@ public class Person implements Comparable {
 	/**Henkilön nimi*/
 	private final String name;			
 
-    
-
 	/**Henkilön työsopimukset*/
 	private Contract[] contracts;
 	
@@ -108,13 +106,16 @@ public class Person implements Comparable {
         } else {
             this.activity = "E";
         }
-        if (henkiloHash.get("hy_tyosuhde") == null || henkiloHash.get("hy_tyosuhde") == "E")
-        {
-            this.hyTyosuhde = "E";
+        if (henkiloHash.get("hy_tyosuhde") != null) {
+            this.hyTyosuhde = henkiloHash.get("hy_tyosuhde");
         } else {
-            this.hyTyosuhde = "K";
+            this.hyTyosuhde = "E";
         }
-        
+        if (henkiloHash.get("hy_puhelinluettelossa") != null) {
+            this.hyPuhelinluettelossa = henkiloHash.get("hy_puhelinluettelossa");
+        } else {
+            this.hyPuhelinluettelossa = "E";
+        }
         this.hyTyosuhde = henkiloHash.get("hy_tyosuhde");
         
         this.hetu = henkiloHash.get("hetu");
@@ -245,7 +246,12 @@ public class Person implements Comparable {
         }
 
         public void setActivity(String activity) {
-            this.activity = activity;
+            if (activity != null) {
+                this.activity = activity;
+            } else {
+                this.activity = "E";
+            }
+        
         }
 
         public void setHetu(String hetu) {
@@ -309,11 +315,19 @@ public class Person implements Comparable {
         }
 
         public void setHyTyosuhde(String hyTyosuhde) {
-            this.hyTyosuhde = hyTyosuhde;
+            if (hyTyosuhde != null) {
+                this.hyTyosuhde = hyTyosuhde;
+            } else {
+                this.hyTyosuhde = "E";
+            }
         }
 
         public void setHyPuhelinluettelossa(String hyPuhelinluettelossa) {
-            this.hyPuhelinluettelossa = hyPuhelinluettelossa;
+            if (hyPuhelinluettelossa != null) {
+                this.hyPuhelinluettelossa = hyPuhelinluettelossa;
+            } else {
+                this.hyPuhelinluettelossa = "E";
+            }
         }
         
         public Session getSession() {
