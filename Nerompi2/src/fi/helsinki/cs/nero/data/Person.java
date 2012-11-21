@@ -44,10 +44,10 @@ public class Person implements Comparable {
         private String address;
         private String postnumber;
         private String postitoimiPaikka;
-        private String valvontaSaldo;
+        //private String valvontaSaldo;
         private String sahkoposti;
         private String hallinnollinenKommentti;
-        private String opiskelijaKommentti;
+        //private String opiskelijaKommentti;
         private String kTunnus;
         private String kannykka;
         private String postilokeroHuone;
@@ -126,10 +126,10 @@ public class Person implements Comparable {
         this.address = henkiloHash.get("katuosoite");
         this.postnumber = henkiloHash.get("postinro");
         this.postitoimiPaikka = henkiloHash.get("postitoimipaikka");
-        this.valvontaSaldo = henkiloHash.get("valvontasaldo");
+        //this.valvontaSaldo = henkiloHash.get("valvontasaldo");
         this.sahkoposti = henkiloHash.get("sahkopostiosoite");
         this.hallinnollinenKommentti = henkiloHash.get("hallinnollinen_kommentti");
-        this.opiskelijaKommentti = henkiloHash.get("opiskelija_kommentti");
+        //this.opiskelijaKommentti = henkiloHash.get("opiskelija_kommentti");
         this.kTunnus = henkiloHash.get("ktunnus");
         this.kannykka = henkiloHash.get("kannykka");
         this.postilokeroHuone = henkiloHash.get("postilokerohuone");              
@@ -197,9 +197,9 @@ public class Person implements Comparable {
             return postitoimiPaikka;
         }
 
-        public String getValvontaSaldo() {
-            return valvontaSaldo;
-        }
+//        public String getValvontaSaldo() {
+//            return valvontaSaldo;
+//        }
 
         public String getSahkoposti() {
             return sahkoposti;
@@ -209,9 +209,9 @@ public class Person implements Comparable {
             return hallinnollinenKommentti;
         }
 
-        public String getOpiskelijaKommentti() {
-            return opiskelijaKommentti;
-        }
+//        public String getOpiskelijaKommentti() {
+//            return opiskelijaKommentti;
+//        }
 
         public String getkTunnus() {
             return kTunnus;
@@ -281,9 +281,9 @@ public class Person implements Comparable {
             this.postitoimiPaikka = postitoimiPaikka;
         }
 
-        public void setValvontaSaldo(String valvontaSaldo) {
-            this.valvontaSaldo = valvontaSaldo;
-        }
+//        public void setValvontaSaldo(String valvontaSaldo) {
+//            this.valvontaSaldo = valvontaSaldo;
+//        }
 
         public void setSahkoposti(String sahkoposti) {
             this.sahkoposti = sahkoposti;
@@ -293,9 +293,9 @@ public class Person implements Comparable {
             this.hallinnollinenKommentti = hallinnollinenKommentti;
         }
 
-        public void setOpiskelijaKommentti(String opiskelijaKommentti) {
-            this.opiskelijaKommentti = opiskelijaKommentti;
-        }
+//        public void setOpiskelijaKommentti(String opiskelijaKommentti) {
+//            this.opiskelijaKommentti = opiskelijaKommentti;
+//        }
 
         public void setkTunnus(String kTunnus) {
             this.kTunnus = kTunnus;
