@@ -3,30 +3,67 @@ package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Post;
+import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.TimeSlice;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Date;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 /**
  *
  * @author rkolagus
  */
-public class UusiVarausPopup extends JPopupMenu {
+public class UusiVarausPopup extends JButton {
     Person person;
+    JPopupMenu popupMenu;
+    Post[] posts;
     
-    
-    public UusiVarausPopup(Person person, Post[] posts){
-        super();
-        this.setLabel("Lis‰‰ varaus");
+    public UusiVarausPopup(Person person){
+        this.setText("Uusi varaus");
+        this.addMouseListener(new UusiVarausListener(this));
         this.person = person;
-        JMenuItem asia = new JMenuItem("Valitse huone");
-        asia.setEnabled(false);
-        this.add(asia);
+        this.popupMenu = new JPopupMenu("Uusi varaus");
     }
     
-    private void naytaTyopisteet(){
-        Post[] posts = this.person.getSession().getActiveRoom().getPosts();
-        for (int a = 0; a < posts.length; a++){
-            this.add(posts[a].getPostID());
+    public void naytaPopup(MouseEvent e){
+        ActionListener menuListener = new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Valinta!");
+            }
+        };
+        popupMenu = new JPopupMenu(); 
+        if (this.person.getSession().getActiveRoom() == null) {
+        } else {
+            this.posts = this.person.getSession().getActiveRoom().getPosts();
+            for (int a = 0; a < this.posts.length; a++) {
+                JMenuItem menuTayte = new JMenuItem("" + this.posts[a]);
+                menuTayte.addActionListener(new UusiVarausMenuItemListener(this, this.posts[a]));
+                popupMenu.add(menuTayte);
+            }
+            this.popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
     
+    public void teeVaraus(Room room, Post post){
+        System.out.println("Valittu kohdepaikka: " + room + "." + post.getPostNumber());
+
+        Date alkamisPaiva;
+        if (this.person.getLastReservation() == null) {
+            alkamisPaiva = this.person.getSession().getTimeScaleSlice().getStartDate();
+        } else {
+            alkamisPaiva = this.person.getLastReservation().getTimeSlice().getEndDate();
+        }
+        if (!(alkamisPaiva.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
+            System.out.println(" - Virhe - UusiVarausPopup: Aikav‰lill‰ ei ole tilaa! :C");
+        } else {
+            this.person.getSession().createReservation(post, this.person, new TimeSlice(alkamisPaiva, this.person.getSession().getTimeScaleSlice().getEndDate()));
+        }
+    }
 }
