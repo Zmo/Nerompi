@@ -14,6 +14,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -61,14 +62,14 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String varaus, nimi, huone, nimike, sposti;
     private String kayttaja, postihuone, puhelinnumero;
     private String huonenumero, kerros, pisteiden_lkm;
-
-    
+    private String structuredFileType;
     // TODO: pit‰isikˆ olla yksi lista filtereist‰ ja pit‰‰ aina and-filteri‰
     // ja laittaa listaan aina uusi filteri -> voi filterˆid‰ kaikilla rajoittimilla
     //testi
     private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
+//    private DefaultComboBoxModel fileTypeModel;
     private DefaultComboBoxModel floorsModel;
     private int[] floors = new int[]{1, 2, 3};
     private char[] wings = new char[]{'A', 'B', 'C', 'D'};
@@ -92,7 +93,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         today = new Date();
         rooms = session.getRooms();
         people = session.getFilteredPeople();
-        initColumNameVariables();
+        initStringVariables();
         initComponents();
         initContainerData();
         initModels();
@@ -554,7 +555,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "XML" }));
+        fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "ODS" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -623,11 +624,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_roomButtonMouseReleased
 
     private void peopleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peopleButtonMouseReleased
-
-        //TODO: kirjoita oma tablemodel t‰t‰ varten -> saadaan oikea tyyppi date-sarakkeelle
-        // tai sitten vaan asetetaan cellrenderer oikein..
         Data = new JTable(peopleData, peopleColumnNames);
         peopleColumnModel = Data.getColumnModel();
+        // asetetaan varaus-sarakkeelle oma renderer p‰iv‰m‰‰r‰‰ varten
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
         setSelected(peopleComponents);
@@ -666,7 +665,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else {
             hideColumn("Kerros", roomColumnModel, hiddenRoomColumns);
         }
-
     }//GEN-LAST:event_showFloorMouseReleased
 
     private void showRoomAndPostMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomAndPostMouseReleased
@@ -699,7 +697,6 @@ public class ReportsWindow extends javax.swing.JFrame {
             generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Kerros"));
         } else {
             generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Kerros"));
-
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
@@ -725,10 +722,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 1) {
             // lokerottomat
-            generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
-        } else if (index == 2){
+            generalFilter = RowFilter.regexFilter("ei postilokeroa", Data.getColumnModel().getColumnIndex(postihuone));
+        } else if (index == 2) {
             // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei ", Data.getColumnModel().getColumnIndex(postihuone));
+            RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa", Data.getColumnModel().getColumnIndex(postihuone));
             generalFilter = RowFilter.notFilter(regexFilter);
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
@@ -737,34 +734,15 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
+
         int option = fileChooserDialog.showSaveDialog(Data);
         // tallennus vain, jos on painettu "OK/Tallenna"
         if (option == JFileChooser.APPROVE_OPTION) {
             File f = fileChooserDialog.getSelectedFile();
-            // jos tiedosto on olemassa, tallennetaan sen p‰‰lle, vain jos OK k‰ytt‰j‰lle
-            if (f.exists()) {
-                option = JOptionPane.showConfirmDialog(fileChooserDialog,
-                        "Ylikirjoita?", "Tiedosto on jo olemassa",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (option == JOptionPane.OK_OPTION) {
-                    if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
-                        printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
-                        printer.print(getShownTableModel());
-                    } else {
-                        printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
-                        printer.print(getTableDataAsMap());
-                    }
-                }
-            } else {
-                if (fileTypeChooser.getSelectedItem().toString().equals("XML")) {
-                    printer = new ODTReportPrinter(fileChooserDialog.getSelectedFile());
-                    DefaultTableModel printTable = getShownTableModel();
-                    printer.print(printTable);
-
-                } else {
-                    printer = new TxtReportPrinter(fileChooserDialog.getSelectedFile());
-                    printer.print(getTableDataAsMap());
-                }
+            // kirjoitetaan vain jos tiedosto on uusi tai jos vanhan p‰‰lle saa kirjoittaa
+            boolean writable = (!f.exists() || promptForOverWrite());
+            if (writable) {
+                print(f);
             }
         }
     }//GEN-LAST:event_saveButtonMouseReleased
@@ -816,7 +794,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else {
             // lokeron numero
             generalFilter = RowFilter.regexFilter(room, Data.getColumnModel().getColumnIndex(postihuone));
-        } 
+        }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
         Data.setRowSorter(rowSorter);
@@ -952,13 +930,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (int i = 0; i < floors.length; i++) {
             wingsModel.addElement(wings[i]);
         }
-
+//        fileTypeModel = new DefaultComboBoxModel();
+//        fileTypeModel.addElement("txt");
+//        fileTypeModel.addElement(structuredFileType);
     }
 
     private void initColumnData() {
-
-
-
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
         // niin ja Date-column pit‰‰ saada palauttamaan Date getClassilla
 
@@ -980,7 +957,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
 
 
-
         // henkilˆ-tarkastelun data ja sarakkeet
         // laitetaan samalla data myˆs postilokero-n‰kym‰n dataan
         peopleData = new Vector<>();
@@ -990,7 +966,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             Vector<String> lockerRow = new Vector<>();
             lockerRow.add(people[i].getName());
             if (people[i].getPostilokeroHuone() == null) {
-                lockerRow.add("ei ole");
+                lockerRow.add("ei postilokeroa");
             } else {
                 lockerRow.add(people[i].getPostilokeroHuone());
             }
@@ -1000,24 +976,26 @@ public class ReportsWindow extends javax.swing.JFrame {
             lockerRow.add(people[i].getSahkoposti());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
-            peopleRow.add(parseReservations(people[i].getReservations()));
+            if (people[i].getLastReservation() == null) {
+                peopleRow.add("ei tyˆpistevarausta");
+            } else { 
+                peopleRow.add(people[i].getLastReservation().getLastDay());
+            }
             peopleRow.add(people[i].getTitteli());
             peopleRow.add(people[i].getSahkoposti());
             peopleData.add(i, peopleRow);
             lockerData.add(i, lockerRow);
         }
-
-
     }
 
     private void initColumnNames() {
-        
+
         roomColumnNames = new Vector<>();
         roomColumnNames.add(huonenumero);
         roomColumnNames.add(kerros);
         roomColumnNames.add(pisteiden_lkm);
         roomColumnNames.add(nimi);
-        
+
         peopleColumnNames = new Vector<>();
         peopleColumnNames.add(nimi);
         peopleColumnNames.add(huone);
@@ -1030,10 +1008,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         lockerColumnNames.add(postihuone);
         lockerColumnNames.add(huone);
         lockerColumnNames.add(puhelinnumero);
-        
+
     }
+
     private void showColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
+   
         IndexedColumn column = hiddenColumns.remove(name);
         if (column != null) {
             model.addColumn(column.getTableColumn());
@@ -1046,6 +1026,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void hideColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
+    
         int index = model.getColumnIndex(name);
         TableColumn newColumn = model.getColumn(index);
         IndexedColumn ic = new IndexedColumn(index, newColumn);
@@ -1076,52 +1057,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         return neededIndexes;
     }
 
-    private HashMap<Integer, Vector<Object>> getTableDataAsMap() {
+    private List<List> getTableDataAsList() {
 
-        HashMap<Integer, Vector<Object>> map = new HashMap<>();
-        DefaultTableModel tableModel = (DefaultTableModel) Data.getModel();
-        int rowCount = tableModel.getRowCount();
-        int columnCount = Data.getColumnCount();
+        List<List> list = new ArrayList<>();
+        /* - tarkista, mitk‰ sarakkeet ovat n‰kyvill‰
+         * - ota talteen niiden nimet ja laita ensimm‰iseksi listaan
+         * - hae data niist‰ sarakkeista, jotka ovat n‰kyvill‰
+         */
+        List columnNames = getShownColumnIdentifiers();
+        list.add(0, columnNames);
+        list.addAll(1, getShownColumnData());
 
-        // TODO: tarkista onko malli tyhj‰ ‰l‰k‰ tee mit‰‰n, jos on...
-        // pit‰isikˆ t‰m‰n ehk‰ olla treemap, ett‰ olisi sorted..?
-        // pit‰isi... ja sit‰ paitsi Object[]-> Vector<Object> mieluummin
-
-        /*T‰ss‰ siis otetaan talteen sarakkeiden nimet sek‰ tieto siit‰,
-         mitk‰ niiden indeksit ovat, jotta tiedet‰‰n, mit‰ dataa halutaan tiedostoon.
-         Lis‰ksi otetaan ylˆs sarakkeiden nimet. */
-        int[] neededIndexes = listShownColumnsByIndex();
-        Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
-        int z = 0;
-        Vector<Object> rowData = new Vector(columnCount);
-        while (e.hasMoreElements()) {
-            String s = e.nextElement().getIdentifier().toString();
-            neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
-            rowData.add(z, s);
-            z++;
-        }
-        map.put(0, rowData);
-
-        RowSorter rs = Data.getRowSorter();
-        int rowInReturnTable = 1;
-        for (int i = 0; i < rowCount; i++) {
-            /* jos converter palauttaa -1, rivi ei ole n‰kyv‰ -> ei lis‰t‰ sit‰ mapiin */
-            int rowIndex = rs.convertRowIndexToView(i);
-            if (rowIndex > -1) {
-                rowData = new Vector(columnCount);
-                for (int j = 0; j < columnCount; j++) {
-                    /* Kirjoitetaan vain ne sarakkeet, jotka n‰kyvill‰
-                     Oikea sarakenumero saadaan, kun muutetaan 
-                     datamallin indeksi sarakemallin indeksiksi */
-                    rowData.add(j, tableModel.getValueAt(i,
-                            Data.convertColumnIndexToModel(neededIndexes[j])));
-                }
-                rowInReturnTable = rowIndex + 1;
-                map.put(rowInReturnTable, rowData);
-            }
-        }
-        return map;
+        return list;
     }
+
 
     private String dateToShortString(Date date) {
         if (date != null) {
@@ -1129,12 +1078,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             dateString = dateString.concat(date.getDate() + ".");
             dateString = dateString.concat((1 + date.getMonth()) + ".");
             dateString = dateString.concat(new Integer((date.getYear()) + 1900).toString());
-
             return dateString;
         } else {
             return null;
         }
-
     }
 
     private void determineDateRestriction() {
@@ -1201,14 +1148,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
-    private void initColumNameVariables() {
+    private void initStringVariables() {
         // henkilˆ
         varaus = "Varaus p‰‰ttyy";
         nimi = "Nimi";
         huone = "Huone";
         nimike = "Nimike";
         sposti = "S‰hkˆposti";
-        
+
         // huone
         huonenumero = "Huoneen nro";
         kerros = "Kerros";
@@ -1218,27 +1165,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         kayttaja = "K‰ytt‰j‰";
         postihuone = "Postihuone";
         puhelinnumero = "Puhelinnumero";
-    }
 
-    private Date parseReservations(Reservation[] reservations) {
-        return getLastReservation(reservations);
-    }
-
-    private Date getLastReservation(Reservation[] reservations) {
-        // jos henkilˆll‰ on useampi varaus, valitaan se, jonka p‰‰ttymisp‰iv‰
-        // on viimeinen ja palautetaan ko. p‰‰ttymisp‰iv‰
-        if (reservations.length > 0) {
-            Date current = reservations[0].getTimeSlice().getEndDate();
-            for (int i = 1; i < reservations.length; i++) {
-                Date next = reservations[i].getTimeSlice().getEndDate();
-                if (next.after(current)) {
-                    current = next;
-                }
-            }
-            return current;
-        } else {
-            return null;
-        }
+        structuredFileType = "ODS";
     }
 
     private Date parseDate(String text) {
@@ -1257,24 +1185,67 @@ public class ReportsWindow extends javax.swing.JFrame {
         return newFilter;
     }
 
-    private DefaultTableModel getShownTableModel() {
-        HashMap<Integer, Vector<Object>> data = getTableDataAsMap();
-        // luodaan uusi TableModel, jolla
-        // - columnNames on n‰kyv‰t sarakkeet
-        // - datana on n‰kyvien sarakkeiden data
-        // --> saadaan puljaamalla TableDataAsMapin palauttamaa mapia
+    private void print(File f) {
 
-        //avaimella 0 saadaan sarakkeiden nimet
-        Vector<Object> columnNames = data.remove(0);
-
-        // lopuilla avaimilla saadaan loppu data
-        Vector<Vector<Object>> rowData = new Vector<>(data.size());
-        int i = 0;
-        for (Vector<Object> vector : data.values()) {
-            rowData.add(i, vector);
-            i++;
+        String fileType = fileTypeChooser.getSelectedItem().toString();
+        if (fileType.equals(structuredFileType)) {
+            printer = new ODTReportPrinter(f);
+        } else {
+            printer = new TxtReportPrinter(f);
         }
+        printer.print(getTableDataAsList());
+    }
 
-        return new DefaultTableModel(rowData, columnNames);
+    private boolean promptForOverWrite() {
+
+        int option = JOptionPane.showConfirmDialog(fileChooserDialog,
+                "Ylikirjoita?", "Tiedosto on jo olemassa",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (option == JOptionPane.OK_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private List getShownColumnIdentifiers() {
+
+        Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
+        int z = 0;
+        List rowData = new ArrayList();
+        while (e.hasMoreElements()) {
+            String s = e.nextElement().getIdentifier().toString();
+            rowData.add(z, s);
+            z++;
+        }
+        return rowData;
+
+
+    }
+
+    private Collection<? extends List> getShownColumnData() {
+
+        int[] neededIndexes = listShownColumnsByIndex();
+        TableModel tableModel = Data.getModel();
+        DefaultRowSorter rs = (DefaultRowSorter) Data.getRowSorter();
+        int columnCount = Data.getColumnCount();
+        int rowCount = rs.getViewRowCount();
+        ArrayList list = new ArrayList(rowCount);
+
+        // k‰yd‰‰n l‰pi kaikki n‰kyvill‰ olevat rivit
+        // tsekataan mit‰ alla olevan mallin rivi‰ niiden indeksi vastaa ja
+        // laitetaan sen rivin data listaan
+        // mallin sarakenumero pit‰‰ muuttaa sarakemallin indeksiksi, jotta myˆs
+        // sarakkeen data saadaan oikeaan kohtaan
+        for (int i = 0; i < rowCount; i++) {
+            List rowList = new ArrayList(columnCount);
+            int rowIndexInView = rs.convertRowIndexToModel(i);
+            for (int j = 0; j < columnCount; j++) {
+                rowList.add(j, tableModel.getValueAt(rowIndexInView,
+                        Data.convertColumnIndexToModel(neededIndexes[j])));
+            }
+            list.add(rowList);
+        }
+        return list;
     }
 }

@@ -17,19 +17,24 @@ import fi.helsinki.cs.nero.logic.Session;
  */
 public class PhoneLabel extends JLabel {
     private Post post;
-	private Session session;
+    private Session session;
+    private Person person;
 	
 	public PhoneLabel(Session s, Post p){
 		super(new ImageIcon(NeroApplication.getProperty("img_phone")));
 		this.post = p;
 		this.session = s;
+                this.person = null;
 	}
 
 	public Post getPost(){
-		return this.post;
+            return this.post;
 	}
 	public Session getSession(){
-		return this.session;
+            return this.session;
 	}
+        public Person getperson() {
+            return this.person;
+        }
 }
 
