@@ -232,8 +232,8 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         personNameLabel.addMouseListener(new PersonNameLabelListener());
                         header.add(personNameLabel);
                         
-                        UusiVarausNappi asia = new UusiVarausNappi(personIterator.getPerson());
-                        header.add(asia);
+                        UusiVarausPopup varausNappi = new UusiVarausPopup(personIterator.getPerson());
+                        header.add(varausNappi);
 
                         
 //			JLabel labelText = new JLabel(personIterator.getPerson().getName());             
@@ -312,8 +312,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                         
 				rowPanel.setBackground(HEADER_BG);
 				personsInfo.add(rowPanel);
-			}              
-                        //personsInfo.add(new JLabel(personIterator.getPerson().getTitteli()));
+			}
                         personsInfo.setBackground(HEADER_BG);
 			this.personPanel.add(BorderLayout.CENTER, personsInfo);
 			

@@ -86,6 +86,7 @@ public class TimelineElement extends JPanel {
     private JPanel kalenterinapit;    
     
     private static Color BG_COLOR = new Color(39,177,39);
+    private static Color HEADER_BG = new Color(255,240,192);
     /**
      * Konstruktori.
      * @param timeSlice Elementin esittämän aikavälin pituus.
@@ -206,8 +207,6 @@ public class TimelineElement extends JPanel {
                 JLabel valimerkki = new JLabel(" - ");
                 huoneKentta.setText(label + " ");
                 //paivat.setBackground(new Color(255,240,192));
-                alkukalenteri.setBackground(BG_COLOR);
-                loppukalenteri.setBackground(BG_COLOR);
                 
                 paivat.add(huoneKentta);
                 paivat.add(alkukalenteri);
