@@ -722,10 +722,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 1) {
             // lokerottomat
-            generalFilter = RowFilter.regexFilter("ei ole", Data.getColumnModel().getColumnIndex(postihuone));
+            generalFilter = RowFilter.regexFilter("ei postilokeroa", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 2) {
             // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei ", Data.getColumnModel().getColumnIndex(postihuone));
+            RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa", Data.getColumnModel().getColumnIndex(postihuone));
             generalFilter = RowFilter.notFilter(regexFilter);
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
@@ -966,7 +966,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             Vector<String> lockerRow = new Vector<>();
             lockerRow.add(people[i].getName());
             if (people[i].getPostilokeroHuone() == null) {
-                lockerRow.add("ei ole");
+                lockerRow.add("ei postilokeroa");
             } else {
                 lockerRow.add(people[i].getPostilokeroHuone());
             }
@@ -976,7 +976,11 @@ public class ReportsWindow extends javax.swing.JFrame {
             lockerRow.add(people[i].getSahkoposti());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
-            peopleRow.add(people[i].getLastReservation().getLastDay());
+            if (people[i].getLastReservation() == null) {
+                peopleRow.add("ei työpistevarausta");
+            } else { 
+                peopleRow.add(people[i].getLastReservation().getLastDay());
+            }
             peopleRow.add(people[i].getTitteli());
             peopleRow.add(people[i].getSahkoposti());
             peopleData.add(i, peopleRow);
@@ -1009,6 +1013,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
+   
         IndexedColumn column = hiddenColumns.remove(name);
         if (column != null) {
             model.addColumn(column.getTableColumn());
@@ -1021,6 +1026,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void hideColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
+    
         int index = model.getColumnIndex(name);
         TableColumn newColumn = model.getColumn(index);
         IndexedColumn ic = new IndexedColumn(index, newColumn);
@@ -1226,13 +1232,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         int rowCount = rs.getViewRowCount();
         ArrayList list = new ArrayList(rowCount);
 
-
         // käydään läpi kaikki näkyvillä olevat rivit
         // tsekataan mitä alla olevan mallin riviä niiden indeksi vastaa ja
         // laitetaan sen rivin data listaan
         // mallin sarakenumero pitää muuttaa sarakemallin indeksiksi, jotta myös
         // sarakkeen data saadaan oikeaan kohtaan
-
         for (int i = 0; i < rowCount; i++) {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);

@@ -358,13 +358,16 @@ public class Person implements Comparable {
      */
     public Reservation getLastReservation() {
 
-        if (reservations.length > 0) {
-            Reservation last = reservations[0];
+        Reservation[] currentReservations = this.getReservations();
+        if (currentReservations == null) {
+            return null;
+        } else if (currentReservations.length > 0){
+            Reservation last = currentReservations[0];
             Date current = last.getTimeSlice().getEndDate();
-            for (int i = 1; i < reservations.length; i++) {
-                Date next = reservations[i].getTimeSlice().getEndDate();
+            for (int i = 1; i < currentReservations.length; i++) {
+                Date next = currentReservations[i].getTimeSlice().getEndDate();
                 if (next.after(current)) {
-                    last = reservations[i];
+                    last = currentReservations[i];
                 }
             }
             return last;
