@@ -204,18 +204,18 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
             LinkedList rows = postsReservations.getRows();
             Iterator rowIterator = rows.iterator();
             
-            	//Pyöristetty yläreuna
-	    		JPanel extraHeader = new JPanel(new BorderLayout());
-	    		extraHeader.setBackground(BG);		
-	    		JLabel l4 = new JLabel(VY);
-	    		JLabel l3 = new JLabel(OY);
-	    		
-	    		JPanel middlePiece = new JPanel();
-	    		middlePiece.setBackground(POST_HEADER_BG);
-	    		
-	    		extraHeader.add(BorderLayout.WEST, l4);
-	    		extraHeader.add(BorderLayout.CENTER, middlePiece);
-	    		extraHeader.add(BorderLayout.EAST, l3);
+            //Pyöristetty yläreuna
+            JPanel extraHeader = new JPanel(new BorderLayout());
+	    extraHeader.setBackground(BG);		
+	    JLabel l4 = new JLabel(VY);
+	    JLabel l3 = new JLabel(OY);
+	    
+	    JPanel middlePiece = new JPanel();
+	    middlePiece.setBackground(POST_HEADER_BG);
+	    
+	    extraHeader.add(BorderLayout.WEST, l4);
+	    extraHeader.add(BorderLayout.CENTER, middlePiece);
+	    extraHeader.add(BorderLayout.EAST, l3);
             
             postsPanel.add(extraHeader);
 
@@ -262,30 +262,74 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                postsPanel.add(rowPanel);
             }
             
-			//Pyöristetty alareuna.
-			JPanel footer = new JPanel(new BorderLayout());
-			footer.setBackground(BG);
-			footer.setPreferredSize(new Dimension(ROW_LENGTH, 10));
+            //Pyöristetty alareuna.
+            JPanel footer = new JPanel(new BorderLayout());
+            footer.setBackground(BG);
+            footer.setPreferredSize(new Dimension(ROW_LENGTH, 10));
+	
+            JLabel l = new JLabel(VA);
+            JLabel l2 = new JLabel(OA);
+	
+            JPanel middlePanel = new JPanel();
+            middlePanel.setBackground(POST_HEADER_BG);
+            footer.add(BorderLayout.WEST, l);
+            footer.add(BorderLayout.CENTER, middlePanel);
+            footer.add(BorderLayout.EAST, l2);
 			
-			JLabel l = new JLabel(VA);
-			JLabel l2 = new JLabel(OA);
-			
-			JPanel middlePanel = new JPanel();
-			middlePanel.setBackground(POST_HEADER_BG);
-			footer.add(BorderLayout.WEST, l);
-			footer.add(BorderLayout.CENTER, middlePanel);
-			footer.add(BorderLayout.EAST, l2);
-			
-			//loppuun vielä tyhjä suikale
-			JPanel emptyRow = new JPanel();
-			emptyRow.setBackground(BG);
-			emptyRow.setPreferredSize(new Dimension(ROW_LENGTH, 6));
-            
-			postsPanel.add(footer);
-			postsPanel.add(emptyRow);
+            //loppuun vielä tyhjä suikale
+            JPanel emptyRow = new JPanel();
+            emptyRow.setBackground(BG);
+            emptyRow.setPreferredSize(new Dimension(ROW_LENGTH, 6));
+                                    
+            postsPanel.add(footer);
+            postsPanel.add(emptyRow);
 
-			mainPanel.add(postsPanel);
+            mainPanel.add(postsPanel);
         }  
+        JPanel extraHeader = new JPanel(new BorderLayout());
+	extraHeader.setBackground(BG);		
+	JLabel l4 = new JLabel(VY);
+	JLabel l3 = new JLabel(OY);
+	
+	JPanel middlePiece = new JPanel();
+	middlePiece.setBackground(POST_HEADER_BG);
+	
+	extraHeader.add(BorderLayout.WEST, l4);
+	extraHeader.add(BorderLayout.CENTER, middlePiece);
+	extraHeader.add(BorderLayout.EAST, l3);
+                  
+        postsPanel.add(extraHeader);
+        
+        RoomKeyReservationLabel RKRLabel = new RoomKeyReservationLabel(sessio, this.activeRoom);
+        RKRLabel.setBackground(POST_HEADER_BG);
+        postsPanel.add(RKRLabel);
+        
+        JPanel footer = new JPanel(new BorderLayout());
+        footer.setBackground(BG);
+        footer.setPreferredSize(new Dimension(ROW_LENGTH, 10));
+	
+        JLabel l = new JLabel(VA);
+        JLabel l2 = new JLabel(OA);
+	
+        JPanel middlePanel = new JPanel();
+        middlePanel.setBackground(POST_HEADER_BG);
+        footer.add(BorderLayout.WEST, l);
+        footer.add(BorderLayout.CENTER, middlePanel);
+        footer.add(BorderLayout.EAST, l2);
+	
+        //loppuun vielä tyhjä suikale
+        JPanel emptyRow = new JPanel();
+        emptyRow.setBackground(BG);
+        emptyRow.setPreferredSize(new Dimension(ROW_LENGTH, 6));
+                                
+        postsPanel.add(footer);
+        postsPanel.add(emptyRow);
+        
+        //JPanel emptyRow2 = new JPanel();
+	//emptyRow2.setBackground(BG);
+	//emptyRow2.setPreferredSize(new Dimension(ROW_LENGTH, 6));
+        
+        
         
         //Asetetaan uusi post panel näkyviin.
         this.setViewportView(mainPanel);
