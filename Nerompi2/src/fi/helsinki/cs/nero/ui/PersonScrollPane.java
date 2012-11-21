@@ -298,7 +298,6 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                     
                                     if (post.getKalenterinapit() != null) {
                                         nappiRivit.add(post.getKalenterinapit());
-
                                         korkeus++;
                                     }
                                         // rowPanel.add(post);
@@ -309,11 +308,8 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 rowPanel.setMinimumSize(new Dimension(ROW_LENGTH, korkeus));
                                 rowPanel.setPreferredSize(new Dimension(ROW_LENGTH, korkeus));
                                 rowPanel.setMaximumSize(new Dimension(ROW_LENGTH, korkeus));
-                                        
-				rowPanel.setBackground(HEADER_BG);
 				personsInfo.add(rowPanel);
 			}
-                        personsInfo.setBackground(HEADER_BG);
 			this.personPanel.add(BorderLayout.CENTER, personsInfo);
 			
 			//footer
