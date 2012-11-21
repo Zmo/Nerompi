@@ -8,7 +8,7 @@ package fi.helsinki.cs.nero.data;
  *
  * @author skolppo
  */
-public class RoomReservation {
+public class RoomKeyReservation {
     
     private int reservationID;
     
@@ -19,7 +19,7 @@ public class RoomReservation {
     private TimeSlice timeslice;
     
     
-    public RoomReservation(int reservationID, Room targetRoom, Person reserver, TimeSlice timeslice) {
+    public RoomKeyReservation(int reservationID, Room targetRoom, Person reserver, TimeSlice timeslice) {
         this.reservationID = reservationID;
         this.targetRoom = targetRoom;
         this.reserver = reserver;

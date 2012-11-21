@@ -246,12 +246,7 @@ public class Person implements Comparable {
         }
 
         public void setActivity(String activity) {
-            if (activity != null) {
-                this.activity = activity;
-            } else {
-                this.activity = "E";
-            }
-        
+                this.activity = activity;      
         }
 
         public void setHetu(String hetu) {
@@ -315,19 +310,11 @@ public class Person implements Comparable {
         }
 
         public void setHyTyosuhde(String hyTyosuhde) {
-            if (hyTyosuhde != null) {
                 this.hyTyosuhde = hyTyosuhde;
-            } else {
-                this.hyTyosuhde = "E";
-            }
         }
 
         public void setHyPuhelinluettelossa(String hyPuhelinluettelossa) {
-            if (hyPuhelinluettelossa != null) {
                 this.hyPuhelinluettelossa = hyPuhelinluettelossa;
-            } else {
-                this.hyPuhelinluettelossa = "E";
-            }
         }
         
         public Session getSession() {
