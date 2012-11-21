@@ -976,7 +976,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             lockerRow.add(people[i].getSahkoposti());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
-            peopleRow.add(getLastReservation(people[i].getReservations()));
+            peopleRow.add(people[i].getLastReservation().getLastDay());
             peopleRow.add(people[i].getTitteli());
             peopleRow.add(people[i].getSahkoposti());
             peopleData.add(i, peopleRow);
@@ -1161,24 +1161,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         puhelinnumero = "Puhelinnumero";
 
         structuredFileType = "ODS";
-    }
-
-
-    private Date getLastReservation(Reservation[] reservations) {
-        // jos henkilöllä on useampi varaus, valitaan se, jonka päättymispäivä
-        // on viimeinen ja palautetaan ko. päättymispäivä
-        if (reservations.length > 0) {
-            Date current = reservations[0].getTimeSlice().getEndDate();
-            for (int i = 1; i < reservations.length; i++) {
-                Date next = reservations[i].getTimeSlice().getEndDate();
-                if (next.after(current)) {
-                    current = next;
-                }
-            }
-            return current;
-        } else {
-            return null;
-        }
     }
 
     private Date parseDate(String text) {
