@@ -4,10 +4,12 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.TimeSlice;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -50,14 +52,18 @@ public class UusiVarausPopup extends JButton {
     }
     
     public void teeVaraus(Room room, Post post){
-        System.out.println("Näkymätöntä heroiinia huoneessa " + room + " paikalla " + post.getPostNumber());
-        System.out.println("");
-        for (int b = 0; b < this.person.getSession().getReservations(post).length; b++){
-            System.out.println(" <> " + this.person.getSession().getReservations(post)[b].getTimeSlice().getStartDate() + " - "
-                    + this.person.getSession().getReservations(post)[b].getTimeSlice().getEndDate());
+        System.out.println("Valittu kohdepaikka: " + room + "." + post.getPostNumber());
+
+        Date alkamisPaiva;
+        if (this.person.getLastReservation() == null) {
+            alkamisPaiva = this.person.getSession().getTimeScaleSlice().getStartDate();
+        } else {
+            alkamisPaiva = this.person.getLastReservation().getTimeSlice().getEndDate();
         }
-        // get HLÖN VIIMEINEN VARAUS
-        //this.person.getSession().createReservation(post, this.person);
-        
+        if (!(alkamisPaiva.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
+            System.out.println(" - Virhe - UusiVarausPopup: Aikavälillä ei ole tilaa! :C");
+        } else {
+            this.person.getSession().createReservation(post, this.person, new TimeSlice(alkamisPaiva, this.person.getSession().getTimeScaleSlice().getEndDate()));
+        }
     }
 }
