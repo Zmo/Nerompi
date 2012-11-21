@@ -196,7 +196,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			
 			//Henkilön headerit ja rivit sisällänsä pitävä paneli, eli yhden henkilön esitys.
 			JPanel personsInfo = new JPanel();
-			personsInfo.setLayout(new BoxLayout(personsInfo, BoxLayout.Y_AXIS));	
+			personsInfo.setLayout(new BoxLayout(personsInfo, BoxLayout.Y_AXIS));
 			
 			//header
 			JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -227,6 +227,9 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         personNameLabel.setText(personIterator.getPerson().getName());
                         personNameLabel.addMouseListener(new PersonNameLabelListener());
                         header.add(personNameLabel);
+                        
+                        UusiVarausNappi asia = new UusiVarausNappi(personIterator.getPerson());
+                        header.add(asia);
 
                         
 //			JLabel labelText = new JLabel(personIterator.getPerson().getName());             

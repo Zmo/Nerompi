@@ -13,7 +13,7 @@ public class UusiVarausPopup extends JPopupMenu {
     Person person;
     
     
-    public UusiVarausPopup(Person person){
+    public UusiVarausPopup(Person person, Post[] posts){
         super();
         this.setLabel("Lis‰‰ varaus");
         this.person = person;
