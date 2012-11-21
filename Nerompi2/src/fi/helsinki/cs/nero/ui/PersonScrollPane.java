@@ -28,6 +28,7 @@ import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
 import fi.helsinki.cs.nero.logic.Session;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -225,6 +226,9 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			//Lisätään henkilön yhteystiedot.
                         PersonNameLabel personNameLabel = new PersonNameLabel(this.sessio, personIterator.getPerson());
                         personNameLabel.setText(personIterator.getPerson().getName());
+                        if (personIterator.getPerson().getTitteli() != null){
+                            personNameLabel.setText(personNameLabel.getText() + ", " + personIterator.getPerson().getTitteli());
+                        }
                         personNameLabel.addMouseListener(new PersonNameLabelListener());
                         header.add(personNameLabel);
                         
@@ -288,22 +292,28 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 				
 				row.resetIterator();
 				int korkeus = 0;
+                                JPanel nappiRivit = new JPanel();
 				while(row.hasNext()) {
                                     TimelineElement post = (TimelineElement) row.next();
+                                    
                                     if (post.getKalenterinapit() != null) {
-                                        rowPanel.add(post.getKalenterinapit());
+                                        nappiRivit.add(post.getKalenterinapit());
 
-                                        korkeus += 28;
-                                        rowPanel.setMinimumSize(new Dimension(ROW_LENGTH, korkeus));
-                                        rowPanel.setPreferredSize(new Dimension(ROW_LENGTH, korkeus));
-                                        rowPanel.setMaximumSize(new Dimension(ROW_LENGTH, korkeus));
+                                        korkeus++;
                                     }
                                         // rowPanel.add(post);
 				}
+                                nappiRivit.setLayout(new GridLayout(korkeus, 1));
+                                korkeus = korkeus * 28;
+                                rowPanel.add(nappiRivit);
+                                rowPanel.setMinimumSize(new Dimension(ROW_LENGTH, korkeus));
+                                rowPanel.setPreferredSize(new Dimension(ROW_LENGTH, korkeus));
+                                rowPanel.setMaximumSize(new Dimension(ROW_LENGTH, korkeus));
+                                        
 				rowPanel.setBackground(HEADER_BG);
 				personsInfo.add(rowPanel);
 			}              
-                        personsInfo.add(new JLabel(personIterator.getPerson().getTitteli()));
+                        //personsInfo.add(new JLabel(personIterator.getPerson().getTitteli()));
                         personsInfo.setBackground(HEADER_BG);
 			this.personPanel.add(BorderLayout.CENTER, personsInfo);
 			
