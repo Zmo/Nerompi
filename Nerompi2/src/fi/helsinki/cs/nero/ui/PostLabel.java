@@ -17,7 +17,7 @@ import fi.helsinki.cs.nero.logic.Session;
 /**
  * Luokka esittää työpisteen tiedot = headerin.
  */
-public class PostLabel extends TimelineElement{
+public class PostLabel extends TimelineElement {
     
     /**
      * Työpiste jonka tiedot esitetään.

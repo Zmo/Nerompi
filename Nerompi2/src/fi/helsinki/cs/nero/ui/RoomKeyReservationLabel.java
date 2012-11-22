@@ -57,13 +57,16 @@ public class RoomKeyReservationLabel extends TimelineElement{
         this.setTransferHandler(new TransferHandler("texti"));
         this.setBackground(Color.yellow);
         
-        //Lis‰t‰‰n postin ikoni.
+        // Lis‰t‰‰n avainikoni
         JLabel icon = new JLabel(KEY);
-        icon.setMinimumSize(new Dimension(20, 20));
-        icon.setPreferredSize(new Dimension(20, 20));
-        icon.setMaximumSize(new Dimension(20, 20));
+        icon.setMinimumSize(new Dimension(40, 20));
+        icon.setPreferredSize(new Dimension(40, 20));
+        icon.setMaximumSize(new Dimension(40, 20));
         
         this.add(icon);
+        
+        JLabel roomname = new JLabel("Avainavaraukset huoneeseen "+this.session.getActiveRoom().getRoomName());
+        this.add(roomname);       
         
         //JLabel postLabel = new JLabel(this.room.toString());
         //this.add(postLabel);
@@ -88,8 +91,8 @@ public class RoomKeyReservationLabel extends TimelineElement{
      * @param element Elementti joka pudotettiin t‰m‰n elementin p‰‰lle.
      */
     public void setTexti(TimelineElement element) {
-           
-    	//p‰‰lle vedettiin tyˆsopimus, luodaan varaus
+    
+        //p‰‰lle vedettiin tyˆsopimus, luodaan varaus
         if(element instanceof UIContract) {
             UIContract contract = (UIContract)element;
             session.addRoomKeyReservation(contract.getContract().getPerson(), element.getTimeSlice());

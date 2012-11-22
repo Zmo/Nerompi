@@ -22,11 +22,11 @@ public class RowPanel extends JPanel {
      */
     public RowPanel(int length) {
         
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); 
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.setMinimumSize(new Dimension(length, 20));
         this.setPreferredSize(new Dimension(length, 20));
         this.setMaximumSize(new Dimension(length, 20));
         
         this.elements = new LinkedList();
-    }  
+    }
 }

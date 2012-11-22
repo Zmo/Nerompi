@@ -4,6 +4,8 @@
  */
 package fi.helsinki.cs.nero.data;
 
+import fi.helsinki.cs.nero.logic.Session;
+
 /**
  *
  * @author skolppo
@@ -14,16 +16,19 @@ public class RoomKeyReservation {
     
     private Room targetRoom;
     
-    private Person reserver;
+    private String reserver;
     
     private TimeSlice timeslice;
     
+    private Session session;
     
-    public RoomKeyReservation(int reservationID, Room targetRoom, Person reserver, TimeSlice timeslice) {
+    
+    public RoomKeyReservation(int reservationID, Room targetRoom, String reserver, TimeSlice timeslice, Session session) {
         this.reservationID = reservationID;
         this.targetRoom = targetRoom;
         this.reserver = reserver;
         this.timeslice = timeslice;
+        this.session = session;
     }
     
     public int getReservationID() {
@@ -34,11 +39,15 @@ public class RoomKeyReservation {
         return this.targetRoom;
     }
     
-    public Person getReserver() {
+    public String getReserver() {
         return this.reserver;
     }
     
     public TimeSlice getTimeSlice() {
         return this.timeslice;
+    }
+    
+    public Session getSession() {
+        return this.session;
     }
 }

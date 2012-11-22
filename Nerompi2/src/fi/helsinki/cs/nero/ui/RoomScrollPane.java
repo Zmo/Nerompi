@@ -26,6 +26,7 @@ import fi.helsinki.cs.nero.NeroApplication;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
@@ -40,6 +41,11 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
      * Työpisteiden (PostReservations-oliot) esitykset listana..
      */
     private LinkedList postsList = null;
+    
+    /**
+     * 
+     */
+    private LinkedList keyList = null;
  
     /**
      * Viite aktiiviseen huoneeseen, eli esitettävä huone.
@@ -172,7 +178,17 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         }
         
         Iterator postsIterator = postsList.iterator();
-  
+        
+//        RoomKeyReservation[] keys = this.activeRoom.getRoomKeyReservations();
+//        this.keyList = new LinkedList();
+//        
+//        for(int i=0; i<keys.length; ++i) {
+//            RoomKeyReservations rkreservations = new RoomKeyReservations(this.activeRoom, DAY_IN_PIXELS, sessio, null);
+//            keyList.add(rkreservations);
+//        }
+//        
+//        Iterator keyiterator = keyList.iterator();
+        
         postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
 
         
@@ -188,7 +204,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                 +" "+activeRoom.getBuildingName()
                 +" "+activeRoom.getRoomSize()
                 +" m2"
-        );     
+        );
         roomHeader.add(roomLabel);
         
         //Huoneen työpisteen lisäysnappi.
@@ -206,7 +222,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
             
             //Pyöristetty yläreuna
             JPanel extraHeader = new JPanel(new BorderLayout());
-	    extraHeader.setBackground(BG);		
+	    extraHeader.setBackground(BG);
 	    JLabel l4 = new JLabel(VY);
 	    JLabel l3 = new JLabel(OY);
 	    
@@ -247,9 +263,8 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
             while(rowIterator.hasNext()) {
                 
                 //Tehdään riville paneeli johon elementit tulee peräkkäin.
-                RowPanel rowPanel = new RowPanel(ROW_LENGTH);        
+                RowPanel rowPanel = new RowPanel(ROW_LENGTH);      
                 Row row = (Row)rowIterator.next();
-                boolean firstContract = true;
                 
                 row.resetIterator();
                            
@@ -258,8 +273,8 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                     TimelineElement reservation = (TimelineElement)row.next();
                     rowPanel.add(reservation);
                 }
-               
-               postsPanel.add(rowPanel);
+                
+                postsPanel.add(rowPanel);
             }
             
             //Pyöristetty alareuna.
@@ -285,9 +300,10 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
             postsPanel.add(emptyRow);
 
             mainPanel.add(postsPanel);
-        }  
+        }
+        //Alkaa tästä
         JPanel extraHeader = new JPanel(new BorderLayout());
-	extraHeader.setBackground(BG);		
+	extraHeader.setBackground(BG);	
 	JLabel l4 = new JLabel(VY);
 	JLabel l3 = new JLabel(OY);
 	
@@ -297,13 +313,35 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
 	extraHeader.add(BorderLayout.WEST, l4);
 	extraHeader.add(BorderLayout.CENTER, middlePiece);
 	extraHeader.add(BorderLayout.EAST, l3);
-                  
+        
         postsPanel.add(extraHeader);
         
-        RoomKeyReservationLabel RKRLabel = new RoomKeyReservationLabel(sessio, this.activeRoom);
-        RKRLabel.setBackground(POST_HEADER_BG);
-        postsPanel.add(RKRLabel);
+        RoomKeyReservationLabel rkrlabel = new RoomKeyReservationLabel(sessio, this.activeRoom);
+        rkrlabel.setBackground(POST_HEADER_BG);
+        postsPanel.add(rkrlabel);
+        if(this.activeRoom.getRoomKeyReservations() != null) {
+            RoomKeyReservations rkreservations = new RoomKeyReservations(this.activeRoom, DAY_IN_PIXELS, sessio, null);
         
+            LinkedList rows = rkreservations.getRows();
+            Iterator rowIterator = rows.iterator();
+                
+            while(rowIterator.hasNext()) {
+                
+                //Tehdään riville paneeli johon elementit tulee peräkkäin.
+                RowPanel rowPanel = new RowPanel(ROW_LENGTH);      
+                Row row = (Row)rowIterator.next();
+                
+                row.resetIterator();
+            
+                //Luodaan jokaisen rivin jokaista varausjaksoa koskeva JPanel.
+                while(row.hasNext()) {
+                    TimelineElement reservation = (TimelineElement)row.next();
+                    rowPanel.add(reservation);
+                }
+                postsPanel.add(rowPanel);
+            }
+        }
+        // Pyöristetty alareuna
         JPanel footer = new JPanel(new BorderLayout());
         footer.setBackground(BG);
         footer.setPreferredSize(new Dimension(ROW_LENGTH, 10));
@@ -321,14 +359,11 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         JPanel emptyRow = new JPanel();
         emptyRow.setBackground(BG);
         emptyRow.setPreferredSize(new Dimension(ROW_LENGTH, 6));
-                                
+        
         postsPanel.add(footer);
         postsPanel.add(emptyRow);
         
-        //JPanel emptyRow2 = new JPanel();
-	//emptyRow2.setBackground(BG);
-	//emptyRow2.setPreferredSize(new Dimension(ROW_LENGTH, 6));
-        
+        //Loppuu tähän
         
         
         //Asetetaan uusi post panel näkyviin.

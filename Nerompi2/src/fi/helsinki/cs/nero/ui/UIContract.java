@@ -30,7 +30,7 @@ public class UIContract extends TimelineElement {
      * 
      * Konstruktori.
      * @param contract Työsopimus.
-     * @param scale Käytettävä skaala = åpäivä/pikseli.
+     * @param scale Käytettävä skaala = päivä/pikseli.
      * @param session Viite sessioon.
      */
     public UIContract(Contract contract, double scale, Session session) {
@@ -38,7 +38,7 @@ public class UIContract extends TimelineElement {
         this.setBorder(BORDER);
         
         this.contract = contract;
-    
+
         String labelText = contract.getTitle();
         String tooltipText = labelText + "<br>" + contract.getTimeSlice();
 

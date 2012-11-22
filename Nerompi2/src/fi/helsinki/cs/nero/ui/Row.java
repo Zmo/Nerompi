@@ -8,8 +8,10 @@ import java.util.LinkedList;
 import fi.helsinki.cs.nero.data.Contract;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Reservation;
+import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.logic.Session;
+import java.awt.Color;
 
 /**
  * <p>
@@ -135,6 +137,10 @@ public class Row {
         return this.add(reservation, true, resizable);
     }
     
+    public boolean addReservation(RoomKeyReservation reservation, boolean resizable) {
+        return this.add(reservation, false, resizable); // WAT???
+    }
+    
     /**
      * Lis‰‰ uuden objektin riville, huom, privaatti metodi!
      * @param object Lis‰tt‰v‰ objekti.
@@ -148,6 +154,8 @@ public class Row {
         
         if(object instanceof Reservation) {
             newElement = ((Reservation)object).getTimeSlice();
+        } else if(object instanceof RoomKeyReservation) { // WAT???
+            newElement = ((RoomKeyReservation)object).getTimeSlice();
         } else {
             newElement = ((Contract)object).getTimeSlice();
         }
@@ -194,7 +202,6 @@ public class Row {
                elements.add(empty);
               
                this.previousAdded = empty;
-               
         } else {
            
                 TimelineElement empty = new UIEmpty(this.person, new TimeSlice(previousAdded.getTimeSlice().getEndDate(), newElement.getStartDate()), scale, this.session);
@@ -209,8 +216,10 @@ public class Row {
         }
         
         TimelineElement element = null;
-        
-        if(reservation) {
+        if(object instanceof RoomKeyReservation) {
+            RoomKeyReservation rkReservation = (RoomKeyReservation)object;
+            element = new TimelineElement(rkReservation.getTimeSlice(), scale, new Color(39,177,39), rkReservation.getReserver(), rkReservation.getSession());
+        } else if(reservation) {
             if(resizable) {
                 element = new UIReservation((Reservation)object, this, scale);
             } else {  

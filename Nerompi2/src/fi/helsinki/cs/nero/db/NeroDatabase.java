@@ -127,6 +127,11 @@ public class NeroDatabase implements NeroObserver {
 	private PreparedStatement prepNextPostID;
 	private PreparedStatement prepCreatePost;
 	private PreparedStatement prepDeletePost;
+        
+        
+        private PreparedStatement prepRoomKeyReservations;
+        
+        private PreparedStatement prepRoomKeyReservationName;
 	/**
 	 * Puhelinnumeroihin liittyvï¿½t PreparedStatementit
 	 */
@@ -260,43 +265,69 @@ public class NeroDatabase implements NeroObserver {
 					"SELECT id, puhelinnumero FROM PUHELINNUMERO WHERE tp_id = ?"
 			);
 		}
+                if(this.prepRoomKeyReservations == null) {
+                    this.prepRoomKeyReservations = this.connection.prepareStatement(
+                            "SELECT id, htunnus, rhuone_id, alkupvm, loppupvm FROM HUONEVARAUS where RHUONE_ID=?"
+                            );
+                }
+                if(this.prepRoomKeyReservationName == null) {
+                    this.prepRoomKeyReservationName = this.connection.prepareStatement(
+                            "SELECT sukunimi, etunimet FROM HENKILO WHERE htunnus=?"
+                            );
+                }
 		
 		ResultSet rs = this.prepAllRooms.executeQuery();
-		/* NOTE rhuone-taulussa on sekï¿½ "numero" ettï¿½ "huone_nro" kentï¿½t */
+		/* NOTE rhuone-taulussa on sekä "numero" että "huone_nro" kentät */
 		int numbercount = 0;
 		while(rs.next()) {
-			Room room = new Room(this.session, rs.getString("id"),
-					rs.getString("rakenn_nimi"),
-					rs.getString("kerros_numero"),
-					rs.getString("numero"), rs.getString("nimi"),
-					rs.getDouble("pinta_ala"), rs.getString("kuvaus"));
-
-			this.prepAllPosts.setString(1, rs.getString("id"));
-			ResultSet prs = this.prepAllPosts.executeQuery();
-			while(prs.next()) {
-				Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size()+1);
+                    
+                    Room room = new Room(this.session, rs.getString("id"),
+                        rs.getString("rakenn_nimi"),
+                        rs.getString("kerros_numero"),
+                        rs.getString("numero"), rs.getString("nimi"),
+                        rs.getDouble("pinta_ala"), rs.getString("kuvaus"));
+                                        
+                    this.prepAllPosts.setString(1, rs.getString("id"));
+                    ResultSet prs = this.prepAllPosts.executeQuery();
+                    while(prs.next()) {
+                        Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size()+1);
 				
-				/* haetaan puhelinnumerot (hidas, kolme sisï¿½kkï¿½istï¿½ prepared statementia
-				 * mutta olkoot. */
-				Collection numbers = new Vector();
-				this.prepPostPhoneNumbers.setString(1, post.getPostID());
-				ResultSet pnrs = this.prepPostPhoneNumbers.executeQuery();
-				while(pnrs.next()) {
-					PhoneNumber pn = new PhoneNumber(this.session,
-							pnrs.getString("id"), post,
-							pnrs.getString("puhelinnumero"));
-					numbers.add(pn);
-					numbercount++;
-				}
-				pnrs.close();
-				post.setPhoneNumbers((PhoneNumber[])numbers.toArray(new PhoneNumber[0]));
-				roomPosts.add(post);
-				this.posts.put(prs.getString("id"), post);
-			}
-			prs.close();
-			room.setPosts((Post[]) roomPosts.toArray(new Post[0]));
-			roomPosts.clear();
-			this.rooms.put(rs.getString("id"), room);
+                        /* haetaan puhelinnumerot (hidas, kolme sisï¿½kkï¿½istï¿½ prepared statementia
+                         * mutta olkoot. */
+                        Collection numbers = new Vector();
+                        this.prepPostPhoneNumbers.setString(1, post.getPostID());
+                        ResultSet pnrs = this.prepPostPhoneNumbers.executeQuery();
+                        while(pnrs.next()) {
+                            PhoneNumber pn = new PhoneNumber(this.session,
+                                pnrs.getString("id"), post,
+                                pnrs.getString("puhelinnumero"));
+                            numbers.add(pn);
+                            numbercount++;
+                        }
+                        pnrs.close();
+                        post.setPhoneNumbers((PhoneNumber[])numbers.toArray(new PhoneNumber[0]));
+                        roomPosts.add(post);
+                        this.posts.put(prs.getString("id"), post);
+                    }
+                    prs.close();
+                    room.setPosts((Post[]) roomPosts.toArray(new Post[0]));
+                    prepRoomKeyReservations.setString(1, rs.getString("id"));
+                    ResultSet roomKeysResult = this.prepRoomKeyReservations.executeQuery();
+                    while(roomKeysResult.next()) {
+                        prepRoomKeyReservationName.setString(1, roomKeysResult.getString("HTUNNUS"));
+                        ResultSet nameResults = this.prepRoomKeyReservationName.executeQuery();
+                        if(roomKeysResult.getString("RHUONE_ID").equalsIgnoreCase(room.getRoomID())) {
+                            TimeSlice timeslice = new TimeSlice(roomKeysResult.getTimestamp("ALKUPVM"), roomKeysResult.getTimestamp("LOPPUPVM"));
+                            nameResults.next();
+                            RoomKeyReservation keyReservation = new RoomKeyReservation(
+                                    roomKeysResult.getInt("ID"), room,
+                                    nameResults.getString("SUKUNIMI")+" "+nameResults.getString("ETUNIMET"), timeslice, this.session);
+                            room.addRoomKeyReservation(keyReservation);
+                        }
+                    }
+                    //roomKeysResult;
+                    roomPosts.clear();
+                    this.rooms.put(rs.getString("id"), room);
 		}
 		rs.close();
 		session.setStatusMessage("Ladattu tiedot " + this.rooms.size() + " huoneesta.");
@@ -913,7 +944,7 @@ public class NeroDatabase implements NeroObserver {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		} 
 		this.session.waitState(false);
-		session.setStatusMessage("Lï¿½ytyi " + filteredPeople.size() + " henkilï¿½ï¿½.");
+		session.setStatusMessage("Löytyi " + filteredPeople.size() + " henkilöä.");
 		return (Person[]) filteredPeople.toArray(new Person[0]);
 	}
         public void updatePersonInfo(Person person) throws SQLException {
@@ -1404,7 +1435,8 @@ public class NeroDatabase implements NeroObserver {
                 for(int i=0; i<size; ++i) {
                     rs.next();
                     TimeSlice timeslice = new TimeSlice(rs.getDate("ALKUPVM"), rs.getDate("LOPPUPVM"));
-                    reservations[i] = new RoomKeyReservation(rs.getInt("ID"), (Room)rooms.get(rs.getString("RHUONE_ID")), (Person)people.get(rs.getString("HTUNNUS")), timeslice);
+                    Person person = (Person)people.get(rs.getString("HTUNNUS"));
+                    reservations[i] = new RoomKeyReservation(rs.getInt("ID"), (Room)rooms.get(rs.getString("RHUONE_ID")), person.getName(), timeslice, this.session);
                 }
                 return reservations;
             } catch(SQLException e) {

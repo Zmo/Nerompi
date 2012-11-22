@@ -42,7 +42,11 @@ public class Room {
 	
 	/**Huoneen vapaamuotoinen kuvaus*/
 	private String description;
-	
+        
+        private RoomKeyReservation[] roomKeyReservations;
+        
+        private int roomKeyReservationNumber;
+        
 	/**Vakio, joka kertoo ett? huoneessa ei ole yht??n ty?pistett?*/
 	public static final int NO_POSTS = 0;
 
@@ -66,7 +70,7 @@ public class Room {
 	 * @throws IllegalArgumentException Jos annettu Session tai roomID null.
 	 */
 	public Room(Session session, String roomID,String buildingName, String floor, String roomNumber, 
-				String roomName, double roomSize, String description){
+				String roomName, double roomSize, String description) {
 		
 		
 		if (session == null || roomID == null){
@@ -80,7 +84,8 @@ public class Room {
 		this.roomName = roomName;
 		this.roomSize = roomSize;
 		this.description = description;
-	
+                this.roomKeyReservations = null;
+                this.roomKeyReservationNumber = 0;
 	}	
 
 	/**
@@ -96,6 +101,27 @@ public class Room {
 			throw new IllegalStateException();
 		this.posts = posts;
 	}
+        
+        public void addRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+            RoomKeyReservation[] newArray;
+            if(this.roomKeyReservationNumber == 0) {
+                this.roomKeyReservations = new RoomKeyReservation[10];
+                this.roomKeyReservations[0] = roomKeyReservation;
+                ++roomKeyReservationNumber;
+            } else if(this.roomKeyReservations[roomKeyReservationNumber-1]!=null) {
+                newArray = new RoomKeyReservation[this.roomKeyReservations.length*2];
+                for(int i=0; i<this.roomKeyReservations.length; ++i) {
+                    newArray[i] = this.roomKeyReservations[i];
+                }
+                newArray[this.roomKeyReservations.length] = roomKeyReservation;
+                this.roomKeyReservations = newArray;
+                ++roomKeyReservationNumber;
+            }
+            else {
+                this.roomKeyReservations[this.roomKeyReservations.length] = roomKeyReservation;
+                ++roomKeyReservationNumber;
+            }
+        }
 	
 	/**
 	 * Palauttaa huoneen tunnuksen.
@@ -182,7 +208,15 @@ public class Room {
 			return description;
 		}
 	}
-	
+        
+        public RoomKeyReservation[] getRoomKeyReservations() {
+            return this.roomKeyReservations;
+        }
+        
+        public int getRoomKeyReservationNumber() {
+            return this.roomKeyReservationNumber;
+        }
+        	
 	/**
 	 * Palauttaa huoneen vapaustilan tarkasteltavalla osa-aikavälillä. Huoneen vapaustila
 	 * määrittyy huoneiden työpisteiden vapaustilan perusteella. Huone on vapaa (FREE), jos se 

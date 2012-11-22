@@ -24,7 +24,6 @@ public class PostsReservations {
     private Post post = null;
 
     /**
-     * 
      * Konstruktori.
      * @param post Työpiste jonka tiedot esitetään.
      * @param scale Käytettävä skaala päivä/pikselit.
@@ -40,37 +39,33 @@ public class PostsReservations {
         this.rows.add(reservationsRow);
         
         for(int i=0; i<reservations.length; ++i) {
-
-                boolean added = false;
-                Iterator rowsIterator = this.rows.iterator();
+            boolean added = false;
+            Iterator rowsIterator = this.rows.iterator();
+            
+            //Yritetään lisätä jokaiselle olemassaolevalle riville.
+            int rivi = 1;
+            while(rowsIterator.hasNext()) {
+            
+                Row row = (Row)rowsIterator.next();
+            
+                //Jos saadaan lisättyä
+                String personsName = reservations[i].getReservingPerson().getName();
                 
-                //Yritetään lisätä jokaiselle olemassaolevalle riville.
-                int rivi = 1;
-                while(rowsIterator.hasNext()) {
-                             
-                    Row row = (Row)rowsIterator.next();
-                    
-                    //Jos saadaan lisättyä
-                    String personsName = reservations[i].getReservingPerson().getName();
-                    
-                    if(row.addReservation(reservations[i], false)) {
+                if(row.addReservation(reservations[i], false)) {
                     added = true;
                     break;
-                    }       
-               }
-               
-               if(!added) {//Luodaan uusi rivi jossa varausjakso esitetään.
-                   Row newRow = new Row(scale, session, person);
-                   String personsName = reservations[i].getReservingPerson().getName();
-                   newRow.addReservation(reservations[i], false);
-                   this.rows.add(newRow);
-               }  
+                }
+            }
+            if(!added) { //Luodaan uusi rivi jossa varausjakso esitetään.
+                Row newRow = new Row(scale, session, person);
+                newRow.addReservation(reservations[i], false);
+                this.rows.add(newRow);
+            }  
         }
         
         //Lopuksi suljetaan rivit = tehdään jokaisen perään tyhjän mittainen tyhjä jakso.
         Iterator i = this.rows.iterator();
         while(i.hasNext()) {
-            int counter = 1;
             Row row = (Row)i.next();
             row.closeRow();
         }

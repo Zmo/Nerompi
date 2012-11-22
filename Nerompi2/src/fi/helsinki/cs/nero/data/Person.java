@@ -28,7 +28,7 @@ public class Person implements Comparable {
 	/**Henkilön työsopimukset*/
 	private Contract[] contracts;
 	
-	/**Henkilön huonevaraukset.*/
+	/**Henkilön työpistevaraukset.*/
 	private Reservation[] reservations;
         
         /**Henkilön työhuone*/
