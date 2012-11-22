@@ -432,9 +432,13 @@ public class NeroDatabase implements NeroObserver {
 	}
         
         public TreeMap<String, String> getKannykat() throws SQLException {
-            
+            HashMap hashMap = new HashMap<String, String>();
             
             PreparedStatement prepKannykat = this.connection.prepareStatement("SELECT * FROM KANNYKKA");
+            ResultSet rs = prepKannykat.executeQuery();
+            while (rs.next()) {
+                hashMap.put("puhid", rs.getString("puhid"));
+            }
             return null;
         }
 
