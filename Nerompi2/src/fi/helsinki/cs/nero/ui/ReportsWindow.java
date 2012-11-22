@@ -5,7 +5,6 @@ package fi.helsinki.cs.nero.ui;
  * @author lpesola
  */
 import fi.helsinki.cs.nero.data.Person;
-import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
@@ -27,7 +26,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
-import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -66,7 +64,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     // TODO: pitäisikö olla yksi lista filtereistä ja pitää aina and-filteriä
     // ja laittaa listaan aina uusi filteri -> voi filteröidä kaikilla rajoittimilla
     //testi
-    private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
     // combobox models not used yet
     private DefaultComboBoxModel wingsModel;
 //    private DefaultComboBoxModel fileTypeModel;
@@ -524,6 +521,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
+        Data.setAutoCreateRowSorter(true);
         Data.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -624,8 +622,13 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_roomButtonMouseReleased
 
     private void peopleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peopleButtonMouseReleased
-        Data = new JTable(peopleData, peopleColumnNames);
+        PeopleTableModel peopleModel = new PeopleTableModel(varaus);
+        peopleModel.setDataVector(peopleData, peopleColumnNames);
+        Data = new JTable(peopleModel);
         peopleColumnModel = Data.getColumnModel();
+        peopleModel.setColumnModel(peopleColumnModel);
+        
+        
         // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
@@ -920,6 +923,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         hiddenRoomColumns = new HashMap<>();
         hiddenPeopleColumns = new HashMap<>();
         hiddenLockerColumns = new HashMap<>();
+        
+        
 
         /*Dropdown menu models - currently not used*/
         wingsModel = new DefaultComboBoxModel();
@@ -1242,7 +1247,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             int rowIndexInView = rs.convertRowIndexToModel(i);
             for (int j = 0; j < columnCount; j++) {
                 rowList.add(j, tableModel.getValueAt(rowIndexInView,
-                        Data.convertColumnIndexToModel(neededIndexes[j])));
+                        Data.convertColumnIndexToModel(neededIndexes[j])).toString());
             }
             list.add(rowList);
         }
