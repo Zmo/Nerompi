@@ -29,6 +29,7 @@ public class UusiVarausPopup extends JButton {
     public void naytaPopup(MouseEvent e){
         popupMenu = new JPopupMenu(); 
         if (this.person.getSession().getActiveRoom() == null) {
+            this.person.getSession().setStatusMessageNoPrint("Klikkaa haluttua huonetta ensin!");
         } else {
             this.posts = this.person.getSession().getActiveRoom().getPosts();
             for (int a = 0; a < this.posts.length; a++) {
@@ -41,8 +42,6 @@ public class UusiVarausPopup extends JButton {
     }
     
     public void teeVaraus(Room room, Post post){
-        System.out.println("Valittu kohdepaikka: " + room + "." + post.getPostNumber());
-
         Date alkamisPaiva;
         if (this.person.getLastReservation() == null) {
             alkamisPaiva = this.person.getSession().getTimeScaleSlice().getStartDate();
