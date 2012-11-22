@@ -4,12 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -21,16 +19,6 @@ public class TxtReportPrinter implements ReportWriter {
     File file;
     BufferedWriter writer;
 
-    public TxtReportPrinter(String name) {
-        fileName = name;
-        file = new File(name);
-        try {
-            writer = new BufferedWriter(new FileWriter(file));
-        } catch (IOException ex) {
-            Logger.getLogger(TxtReportPrinter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public TxtReportPrinter(File f) {
         file = f;
         try {
@@ -41,17 +29,16 @@ public class TxtReportPrinter implements ReportWriter {
     }
 
     @Override
-    public void print(HashMap<Integer, Vector<Object>> data) {
-        TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
+    public void print(List<List> data) {
 
+        Integer lengths[] = getLongestWord(data);
         try {
-            for (Integer i : sortedSet) {
-                Vector<Object> row = data.get(i);
-                for (int j = 0; j < row.size(); j++) {
-                    if (row.get(j) != null) {
-                        writer.append(row.get(j).toString() + " | ");
+            for (List list : data) {
+                for (int j = 0; j < list.size(); j++) {
+                    if (list.get(j) != null) {
+                        writer.append(padWord(list.get(j), lengths[j]) + "| ");
                     } else {
-                        writer.append("ei ole | ");
+                        writer.append(padWord("ei ole", lengths[j]) + "| ");
                     }
                 }
                 writer.newLine();
@@ -62,30 +49,35 @@ public class TxtReportPrinter implements ReportWriter {
         }
     }
 
-    @Override
-    public void print(TableModel model) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    private Integer[] getLongestWord(List<List> data) {
+        Integer[] lengths = new Integer[data.get(0).size()];
 
-    private int[] getLongestWord(HashMap<Integer, Vector<Object>> data) {
-        int[] lengths = new int[data.get(0).size()];
-        TreeSet<Integer> sortedSet = new TreeSet<>(data.keySet());
-        
-        
-        
-
-        for (Integer i : sortedSet) {
-            Vector<Object> row = data.get(i);
-            for (int j = 0; j < row.size(); j++) {
-                
+        for (int i = 0; i < lengths.length; i++) {
+            lengths[i] = data.get(0).get(i).toString().length();
+        }
+        for (Iterator<List> it = data.iterator(); it.hasNext();) {
+            List list = it.next();
+            for (int i = 0; i < list.size(); i++) {
+                int wordLength;
+                Object o = list.get(i);
+                if (o == null) {
+                    wordLength = 7;
+                } else {
+                    wordLength = o.toString().length();
+                }
+                if (lengths[i] < wordLength) {
+                    lengths[i] = wordLength;
+                }
             }
         }
-
         return lengths;
     }
 
-    private String padWord(String original, int longest) {
-
-        return "";
+    private String padWord(Object original, int longest) {
+        String word = original.toString();
+        while (word.length() < longest) {
+            word = word.concat(" ");
+        }
+        return word;
     }
 }

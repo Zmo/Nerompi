@@ -4,6 +4,7 @@
  */
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.data.Person;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;

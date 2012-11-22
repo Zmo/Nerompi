@@ -1,6 +1,7 @@
 package fi.helsinki.cs.nero.data;
 
 import fi.helsinki.cs.nero.logic.Session;
+import java.util.Date;
 
 /*
  * Created on Oct 22, 2004
@@ -126,7 +127,14 @@ public class Reservation implements Comparable {
 		return timeSlice;
 	}
 	
-	
+	/**
+         * Palauttaa varauksen loppumisp‰iv‰m‰‰r‰n.
+         * @return loppumisp‰iv‰ Date-oliona
+         */
+        public Date getLastDay() {
+            return timeSlice.getEndDate();
+        }
+        
 	/**
 	 * Palauttaa viikkotunnit.
 	 * @return weeklyHours Viikkotunnit Stringin‰.
