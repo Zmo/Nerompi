@@ -206,7 +206,7 @@ public class TimelineElement extends JPanel {
             } else {
                 JLabel valimerkki = new JLabel(" - ");
                 huoneKentta.setText(label + " ");
-                //paivat.setBackground(new Color(255,240,192));
+                paivat.setBackground(HEADER_BG);
                 
                 paivat.add(huoneKentta);
                 paivat.add(alkukalenteri);
