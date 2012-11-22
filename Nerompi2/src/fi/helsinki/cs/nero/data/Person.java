@@ -61,24 +61,10 @@ public class Person implements Comparable {
     private String hyPuhelinluettelossa;
     private String etunimi;
     private String sukunimi;
-
-
-    public String getEtunimi() {
-        return etunimi;
-    }
-
-    public void setEtunimi(String etunimi) {
-        this.etunimi = etunimi;
-    }
-
-    public String getSukunimi() {
-        return sukunimi;
-    }
-
-    public void setSukunimi(String sukunimi) {
-        this.sukunimi = sukunimi;
-    }
     private Session session;
+
+
+    
 
     /**
      * Konstruktori. Saa parametrinaan session johon liittyy, henkilön
@@ -195,6 +181,22 @@ public class Person implements Comparable {
 
     public String getAddress() {
         return address;
+    }
+
+    public String getEtunimi() {
+        return etunimi;
+    }
+
+    public void setEtunimi(String etunimi) {
+        this.etunimi = etunimi;
+    }
+
+    public String getSukunimi() {
+        return sukunimi;
+    }
+
+    public void setSukunimi(String sukunimi) {
+        this.sukunimi = sukunimi;
     }
 
     public String getPostnumber() {
@@ -344,7 +346,7 @@ public class Person implements Comparable {
     }
 
     public Session getSession() {
-        return session;
+        return this.session;
     }
 
     public void setSession(Session session) {
@@ -366,7 +368,7 @@ public class Person implements Comparable {
      */
     public Contract[] getContracts() {
         if (this.contracts == null) {
-            this.contracts = session.getContracts(this);
+            this.contracts = this.session.getContracts(this);
         }
         return this.contracts;
     }
@@ -404,7 +406,7 @@ public class Person implements Comparable {
      */
     public Reservation[] getReservations() {
         if (this.reservations == null) {
-            this.reservations = session.getReservations(this);
+            this.reservations = this.session.getReservations(this);
         }
         return this.reservations;
     }
@@ -419,8 +421,8 @@ public class Person implements Comparable {
     public boolean getStatus() {
         boolean hasToWorkInTheToilet = false;
         int reservationIndex = 0;
-        Date endingDate = session.getFilterTimescale().getEndDate();
-        Date workingDate = session.getFilterTimescale().getStartDate();
+        Date endingDate = this.session.getFilterTimescale().getEndDate();
+        Date workingDate = this.session.getFilterTimescale().getStartDate();
 
         /*Haetaan ty?pistevaraukset ja sopimukset aikav?lill? ja pistet??n j?rjestykseen */
 
