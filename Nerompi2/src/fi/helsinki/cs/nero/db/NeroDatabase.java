@@ -166,7 +166,7 @@ public class NeroDatabase implements NeroObserver {
 					connectionString, username, password);
 			this.loadRooms();
 			this.loadPhoneNumbers();
-			this.loadProjects();
+			//this.loadProjects();
 		} catch(SQLException e) {
 			System.err.println("Tietokantavirhe: " + e.getMessage());
 		} catch(ClassNotFoundException e) {
@@ -200,34 +200,34 @@ public class NeroDatabase implements NeroObserver {
 	 * k�ytt�� varten.
 	 * @throws SQLException
 	 */
-	private void loadProjects() throws SQLException {
-		this.projects = new Hashtable();
-
-		session.setStatusMessage("Ladataan projekteja...");
-		if(this.prepAllProjects == null) {
-			this.prepAllProjects = this.connection.prepareStatement(
-					"SELECT koodi, nimi, vastuuhenkilo, alkupvm,"
-					/* loppupvm voi olla null, k�ytet��n 2099-12-31 */
-					+ " NVL(loppupvm, TO_DATE('2099-12-31', 'YYYY-MM-DD')) AS loppupvm"
-					+ " FROM PROJEKTI"
-					+ " ORDER BY nimi, alkupvm"
-			);
-		}
-		ResultSet rs = prepAllProjects.executeQuery();
-
-		while (rs.next()) {
-			TimeSlice slice = null;
-			Date start = rs.getDate("alkupvm");
-			Date end = rs.getDate("loppupvm");
-
-			Project p = new Project(this.session, rs.getString("koodi"),
-								rs.getString("nimi"),
-								rs.getString("vastuuhenkilo"), slice);
-			this.projects.put(rs.getString("koodi"), p);
-		}
-		rs.close();
-        session.setStatusMessage("Ladattu tiedot " + this.projects.size() + " projektista.");
-	}
+//	private void loadProjects() throws SQLException {
+//		this.projects = new Hashtable();
+//
+//		session.setStatusMessage("Ladataan projekteja...");
+//		if(this.prepAllProjects == null) {
+//			this.prepAllProjects = this.connection.prepareStatement(
+//					"SELECT koodi, nimi, vastuuhenkilo, alkupvm,"
+//					/* loppupvm voi olla null, k�ytet��n 2099-12-31 */
+//					+ " NVL(loppupvm, TO_DATE('2099-12-31', 'YYYY-MM-DD')) AS loppupvm"
+//					+ " FROM PROJEKTI"
+//					+ " ORDER BY nimi, alkupvm"
+//			);
+//		}
+//		ResultSet rs = prepAllProjects.executeQuery();
+//
+//		while (rs.next()) {
+//			TimeSlice slice = null;
+//			Date start = rs.getDate("alkupvm");
+//			Date end = rs.getDate("loppupvm");
+//
+//			Project p = new Project(this.session, rs.getString("koodi"),
+//								rs.getString("nimi"),
+//								rs.getString("vastuuhenkilo"), slice);
+//			this.projects.put(rs.getString("koodi"), p);
+//		}
+//		rs.close();
+//        session.setStatusMessage("Ladattu tiedot " + this.projects.size() + " projektista.");
+//	}
 
 	/**
 	 * Lataa j�rjestelm�n tuntemat huoneet ty�pisteineen

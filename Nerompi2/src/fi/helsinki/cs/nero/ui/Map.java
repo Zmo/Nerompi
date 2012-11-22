@@ -192,7 +192,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
             // fall-through
 		case NeroObserverTypes.FILTER_PROJECT: // t�ytyy p�ivitt�� pari huonetta
 		case NeroObserverTypes.ACTIVE_ROOM:
-            projectRooms = session.getProjectRooms();
+                    projectRooms = session.getProjectRooms();
 		    activeRoom = session.getActiveRoom();
 		    break;
         default:

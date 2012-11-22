@@ -37,14 +37,13 @@ public class Room {
 	/**Huoneen työpisteet*/
 	private Post[] posts;
 	
-	/**Työpisteiden lukumäärä*/
-	private int postCount;
-	
 	/**Huoneen vapaamuotoinen kuvaus*/
 	private String description;
         
+        /**Huoneeseen kohdistuvat avainvaraukset*/
         private RoomKeyReservation[] roomKeyReservations;
         
+        /**Huoneeseen kohdistuvien avainvarausten lukumäärä*/
         private int roomKeyReservationNumber;
         
 	/**Vakio, joka kertoo ett? huoneessa ei ole yht??n ty?pistett?*/
@@ -102,10 +101,14 @@ public class Room {
 		this.posts = posts;
 	}
         
+        /** Nerompi
+         * Lisää huoneelle annetun avainvarauksen
+         * @param roomKeyReservation lisättävä avainvaraus
+         */
         public void addRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
             RoomKeyReservation[] newArray;
             if(this.roomKeyReservationNumber == 0) {
-                this.roomKeyReservations = new RoomKeyReservation[10];
+                this.roomKeyReservations = new RoomKeyReservation[1];
                 this.roomKeyReservations[0] = roomKeyReservation;
                 ++roomKeyReservationNumber;
             } else if(this.roomKeyReservations[roomKeyReservationNumber-1]!=null) {

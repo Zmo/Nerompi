@@ -8,21 +8,32 @@ import fi.helsinki.cs.nero.logic.Session;
 
 /**
  *
- * @author skolppo
+ * @author Zmo
  */
 public class RoomKeyReservation {
     
+    /**Avainvarauksen id*/
     private int reservationID;
     
+    /**Huone, johon varaus kohdistuu*/
     private Room targetRoom;
     
+    /**Henkilö, jolle varaus kuuluu*/
     private String reserver;
     
+    /**Varauksen aikaväli*/
     private TimeSlice timeslice;
     
     private Session session;
     
-    
+    /**
+     * Konstruktori
+     * @param reservationID Varauksen id
+     * @param targetRoom Huone, johon varaus kohdistuu
+     * @param reserver Henkilö, jolle varaus kuuluu
+     * @param timeslice Varauksen aikaväli
+     * @param session sessio Session -oliona
+     */
     public RoomKeyReservation(int reservationID, Room targetRoom, String reserver, TimeSlice timeslice, Session session) {
         this.reservationID = reservationID;
         this.targetRoom = targetRoom;

@@ -25,9 +25,7 @@ import fi.helsinki.cs.nero.logic.Session;
  *
  * @author Zmo
  */
-public class RoomKeyReservationLabel extends TimelineElement{
-
-    private RoomKeyReservation roomkeyreservations;
+public class RoomKeyReservationLabel extends TimelineElement {
     
     private Room room;
     

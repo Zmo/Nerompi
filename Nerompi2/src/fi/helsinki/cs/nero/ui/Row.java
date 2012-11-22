@@ -138,7 +138,7 @@ public class Row {
     }
     
     public boolean addReservation(RoomKeyReservation reservation, boolean resizable) {
-        return this.add(reservation, false, resizable); // WAT???
+        return this.add(reservation, false, resizable);
     }
     
     /**
@@ -154,7 +154,7 @@ public class Row {
         
         if(object instanceof Reservation) {
             newElement = ((Reservation)object).getTimeSlice();
-        } else if(object instanceof RoomKeyReservation) { // WAT???
+        } else if(object instanceof RoomKeyReservation) {
             newElement = ((RoomKeyReservation)object).getTimeSlice();
         } else {
             newElement = ((Contract)object).getTimeSlice();
