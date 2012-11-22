@@ -18,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -169,7 +170,7 @@ public class NeroDatabase implements NeroObserver {
 			this.loadPhoneNumbers();
 			//this.loadProjects();
 		} catch(SQLException e) {
-			System.err.println("Tietokantavirhe: " + e.getMessage());
+			System.err.println("Tietokantavirhe 1: " + e.getMessage());
 		} catch(ClassNotFoundException e) {
 			System.err.println("Tietokanta-ajuria ei l�ydy.");
 		}
@@ -431,16 +432,30 @@ public class NeroDatabase implements NeroObserver {
 		return (Reservation[])reservations.toArray(new Reservation[0]);
 	}
         
-        public TreeMap<String, String> getKannykat() throws SQLException {
-            HashMap hashMap = new HashMap<String, String>();
+        public ArrayList<HashMap<String, String>> getKannykat() {
+            HashMap hashMap;
+            ArrayList arry = new ArrayList<HashMap<String, String>>();
+            
+            try {
             
             PreparedStatement prepKannykat = this.connection.prepareStatement("SELECT * FROM KANNYKKA");
             ResultSet rs = prepKannykat.executeQuery();
-            while (rs.next()) {
-                hashMap.put("puhid", rs.getString("puhid"));
+                while (rs.next()) {
+                    hashMap = new HashMap<String, String>();
+                    hashMap.put("puh_id", rs.getString("puh_id"));
+                    hashMap.put("numero", rs.getString("kannukka_numero"));
+                    hashMap.put("omistaja", rs.getString("omistaja"));
+                    arry.add(hashMap);
+                }              
+            } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
             }
-            return null;
-        }
+            return arry;
+        }     
+            public void addKannykka() {
+                 
+                String sqlQuery = "INSERT INTO KANNYKAT";
+            }
 
     /**
 	 * Palauttaa parametrina annetun ty�pisteen varaukset, jotka ovat ainakin
