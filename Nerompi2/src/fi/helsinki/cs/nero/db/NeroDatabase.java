@@ -790,29 +790,29 @@ public class NeroDatabase implements NeroObserver {
                     + " WHERE (UPPER(h.sukunimi) LIKE UPPER(?)"
                     + " OR UPPER(h.etunimet) LIKE UPPER(?))";
 		
-		// t�sm�llisemmiss� hauissa t�ytyy katsoa ty�sopimusjaksoa
-		if(showEndingContracts || withoutPost ||
-				project != null || partTimeTeachersOnly)
-			sqlQuery += " AND tsj.henklo_htunnus = h.htunnus"
-				+ " AND tsj.sopimustyyppi LIKE ?"
-				/* Oraclessa like-vertailu nulliin ei toimi,
-				 * joten k�ytet��n NVL()-funktiota */
-				+ " AND NVL(tsj.prjkti_koodi, 'oraclesucks') LIKE ?"
-				+ " AND ? <= tsj.loppupvm_jakso AND ? >= tsj.alkupvm_jakso";
-		else // tehd��n ulkoliitos eli saadaan my�s henkil�t ilman sopimusjaksoja
-			sqlQuery += " AND tsj.henklo_htunnus(+) = h.htunnus";
-        
-		// Jos pyydetty ty�pisteett�m�t mutta ei p��ttyvi� sopimuksia,
-		// tarkistetaan helpoin tapaus t�ss� (yksi v�hint��n
-		// koko sopimusjakson peitt�v� varaus) ja loput tarkistetaan koodissa
-		if(withoutPost && !showEndingContracts)
-			sqlQuery += " AND NOT EXISTS ("
-				+ " SELECT id"
-				+ " FROM tyopistevaraus"
-				+ " WHERE henklo_htunnus = h.htunnus"
-				+ " AND alkupvm <= greatest(tsj.alkupvm_jakso, ?)"
-				+ " AND loppupvm >= least(tsj.loppupvm_jakso, ?)"
-				+ ")";
+//		// t�sm�llisemmiss� hauissa t�ytyy katsoa ty�sopimusjaksoa
+//		if(showEndingContracts || withoutPost ||
+//				project != null || partTimeTeachersOnly)
+//			sqlQuery += " AND tsj.henklo_htunnus = h.htunnus"
+//				+ " AND tsj.sopimustyyppi LIKE ?"
+//				/* Oraclessa like-vertailu nulliin ei toimi,
+//				 * joten k�ytet��n NVL()-funktiota */
+//				+ " AND NVL(tsj.prjkti_koodi, 'oraclesucks') LIKE ?"
+//				+ " AND ? <= tsj.loppupvm_jakso AND ? >= tsj.alkupvm_jakso";
+//		else // tehd��n ulkoliitos eli saadaan my�s henkil�t ilman sopimusjaksoja
+//			sqlQuery += " AND tsj.henklo_htunnus(+) = h.htunnus";
+//        
+//		// Jos pyydetty ty�pisteett�m�t mutta ei p��ttyvi� sopimuksia,
+//		// tarkistetaan helpoin tapaus t�ss� (yksi v�hint��n
+//		// koko sopimusjakson peitt�v� varaus) ja loput tarkistetaan koodissa
+//		if(withoutPost && !showEndingContracts)
+//			sqlQuery += " AND NOT EXISTS ("
+//				+ " SELECT id"
+//				+ " FROM tyopistevaraus"
+//				+ " WHERE henklo_htunnus = h.htunnus"
+//				+ " AND alkupvm <= greatest(tsj.alkupvm_jakso, ?)"
+//				+ " AND loppupvm >= least(tsj.loppupvm_jakso, ?)"
+//				+ ")";
 		
 		// Yhteinen GROUP BY -osa
 		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet, h.huone_nro, h.kutsumanimi,"

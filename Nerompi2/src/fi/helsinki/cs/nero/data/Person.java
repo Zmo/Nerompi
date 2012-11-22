@@ -221,9 +221,6 @@ public class Person implements Comparable {
         return hallinnollinenKommentti;
     }
 
-//        public String getOpiskelijaKommentti() {
-//            return opiskelijaKommentti;
-//        }
     public String getOpiskelijaKommentti() {
         return opiskelijaKommentti;
     }
@@ -296,10 +293,6 @@ public class Person implements Comparable {
         this.postitoimiPaikka = postitoimiPaikka;
     }
 
-//        public void setValvontaSaldo(String valvontaSaldo) {
-//            this.valvontaSaldo = valvontaSaldo;
-//        }
-
     public void setValvontaSaldo(String valvontaSaldo) {
         this.valvontaSaldo = valvontaSaldo;
     }
@@ -313,15 +306,9 @@ public class Person implements Comparable {
         this.hallinnollinenKommentti = hallinnollinenKommentti;
     }
 
-
-//        public void setOpiskelijaKommentti(String opiskelijaKommentti) {
-//            this.opiskelijaKommentti = opiskelijaKommentti;
-//        }
-
     public void setOpiskelijaKommentti(String opiskelijaKommentti) {
         this.opiskelijaKommentti = opiskelijaKommentti;
     }
-
 
     public void setkTunnus(String kTunnus) {
         this.kTunnus = kTunnus;
