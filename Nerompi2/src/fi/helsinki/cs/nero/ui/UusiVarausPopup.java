@@ -5,14 +5,10 @@ import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.data.TimeSlice;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 /**
  *
@@ -31,13 +27,6 @@ public class UusiVarausPopup extends JButton {
     }
     
     public void naytaPopup(MouseEvent e){
-        ActionListener menuListener = new ActionListener(){
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Valinta!");
-            }
-        };
         popupMenu = new JPopupMenu(); 
         if (this.person.getSession().getActiveRoom() == null) {
         } else {
@@ -61,7 +50,7 @@ public class UusiVarausPopup extends JButton {
             alkamisPaiva = this.person.getLastReservation().getTimeSlice().getEndDate();
         }
         if (!(alkamisPaiva.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
-            System.out.println(" - Virhe - UusiVarausPopup: Aikavälillä ei ole tilaa! :C");
+            System.out.println(" - Virhe - UusiVarausPopup: Aikavälillä ei ole tilaa!");
         } else {
             this.person.getSession().createReservation(post, this.person, new TimeSlice(alkamisPaiva, this.person.getSession().getTimeScaleSlice().getEndDate()));
         }
