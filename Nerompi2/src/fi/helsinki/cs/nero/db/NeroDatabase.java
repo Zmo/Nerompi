@@ -170,7 +170,7 @@ public class NeroDatabase implements NeroObserver {
 			this.loadPhoneNumbers();
 			//this.loadProjects();
 		} catch(SQLException e) {
-			System.err.println("Tietokantavirhe: " + e.getMessage());
+			System.err.println("Tietokantavirhe 1: " + e.getMessage());
 		} catch(ClassNotFoundException e) {
 			System.err.println("Tietokanta-ajuria ei l�ydy.");
 		}
