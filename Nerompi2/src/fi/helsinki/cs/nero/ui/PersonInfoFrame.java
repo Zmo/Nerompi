@@ -34,11 +34,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         etunimiField.setText(person.getEtunimi());
         sukunimiField.setText(person.getSukunimi());
         huoneLabel.setText(person.getRoom());
-        //huoneField.setText(person.getRoom());
         hetuField.setText(person.getHetu());
         oppiarvoField.setText(person.getOppiarvo());
         titteliField.setText(person.getTitteli());
-        tyopuhelinField.setText(person.getWorkPhone());
+        tyopuhelinLabel.setText(person.getWorkPhone());
         kotipuhelinField.setText(person.getHomePhone());
         kannykkaField.setText(person.getKannykka());
         katuosoiteField.setText(person.getAddress());
@@ -129,12 +128,12 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
         kannykkaField = new javax.swing.JTextField();
         kotipuhelinField = new javax.swing.JTextField();
-        tyopuhelinField = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         errorMessageLabel = new javax.swing.JLabel();
         huoneLabel = new javax.swing.JLabel();
         aktiivinenButton = new javax.swing.JRadioButton();
+        tyopuhelinLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("tietoruutu");
@@ -173,7 +172,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel6.setText("Oppiarvo");
 
-        jLabel8.setText("hetu");
+        jLabel8.setText("Hetu");
 
         jLabel9.setText("Katuosoite");
 
@@ -269,16 +268,18 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel17.setText("Titteli");
 
-        jLabel18.setText("kännykkä");
+        jLabel18.setText("Kännykkä");
 
-        jLabel20.setText("kotipuhelin");
+        jLabel20.setText("Kotipuhelin");
 
-        jLabel21.setText("työpuhelin");
+        jLabel21.setText("Työpuhelin:");
 
         errorMessageLabel.setForeground(new java.awt.Color(255, 0, 0));
         errorMessageLabel.setToolTipText("");
 
         aktiivinenButton.setText("Aktiivinen");
+
+        tyopuhelinLabel.setText("---");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -300,10 +301,8 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel1)
                                     .addComponent(etunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(aktiivinenButton)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jLabel2)
+                                    .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(43, 43, 43)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(titteliField, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -320,11 +319,11 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                     .addComponent(ktunnusField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                                     .addComponent(kotipuhelinField))
                                 .addGap(43, 43, 43)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel18)
-                                    .addComponent(kannykkaField, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                                    .addComponent(kannykkaField, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel21)
-                                    .addComponent(tyopuhelinField))))
+                                    .addComponent(tyopuhelinLabel))))
                         .addGap(31, 31, 31)
                         .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -351,12 +350,12 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(7, 7, 7)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(etunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(33, 33, 33)
-                                        .addComponent(jLabel2))
-                                    .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(etunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(29, 29, 29)
@@ -380,19 +379,18 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel20)
                                     .addComponent(jLabel21))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(kotipuhelinField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tyopuhelinField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(tyopuhelinLabel)))
                     .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(MoreButton))
-                    .addComponent(CancelButton, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap(92, Short.MAX_VALUE))
+                    .addComponent(CancelButton, javax.swing.GroupLayout.Alignment.LEADING)))
         );
 
         pack();
@@ -408,7 +406,6 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         henkiloHash.put("etunimet", etunimiField.getText());
         henkiloHash.put("sukunimi", sukunimiField.getText());
         henkiloHash.put("huone_nro", huoneLabel.getText());
-        //henkiloHash.put("huone_nro", huoneField.getText());
         henkiloHash.put("kutsumanimi", "");
         
         if (aktiivinenButton.isSelected()) {
@@ -419,16 +416,14 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         henkiloHash.put("hetu", hetuField.getText());
         henkiloHash.put("oppiarvo", oppiarvoField.getText());
         henkiloHash.put("titteli", titteliField.getText());
-        henkiloHash.put("puhelin_tyo", tyopuhelinField.getText());
+        henkiloHash.put("puhelin_tyo", tyopuhelinLabel.getText());
         henkiloHash.put("puhelin_koti", kotipuhelinField.getText());
         henkiloHash.put("kannykka", kannykkaField.getText());
         henkiloHash.put("katuosoite", katuosoiteField.getText());
         henkiloHash.put("postinro", postinumeroField.getText());
         henkiloHash.put("postitoimipaikka", postitoimipaikkaField.getText());
-        henkiloHash.put("valvontasaldo", "");
         henkiloHash.put("sahkopostiosoite", sahkopostiField.getText());
         henkiloHash.put("hallinnollinen_kommentti", hallinnollinenkommenttiField.getText());
-        henkiloHash.put("opiskelija_kommentti", "");
         henkiloHash.put("ktunnus", ktunnusField.getText());
         henkiloHash.put("postilokerohuone", postilokeroField.getText());
         
@@ -552,7 +547,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JTextField sukunimiField;
     private javax.swing.JTextField titteliField;
-    private javax.swing.JTextField tyopuhelinField;
+    private javax.swing.JLabel tyopuhelinLabel;
     private javax.swing.JRadioButton tyosuhdeButton;
     // End of variables declaration//GEN-END:variables
 }

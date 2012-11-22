@@ -45,11 +45,8 @@
                                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="etunimiField" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                                   <Component id="aktiivinenButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="huoneLabel" min="-2" pref="77" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="huoneLabel" alignment="0" min="-2" pref="77" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -71,11 +68,11 @@
                                   <Component id="kotipuhelinField" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
-                                  <Component id="kannykkaField" pref="182" max="32767" attributes="0"/>
+                                  <Component id="kannykkaField" min="-2" pref="182" max="-2" attributes="0"/>
                                   <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
-                                  <Component id="tyopuhelinField" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="tyopuhelinLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -111,14 +108,12 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="etunimiField" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="huoneLabel" min="-2" pref="14" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="etunimiField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="huoneLabel" min="-2" pref="14" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
@@ -151,16 +146,16 @@
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="kotipuhelinField" min="-2" max="-2" attributes="0"/>
-                          <Component id="tyopuhelinField" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="kotipuhelinField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="tyopuhelinLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="MoreField" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
               <Component id="errorMessageLabel" min="-2" pref="22" max="-2" attributes="0"/>
-              <EmptySpace pref="88" max="32767" attributes="0"/>
+              <EmptySpace pref="49" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                       <Component id="saveButton" alignment="3" max="32767" attributes="0"/>
@@ -168,7 +163,6 @@
                   </Group>
                   <Component id="CancelButton" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="92" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -330,7 +324,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
-            <Property name="text" type="java.lang.String" value="hetu"/>
+            <Property name="text" type="java.lang.String" value="Hetu"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
@@ -403,23 +397,21 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel18">
       <Properties>
-        <Property name="text" type="java.lang.String" value="k&#xe4;nnykk&#xe4;"/>
+        <Property name="text" type="java.lang.String" value="K&#xe4;nnykk&#xe4;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="kannykkaField">
     </Component>
     <Component class="javax.swing.JTextField" name="kotipuhelinField">
     </Component>
-    <Component class="javax.swing.JTextField" name="tyopuhelinField">
-    </Component>
     <Component class="javax.swing.JLabel" name="jLabel20">
       <Properties>
-        <Property name="text" type="java.lang.String" value="kotipuhelin"/>
+        <Property name="text" type="java.lang.String" value="Kotipuhelin"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel21">
       <Properties>
-        <Property name="text" type="java.lang.String" value="ty&#xf6;puhelin"/>
+        <Property name="text" type="java.lang.String" value="Ty&#xf6;puhelin:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="errorMessageLabel">
@@ -435,6 +427,11 @@
     <Component class="javax.swing.JRadioButton" name="aktiivinenButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aktiivinen"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="tyopuhelinLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="---"/>
       </Properties>
     </Component>
   </SubComponents>

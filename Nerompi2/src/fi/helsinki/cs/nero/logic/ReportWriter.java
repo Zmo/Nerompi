@@ -4,9 +4,7 @@
  */
 package fi.helsinki.cs.nero.logic;
 
-import java.util.HashMap;
-import java.util.Vector;
-import javax.swing.table.TableModel;
+import java.util.List;
 
 /**
  *
@@ -16,7 +14,6 @@ public interface ReportWriter {
 
  //   void print(HashMap<Integer, Object[]> data);
 
-    void print(TableModel model);
+    void print(List<List> data);
 
-    void print(HashMap<Integer, Vector<Object>> data);
 }
