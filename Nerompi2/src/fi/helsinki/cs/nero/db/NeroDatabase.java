@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 /**
@@ -429,6 +430,13 @@ public class NeroDatabase implements NeroObserver {
 		this.session.waitState(false);
 		return (Reservation[])reservations.toArray(new Reservation[0]);
 	}
+        
+        public TreeMap<String, String> getKannykat() throws SQLException {
+            
+            
+            PreparedStatement prepKannykat = this.connection.prepareStatement("SELECT * FROM KANNYKKA");
+            return null;
+        }
 
     /**
 	 * Palauttaa parametrina annetun ty�pisteen varaukset, jotka ovat ainakin

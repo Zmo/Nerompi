@@ -134,6 +134,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         huoneLabel = new javax.swing.JLabel();
         aktiivinenButton = new javax.swing.JRadioButton();
         tyopuhelinLabel = new javax.swing.JLabel();
+        lisaapoistaButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("tietoruutu");
@@ -147,7 +148,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel4.setText("K‰ytt‰j‰tunnus");
 
-        saveButton.setText("Save");
+        saveButton.setText("Tallenna");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
@@ -163,7 +164,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
             }
         });
 
-        CancelButton.setText("Cancel");
+        CancelButton.setText("Poistu");
         CancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CancelButtonActionPerformed(evt);
@@ -281,6 +282,13 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         tyopuhelinLabel.setText("---");
 
+        lisaapoistaButton.setText("Lis‰‰ / Poista K‰nnykk‰");
+        lisaapoistaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lisaapoistaButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -289,11 +297,13 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(MoreButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(MoreButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lisaapoistaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -385,12 +395,13 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                     .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(MoreButton))
-                    .addComponent(CancelButton, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(saveButton)
+                    .addComponent(CancelButton)
+                    .addComponent(MoreButton)
+                    .addComponent(lisaapoistaButton))
+                .addContainerGap())
         );
 
         pack();
@@ -472,6 +483,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_CancelButtonActionPerformed
 
+    private void lisaapoistaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lisaapoistaButtonActionPerformed
+        CellphoneDialog cellDialog = new CellphoneDialog(this.session, this.person, this, true);
+    }//GEN-LAST:event_lisaapoistaButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -538,6 +553,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private javax.swing.JTextField katuosoiteField;
     private javax.swing.JTextField kotipuhelinField;
     private javax.swing.JTextField ktunnusField;
+    private javax.swing.JButton lisaapoistaButton;
     private javax.swing.JTextField oppiarvoField;
     private javax.swing.JTextField postilokeroField;
     private javax.swing.JTextField postinumeroField;
