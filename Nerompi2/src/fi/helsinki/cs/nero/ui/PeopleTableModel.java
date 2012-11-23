@@ -24,11 +24,21 @@ public class PeopleTableModel extends DefaultTableModel {
     @Override
     public Class getColumnClass(int index) {
 
-        int dateIndex = columnModel.getColumnIndex(dateColumnIdentifier);
-        if (index == dateIndex) {
-            return java.util.Date.class;
-        } else {
+        // jos dateColumnIdentifier heittää IllegalArgumentiExceptionin
+        // niin tällöin päivämäärän sisältävää saraketta ei ole näkyvillä
+        // -> muut sarakkeet ovat tyyppiä String, joten voidaan palauttaa se
+        
+        try {
+            int dateIndex = columnModel.getColumnIndex(dateColumnIdentifier);
+            if (index == dateIndex) {
+                return java.util.Date.class;
+            } else {
+                return String.class;
+            }
+        } catch (IllegalArgumentException ex) {
+            System.out.println(ex);
             return String.class;
+
         }
 
     }
@@ -41,11 +51,9 @@ public class PeopleTableModel extends DefaultTableModel {
             return super.getColumnCount();
         }
     }
-    
 //    @Override
 //    public Object getValueAt(int row, int column) {
 //        columnModel.
 //        return "foo";
 //    }
-
 }
