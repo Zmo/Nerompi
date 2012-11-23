@@ -1197,15 +1197,7 @@ public class NeroDatabase implements NeroObserver {
                                 + " set huone_nro=?"
                                 + " where htunnus=?";
             
-            String getPhoneNumberQuery = "select puhelinnumero"
-                                       + " from puhelinnumero"
-                                       + " where tp_id="
-                                           + "(select tpiste_id"
-                                           + " from tyopistevaraus"
-                                           + " where henklo_htunnus=?"
-                                           + " and alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP)";
-            
-            PreparedStatement prep, prep2, prep3;
+            PreparedStatement prep, prep2;
             try {
                 ResultSet selectPersonResult = this.connection.prepareStatement(selectPersonQuery).executeQuery();
                 while(selectPersonResult.next()) { // Poistaa huoneen niilt‰, joiden varaus on mennyt umpeen
@@ -1476,19 +1468,19 @@ public class NeroDatabase implements NeroObserver {
          * Lis‰‰ Huonevaraus -tauluun uuden huonevarauksen
          * @param reservation lis‰tt‰v‰ huonevaraus
          */
-        public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
-            String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
+        public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) { // TODO!!
+            //String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
             
-            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)";
+            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)";
             
             PreparedStatement prep;
             
             try {
-                ResultSet rs = this.connection.prepareStatement(idquery).executeQuery();
-                rs.next();
+                //ResultSet rs = this.connection.prepareStatement(idquery).executeQuery();
+                //rs.next();
                 
                 prep = this.connection.prepareStatement(updatequery);
-                prep.setInt(1, rs.getInt("ID"));
+                //prep.setInt(1, rs.getInt("ID"));
                 prep.setString(2, person.getPersonID());
                 prep.setString(3, room.getRoomID());
                 prep.setDate(4, (java.sql.Date)timeslice.getStartDate());
