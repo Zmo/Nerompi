@@ -15,9 +15,11 @@ import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 /**
  * Sessio, joka kuvaa k�ynniss� olevan ohjelman tilaa. Toimii linkkin� k�ytt�liittym�n
@@ -913,6 +915,9 @@ public class Session {
      * @see fi.helsinki.cs.nero.event.NeroObserver
      * @see fi.helsinki.cs.nero.event.NeroObserverTypes
      */
+    public ArrayList<HashMap<String, String>> getKannykat() {
+        return this.db.getKannykat();
+    }
 
     public void registerObserver(int type, NeroObserver observer) {
         if(observer == null) {
