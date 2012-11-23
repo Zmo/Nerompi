@@ -1264,8 +1264,20 @@ public class ReportsWindow extends javax.swing.JFrame {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);
             for (int j = 0; j < columnCount; j++) {
-                rowList.add(j, tableModel.getValueAt(rowIndexInView,
-                        Data.convertColumnIndexToModel(neededIndexes[j])).toString());
+                Object o = tableModel.getValueAt(rowIndexInView,
+                        Data.convertColumnIndexToModel(neededIndexes[j]));
+                String value;
+                if (o == null) {
+                    value = "";
+                } else if (o.getClass() == Date.class) {
+                    value = dateToShortString((Date) o);
+                } else {
+                    value = o.toString();
+                }
+                rowList.add(j, value);
+                
+//                rowList.add(j, tableModel.getValueAt(rowIndexInView,
+  //                      Data.convertColumnIndexToModel(neededIndexes[j])).toString());
             }
             list.add(rowList);
         }
