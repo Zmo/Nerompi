@@ -29,6 +29,7 @@ public class UusiAvainvarausNappi extends JButton {
             this.person.getSession().setStatusMessageNoPrint("Klikkaa haluttua huonetta ensin!");
         } else {
             Date alkuaika = this.person.getSession().getTimeScaleSlice().getStartDate();
+            
             if (!(this.person.getSession().getActiveRoom().getRoomKeyReservations() == null)) {
                 RoomKeyReservation[] avainVaraukset = this.person.getSession().getActiveRoom().getRoomKeyReservations();
                 for (int a = 0; a < avainVaraukset.length; a++) {
