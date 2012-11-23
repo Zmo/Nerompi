@@ -213,7 +213,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="showRoomAndPost" min="-2" max="-2" attributes="0"/>
                           <Component id="showPhone" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="showContracts" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="showReservations" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="showEmail" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="showJobTitle" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -229,7 +229,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showPhone" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="showContracts" min="-2" max="-2" attributes="0"/>
+                      <Component id="showReservations" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showEmail" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -260,14 +260,14 @@
                 <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showEmailMouseReleased"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="showContracts">
+            <Component class="javax.swing.JCheckBox" name="showReservations">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="varaus" type="code"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showContractsMouseReleased"/>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showReservationsMouseReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="showPhone">
@@ -632,6 +632,7 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="Data">
           <Properties>
+            <Property name="autoCreateColumnsFromModel" type="boolean" value="false"/>
             <Property name="autoCreateRowSorter" type="boolean" value="true"/>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="0" rowCount="4"/>

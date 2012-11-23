@@ -825,29 +825,29 @@ public class NeroDatabase implements NeroObserver {
                     + " WHERE (UPPER(h.sukunimi) LIKE UPPER(?)"
                     + " OR UPPER(h.etunimet) LIKE UPPER(?))";
 		
-		// tï¿½smï¿½llisemmissï¿½ hauissa tï¿½ytyy katsoa tyï¿½sopimusjaksoa
-		if(showEndingContracts || withoutPost ||
-				project != null || partTimeTeachersOnly)
-			sqlQuery += " AND tsj.henklo_htunnus = h.htunnus"
-				+ " AND tsj.sopimustyyppi LIKE ?"
-				/* Oraclessa like-vertailu nulliin ei toimi,
-				 * joten kï¿½ytetï¿½ï¿½n NVL()-funktiota */
-				+ " AND NVL(tsj.prjkti_koodi, 'oraclesucks') LIKE ?"
-				+ " AND ? <= tsj.loppupvm_jakso AND ? >= tsj.alkupvm_jakso";
-		else // tehdï¿½ï¿½n ulkoliitos eli saadaan myï¿½s henkilï¿½t ilman sopimusjaksoja
-			sqlQuery += " AND tsj.henklo_htunnus(+) = h.htunnus";
-        
-		// Jos pyydetty tyï¿½pisteettï¿½mï¿½t mutta ei pï¿½ï¿½ttyviï¿½ sopimuksia,
-		// tarkistetaan helpoin tapaus tï¿½ssï¿½ (yksi vï¿½hintï¿½ï¿½n
-		// koko sopimusjakson peittï¿½vï¿½ varaus) ja loput tarkistetaan koodissa
-		if(withoutPost && !showEndingContracts)
-			sqlQuery += " AND NOT EXISTS ("
-				+ " SELECT id"
-				+ " FROM tyopistevaraus"
-				+ " WHERE henklo_htunnus = h.htunnus"
-				+ " AND alkupvm <= greatest(tsj.alkupvm_jakso, ?)"
-				+ " AND loppupvm >= least(tsj.loppupvm_jakso, ?)"
-				+ ")";
+//		// tï¿½smï¿½llisemmissï¿½ hauissa tï¿½ytyy katsoa tyï¿½sopimusjaksoa
+//		if(showEndingContracts || withoutPost ||
+//				project != null || partTimeTeachersOnly)
+//			sqlQuery += " AND tsj.henklo_htunnus = h.htunnus"
+//				+ " AND tsj.sopimustyyppi LIKE ?"
+//				/* Oraclessa like-vertailu nulliin ei toimi,
+//				 * joten kï¿½ytetï¿½ï¿½n NVL()-funktiota */
+//				+ " AND NVL(tsj.prjkti_koodi, 'oraclesucks') LIKE ?"
+//				+ " AND ? <= tsj.loppupvm_jakso AND ? >= tsj.alkupvm_jakso";
+//		else // tehdï¿½ï¿½n ulkoliitos eli saadaan myï¿½s henkilï¿½t ilman sopimusjaksoja
+//			sqlQuery += " AND tsj.henklo_htunnus(+) = h.htunnus";
+//        
+//		// Jos pyydetty tyï¿½pisteettï¿½mï¿½t mutta ei pï¿½ï¿½ttyviï¿½ sopimuksia,
+//		// tarkistetaan helpoin tapaus tï¿½ssï¿½ (yksi vï¿½hintï¿½ï¿½n
+//		// koko sopimusjakson peittï¿½vï¿½ varaus) ja loput tarkistetaan koodissa
+//		if(withoutPost && !showEndingContracts)
+//			sqlQuery += " AND NOT EXISTS ("
+//				+ " SELECT id"
+//				+ " FROM tyopistevaraus"
+//				+ " WHERE henklo_htunnus = h.htunnus"
+//				+ " AND alkupvm <= greatest(tsj.alkupvm_jakso, ?)"
+//				+ " AND loppupvm >= least(tsj.loppupvm_jakso, ?)"
+//				+ ")";
 		
 		// Yhteinen GROUP BY -osa
 		sqlQuery += " GROUP BY h.htunnus, h.sukunimi, h.etunimet, h.huone_nro, h.kutsumanimi,"
@@ -1217,15 +1217,7 @@ public class NeroDatabase implements NeroObserver {
                                 + " set huone_nro=?"
                                 + " where htunnus=?";
             
-            String getPhoneNumberQuery = "select puhelinnumero"
-                                       + " from puhelinnumero"
-                                       + " where tp_id="
-                                           + "(select tpiste_id"
-                                           + " from tyopistevaraus"
-                                           + " where henklo_htunnus=?"
-                                           + " and alkupvm<CURRENT_TIMESTAMP AND loppupvm>CURRENT_TIMESTAMP)";
-            
-            PreparedStatement prep, prep2, prep3;
+            PreparedStatement prep, prep2;
             try {
                 ResultSet selectPersonResult = this.connection.prepareStatement(selectPersonQuery).executeQuery();
                 while(selectPersonResult.next()) { // Poistaa huoneen niiltä, joiden varaus on mennyt umpeen
@@ -1497,22 +1489,19 @@ public class NeroDatabase implements NeroObserver {
          * @param reservation lisättävä huonevaraus
          */
         public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
-            String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
+            //String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
             
-            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)";
-            
+            String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)";
+                              
             PreparedStatement prep;
             
             try {
-                ResultSet rs = this.connection.prepareStatement(idquery).executeQuery();
-                rs.next();
                 
                 prep = this.connection.prepareStatement(updatequery);
-                prep.setInt(1, rs.getInt("ID"));
-                prep.setString(2, person.getPersonID());
-                prep.setString(3, room.getRoomID());
-                prep.setDate(4, (java.sql.Date)timeslice.getStartDate());
-                prep.setDate(5, (java.sql.Date)timeslice.getEndDate());
+                prep.setString(1, person.getPersonID());
+                prep.setString(2, room.getRoomID());
+                prep.setDate(3, timeslice.getSQLStartDate());
+                prep.setDate(4, timeslice.getSQLEndDate());
                 prep.executeUpdate();
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());

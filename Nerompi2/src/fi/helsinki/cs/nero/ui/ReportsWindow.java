@@ -120,7 +120,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         personAttributes = new javax.swing.JPanel();
         showRoomAndPost = new javax.swing.JCheckBox();
         showEmail = new javax.swing.JCheckBox();
-        showContracts = new javax.swing.JCheckBox();
+        showReservations = new javax.swing.JCheckBox();
         showPhone = new javax.swing.JCheckBox();
         showJobTitle = new javax.swing.JCheckBox();
         lockerAttributes = new javax.swing.JPanel();
@@ -225,10 +225,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        showContracts.setText(varaus);
-        showContracts.addMouseListener(new java.awt.event.MouseAdapter() {
+        showReservations.setText(varaus);
+        showReservations.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showContractsMouseReleased(evt);
+                showReservationsMouseReleased(evt);
             }
         });
 
@@ -250,7 +250,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(showRoomAndPost)
                     .addComponent(showPhone)
-                    .addComponent(showContracts)
+                    .addComponent(showReservations)
                     .addComponent(showEmail)
                     .addComponent(showJobTitle))
                 .addContainerGap())
@@ -263,7 +263,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showPhone)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showContracts)
+                .addComponent(showReservations)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showEmail)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -521,6 +521,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
+        Data.setAutoCreateColumnsFromModel(false);
         Data.setAutoCreateRowSorter(true);
         Data.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -615,6 +616,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void roomButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomButtonMouseReleased
         Data = new JTable(roomData, roomColumnNames);
+        Data.setAutoCreateColumnsFromModel(false);
+        Data.setAutoCreateRowSorter(true);
         roomColumnModel = Data.getColumnModel();
         setSelected(roomComponents);
         addSorter();
@@ -627,6 +630,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data = new JTable(peopleModel);
         peopleColumnModel = Data.getColumnModel();
         peopleModel.setColumnModel(peopleColumnModel);
+        Data.setAutoCreateColumnsFromModel(false);
         
         
         // asetetaan varaus-sarakkeelle oma renderer p‰iv‰m‰‰r‰‰ varten
@@ -639,6 +643,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void lockerButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lockerButtonMouseReleased
         Data = new JTable(lockerData, lockerColumnNames);
+        Data.setAutoCreateColumnsFromModel(false);
         lockerColumnModel = Data.getColumnModel();
         setSelected(lockerComponents);
         addSorter();
@@ -654,13 +659,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showRoomNameMouseReleased
 
-    private void showContractsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showContractsMouseReleased
-        if (showContracts.isSelected()) {
+    private void showReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReservationsMouseReleased
+        if (showReservations.isSelected()) {
             showColumn(varaus, peopleColumnModel, hiddenPeopleColumns);
         } else {
             hideColumn(varaus, peopleColumnModel, hiddenPeopleColumns);
         }
-    }//GEN-LAST:event_showContractsMouseReleased
+    }//GEN-LAST:event_showReservationsMouseReleased
 
     private void showFloorMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showFloorMouseReleased
         if (showFloor.isSelected()) {
@@ -713,7 +718,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else {
             generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(nimi));
         }
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        // t‰lleen tablerowsorter modelin kanssa n‰ytt‰‰ toimivan..
+        TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setModel(Data.getModel());
+        
+        
+        
+        //DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByNameActionPerformed
@@ -798,6 +809,8 @@ public class ReportsWindow extends javax.swing.JFrame {
             // lokeron numero
             generalFilter = RowFilter.regexFilter(room, Data.getColumnModel().getColumnIndex(postihuone));
         }
+        
+
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
         Data.setRowSorter(rowSorter);
@@ -874,13 +887,13 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel roomAttributes;
     private javax.swing.JRadioButton roomButton;
     private javax.swing.JButton saveButton;
-    private javax.swing.JCheckBox showContracts;
     private javax.swing.JCheckBox showEmail;
     private javax.swing.JCheckBox showFloor;
     private javax.swing.JCheckBox showJobTitle;
     private javax.swing.JCheckBox showPhone;
     private javax.swing.JCheckBox showPhone2;
     private javax.swing.JCheckBox showPostCount;
+    private javax.swing.JCheckBox showReservations;
     private javax.swing.JCheckBox showRoom;
     private javax.swing.JCheckBox showRoomAndPost;
     private javax.swing.JCheckBox showRoomName;
@@ -905,7 +918,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleComponents.add(showEmail);
         peopleComponents.add(showPhone);
         peopleComponents.add(showRoomAndPost);
-        peopleComponents.add(showContracts);
+        peopleComponents.add(showReservations);
         peopleComponents.add(showJobTitle);
 
         /*Components for post locker report*/
@@ -1033,10 +1046,11 @@ public class ReportsWindow extends javax.swing.JFrame {
             HashMap<String, IndexedColumn> hiddenColumns) {
     
         int index = model.getColumnIndex(name);
-        TableColumn newColumn = model.getColumn(index);
-        IndexedColumn ic = new IndexedColumn(index, newColumn);
-        hiddenColumns.put(name, ic);
-        model.removeColumn(newColumn);
+        TableColumn column = model.getColumn(index);
+        IndexedColumn indexedColumn = new IndexedColumn(index, column);
+        hiddenColumns.put(name, indexedColumn);
+        
+        model.removeColumn(column);
     }
 
     private void setSelected(ArrayList<JCheckBox> components) {
@@ -1117,7 +1131,11 @@ public class ReportsWindow extends javax.swing.JFrame {
             filter = removeDateRestriction();
         }
 
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+         // tablerowsorter modelilla ei n‰yt‰ toimivan lainkaan
+        // sen sijaan jos k‰ytt‰‰ defaultrowsorteria, niin se toimii
+        // mutta ei taas ymm‰rr‰, ett‰ kun sarake on poistettu, sen tyyppi muuttuu
+        TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setModel(Data.getModel());
         sorter.setRowFilter(filter);
         Data.setRowSorter(rowSorter);
     }
@@ -1246,8 +1264,20 @@ public class ReportsWindow extends javax.swing.JFrame {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);
             for (int j = 0; j < columnCount; j++) {
-                rowList.add(j, tableModel.getValueAt(rowIndexInView,
-                        Data.convertColumnIndexToModel(neededIndexes[j])).toString());
+                Object o = tableModel.getValueAt(rowIndexInView,
+                        Data.convertColumnIndexToModel(neededIndexes[j]));
+                String value;
+                if (o == null) {
+                    value = "";
+                } else if (o.getClass() == Date.class) {
+                    value = dateToShortString((Date) o);
+                } else {
+                    value = o.toString();
+                }
+                rowList.add(j, value);
+                
+//                rowList.add(j, tableModel.getValueAt(rowIndexInView,
+  //                      Data.convertColumnIndexToModel(neededIndexes[j])).toString());
             }
             list.add(rowList);
         }

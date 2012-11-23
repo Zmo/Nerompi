@@ -102,6 +102,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 	private static Border raisedBevel = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 	private static Border loweredBevel = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 	private static Border raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);       
+	private static Border loweredEtched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);       
 	private static Border lineBorder = BorderFactory.createLineBorder(Color.BLACK);
 	
 	private static final Color HEADER_BG = new Color(255,240,192);
@@ -233,8 +234,11 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         header.add(personNameLabel);
                         
                         UusiVarausPopup varausNappi = new UusiVarausPopup(personIterator.getPerson());
+                        varausNappi.setBorder(loweredEtched);
+                        varausNappi.setBackground(HEADER_BG);
                         header.add(varausNappi);
                         UusiAvainvarausNappi avainNappi = new UusiAvainvarausNappi(personIterator.getPerson());
+                        avainNappi.setBorder(loweredEtched);
                         avainNappi.setBackground(HEADER_BG);
                         header.add(avainNappi);
                         

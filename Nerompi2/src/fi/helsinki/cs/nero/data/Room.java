@@ -108,20 +108,20 @@ public class Room {
         public void addRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
             RoomKeyReservation[] newArray;
             if(this.roomKeyReservationNumber == 0) {
-                this.roomKeyReservations = new RoomKeyReservation[1];
+                this.roomKeyReservations = new RoomKeyReservation[10];
                 this.roomKeyReservations[0] = roomKeyReservation;
                 ++roomKeyReservationNumber;
-            } else if(this.roomKeyReservations[roomKeyReservationNumber-1]!=null) {
-                newArray = new RoomKeyReservation[this.roomKeyReservations.length*2];
+            } else if(this.roomKeyReservations.length==roomKeyReservationNumber) {
+                newArray = new RoomKeyReservation[this.roomKeyReservationNumber*2];
                 for(int i=0; i<this.roomKeyReservations.length; ++i) {
                     newArray[i] = this.roomKeyReservations[i];
                 }
-                newArray[this.roomKeyReservations.length] = roomKeyReservation;
+                newArray[roomKeyReservationNumber] = roomKeyReservation;
                 this.roomKeyReservations = newArray;
                 ++roomKeyReservationNumber;
             }
             else {
-                this.roomKeyReservations[this.roomKeyReservations.length] = roomKeyReservation;
+                this.roomKeyReservations[this.roomKeyReservationNumber] = roomKeyReservation;
                 ++roomKeyReservationNumber;
             }
         }

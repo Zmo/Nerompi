@@ -20,7 +20,7 @@ public class UusiAvainvarausNappi extends JButton {
     public UusiAvainvarausNappi(Person person) {
         super();
         this.person = person;
-        this.setText("Uusi avainvaraus");
+        this.setText("Uusi avain");
         this.addMouseListener(new UusiAvainvarausListener(this));
     }
 
