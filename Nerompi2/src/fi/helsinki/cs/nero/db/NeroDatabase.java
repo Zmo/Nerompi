@@ -452,10 +452,29 @@ public class NeroDatabase implements NeroObserver {
             }
             return arry;
         }     
-            public void addKannykka() {
-                 
-                String sqlQuery = "INSERT INTO KANNYKAT (puh_id, kannukka_numero, htunnus, omistaja, tyo_numero)"
+            public void addKannykka(String kannukka, String htunnus, String omistaja, String tyo) {
+
+                PreparedStatement prepAddKannykka;
+                
+                String sqlQuery = "INSERT INTO kannykat (puh_id, kannukka_numero, htunnus, omistaja, tyo_numero)"
                                 + "VALUES (?,?,?,?,?)";
+                
+                try {
+                
+                prepAddKannykka = this.connection.prepareStatement(sqlQuery);
+                
+                //prepAddKannykka.setString(1, puh_id);
+                prepAddKannykka.setString(2, kannukka);
+                prepAddKannykka.setString(3, htunnus);
+                prepAddKannykka.setString(4, omistaja);
+                prepAddKannykka.setString(5, tyo);
+			
+                prepAddKannykka.executeUpdate();
+                
+                } catch (SQLException e) {
+                    System.err.println("Tietokantavirhe: " + e.getMessage());
+                }
+                
             }
 
     /**

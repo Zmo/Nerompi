@@ -39,7 +39,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         titteliField.setText(person.getTitteli());
         tyopuhelinLabel.setText(person.getWorkPhone());
         kotipuhelinField.setText(person.getHomePhone());
-        kannykkaField.setText(person.getKannykka());
+        kannykkaLabel.setText(person.getKannykka());
         katuosoiteField.setText(person.getAddress());
         postinumeroField.setText(person.getPostnumber());
         postitoimipaikkaField.setText(person.getPostitoimiPaikka());        
@@ -126,7 +126,6 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         titteliField = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
-        kannykkaField = new javax.swing.JTextField();
         kotipuhelinField = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
@@ -135,6 +134,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         aktiivinenButton = new javax.swing.JRadioButton();
         tyopuhelinLabel = new javax.swing.JLabel();
         lisaapoistaButton = new javax.swing.JButton();
+        kannykkaLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("tietoruutu");
@@ -289,6 +289,8 @@ public class PersonInfoFrame extends javax.swing.JFrame {
             }
         });
 
+        kannykkaLabel.setText("jLabel3");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -331,9 +333,9 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                 .addGap(43, 43, 43)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel18)
-                                    .addComponent(kannykkaField, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel21)
-                                    .addComponent(tyopuhelinLabel))))
+                                    .addComponent(tyopuhelinLabel)
+                                    .addComponent(kannykkaLabel))))
                         .addGap(31, 31, 31)
                         .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -383,7 +385,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(ktunnusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(kannykkaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(kannykkaLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel20)
@@ -429,7 +431,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         henkiloHash.put("titteli", titteliField.getText());
         henkiloHash.put("puhelin_tyo", tyopuhelinLabel.getText());
         henkiloHash.put("puhelin_koti", kotipuhelinField.getText());
-        henkiloHash.put("kannykka", kannykkaField.getText());
+        henkiloHash.put("kannykka", kannykkaLabel.getText());
         henkiloHash.put("katuosoite", katuosoiteField.getText());
         henkiloHash.put("postinro", postinumeroField.getText());
         henkiloHash.put("postitoimipaikka", postitoimipaikkaField.getText());
@@ -549,7 +551,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField kannykkaField;
+    private javax.swing.JLabel kannykkaLabel;
     private javax.swing.JTextField katuosoiteField;
     private javax.swing.JTextField kotipuhelinField;
     private javax.swing.JTextField ktunnusField;
