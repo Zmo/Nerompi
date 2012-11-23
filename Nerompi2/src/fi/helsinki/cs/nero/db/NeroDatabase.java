@@ -78,7 +78,6 @@ public class NeroDatabase implements NeroObserver {
 	/**
 	 * Tietojen esilataamisessa k�ytetyt preparedStatementit
 	 */
-	private PreparedStatement prepAllProjects;
 	private PreparedStatement prepAllRooms;
 	private PreparedStatement prepAllPosts;
 	private PreparedStatement prepAllPhoneNumbers;
