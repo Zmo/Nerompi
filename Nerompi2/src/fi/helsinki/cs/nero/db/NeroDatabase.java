@@ -1469,23 +1469,20 @@ public class NeroDatabase implements NeroObserver {
          * Lis‰‰ Huonevaraus -tauluun uuden huonevarauksen
          * @param reservation lis‰tt‰v‰ huonevaraus
          */
-        public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) { // TODO!!
+        public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
             //String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
             
             String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)";
-            
+                              
             PreparedStatement prep;
             
             try {
-                //ResultSet rs = this.connection.prepareStatement(idquery).executeQuery();
-                //rs.next();
                 
                 prep = this.connection.prepareStatement(updatequery);
-                //prep.setInt(1, rs.getInt("ID"));
-                prep.setString(2, person.getPersonID());
-                prep.setString(3, room.getRoomID());
-                prep.setDate(4, (java.sql.Date)timeslice.getStartDate());
-                prep.setDate(5, (java.sql.Date)timeslice.getEndDate());
+                prep.setString(1, person.getPersonID());
+                prep.setString(2, room.getRoomID());
+                prep.setDate(3, timeslice.getSQLStartDate());
+                prep.setDate(4, timeslice.getSQLEndDate());
                 prep.executeUpdate();
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
