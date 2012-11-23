@@ -454,7 +454,8 @@ public class NeroDatabase implements NeroObserver {
         }     
             public void addKannykka() {
                  
-                String sqlQuery = "INSERT INTO KANNYKAT";
+                String sqlQuery = "INSERT INTO KANNYKAT (puh_id, kannukka_numero, htunnus, omistaja, tyo_numero)"
+                                + "VALUES (?,?,?,?,?)";
             }
 
     /**
