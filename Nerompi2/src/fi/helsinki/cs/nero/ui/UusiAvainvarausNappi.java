@@ -35,9 +35,8 @@ public class UusiAvainvarausNappi extends JButton {
                 for (int a = 0; a < avainVaraukset.length; a++) {
                     if ((avainVaraukset[a].getReserver().equalsIgnoreCase(this.person.getName()))) {
                         alkuaika = avainVaraukset[a].getTimeSlice().getEndDate();
-                    } else {
-                        System.out.println(avainVaraukset[a].getReserver() + "\n -" + this.person.getName());
                     }
+                    else {}
                 }
             }
             if (!(alkuaika.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
