@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
@@ -12,13 +9,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- *
- * @author skolppo
+ * Esitt‰‰ huoneen avainvaraukset
+ * @author Simo
  */
 public class RoomKeyReservations {
-    
+    /*Huoneen avainvarausten erilliset rivit*/
     private LinkedList rows;
     
+    /*Kohdehuone*/
     Room room;
     
     public RoomKeyReservations(Room room, double scale, Session session, Person person) {

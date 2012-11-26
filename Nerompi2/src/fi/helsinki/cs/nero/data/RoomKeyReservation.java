@@ -1,14 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package fi.helsinki.cs.nero.data;
 
 import fi.helsinki.cs.nero.logic.Session;
 
 /**
- *
- * @author Zmo
+ * Tiettyyn huoneeseen kohdistuva avainvaraus
+ * @author Simo
  */
 public class RoomKeyReservation {
     

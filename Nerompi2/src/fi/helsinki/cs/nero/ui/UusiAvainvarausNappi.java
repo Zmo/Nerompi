@@ -30,20 +30,20 @@ public class UusiAvainvarausNappi extends JButton {
         } else {
             Date alkuaika = this.person.getSession().getTimeScaleSlice().getStartDate();
             
-            if (!(this.person.getSession().getActiveRoom().getRoomKeyReservations() == null)) {
+            if (this.person.getSession().getActiveRoom().getRoomKeyReservations() != null) {
                 RoomKeyReservation[] avainVaraukset = this.person.getSession().getActiveRoom().getRoomKeyReservations();
-                for (int a = 0; a < avainVaraukset.length; a++) {
+                for (int a = 0; a < this.person.getSession().getActiveRoom().getRoomKeyReservationNumber(); a++) {
                     if ((avainVaraukset[a].getReserver().equalsIgnoreCase(this.person.getName()))) {
                         alkuaika = avainVaraukset[a].getTimeSlice().getEndDate();
-                    } else {
-                        System.out.println(avainVaraukset[a].getReserver() + "\n -" + this.person.getName());
                     }
+                    else {}
                 }
             }
             if (!(alkuaika.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
                 this.person.getSession().setStatusMessageNoPrint("Henkilöllä on jo avainvaraus tarkasteluajan loppuun asti!");
             } else {
                 this.person.getSession().addRoomKeyReservation(this.person, this.person.getSession().getTimeScaleSlice());
+                this.person.getSession().setStatusMessageNoPrint("Avainvaraus luotu huoneeseen " + this.person.getSession().getActiveRoom() + ".");
             }
 
         }

@@ -1235,11 +1235,6 @@ public class NeroDatabase implements NeroObserver {
                     prep.setString(1, selectRoomResult.getString("huone_nro"));
                     prep.setString(2, selectPersonResult2.getString("henklo_htunnus"));
                     prep.executeQuery();
-                    /*prep3 = this.connection.prepareStatement(getPhoneNumberQuery);
-                    prep3.setString(1, selectPersonResult2.getString("henklo_htunnus"));
-                    ResultSet rs = prep3.executeQuery();
-                    if(rs.next())
-                        this.updateWorkPhone(selectPersonResult2.getString("henklo_htunnus"), rs.getString("puhelinnumero"));*/
                 }
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -1279,10 +1274,10 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Lisï¿½ï¿½ tyï¿½pisteen huoneeseen
+	 * Lisää työpisteen huoneeseen
 	 * 
-	 * @param post Tyï¿½piste joka lisï¿½tï¿½ï¿½n.
-	 * @return Onnistuiko lisï¿½ys
+	 * @param post Työpiste joka lisätään.
+	 * @return Onnistuiko lisäys
 	 */
 	public boolean createPost(Post post) {
 		boolean success = false;
