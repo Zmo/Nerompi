@@ -314,10 +314,10 @@ public class Session {
     }
 
     /**
-     * Asettaa hakuehtoja rajaavan huoneen tyï¿½pisteiden maksimimï¿½ï¿½rï¿½n. Jos parametri
-     * on -1, ei tyï¿½pisteiden mï¿½ï¿½rï¿½ï¿½ rajata.
-     * @param maxPosts Tyï¿½pisteiden lukumï¿½ï¿½rï¿½ tai -1
-     * @throws IllegalArgumentException jos annetaan virheellinen lukumï¿½ï¿½rï¿½ (alle -1)
+     * Asettaa hakuehtoja rajaavan huoneen työpisteiden maksimimäärän. Jos parametri
+     * on -1, ei työpisteiden määrää rajata.
+     * @param maxPosts Työpisteiden lukumäärä tai -1
+     * @throws IllegalArgumentException jos annetaan virheellinen lukumäärä (alle -1)
      */
     public void setFilterMaxPosts(int maxPosts) {
         if(maxPosts < -1) {
@@ -328,18 +328,18 @@ public class Session {
     }
 
     /**
-     * Palauttaa hakuehtoja rajaavan huoneen tyï¿½pisteiden maksimimï¿½ï¿½rï¿½n.
-     * @return tyï¿½pisteiden lukumï¿½ï¿½rï¿½ tai -1, jos mï¿½ï¿½rï¿½ï¿½ ei ole rajattu
+     * Palauttaa hakuehtoja rajaavan huoneen työpisteiden maksimimäärän.
+     * @return työpisteiden lukumäärä tai -1, jos määrää ei ole rajattu
      */
     public int getFilterMaxPosts() {
     	return maxPosts;
     }
     
     /**
-     * Asettaa hakuehtoja rajaavan mï¿½rï¿½een, jonka mukaan nï¿½ytetï¿½ï¿½n
-     * vain ne joilla ei ole tyï¿½pistevarausta aikavï¿½lin tyï¿½sopimusten
+     * Asettaa hakuehtoja rajaavan määreen, jonka mukaan näytetään
+     * vain ne joilla ei ole työpistevarausta aikavälin työsopimusten
      * osalta.
-     * @param withoutPost haetaanko vain ne henkilï¿½t, joilla ei ole tp-varausta
+     * @param withoutPost haetaanko vain ne henkilöt, joilla ei ole tp-varausta
      */
     public void setFilterWithoutPost(boolean withoutPost) {
     	this.withoutPost = withoutPost;
@@ -355,10 +355,10 @@ public class Session {
     
     
     /**
-     * Asettaa ehdon, jonka mukaan vapaina esitetï¿½ï¿½n vain ne huoneet, joissa on vï¿½hintï¿½ï¿½n
-     * x vapaata tyï¿½pistettï¿½.
+     * Asettaa ehdon, jonka mukaan vapaina esitetään vain ne huoneet, joissa on vähintään
+     * x vapaata työpistettä.
      * @param freePosts
-     * @throws IllegalArgumentException jos huonemï¿½ï¿½rï¿½ ei ole positiivinen luku
+     * @throws IllegalArgumentException jos huonemäärä ei ole positiivinen luku
      */
     public void setFilterFreePosts(int freePosts) {
         if(freePosts <= 0) {
@@ -369,9 +369,9 @@ public class Session {
 	}
 
 	/**
-	 * Palauttaa huoneessa olevien vapaiden tyï¿½pisteiden minimimï¿½ï¿½rï¿½n, joka on edellytyksenï¿½
-	 * sille, ettï¿½ huone esitetï¿½ï¿½n vapaana.
-	 * @return vapaiden tyï¿½pisteiden minimimï¿½ï¿½eï¿½
+	 * Palauttaa huoneessa olevien vapaiden työpisteiden minimimäärän, joka on edellytyksenä
+	 * sille, että huone esitetään vapaana.
+	 * @return vapaiden työpisteiden minimimäärä
 	 */
 	public int getFilterFreePosts() {
 		return freePosts;
@@ -404,31 +404,31 @@ public class Session {
     }
     
     /**
-     * Palauttaa listan jossa on kaikki jï¿½rjestelmï¿½n tuntemat projektit.
-     * @return Jï¿½rjestelmï¿½n tuntemat projektit <code>Project[]</code>-oliona.
+     * Palauttaa listan jossa on kaikki järjestelmän tuntemat projektit.
+     * @return Järjestelmän tuntemat projektit <code>Project[]</code>-oliona.
      */
     public Project[] getProjects() {
     	return db.getProjects();
     }
 
     /**
-     * Asettaa tarkasteltavalta aikavï¿½liltï¿½ tarkasteltavan osa-aikavï¿½lin.
-     * Metodi tarkistaa, ettï¿½ osa-aikavï¿½li on tarkisteltavan aikavï¿½lin sisï¿½llï¿½.
-     * @param timescaleSlice Tarkasteltava osa-aikavï¿½li.
-     * @param stillMoving Ei lï¿½hetï¿½ timescaleslicen muuttumisviestiï¿½ vaan toisenlaisen tiedottamaan, ettï¿½ ollaan liikuttelemassa arvoa
-     * @throws IllegalArgumentException jos osa-aikavï¿½li ei ole aikavï¿½lin sisï¿½llï¿½ tai on null
+     * Asettaa tarkasteltavalta aikaväliltä tarkasteltavan osa-aikavälin.
+     * Metodi tarkistaa, että osa-aikaväli on tarkisteltavan aikavälin sisällä.
+     * @param timescaleSlice Tarkasteltava osa-aikaväli.
+     * @param stillMoving Ei lähetä timescaleslicen muuttumisviestiä vaan toisenlaisen tiedottamaan, että ollaan liikuttelemassa arvoa
+     * @throws IllegalArgumentException jos osa-aikaväli ei ole aikavälin sisällä tai on null
      */
     public void setTimeScaleSlice(TimeSlice timescaleSlice, boolean stillMoving) {
     	if(timescaleSlice == null) {
-            throw new IllegalArgumentException("osa-aikavï¿½li ei saa olla null");
+            throw new IllegalArgumentException("osa-aikaväli ei saa olla null");
         }
     	if(timescaleSlice.getStartDate().compareTo(
     			this.timescale.getStartDate()) < 0) {
-            throw new IllegalArgumentException("osa-aikavï¿½li ei saa alkaa ennen aikavï¿½liï¿½");
+            throw new IllegalArgumentException("osa-aikaväli ei saa alkaa ennen aikaväliä");
         }
     	if(timescaleSlice.getEndDate().compareTo(
     			this.timescale.getEndDate()) > 0) {
-            throw new IllegalArgumentException("osa-aikavï¿½li ei saa pï¿½ï¿½ttyï¿½ myï¿½hemmin kuin aikavï¿½li");
+            throw new IllegalArgumentException("osa-aikaväli ei saa päättyä myähemmin kuin aikaväli");
         }
     	this.timescaleSlice = timescaleSlice;
     	if (stillMoving) {
@@ -440,15 +440,15 @@ public class Session {
     }
     
     /**
-     * Palauttaa tarkasteltavan osa-aikavï¿½lin.
-     * @return tarkasteltava osa-aikavï¿½li TimeSlice-oliona
+     * Palauttaa tarkasteltavan osa-aikavälin.
+     * @return tarkasteltava osa-aikaväli TimeSlice-oliona
      */
     public TimeSlice getTimeScaleSlice() {
     	return timescaleSlice;
     }
     
     /**
-     * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat huoneet.
+     * Palauttaa kaikki järjestelmän tuntemat huoneet.
      * @return taulukko huoneista
      */
 
@@ -467,7 +467,7 @@ public class Session {
 
     /**
      * Palauttaa ne huoneet, joihin on sijoitettu hakuehtojen mukaisen
-     * projektin tyï¿½ntekijï¿½itï¿½ tarkasteltavalla osa-aikavï¿½lillï¿½.
+     * projektin työntekijöitä tarkasteltavalla osa-aikavälillä.
      * @return taulukko projektin huoneista
      */
 
@@ -476,18 +476,18 @@ public class Session {
     }
 
     /**
-     * Palauttaa listan sen hetkisten hakuehtojen mukaisista henkilï¿½istï¿½.
-     * @return taulukko henkilï¿½olioista
+     * Palauttaa listan sen hetkisten hakuehtojen mukaisista henkilöistä.
+     * @return taulukko henkilöolioista
      */
     public Person[] getFilteredPeople() {
         return db.getPeople(timescale, personName, project, showEndingContracts, withoutPost, partTimeTeachersOnly);
     }
     
     /**
-     * Palauttaa tyï¿½pisteen puhelinnumerot
-     * @param post Tyï¿½piste jonka numerot haetaan
+     * Palauttaa työpisteen puhelinnumerot
+     * @param post Työpiste jonka numerot haetaan
      * @return Puhelinnumerot <code>PhoneNumber[]</code> Oliona.
-     * @throws IllegalArgumentException jos tyï¿½piste on null
+     * @throws IllegalArgumentException jos työpiste on null
      */
     public PhoneNumber[] getPhoneNumbers(Post post){
         if(post == null) {
@@ -523,8 +523,8 @@ public class Session {
     }
 
     /**
-     * Pï¿½ivittï¿½ï¿½ varausjakson esimerkin mukaiseksi.
-     * @param reservation varausjakso, joka pï¿½ivitetï¿½ï¿½n
+     * Päivittää varausjakson esimerkin mukaiseksi.
+     * @param reservation varausjakso, joka päivitetään
      * @throws IllegalArgumentException jos varaus on null
      */
 
@@ -534,23 +534,23 @@ public class Session {
         }
     	boolean success = db.updateReservation(reservation);
         if(!success) {
-        	setStatusMessage("Tyï¿½pistevarauksen muuttaminen ei onnistunut.");
+        	setStatusMessage("Työpistevarauksen muuttaminen ei onnistunut.");
             return;
         }
-    	// kerrotaan tyï¿½pisteelle ettï¿½ sen varaukset ovat muuttuneet
+    	// kerrotaan työpisteelle että sen varaukset ovat muuttuneet
     	reservation.getTargetPost().clearReservations();
-    	// varausten ja henkilï¿½iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
+    	// varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
     	obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
-    	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myï¿½s RESERVATIONSia. Joten turha...
+    	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
     	//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
-    	setStatusMessage("Tyï¿½pistevarausta muutettu.");
+    	setStatusMessage("Työpistevarausta muutettu.");
         db.updateRooms();
     }
 
     /**
      * Poistaa varausjakson.
      * @param reservation poistettava varausjakso
-     * @throws IllegalArgumentException jos tyï¿½piste on null
+     * @throws IllegalArgumentException jos työpiste on null
      */
     public void deleteReservation(Reservation reservation) {
         if(reservation == null) {
@@ -558,9 +558,9 @@ public class Session {
         }
     	if(db.deleteReservation(reservation)) {
     		reservation.getTargetPost().clearReservations();
-    		// varausten ja henkilï¿½iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
+    		// varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
     		obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
-        	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myï¿½s RESERVATIONSia. Joten turha...
+        	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
     		//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     		setStatusMessage("Työpistevaraus poistettu.");
                 db.updateRooms();
@@ -570,16 +570,16 @@ public class Session {
     }
 
     /**
-     * Luo uuden varauksen annettuun tyï¿½pisteeseen tyï¿½sopimusjakson
-     * perusteella. Jos tyï¿½sopimusjakson henkilï¿½llï¿½ ei ole tyï¿½pistevarauksia
-     * jakson ajaksi, tehdï¿½ï¿½n tyï¿½pistevaraus koko jakson mittaiseksi.
-     * Jos henkilï¿½llï¿½ on varauksia osalle jaksosta, tehdï¿½ï¿½n tyï¿½pistevaraus
-     * ensimmï¿½iselle varauksettomalle osalle tyï¿½sopimusjaksosta.
-     * Jos henkilï¿½llï¿½ on varauksia koko jaksolle, ei tehdï¿½ mitï¿½ï¿½n.
+     * Luo uuden varauksen annettuun työpisteeseen työsopimusjakson
+     * perusteella. Jos työsopimusjakson henkilöllä ei ole työpistevarauksia
+     * jakson ajaksi, tehdään työpistevaraus koko jakson mittaiseksi.
+     * Jos henkilöllä on varauksia osalle jaksosta, tehdään työpistevaraus
+     * ensimmäiselle varauksettomalle osalle työsopimusjaksosta.
+     * Jos henkilöllä on varauksia koko jaksolle, ei tehdä mitään.
      *
-     * @param post tyï¿½piste, johon varaus luodaan
-     * @param contract tyï¿½sopimusjakso, jonka perusteella varaus luodaan
-     * @throws IllegalArgumentException jos tyï¿½piste tai sopimus on null
+     * @param post työpiste, johon varaus luodaan
+     * @param contract työsopimusjakso, jonka perusteella varaus luodaan
+     * @throws IllegalArgumentException jos työpiste tai sopimus on null
      */
 
     public void createReservation(Post post, Contract contract) {
@@ -652,17 +652,21 @@ public class Session {
         Reservation[] res = person.getReservations();
         int i;
         for(i=0; i<res.length && res[i].getTimeSlice().contains(start); ++i) {
-        	// siirretään alkupäivä varauksen päättymistä seuraavaan päivään
-        	start = new Date(res[i].getTimeSlice().getEndDate().getTime() + TimeSlice.ONEDAY);
-        }
-        
-        if(i < res.length) { // varauksia on vielä lisää
-        	// siirretään loppupäivä seuraavan varauksen alkamista edeltävään päivään
-        	end = new Date(res[i].getTimeSlice().getStartDate().getTime() - TimeSlice.ONEDAY);
+        	// siirretään alkupäivä varauksen päättymispäivään
+        	start = new Date(res[i].getTimeSlice().getEndDate().getTime());
+                if(i < res.length) { // varauksia on vielä lisää
+                        // siirretään loppupäivä seuraavan varauksen alkamispäivään
+                        System.out.println("Paikka 2 end 1: " + end);
+                	end = new Date(res[i].getTimeSlice().getStartDate().getTime()/* - TimeSlice.ONEDAY*/);
+                        System.out.println("Paikka 2 end 2: " + end);
+                }
         }
 
         TimeSlice reservationTime = new TimeSlice(start, end);
-        if(reservationTime.length() < 1) {
+        if(reservationTime.length() < 1 /*!(reservationTime.getStartDate().before(reservationTime.getEndDate()))*/) {
+                System.out.println(" - Alku:   " + reservationTime.getStartDate() + 
+                                 "\n - Loppu:  " + reservationTime.getEndDate() + 
+                                 "\n - Pituus: " + reservationTime.length());
         	setStatusMessage("Henkilöllä on jo työpiste aikavälillä " + timeSlice);
         	return;
         }
