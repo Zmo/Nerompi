@@ -594,17 +594,17 @@ public class Session {
     }
 
     /**
-     * Luo uuden varauksen annettuun tyï¿½pisteeseen tï¿½mï¿½nhetkiselle
-     * osa-aikavï¿½lille. Varaus tehdï¿½ï¿½n henkilï¿½lle tyï¿½sopimusjaksoihin 
-     * katsomatta. Jos henkilï¿½llï¿½ ei ole varauksia tarkasteltavalla 
-     * osa-aikavï¿½lillï¿½, tehdï¿½ï¿½n varaus koko osa-aikavï¿½lin mittaiseksi.
-     * Jos henkilï¿½llï¿½ on varauksia osalle osa-aikavï¿½listï¿½, tehdï¿½ï¿½n varaus
-     * ensimmï¿½iselle varauksettomalle osalle osa-aikavï¿½listï¿½. Jos 
-     * henkilï¿½llï¿½ on varauksia koko osa-aikavï¿½lille, ei tehdï¿½ mitï¿½ï¿½n.
+     * Luo uuden varauksen annettuun työpisteeseen tämänhetkiselle
+     * osa-aikavälille. Varaus tehdään henkilölle työsopimusjaksoihin 
+     * katsomatta. Jos henkilöllä ei ole varauksia tarkasteltavalla 
+     * osa-aikavälillä, tehdään varaus koko osa-aikavälin mittaiseksi.
+     * Jos henkilöllä on varauksia osalle osa-aikavälistä, tehdään varaus
+     * ensimmäiselle varauksettomalle osalle osa-aikavälistä. Jos 
+     * henkilöllä on varauksia koko osa-aikavälille, ei tehdä mitään.
      * 
-     * @param post tyï¿½piste, johon varaus luodaan
-     * @param person henkilï¿½, jolle varaus luodaan
-     * @throws IllegalArgumentException jos tyï¿½piste tai henkilï¿½ on null
+     * @param post työpiste, johon varaus luodaan
+     * @param person henkilö, jolle varaus luodaan
+     * @throws IllegalArgumentException jos työpiste tai henkilö on null
      */
 
     public void createReservation(Post post, Person person) {
@@ -613,32 +613,32 @@ public class Session {
     }
     
     /**
-     * Luo uuden varauksen annettuun tyï¿½pisteeseen annetulle aikavï¿½lille.
-     * Varaus tehdï¿½ï¿½n henkilï¿½lle tyï¿½sopimusjaksoihin katsomatta. Jos
-     * henkilï¿½llï¿½ ei ole varauksia annetulla aikavï¿½lillï¿½, tehdï¿½ï¿½n 
-     * varaus koko aikavï¿½lin mittaiseksi. Jos henkilï¿½llï¿½ on varauksia osalle
-     * aikavï¿½listï¿½, tehdï¿½ï¿½n varaus ensimmï¿½iselle varauksettomalle
-     * osalle aikavï¿½listï¿½. Jos henkilï¿½llï¿½ on varauksia koko aikavï¿½lille,
-     * ei tehdï¿½ mitï¿½ï¿½n.
+     * Luo uuden varauksen annettuun työpisteeseen annetulle aikavälille.
+     * Varaus tehdään henkilölle työsopimusjaksoihin katsomatta. Jos
+     * henkilöllä ei ole varauksia annetulla aikavälillä, tehdään 
+     * varaus koko aikavälin mittaiseksi. Jos henkilöllä on varauksia osalle
+     * aikavälistä, tehdään varaus ensimmäiselle varauksettomalle
+     * osalle aikavälistä. Jos henkilöllä on varauksia koko aikavälille,
+     * ei tehdä mitään.
      * 
-     * @param post tyï¿½piste, johon varaus luodaan
-     * @param person henkilï¿½, jolle varaus luodaan
-     * @param timeSlice aikavï¿½li, jolle varaus luodaan
-     * @throws IllegalArgumentException jos tyï¿½piste, henkilï¿½ tai aikavï¿½li on null
+     * @param post työpiste, johon varaus luodaan
+     * @param person henkilö, jolle varaus luodaan
+     * @param timeSlice aikaväli, jolle varaus luodaan
+     * @throws IllegalArgumentException jos työpiste, henkilö tai aikaväli on null
      */
     
     public void createReservation(Post post, Person person, TimeSlice timeSlice) {
         if(post == null) {
-            throw new IllegalArgumentException("tyï¿½piste ei saa olla null");
+            throw new IllegalArgumentException("työpiste ei saa olla null");
         }
         if(person == null) {
-            throw new IllegalArgumentException("henkilï¿½ ei saa olla null");
+            throw new IllegalArgumentException("henkilö ei saa olla null");
         }
         if(timescaleSlice == null) {
-            throw new IllegalArgumentException("aikavï¿½li ei saa olla null");
+            throw new IllegalArgumentException("aikaväli ei saa olla null");
         }
         
-        // Rajataan tarvittaessa aikavï¿½li tarkasteltavan aikajakson sisï¿½lle
+        // Rajataan tarvittaessa aikaväli tarkasteltavan aikajakson sisälle
         Date start = timeSlice.getStartDate();
         Date end = timeSlice.getEndDate();
         if(!timescale.contains(start)) {
@@ -648,44 +648,44 @@ public class Session {
             end = timescale.getEndDate();
         }
         
-        // Etsitï¿½ï¿½n vapaa jakso
+        // Etsitään vapaa jakso
         Reservation[] res = person.getReservations();
         int i;
         for(i=0; i<res.length && res[i].getTimeSlice().contains(start); ++i) {
-        	// siirretï¿½ï¿½n alkupï¿½ivï¿½ varauksen pï¿½ï¿½ttymistï¿½ seuraavaan pï¿½ivï¿½ï¿½n
+        	// siirretään alkupäivä varauksen päättymistä seuraavaan päivään
         	start = new Date(res[i].getTimeSlice().getEndDate().getTime() + TimeSlice.ONEDAY);
         }
         
-        if(i < res.length) { // varauksia on vielï¿½ lisï¿½ï¿½
-        	// siirretï¿½ï¿½n loppupï¿½ivï¿½ seuraavan varauksen alkamista edeltï¿½vï¿½ï¿½n pï¿½ivï¿½ï¿½n
+        if(i < res.length) { // varauksia on vielä lisää
+        	// siirretään loppupäivä seuraavan varauksen alkamista edeltävään päivään
         	end = new Date(res[i].getTimeSlice().getStartDate().getTime() - TimeSlice.ONEDAY);
         }
 
         TimeSlice reservationTime = new TimeSlice(start, end);
         if(reservationTime.length() < 1) {
-        	setStatusMessage("Henkilï¿½llï¿½ on jo tyï¿½piste aikavï¿½lillï¿½ " + timeSlice);
+        	setStatusMessage("Henkilöllä on jo työpiste aikavälillä " + timeSlice);
         	return;
         }
         
         Reservation newRes = new Reservation(this, null, post, person, reservationTime, 0.0, "");
         if(db.createReservation(newRes)) {
         	newRes.getTargetPost().clearReservations();
-        	// huoneiden ja henkilï¿½iden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
+        	// huoneiden ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
         	obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
-        	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myï¿½s RESERVATIONSia. Joten turha...
-        	//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);    	
-            setStatusMessage("Tyï¿½pistevaraus luotu.");
+        	// XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
+        	//obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
+            setStatusMessage("Työpistevaraus luotu.");
             db.addRoomToPerson(person, post.getRoom().getRoomName());
         } else {
-            setStatusMessage("Tyï¿½pistevarauksen luonti epï¿½onnistui.");
+            setStatusMessage("Työpistevarauksen luonti epäonnistui.");
         }
     }
     	
     /**
-     * Poistaa tyï¿½pisteen.
+     * Poistaa työpisteen.
      *
-     * @param post poistettava tyï¿½piste
-     * @throws IllegalArgumentException jos tyï¿½piste on null
+     * @param post poistettava työpiste
+     * @throws IllegalArgumentException jos työpiste on null
      */
 
     public void deletePost(Post post) {
@@ -694,16 +694,16 @@ public class Session {
         }
         if(db.deletePost(post)) {
         	switchActiveRoom();
-        	// nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
+        	// nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille
         	obsman.notifyObservers(NeroObserverTypes.ROOMS);
-        	setStatusMessage("Tyï¿½piste " + post + " poistettu.");
+        	setStatusMessage("Työpiste " + post + " poistettu.");
         } else {
-        	setStatusMessage("Tyï¿½pisteen " + post + " poistaminen epï¿½onnistui.");
+        	setStatusMessage("Työpisteen " + post + " poistaminen epäonnistui.");
         }
     }
 
 	/**
-     * Luo aktiiviseen(valittuun) huoneeseen uuden tyï¿½pisteen.
+     * Luo aktiiviseen(valittuun) huoneeseen uuden työpisteen.
      *
      */
 
@@ -714,32 +714,32 @@ public class Session {
     	Post newPost = new Post(this, null, this.activeRoom, 0);
     	if(db.createPost(newPost)) {
     		switchActiveRoom();
-    		// nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
+    		// nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille
     		obsman.notifyObservers(NeroObserverTypes.ROOMS);
-    		setStatusMessage("Uusi tyï¿½piste luotu huoneeseen " + activeRoom);
+    		setStatusMessage("Uusi työpiste luotu huoneeseen " + activeRoom);
     	} else {
-    		setStatusMessage("Uuden tyï¿½pisteen luominen epï¿½onnistui.");
+    		setStatusMessage("Uuden työpisteen luominen epäonnistui.");
         }
     }
 
     /**
 	 * Vaihtaa aktiivisen huoneen kannasta haettuun uudempaan versioon. Metodia kutsutaan
-	 * kun on todennï¿½kï¿½istï¿½, ettï¿½ aktiivisen huoneen tiedot (mm. tyï¿½pisteet) ovat
+	 * kun on todennäköistä, että aktiivisen huoneen tiedot (mm. työpisteet) ovat
 	 * vanhentuneet.
 	 */
 	private void switchActiveRoom() {
-		// pyydetï¿½ï¿½n db:ltï¿½ uudempi versio samasta huoneesta
+		// pyydetään db:ltä uudempi versio samasta huoneesta
 		String roomID = activeRoom.getRoomID();
 		activeRoom = db.getRoom(roomID);
 	}
 
     /**
-     * Lisï¿½ï¿½ tyï¿½pisteeseen puhelinnumeron. Jos puhelinnumero on jo
-     * jollakin muulla tyï¿½pisteellï¿½, se siirtyy.
+     * Lisää työpisteeseen puhelinnumeron. Jos puhelinnumero on jo
+     * jollakin muulla työpisteellä, se siirtyy.
      *
-     * @param post tyï¿½piste
-     * @param phone lisï¿½ttï¿½vï¿½ puhelinnumero
-     * @throws IllegalArgumentException jos tyï¿½piste tai puhelinnumero on null
+     * @param post työpiste
+     * @param phone lisättävä puhelinnumero
+     * @throws IllegalArgumentException jos työpiste tai puhelinnumero on null
      */
 
     public void addPhoneNumber(Post post, PhoneNumber phone) {
@@ -749,10 +749,10 @@ public class Session {
         if(phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
         }
-    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen tyï¿½pisteeseen
+    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen
     	PhoneNumber newPhone = new PhoneNumber(phone, post);
     	if(db.updatePhoneNumber(newPhone)) {
-    		// jos ollaan nï¿½yttï¿½mï¿½ssï¿½ tï¿½tï¿½ samaa huonetta, pï¿½ivitetï¿½ï¿½n sen tiedot
+    		// jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
     		if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
     			this.switchActiveRoom();
     		}
@@ -765,7 +765,7 @@ public class Session {
     }
 
     /**
-     * Poistaa tyï¿½pisteestï¿½ puhelinnumeron. Numero vapautuu.
+     * Poistaa työpisteestä puhelinnumeron. Numero vapautuu.
      *
      * @param phone poistettava puhelinnumero
      * @throws IllegalArgumentException jos puhelinnumero on null
@@ -775,13 +775,13 @@ public class Session {
         if(phone == null) {
             throw new IllegalArgumentException();
         }
-    	// luodaan puhelinnumero-oliosta versio, joka ei viittaa mihinkï¿½ï¿½n tyï¿½pisteeseen
+    	// luodaan puhelinnumero-oliosta versio, joka ei viittaa mihinkään työpisteeseen
     	//PhoneNumber newPhone = new PhoneNumber(phone, null);
     	if(db.removePhoneNumberFromPost(phone)) {
-    		// ei tietoa ollaanko juuri tï¿½tï¿½ nï¿½yttï¿½mï¿½ss, mutta pï¿½ivitetï¿½ï¿½n silti
+    		// ei tietoa ollaanko juuri tätä näyttämässä, mutta päivitetään silti
     		// vrt. tarkastukset updatePhoneNumberissa ^^
     		this.switchActiveRoom();
-    		// nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
+    		// nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille
     		obsman.notifyObservers(NeroObserverTypes.ROOMS);
             setStatusMessage("Puhelinnumero poistettu työpisteestä.");
     	} else {
@@ -792,10 +792,10 @@ public class Session {
     /* Dataolioiden tarvitsemat tiedonhakuoperaatiot */
     
 	/**
-	 * Palauttaa henkilï¿½ï¿½n liittyvï¿½t tyï¿½sopimukset tï¿½mï¿½nhetkisellï¿½ aikavï¿½lillï¿½.
-	 * @param person henkilï¿½, jonka tyï¿½sopimukset halutaan
-	 * @return henkilï¿½n tyï¿½sopimukset
-     * @throws IllegalArgumentException jos henkilï¿½ on null
+	 * Palauttaa henkilöön liittyvät työsopimukset tämänhetkisellä aikavälillä.
+	 * @param person henkilö, jonka työsopimukset halutaan
+	 * @return henkilön työsopimukset
+     * @throws IllegalArgumentException jos henkilö on null
 	 */
 	public Contract[] getContracts(Person person) {
         if(person == null) {
@@ -805,9 +805,9 @@ public class Session {
 	}
 	
 	/**
-	 *  Sama annetulle aikavï¿½lille
-	 * @param person henkilï¿½, jonka tyï¿½sopimukset halutaan
-	 * @param timeslice aikavï¿½li
+	 *  Sama annetulle aikavälille
+	 * @param person henkilö, jonka työsopimukset halutaan
+	 * @param timeslice aikaväli
 	 * @return sopimukset
 	 */
 	public Contract[] getContracts(Person person, TimeSlice timeslice){
@@ -815,10 +815,10 @@ public class Session {
 	}
 
 	/**
-	 * Palauttaa henkilï¿½ï¿½n liittyvï¿½t tyï¿½pistevaraukset tï¿½mï¿½nhetkisellï¿½ aikavï¿½lillï¿½.
-	 * @param person henkilï¿½, jonka tyï¿½pistevaraukset halutaan
-	 * @return henkilï¿½n tyï¿½pistevaraukset
-     * @throws IllegalArgumentException jos henkilï¿½ on null
+	 * Palauttaa henkilöön liittyvät työpistevaraukset tämänhetkisellä aikavälillä.
+	 * @param person henkilö, jonka työpistevaraukset halutaan
+	 * @return henkilön työpistevaraukset
+     * @throws IllegalArgumentException jos henkilö on null
 	 */
 	public Reservation[] getReservations(Person person) {
         if(person == null) {
@@ -828,12 +828,12 @@ public class Session {
 	}
 
 	/**
-	 * Palauttaa tyï¿½pisteeseen liittyvï¿½t tyï¿½pistevaraukset tï¿½mï¿½nhetkisellï¿½ aikavï¿½lillï¿½.
-     * Varaukset palautetaan jï¿½rjestettynï¿½ ensisijaisesti alkuajankohdan, toissijaisesti
+	 * Palauttaa työpisteeseen liittyvät työpistevaraukset tämänhetkisellä aikavälillä.
+     * Varaukset palautetaan järjestettynä ensisijaisesti alkuajankohdan, toissijaisesti
      * loppuajankohdan mukaan.
-	 * @param post tyï¿½piste, jonka tyï¿½pistevaraukset halutaan
-	 * @return tyï¿½pisteen varaukset
-     * @throws IllegalArgumentException jos tyï¿½piste on null
+	 * @param post työpiste, jonka työpistevaraukset halutaan
+	 * @return työpisteen varaukset
+     * @throws IllegalArgumentException jos työpiste on null
 	 */
 	public Reservation[] getReservations(Post post) {
         if(post == null) {
@@ -843,8 +843,8 @@ public class Session {
 	}
 
 	/**
-	 * Asettaa tekstimuotoisen viestin kï¿½yttï¿½liittymï¿½n nï¿½ytettï¿½vï¿½ksi ja
-	 * tulostaa sen System.out.println():llï¿½
+	 * Asettaa tekstimuotoisen viestin käyttöliittymän näytettäväksi ja
+	 * tulostaa sen System.out.println():lla
 	 * @param message viesti
 	 */
 	public void setStatusMessage(String message) {
@@ -854,7 +854,7 @@ public class Session {
 	}
 	
 	/**
-	 * Asettaa tekstimuotoisen viestin kï¿½yttï¿½liittymï¿½n nï¿½ytettï¿½vï¿½ksi.
+	 * Asettaa tekstimuotoisen viestin käyttöliittymän näytettäväksi.
 	 * @param message viesti
 	 */
 	public void setStatusMessageNoPrint(String message) {
@@ -903,10 +903,10 @@ public class Session {
             db.addRoomKeyReservation(this.activeRoom, person, timeslice);
         }
         
-	/* Kuuntelijoihin liittyvï¿½t operaatiot */
+	/* Kuuntelijoihin liittyvät operaatiot */
 	
     /**
-     * Rekisterï¿½i kuuntelijan jollekin tapahtumatyypille. Kuuntelijalle
+     * Rekisteröi kuuntelijan jollekin tapahtumatyypille. Kuuntelijalle
      * ilmoitetaan, kun valituntyyppinen muutos tapahtuu.
      *
      * @param type kuuntelijan tyyppi
