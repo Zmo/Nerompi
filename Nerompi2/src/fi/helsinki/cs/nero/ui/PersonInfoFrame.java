@@ -289,7 +289,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
             }
         });
 
-        kannykkaLabel.setText("jLabel3");
+        kannykkaLabel.setText("---");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -342,7 +342,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(608, 608, 608))
+                .addGap(95, 95, 95))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,7 +482,8 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_MoreButtonActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        this.dispose();
+        AltPhonenumberDialog apd = new AltPhonenumberDialog(this, true, this.session);
+        //this.dispose();
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void lisaapoistaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lisaapoistaButtonActionPerformed

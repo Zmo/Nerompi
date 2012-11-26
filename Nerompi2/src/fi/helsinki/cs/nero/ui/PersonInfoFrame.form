@@ -87,7 +87,7 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="errorMessageLabel" min="-2" pref="795" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="608" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="95" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -444,7 +444,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="kannykkaLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jLabel3"/>
+        <Property name="text" type="java.lang.String" value="---"/>
       </Properties>
     </Component>
   </SubComponents>
