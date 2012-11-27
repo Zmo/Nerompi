@@ -8,7 +8,6 @@ import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
-import javax.swing.BorderFactory;
 import org.sourceforge.jcalendarbutton.*;
 
 /**

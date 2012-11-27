@@ -455,18 +455,16 @@ public class NeroDatabase implements NeroObserver {
 
                 PreparedStatement prepAddKannykka;
                 
-                String sqlQuery = "INSERT INTO kannykat (puh_id, kannukka_numero, htunnus, omistaja, tyo_numero)"
-                                + "VALUES (?,?,?,?,?)";
-                
+                String sqlQuery = "INSERT INTO HUONEVARAUS (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, TYO_NUMERO) VALUES ((SELECT MAX(PUH_ID) FROM KANNYKKA)+1, ?, ?, ?, ?)";
+                          
                 try {
                 
                 prepAddKannykka = this.connection.prepareStatement(sqlQuery);
                 
-                //prepAddKannykka.setString(1, puh_id);
-                prepAddKannykka.setString(2, kannukka);
-                prepAddKannykka.setString(3, htunnus);
-                prepAddKannykka.setString(4, omistaja);
-                prepAddKannykka.setString(5, tyo);
+                prepAddKannykka.setString(1, kannukka);
+                prepAddKannykka.setString(2, htunnus);
+                prepAddKannykka.setString(3, omistaja);
+                prepAddKannykka.setString(4, tyo);
 			
                 prepAddKannykka.executeUpdate();
                 
@@ -1725,5 +1723,4 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/* --- Muut metodit loppuu --- */
-
 }

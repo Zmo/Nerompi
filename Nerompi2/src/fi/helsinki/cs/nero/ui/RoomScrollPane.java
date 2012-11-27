@@ -141,6 +141,9 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
 
         this.getVerticalScrollBar().setUnitIncrement(16); // nopeuttaa scrollaamista
         this.generate();
+        
+        this.giveThisToSession();
+        
     }
     
     /**
@@ -387,5 +390,8 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         }
         
         this.generate();
-    } 
+    }
+    public void giveThisToSession(){
+        this.sessio.roomScrollPane = this;
+    }
 }

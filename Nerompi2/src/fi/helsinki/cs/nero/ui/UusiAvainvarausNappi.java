@@ -44,6 +44,21 @@ public class UusiAvainvarausNappi extends JButton {
             } else {
                 this.person.getSession().addRoomKeyReservation(this.person, this.person.getSession().getTimeScaleSlice());
                 this.person.getSession().setStatusMessageNoPrint("Avainvaraus luotu huoneeseen " + this.person.getSession().getActiveRoom() + ".");
+                
+//                /* NÄKYYKÖ MITÄÄN -tarkistus*/
+//                if (this.person.getSession().getActiveRoom().getRoomKeyReservations() != null) {
+//                    RoomKeyReservation[] avainvaraukset = this.person.getSession().getActiveRoom().getRoomKeyReservations();
+//                    for (int b = 0; b < avainvaraukset.length; b++) {
+//                        if (avainvaraukset[b] != null) {
+//                            System.out.println(avainvaraukset[b].getTimeSlice().getStartDate()
+//                                    + "\t" + avainvaraukset[b].getTimeSlice().getEndDate()
+//                                    + "\t" + avainvaraukset[b].getReserver() + " " + b);
+//                        }
+//                    }
+//                    System.out.println("\n------------------------------------------------------------------- " + this.person.getSession().getActiveRoom().getRoomKeyReservationNumber());
+//                }
+//                /* End of näkyvyystarkistus*/
+
             }
 
         }
