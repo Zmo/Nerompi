@@ -153,7 +153,7 @@ public class PhonenumberFrame extends JDialog
 		if(((JButton)arg0.getSource()).getName()== "reserve"){
 			if(allNumbers.getSelectedValue()!=null){
 				PhoneNumber p = (PhoneNumber)allNumbers.getSelectedValue();				
-				session.addPhoneNumber(post, p);
+				session.addPhoneNumber(post, p, null);
 				
 				//tyhjennet‰‰n vektorit
 				allNumbersVector.removeAllElements();
