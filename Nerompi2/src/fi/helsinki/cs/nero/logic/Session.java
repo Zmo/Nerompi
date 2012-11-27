@@ -22,13 +22,13 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 /**
- * Sessio, joka kuvaa kï¿½ynnissï¿½ olevan ohjelman tilaa. Toimii linkkinï¿½ kï¿½yttï¿½liittymï¿½n
- * ja tietokannan vï¿½lillï¿½. 
+ * Sessio, joka kuvaa käynnissä olevan ohjelman tilaa. Toimii linkkinä käyttöliittymän
+ * ja tietokannan välillä. 
  */
 public class Session {
 	
 	/**
-	 * Pitï¿½ï¿½ kirjaa tarkkailijoista, jotka hoitavat pï¿½ivitykset kï¿½yttï¿½liittymï¿½n nï¿½kymï¿½ï¿½n.
+	 * Pitää kirjaa tarkkailijoista, jotka hoitavat päivitykset käyttöliittymän näkymään.
 	 */
     private NeroObserverManager obsman;
     
@@ -38,7 +38,7 @@ public class Session {
     private NeroDatabase db;
 
     
-    /* henkilï¿½ihin (getFilteredPeople) vaikuttavat hakuehdot */
+    /* henkilöihin (getFilteredPeople) vaikuttavat hakuehdot */
     
     /**
      * Aikajakso, hakuehto. Ei voi olla null.
@@ -46,7 +46,7 @@ public class Session {
     private TimeSlice timescale;
     
     /**
-     * Henkilï¿½n nimi, hakuehto. Voi olla tyhjï¿½ merkkijono, mutta ei voi olla null.
+     * Henkilön nimi, hakuehto. Voi olla tyhjä merkkijono, mutta ei voi olla null.
      */
 	private String personName;
 	
@@ -56,17 +56,17 @@ public class Session {
 	private Project project;
 	
 	/**
-	 * Nï¿½ytetï¿½ï¿½nkï¿½ vain pï¿½ï¿½ttyvï¿½t sopimukset? 
+	 * Näytetäänkö vain päättyvät sopimukset? 
 	 */
 	private boolean showEndingContracts;
 	
 	/**
-	 * Nï¿½ytetï¿½ï¿½nkï¿½ vain ne, joilta puuttuu tyï¿½piste? 
+	 * Näytetäänkö vain ne, joilta puuttuu työpiste? 
 	 */
 	private boolean withoutPost;
 	
 	/**
-	 * Nï¿½ytetï¿½ï¿½nkï¿½ vain osa-aikaiset ?
+	 * Näytetäänkö vain osa-aikaiset ?
 	 */
 	private boolean partTimeTeachersOnly;
         
@@ -90,13 +90,13 @@ public class Session {
 	private TimeSlice temporaryTimescaleSlice;
 	
 	/**
-	 * Huoneen nimi, hakuehto. Voi olla tyhjï¿½ merkkijono. Ei voi olla null.
+	 * Huoneen nimi, hakuehto. Voi olla tyhjä merkkijono. Ei voi olla null.
 	 */
 	private String roomName;
 	
 	/**
-	 * Montako tyï¿½pistettï¿½ maksimissaan tyï¿½huoneessa, hakuehto.
-     * Jos arvo on -1, ei tyï¿½pisteiden mï¿½ï¿½rï¿½ rajaa hakua.
+	 * Montako työpistettä maksimissaan työhuoneessa, hakuehto.
+     * Jos arvo on -1, ei työpisteiden määrä rajaa hakua.
 	 */
 	private int maxPosts;
 
@@ -226,8 +226,8 @@ public class Session {
     }
 
     /**
-     * Palauttaa tarkasteltavan aikavï¿½lin.
-     * @return Aikavï¿½li TimeSlice-oliona.
+     * Palauttaa tarkasteltavan aikavälin.
+     * @return Aikaväli TimeSlice-oliona.
      */
     public TimeSlice getFilterTimescale() {
         return timescale;
@@ -240,7 +240,7 @@ public class Session {
     public void setFilterProject(Project project) {
     	this.project = project;
     	obsman.notifyObservers(NeroObserverTypes.FILTER_PROJECT);
-    	 // tarvitaanko? kyllï¿½ tarvitaan, PersonScrollPane ei kuuntele projektia
+    	 // tarvitaanko? kyllä tarvitaan, PersonScrollPane ei kuuntele projektia
     	obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
     }
     
@@ -253,8 +253,8 @@ public class Session {
     }
 
     /**
-     * Asettaa hakuehtoja rajaavan henkilï¿½n nimen.
-     * @param personName Henkilï¿½n nimi.
+     * Asettaa hakuehtoja rajaavan henkilön nimen.
+     * @param personName Henkilön nimi.
      * @throws IllegalArgumentException jos annettu nimi on null
      */
     public void setFilterPersonName(String personName) {
@@ -266,8 +266,8 @@ public class Session {
     }
     
     /**
-     * Palauttaa hakuehtoja rajaavan henkilï¿½n nimi 
-     * @return henkilï¿½n nimi
+     * Palauttaa hakuehtoja rajaavan henkilön nimi 
+     * @return henkilön nimi
      */
     public String getFilterPersonName() {
     	return personName;
@@ -295,8 +295,8 @@ public class Session {
     }
 
     /**
-     * Asettaa hakuehtoja rajaavan arvon sille, nï¿½ytetï¿½ï¿½nkï¿½ vain ne
-     * henkilï¿½t joiden tyï¿½sopimukset ovat loppumassa tarkasteltavalla aikavï¿½lillï¿½.
+     * Asettaa hakuehtoja rajaavan arvon sille, näytetäänkö vain ne
+     * henkilöt joiden työsopimukset ovat loppumassa tarkasteltavalla aikavälillä.
      * @param showEndingContracts Rajataanko haku.
      */
     public void setFilterEndingContracts(boolean showEndingContracts) {
@@ -305,8 +305,8 @@ public class Session {
     }
     
     /**
-     * Palauttaa tiedon siitï¿½, nï¿½ytetï¿½ï¿½nkï¿½ vain ne henkilï¿½t, joiden tyï¿½sopimukset ovat
-     * loppumassa tarkasteltavalla aikavï¿½lillï¿½.
+     * Palauttaa tiedon siitä, näytetäänkö vain ne henkilöt, joiden työsopimukset ovat
+     * loppumassa tarkasteltavalla aikavälillä.
      * @return rajataanko haku
      */
     public boolean getFilterEndingContracts() {
@@ -648,25 +648,13 @@ public class Session {
             end = timescale.getEndDate();
         }
         
-        // Etsitään vapaa jakso
-        Reservation[] res = person.getReservations();
-        int i;
-        for(i=0; i<res.length && res[i].getTimeSlice().contains(start); ++i) {
-        	// siirretään alkupäivä varauksen päättymispäivään
-        	start = new Date(res[i].getTimeSlice().getEndDate().getTime());
-                if(i < res.length) { // varauksia on vielä lisää
-                        // siirretään loppupäivä seuraavan varauksen alkamispäivään
-                        System.out.println("Paikka 2 end 1: " + end);
-                	end = new Date(res[i].getTimeSlice().getStartDate().getTime()/* - TimeSlice.ONEDAY*/);
-                        System.out.println("Paikka 2 end 2: " + end);
-                }
-        }
-
         TimeSlice reservationTime = new TimeSlice(start, end);
-        if(reservationTime.length() < 1 /*!(reservationTime.getStartDate().before(reservationTime.getEndDate()))*/) {
+        if (reservationTime.length() < 1) {
                 System.out.println(" - Alku:   " + reservationTime.getStartDate() + 
                                  "\n - Loppu:  " + reservationTime.getEndDate() + 
-                                 "\n - Pituus: " + reservationTime.length());
+                                 "\n - Pituus: " + reservationTime.length() +
+                                 "\n - Alkup. timeslice alku:  " + this.timescaleSlice.getStartDate() +
+                                 "\n - Alkup. timeslice loppu: " + this.timescaleSlice.getEndDate());
         	setStatusMessage("Henkilöllä on jo työpiste aikavälillä " + timeSlice);
         	return;
         }
