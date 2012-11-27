@@ -482,7 +482,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_MoreButtonActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        AltPhonenumberDialog apd = new AltPhonenumberDialog(this, true, this.session);
+        AltPhonenumberDialog apd = new AltPhonenumberDialog(this, true, this.session, this.person);
         //this.dispose();
     }//GEN-LAST:event_CancelButtonActionPerformed
 

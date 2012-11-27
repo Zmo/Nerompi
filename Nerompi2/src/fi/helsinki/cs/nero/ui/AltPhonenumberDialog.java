@@ -4,15 +4,13 @@
  */
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.logic.Session;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -24,23 +22,37 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
         implements ListSelectionListener, ActionListener, NeroObserver{
 
     private Vector allNumbersVector;
+    private Vector reservedNumbersVector;
+    private Person person;
     /**
      * Creates new form AltPhonenumberDialog
      */
-    public AltPhonenumberDialog(java.awt.Frame parent, boolean modal, Session session) {
+    public AltPhonenumberDialog(java.awt.Frame parent, boolean modal, Session session, Person person) {
         super(parent, modal);
         initComponents();
         
+        this.person = person;
         allNumbersVector = new Vector();
+        reservedNumbersVector = new Vector();
+        
 	    PhoneNumber[] numberArray = session.getAllPhoneNumbers();
 	    for(int i=0; i < numberArray.length; i++){
-    	    allNumbersVector.add(numberArray[i]);
-	    }	
-	    		
-		allnumbersList.setListData(allNumbersVector);
+                allNumbersVector.add(numberArray[i]);
+//                do linking structures first
+//                if (numberArray[i] == person.) {
+//
+//                }
+	    }                       
+		allnumbersList.setListData(allNumbersVector);                //allnumbersList.getParent().
                 allnumbersList.setFixedCellHeight(20);
                 allnumbersList.setFixedCellWidth(15);
                 allnumbersList.addListSelectionListener(this);
+                
+                //hae henkilollen varatut puhelimet
+                reservednumbersList.setListData(reservedNumbersVector);
+                reservednumbersList.setFixedCellHeight(20);
+                reservednumbersList.setFixedCellWidth(15);
+                reservednumbersList.addListSelectionListener(this);
                 
                 //phonenumberPane.add(allnumbersList);
                 
@@ -56,8 +68,6 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        phonenumberPane = new javax.swing.JScrollPane();
-        allnumbersList = new javax.swing.JList();
         personnamePane = new javax.swing.JScrollPane();
         reservednumbersList = new javax.swing.JList();
         varaaButton = new javax.swing.JButton();
@@ -65,25 +75,13 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         okButton = new javax.swing.JButton();
+        allnumbersPane = new javax.swing.JScrollPane();
+        allnumbersList = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(java.awt.Color.white);
         setForeground(java.awt.Color.white);
         setIconImage(null);
-
-        phonenumberPane.setToolTipText("");
-
-        allnumbersList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        allnumbersList.setFont(new java.awt.Font("Century Schoolbook L", 1, 13)); // NOI18N
-        allnumbersList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        allnumbersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        allnumbersList.setMaximumSize(new java.awt.Dimension(55, 250));
-        allnumbersList.setPreferredSize(new java.awt.Dimension(55, 250));
-        phonenumberPane.setViewportView(allnumbersList);
 
         personnamePane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -122,18 +120,27 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
             }
         });
 
+        allnumbersList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        allnumbersList.setFont(new java.awt.Font("Century Schoolbook L", 1, 14)); // NOI18N
+        allnumbersList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        allnumbersPane.setViewportView(allnumbersList);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
+                        .addGap(27, 27, 27)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(phonenumberPane, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addComponent(allnumbersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(vapautaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -141,12 +148,13 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
                             .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(personnamePane, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(52, 52, 52)
-                        .addComponent(jLabel2)))
-                .addContainerGap(34, Short.MAX_VALUE))
+                        .addComponent(jLabel2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(personnamePane, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,35 +164,32 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(allnumbersPane)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(varaaButton)
                         .addGap(18, 18, 18)
                         .addComponent(vapautaButton)
                         .addGap(59, 59, 59)
-                        .addComponent(okButton)
-                        .addContainerGap(78, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(phonenumberPane, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(personnamePane, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(okButton))
+                    .addComponent(personnamePane))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void varaaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_varaaButtonActionPerformed
-        // TODO add your handling code here:
+        reservedNumbersVector.add(allnumbersList.getSelectedValue());       
     }//GEN-LAST:event_varaaButtonActionPerformed
 
     private void vapautaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vapautaButtonActionPerformed
-        // TODO add your handling code here:
+        reservedNumbersVector.remove(reservednumbersList.getSelectedValue());
     }//GEN-LAST:event_vapautaButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
     /**
@@ -217,7 +222,7 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AltPhonenumberDialog dialog = new AltPhonenumberDialog(new javax.swing.JFrame(), true, null);
+                AltPhonenumberDialog dialog = new AltPhonenumberDialog(new javax.swing.JFrame(), true, null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -230,11 +235,11 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList allnumbersList;
+    private javax.swing.JScrollPane allnumbersPane;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton okButton;
     private javax.swing.JScrollPane personnamePane;
-    private javax.swing.JScrollPane phonenumberPane;
     private javax.swing.JList reservednumbersList;
     private javax.swing.JButton vapautaButton;
     private javax.swing.JButton varaaButton;
@@ -242,7 +247,7 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
