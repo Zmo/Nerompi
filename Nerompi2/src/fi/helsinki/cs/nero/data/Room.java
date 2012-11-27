@@ -93,13 +93,15 @@ public class Room {
 	 * @throws IllegalArgumentException jos annettu taulukko on null
 	 * @throws IllegalStateException jos metodia kutsutaan toistamiseen
 	 */
-	public void setPosts(Post[] posts) {
-		if(posts == null)
-			throw new IllegalArgumentException();
-		if(this.posts != null)
-			throw new IllegalStateException();
-		this.posts = posts;
-	}
+        public void setPosts(Post[] posts) {
+            if (posts == null) {
+                    throw new IllegalArgumentException();
+            }
+            if (this.posts != null) {
+                throw new IllegalStateException();
+            }
+            this.posts = posts;
+        }
         
         /** Nerompi
          * Lis‰‰ huoneelle annetun avainvarauksen

@@ -14,6 +14,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.ui.RoomScrollPane;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -119,6 +120,7 @@ public class Session {
 	
 	private int cursortype;
 	private boolean cursorlocked;
+        public RoomScrollPane roomScrollPane;
 	
 	/**
 	 * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman kï¿½ynnistyessï¿½.
@@ -139,6 +141,7 @@ public class Session {
             statusMessage = new String("");
             cursortype = java.awt.Cursor.DEFAULT_CURSOR;
             cursorlocked = false;
+            this.roomScrollPane = null;
 	}
 	
 	/**
@@ -892,7 +895,11 @@ public class Session {
         }
         
         public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
+            this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservationNumber(), this.getActiveRoom(), person.getName(), timeslice, this));
             db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+            this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+            
+            
         }
         
 	/* Kuuntelijoihin liittyvät operaatiot */
