@@ -233,7 +233,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         personNameLabel.addMouseListener(new PersonNameLabelListener());
                         header.add(personNameLabel);
                         
-                        UusiVarausPopup varausNappi = new UusiVarausPopup(personIterator.getPerson());
+                        UusiVarausNappi varausNappi = new UusiVarausNappi(personIterator.getPerson());
                         varausNappi.setBorder(loweredEtched);
                         varausNappi.setBackground(HEADER_BG);
                         header.add(varausNappi);
@@ -290,6 +290,20 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 						
 			personsInfo.add(extraHeader);
 			personsInfo.add(header);
+                        JPanel avainPaneeli = new JPanel();
+                        GridLayout gridLayout = new GridLayout();
+                        gridLayout.setColumns(1);
+                        
+                        /* Henkilön avainvaraukset - työn alla*/
+                        /*int rivimaara = 0;
+                        for (rivimaara = 0; rivimaara < 10; rivimaara++){
+                            JLabel tayte = new JLabel("-> " + rivimaara);
+                            avainPaneeli.add(tayte);
+                        }
+                        gridLayout.setRows(rivimaara);
+                        avainPaneeli.setLayout(gridLayout);
+                        personsInfo.add(avainPaneeli);*/
+                        /* end of avainvaraukset */
 			
 			while(rowIterator.hasNext()) {
 				

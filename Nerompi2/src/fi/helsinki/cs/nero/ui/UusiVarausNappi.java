@@ -14,12 +14,12 @@ import javax.swing.JPopupMenu;
  *
  * @author rkolagus
  */
-public class UusiVarausPopup extends JButton {
+public class UusiVarausNappi extends JButton {
     Person person;
     JPopupMenu popupMenu;
     Post[] posts;
     
-    public UusiVarausPopup(Person person){
+    public UusiVarausNappi(Person person){
         this.setText("Uusi varaus");
         this.addMouseListener(new UusiVarausListener(this));
         this.person = person;

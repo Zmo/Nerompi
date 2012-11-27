@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -240,7 +241,6 @@ public class NeroDatabase implements NeroObserver {
 		this.posts = new Hashtable();
 		Collection roomPosts = new LinkedList();
 		Collection phoneNumbers = new LinkedList();
-
 		session.setStatusMessage("Ladataan huoneita...");
 		if(this.prepAllRooms == null) {
 			this.prepAllRooms = this.connection.prepareStatement(
@@ -1738,5 +1738,4 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/* --- Muut metodit loppuu --- */
-
 }

@@ -14,6 +14,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.ui.RoomScrollPane;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -119,6 +120,7 @@ public class Session {
 	
 	private int cursortype;
 	private boolean cursorlocked;
+        public RoomScrollPane roomScrollPane;
 	
 	/**
 	 * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman kï¿½ynnistyessï¿½.
@@ -139,11 +141,12 @@ public class Session {
             statusMessage = new String("");
             cursortype = java.awt.Cursor.DEFAULT_CURSOR;
             cursorlocked = false;
+            this.roomScrollPane = null;
 	}
 	
 	/**
 	 * Asettaa tarkasteltavan aikavï¿½lin takaisin vakioksi,
-	 * eli tï¿½stï¿½ pï¿½ivï¿½stï¿½ kolme kuukautta eteenpï¿½in
+	 * eli tästä päivästä kolme kuukautta eteenpäin
 	 */
 	public void resetTimescale() {
         Calendar nowCal = Calendar.getInstance();
@@ -151,7 +154,7 @@ public class Session {
                 nowCal.get(Calendar.MONTH),
                 nowCal.get(Calendar.DAY_OF_MONTH));
         Calendar cal2 = (Calendar)cal.clone();
-        // tï¿½stï¿½ pï¿½ivï¿½stï¿½ kolme kuukautta eteenpï¿½in
+        // tästä päivästä kolme kuukautta eteenpäin
         cal2.add(Calendar.MONTH, 3);
         this.timescale = new TimeSlice(cal.getTime(), cal2.getTime());
         // osa-aikavï¿½liksi koko aikavï¿½li
@@ -899,7 +902,11 @@ public class Session {
         }
         
         public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
+            this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservationNumber(), this.getActiveRoom(), person.getName(), timeslice, this));
             db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+            this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+            
+            
         }
         
 	/* Kuuntelijoihin liittyvät operaatiot */
