@@ -496,6 +496,13 @@ public class Session {
     	return db.getPhoneNumbers(post);
     }
     
+    public PhoneNumber[] getPhoneNumbers(Person person){
+        if(person == null) {
+            throw new IllegalArgumentException();
+        }
+    	return db.getPhoneNumbers(person);
+    }
+    
     /**
      * Palauttaa "kaikki" puhelinnumerot
      * ks. db:n vastaava metodi
@@ -734,9 +741,9 @@ public class Session {
      * @throws IllegalArgumentException jos työpiste tai puhelinnumero on null
      */
 
-    public void addPhoneNumber(Post post, PhoneNumber phone) {
-        if(post == null) {
-            throw new IllegalArgumentException("työpiste ei saa olla null");
+    public void addPhoneNumber(Post post, PhoneNumber phone, Person person) {
+        if(post == null && person == null) {
+            throw new IllegalArgumentException("työpiste ja henkilö eivät saa molemmat olla null");
         }
         if(phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
