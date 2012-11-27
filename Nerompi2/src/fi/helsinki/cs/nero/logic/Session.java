@@ -895,13 +895,16 @@ public class Session {
         }
         
         public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
-            this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservationNumber(), this.getActiveRoom(), person.getName(), timeslice, this));
+            this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getName(), timeslice, this));
             db.addRoomKeyReservation(this.activeRoom, person, timeslice);
             this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
-            
-            
         }
         
+        public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {
+            this.activeRoom.deleteRoomKeyReservation(roomKeyReservation);
+            db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
+            this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+        }
 	/* Kuuntelijoihin liittyvät operaatiot */
 	
     /**
