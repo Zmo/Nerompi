@@ -71,6 +71,10 @@ public class ButtonListener implements ActionListener {
                     ReportsWindow reports = new ReportsWindow();
                 }
                 
+                if(e.getActionCommand().equals("graphs")) {
+                    GraphWindow graphs = new GraphWindow(this.session);
+                }
+                
 //                if(e.getActionCommand().equals("henkilonLisatiedot")) {
 //                    JButton personIdButton = (JButton)e.getSource();
 //                    PersonInfoFrame infoframe = new PersonInfoFrame(personIdButton.getText());
