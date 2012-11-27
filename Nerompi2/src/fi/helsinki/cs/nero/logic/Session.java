@@ -146,7 +146,7 @@ public class Session {
 	
 	/**
 	 * Asettaa tarkasteltavan aikavï¿½lin takaisin vakioksi,
-	 * eli tï¿½stï¿½ pï¿½ivï¿½stï¿½ kolme kuukautta eteenpï¿½in
+	 * eli tästä päivästä kolme kuukautta eteenpäin
 	 */
 	public void resetTimescale() {
         Calendar nowCal = Calendar.getInstance();
@@ -154,7 +154,7 @@ public class Session {
                 nowCal.get(Calendar.MONTH),
                 nowCal.get(Calendar.DAY_OF_MONTH));
         Calendar cal2 = (Calendar)cal.clone();
-        // tï¿½stï¿½ pï¿½ivï¿½stï¿½ kolme kuukautta eteenpï¿½in
+        // tästä päivästä kolme kuukautta eteenpäin
         cal2.add(Calendar.MONTH, 3);
         this.timescale = new TimeSlice(cal.getTime(), cal2.getTime());
         // osa-aikavï¿½liksi koko aikavï¿½li

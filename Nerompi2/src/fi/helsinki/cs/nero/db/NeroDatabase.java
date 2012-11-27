@@ -1723,5 +1723,4 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/* --- Muut metodit loppuu --- */
-
 }

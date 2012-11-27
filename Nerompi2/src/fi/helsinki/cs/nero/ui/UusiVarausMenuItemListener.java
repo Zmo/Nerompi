@@ -14,10 +14,10 @@ import javax.swing.JMenuItem;
  * @author rkolagus
  */
 public class UusiVarausMenuItemListener implements ActionListener {
-    private UusiVarausPopup varausPopup;
+    private UusiVarausNappi varausPopup;
     private Post post;
     
-    public UusiVarausMenuItemListener(UusiVarausPopup varausPopup, Post post){
+    public UusiVarausMenuItemListener(UusiVarausNappi varausPopup, Post post){
         super();
         this.varausPopup = varausPopup;
         this.post = post;

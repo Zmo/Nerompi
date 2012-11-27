@@ -16,9 +16,9 @@ import javax.swing.JPopupMenu;
  */
 public class UusiVarausListener implements MouseListener {
     
-    UusiVarausPopup varausPopup;
+    UusiVarausNappi varausPopup;
     
-    public UusiVarausListener(UusiVarausPopup popupMenu){
+    public UusiVarausListener(UusiVarausNappi popupMenu){
         super();
         this.varausPopup = popupMenu;
     }
