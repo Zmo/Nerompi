@@ -5,6 +5,7 @@ import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.logic.Session;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -24,27 +25,27 @@ public class RoomKeyReservations {
         this.room = room;
         this.rows = new LinkedList();
         
-        RoomKeyReservation[] rkreservations = room.getRoomKeyReservations();
+        ArrayList<RoomKeyReservation> rkreservations = room.getRoomKeyReservations();
         
         Row reservationsRow = new Row(scale, session, person);
         this.rows.add(reservationsRow);
         
-        for(int i=0; i<room.getRoomKeyReservationNumber(); ++i) {
+        for(int i=0; i<room.getRoomKeyReservations().size(); ++i) {
             boolean added = false;
             Iterator rowsIterator = this.rows.iterator();
             
             //Yritetään lisätä jokaiselle olemassaolevalle riville.
             while(rowsIterator.hasNext()) {            
                 Row row = (Row)rowsIterator.next();
-                
-                if(row.addReservation(rkreservations[i], false)) {
+
+                if(row.addReservation(rkreservations.get(i), false)) {
                     added = true;
                     break;
                 }
             }
             if(!added) { //Luodaan uusi rivi jossa varausjakso esitetään.
                 Row newRow = new Row(scale, session, person);
-                newRow.addReservation(rkreservations[i], false);
+                newRow.addReservation(rkreservations.get(i), false);
                 this.rows.add(newRow);
             }
         }

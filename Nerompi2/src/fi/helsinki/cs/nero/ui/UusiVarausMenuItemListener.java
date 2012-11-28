@@ -7,7 +7,6 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Post;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JMenuItem;
 
 /**
  *

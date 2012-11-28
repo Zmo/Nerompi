@@ -196,14 +196,8 @@ public class TimelineElement extends JPanel {
             if (this.getTimeSlice().getStartDate() == null || this.getTimeSlice().getEndDate() == null) {
                 huoneKentta.setText(" ");
                 paivat.add(huoneKentta);
-            } else if ((this.getTimeSlice().getEndDate().getYear()
-                    - this.getTimeSlice().getStartDate().getYear())
-                    > 60) {
-                huoneKentta.setText(/*person.getPerson().getTitteli()*/"Tittelikenttä");
-
-
-                paivat.add(huoneKentta);
-            } else {
+            }
+            else {
                 JLabel valimerkki = new JLabel(" - ");
                 huoneKentta.setText(label + " ");
                 paivat.setBackground(HEADER_BG);

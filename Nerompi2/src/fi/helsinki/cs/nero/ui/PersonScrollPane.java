@@ -24,6 +24,7 @@ import javax.swing.border.EtchedBorder;
 import fi.helsinki.cs.nero.NeroApplication;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Reservation;
+import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;

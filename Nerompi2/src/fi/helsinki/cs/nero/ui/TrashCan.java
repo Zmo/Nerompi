@@ -82,8 +82,8 @@ public class TrashCan extends JPanel{
             this.sessio.deleteReservation(reservation);
             return;
         }
-    }    
-
+        }
+   
 }
 
 
