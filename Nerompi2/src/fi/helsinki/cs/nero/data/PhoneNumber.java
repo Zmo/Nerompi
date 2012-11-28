@@ -26,6 +26,8 @@ public class PhoneNumber implements Comparable {
 	private Session session;
         
         private Person person;
+        
+        private String personID;
 	
 	
 	/**
@@ -37,10 +39,9 @@ public class PhoneNumber implements Comparable {
 	 * @param phoneNumber Numero Stringinä.
 	 * @throws IllegalArgumentException Jos annettu Session tai phoneNumberID null.
 	 */
-	public PhoneNumber(Session session, String phoneNumberID, Post post, String phoneNumber, Person person){
-		
-		
-		if (session == null || phoneNumberID == null){
+	public PhoneNumber(Session session, String phoneNumberID, Post post, String phoneNumber, String personID){
+				
+		if (session == null || phoneNumberID == null) {
 			throw new IllegalArgumentException();
 		}
 		this.person = person;
@@ -48,6 +49,7 @@ public class PhoneNumber implements Comparable {
 		this.phoneNumberID = phoneNumberID;
 		this.post = post;
 		this.phoneNumber = phoneNumber;
+                this.personID = personID;
 	}
 
 	/**
@@ -56,11 +58,12 @@ public class PhoneNumber implements Comparable {
 	 * @param template Olion pohja
 	 * @param post uusi työpiste
 	 */
-	public PhoneNumber(PhoneNumber template, Post post) {
+	public PhoneNumber(PhoneNumber template, Post post, String personID) {
 		this.session = template.session;
 		this.phoneNumberID = template.phoneNumberID;
 		this.phoneNumber = template.phoneNumber;
 		this.post = post;
+                this.personID = personID;
 	}
 	
 	/**
@@ -91,12 +94,12 @@ public class PhoneNumber implements Comparable {
 		
 	}
 
-        public Person getPerson() {
-            return person;
+        public String getPersonID() {
+            return personID;
         }
 
-        public void setPerson(Person person) {
-            this.person = person;
+        public void setPersonID(String personID) {
+            this.personID = personID;
         }
 
 	/**

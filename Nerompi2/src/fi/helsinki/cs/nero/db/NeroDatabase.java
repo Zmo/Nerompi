@@ -30,6 +30,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Jyrki Muukkonen
@@ -263,7 +265,7 @@ public class NeroDatabase implements NeroObserver {
 		}
 		if(this.prepPostPhoneNumbers == null) {
 			this.prepPostPhoneNumbers = this.connection.prepareStatement(
-					"SELECT id, puhelinnumero FROM PUHELINNUMERO WHERE tp_id = ?"
+					"SELECT id, puhelinnumero, h_tunnus FROM PUHELINNUMERO WHERE tp_id = ?"
 			);
 		}
                 if(this.prepRoomKeyReservations == null) {
@@ -301,7 +303,8 @@ public class NeroDatabase implements NeroObserver {
                         while(pnrs.next()) {
                             PhoneNumber pn = new PhoneNumber(this.session,
                                 pnrs.getString("id"), post,
-                                pnrs.getString("puhelinnumero"), null);
+                                pnrs.getString("puhelinnumero"), 
+                                pnrs.getString("h_tunnus"));
                             numbers.add(pn);
                             numbercount++;
                         }
@@ -345,7 +348,7 @@ public class NeroDatabase implements NeroObserver {
 		session.setStatusMessage("Ladataan puhelinnumeroita...");
 		if(this.prepAllPhoneNumbers == null) {
 			this.prepAllPhoneNumbers = this.connection.prepareStatement(
-					"SELECT id, puhelinnumero, tp_id FROM PUHELINNUMERO"
+					"SELECT id, puhelinnumero, tp_id, h_tunnus FROM PUHELINNUMERO"
 			);
                         
 		}
@@ -357,12 +360,13 @@ public class NeroDatabase implements NeroObserver {
 			String tpid = rs.getString("tp_id");
 			String pnid = rs.getString("id");
 			String number = rs.getString("puhelinnumero");
+                        String htunnus = rs.getString("h_tunnus");
 			if(tpid == null) {
-				pn = new PhoneNumber(this.session, pnid, null, number, null);
+				pn = new PhoneNumber(this.session, pnid, null, number, htunnus);
 				tpid = "free";
 			} else {
 				pn = new PhoneNumber(this.session, pnid, 
-						(Post)this.posts.get(tpid), number, null);
+						(Post)this.posts.get(tpid), number, htunnus);
 			}
 			Collection tpn = (Collection)this.phoneNumbers.get(tpid);
 			if(tpn == null) {
@@ -1164,6 +1168,7 @@ public class NeroDatabase implements NeroObserver {
                                     + " set puhelin_tyo=?"
                                     + " where htunnus=?";
             try {
+                System.out.println("herraprr");
                 PreparedStatement prep = this.connection.prepareStatement(updatePhoneQuery);
                 prep.setString(1, number);
                 prep.setString(2, personID);
@@ -1560,9 +1565,13 @@ public class NeroDatabase implements NeroObserver {
                     rs.next();
                     if(rs.getString("HENKLO_HTUNNUS")!=null)
                         this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
+                    System.out.println("megadurr");
                     /* XXX Raskas operaatio */
+                    
                     loadRooms();
+                    
                     loadPhoneNumbers();
+
 		}
             } catch (SQLException e) {
             	System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -1660,20 +1669,33 @@ public class NeroDatabase implements NeroObserver {
 		return numbers;
 	}
 	
-        public PhoneNumber[] getPhoneNumbers(Person person) {
-            
-            String key = "free";
-            if(person != null) {
-                    key = person.getPersonID();
-            } 
-            Collection c = (Collection)this.phoneNumbers.get(key);
-            if (c == null) {
-                return new PhoneNumber[0];
-            }
-            PhoneNumber[] numbers = (PhoneNumber[])c.toArray(new PhoneNumber[0]);
-            Arrays.sort(numbers);
-            return numbers;
-        }
+//        public PhoneNumber[] getPhoneNumbers(String personID) {
+//            
+//            String sqlQuery = "SELECT puhelinnumero FROM puhelinnumero"
+//                            + "WHERE h_tunnus = ?";
+//        try {            
+//            PreparedStatement prep = this.connection.prepareStatement(sqlQuery);
+//            prep.setString(1, personID);
+//            prep.executeQuery();
+//                      
+//        } catch (SQLException ex) {
+//            Logger.getLogger(NeroDatabase.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//            
+//            
+//            
+//            String key = "free";
+//            if(personID != null) {
+//                    key = personID;
+//            } 
+//            Collection c = (Collection)this.phoneNumbers.get(key);
+//            if (c == null) {
+//                return new PhoneNumber[0];
+//            }
+//            PhoneNumber[] numbers = (PhoneNumber[])c.toArray(new PhoneNumber[0]);
+//            Arrays.sort(numbers);
+//            return numbers;
+//        }
 	/* --- Puhelinnumeroihin liittyv�t metodit loppuu --- */ 
 
 	/* --- Projekteihin liittyv�t metodit alkaa --- */ 

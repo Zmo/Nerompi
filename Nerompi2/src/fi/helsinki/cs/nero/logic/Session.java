@@ -499,13 +499,13 @@ public class Session {
     	return db.getPhoneNumbers(post);
     }
     
-    public PhoneNumber[] getPhoneNumbers(Person person){
-        if(person == null) {
-            throw new IllegalArgumentException();
-        }
-    	return db.getPhoneNumbers(person);
-    }
-    
+//    public PhoneNumber[] getPhoneNumbers(String personID){
+//        if(personID == null) {
+//            throw new IllegalArgumentException();
+//        }
+//    	return db.getPhoneNumbers(personID);
+//    }
+//    
     /**
      * Palauttaa "kaikki" puhelinnumerot
      * ks. db:n vastaava metodi
@@ -744,26 +744,26 @@ public class Session {
      * @throws IllegalArgumentException jos työpiste tai puhelinnumero on null
      */
 
-    public void addPhoneNumber(Post post, PhoneNumber phone, Person person) {
-        if(post == null && person == null) {
+    public void addPhoneNumber(Post post, PhoneNumber phone, String personID) {
+        if(post == null && personID == null) {
             throw new IllegalArgumentException("työpiste ja henkilö eivät saa molemmat olla null");
         }
         if(phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
         }
-    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen
-    	PhoneNumber newPhone = new PhoneNumber(phone, post);
-    	if(db.updatePhoneNumber(newPhone)) {
-    		// jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
-    		if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
-    			this.switchActiveRoom();
-    		}
-    		// nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
-    		obsman.notifyObservers(NeroObserverTypes.ROOMS);
-            setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
-    	} else {
-            setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
-        }
+    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen, tai uuteen henkilöön
+            PhoneNumber newPhone = new PhoneNumber(phone, post, personID);
+            if(db.updatePhoneNumber(newPhone)) {
+                    // jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
+                    if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
+                            this.switchActiveRoom();
+                    }
+                    // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
+                    obsman.notifyObservers(NeroObserverTypes.ROOMS);
+                setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
+            } else {
+                setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
+            }
     }
 
     /**
