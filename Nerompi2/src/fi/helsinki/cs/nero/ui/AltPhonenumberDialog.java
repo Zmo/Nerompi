@@ -24,6 +24,7 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
     private Vector allNumbersVector;
     private Vector reservedNumbersVector;
     private Person person;
+    private Session session;
     /**
      * Creates new form AltPhonenumberDialog
      */
@@ -32,29 +33,33 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
         initComponents();
         
         this.person = person;
+        this.session = session;
+        
         allNumbersVector = new Vector();
         reservedNumbersVector = new Vector();
         
 	    PhoneNumber[] numberArray = session.getAllPhoneNumbers();
 	    for(int i=0; i < numberArray.length; i++){
                 allNumbersVector.add(numberArray[i]);
-//                do linking structures first
-//                if (numberArray[i] == person.) {
-//
-//                }
+
+                if (numberArray[i].getPhoneNumber().equals(this.person.getWorkPhone())) {
+                    reservedNumbersVector.add(i);
+                }
 	    }                       
-		allnumbersList.setListData(allNumbersVector);                //allnumbersList.getParent().
-                allnumbersList.setFixedCellHeight(20);
-                allnumbersList.setFixedCellWidth(15);
-                allnumbersList.addListSelectionListener(this);
-                
-                //hae henkilollen varatut puhelimet
-                reservednumbersList.setListData(reservedNumbersVector);
-                reservednumbersList.setFixedCellHeight(20);
-                reservednumbersList.setFixedCellWidth(15);
-                reservednumbersList.addListSelectionListener(this);
-                
-                //phonenumberPane.add(allnumbersList);
+            allnumbersList.setListData(allNumbersVector);                //allnumbersList.getParent().
+            allnumbersList.setFixedCellHeight(20);
+            allnumbersList.setFixedCellWidth(15);
+            allnumbersList.addListSelectionListener(this);
+
+            //hae henkilolle varatut puhelimet
+            reservednumbersList.setListData(reservedNumbersVector);
+            reservednumbersList.setFixedCellHeight(20);
+            reservednumbersList.setFixedCellWidth(15);
+            reservednumbersList.addListSelectionListener(this);
+
+            reservedNumbersVector.clear();
+            allNumbersVector.clear();
+            //phonenumberPane.add(allnumbersList);
                 
             this.setVisible(true);
     }
@@ -181,7 +186,35 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void varaaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_varaaButtonActionPerformed
-        reservedNumbersVector.add(allnumbersList.getSelectedValue());       
+     
+//        if(allnumbersList.getSelectedValue()!=null){
+//            PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
+//            //muuta sallimaan henkilöt
+        
+        //tämä seuraavaksi
+        
+//            session.addPhoneNumber(post, p);
+//
+//            //tyhjennetään vektorit
+//            allNumbersVector.removeAllElements();
+//            reservedNumbersVector.removeAllElements();
+//
+//            //päivitetään kaikki tiedot sessiolta (eli kannasta asti)
+//            PhoneNumber[] pn = session.getPhoneNumbers(post);
+//            for(int i=0; i < pn.length; i++){
+//                reservedNumbersVector.add(pn[i]);
+//                }	
+//            PhoneNumber[] pn2 = session.getAllPhoneNumbers();
+//            for(int i=0; i < pn2.length; i++){
+//            allNumbersVector.add(pn2[i]);
+//            }	
+//
+//            allnumbersList.setListData(allNumbersVector);				
+//            reservednumbersList.setListData(reservedNumbersVector);
+//            
+//            reservedNumbersVector.clear();
+//            allNumbersVector.clear();
+//        }         
     }//GEN-LAST:event_varaaButtonActionPerformed
 
     private void vapautaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vapautaButtonActionPerformed

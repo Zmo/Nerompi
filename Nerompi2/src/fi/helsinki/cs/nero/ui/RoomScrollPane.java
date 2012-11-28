@@ -322,7 +322,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         RoomKeyReservationLabel rkrlabel = new RoomKeyReservationLabel(sessio, this.activeRoom);
         rkrlabel.setBackground(POST_HEADER_BG);
         postsPanel.add(rkrlabel);
-        if(this.activeRoom.getRoomKeyReservations() != null) {
+        if(this.activeRoom.getRoomKeyReservations().size() > 0) {
             RoomKeyReservations rkreservations = new RoomKeyReservations(this.activeRoom, DAY_IN_PIXELS, sessio, null);
         
             LinkedList rows = rkreservations.getRows();

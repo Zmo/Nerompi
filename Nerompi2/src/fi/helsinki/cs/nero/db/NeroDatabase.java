@@ -301,7 +301,7 @@ public class NeroDatabase implements NeroObserver {
                         while(pnrs.next()) {
                             PhoneNumber pn = new PhoneNumber(this.session,
                                 pnrs.getString("id"), post,
-                                pnrs.getString("puhelinnumero"));
+                                pnrs.getString("puhelinnumero"), null);
                             numbers.add(pn);
                             numbercount++;
                         }
@@ -347,6 +347,7 @@ public class NeroDatabase implements NeroObserver {
 			this.prepAllPhoneNumbers = this.connection.prepareStatement(
 					"SELECT id, puhelinnumero, tp_id FROM PUHELINNUMERO"
 			);
+                        
 		}
 		ResultSet rs = prepAllPhoneNumbers.executeQuery();
 		
@@ -357,11 +358,11 @@ public class NeroDatabase implements NeroObserver {
 			String pnid = rs.getString("id");
 			String number = rs.getString("puhelinnumero");
 			if(tpid == null) {
-				pn = new PhoneNumber(this.session, pnid, null, number);
+				pn = new PhoneNumber(this.session, pnid, null, number, null);
 				tpid = "free";
 			} else {
 				pn = new PhoneNumber(this.session, pnid, 
-						(Post)this.posts.get(tpid), number);
+						(Post)this.posts.get(tpid), number, null);
 			}
 			Collection tpn = (Collection)this.phoneNumbers.get(tpid);
 			if(tpn == null) {
@@ -1481,7 +1482,6 @@ public class NeroDatabase implements NeroObserver {
          * @param reservation lisättävä huonevaraus
          */
         public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
-            //String idquery = "SELECT MAX(ID) FROM HUONEVARAUS";
             
             String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)";
                               
@@ -1495,6 +1495,21 @@ public class NeroDatabase implements NeroObserver {
                 prep.setDate(3, timeslice.getSQLStartDate());
                 prep.setDate(4, timeslice.getSQLEndDate());
                 prep.executeUpdate();
+            } catch(SQLException e) {
+                System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+        }
+        
+        public void deleteRoomKeyReservation(int id) {
+            
+            String updateQuery = "DELETE FROM huonevaraus where id=?";
+            
+            PreparedStatement prep;
+            
+            try {
+                prep = this.connection.prepareStatement(updateQuery);
+                prep.setInt(1, id);
+                prep.executeUpdate();                
             } catch(SQLException e) {
                 System.err.println("Tietokantavirhe: " + e.getMessage());
             }
@@ -1659,6 +1674,20 @@ public class NeroDatabase implements NeroObserver {
 		return numbers;
 	}
 	
+        public PhoneNumber[] getPhoneNumbers(Person person) {
+            
+            String key = "free";
+            if(person != null) {
+                    key = person.getPersonID();
+            } 
+            Collection c = (Collection)this.phoneNumbers.get(key);
+            if (c == null) {
+                return new PhoneNumber[0];
+            }
+            PhoneNumber[] numbers = (PhoneNumber[])c.toArray(new PhoneNumber[0]);
+            Arrays.sort(numbers);
+            return numbers;
+        }
 	/* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */ 
 
 	/* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 

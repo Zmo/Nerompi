@@ -28,7 +28,7 @@ public class GraphWindow extends javax.swing.JFrame {
 
     private Session session;
     
-    private Date today;
+    private Date startDate;
     
     private Date endDate;
     
@@ -39,12 +39,11 @@ public class GraphWindow extends javax.swing.JFrame {
      */
     public GraphWindow(Session session) {
         this.session = session;
-        this.today = new Date();
+        
         this.endDate = new Date();
-        if(today.getMonth()==12)
-            this.endDate.setMonth(1);
-        else
-            this.endDate.setMonth(today.getMonth()+1);
+        this.startDate = new Date();
+        this.startDate.setYear(endDate.getYear()-1);
+        
         this.plot = null;
         initComponents();
         //initGraph();
@@ -93,7 +92,7 @@ public class GraphWindow extends javax.swing.JFrame {
 
         jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jTextField1.setText(dateToShortString(today));
+        jTextField1.setText(dateToShortString(startDate));
 
         jTextField2.setText(dateToShortString(endDate));
 
@@ -169,13 +168,12 @@ public class GraphWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private String dateToShortString(Date date) {
-        //Calendar calendar = Calendar.getInstance();
-        //calendar.setTime(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
         if (date != null) {
-            String dateString = "";
-            dateString = dateString.concat(date.getDate() + ".");
-            dateString = dateString.concat((1 + date.getMonth()) + ".");
-            dateString = dateString.concat(new Integer((date.getYear()) + 1900).toString());
+            String dateString = ""+calendar.get(Calendar.DAY_OF_MONTH);
+            dateString = dateString.concat("."+(1+calendar.get(Calendar.MONTH)));
+            dateString = dateString.concat("."+calendar.get(Calendar.YEAR));
             return dateString;
         } else {
             return null;
@@ -185,7 +183,12 @@ public class GraphWindow extends javax.swing.JFrame {
     public void initPlot() {
         
     }
-    
+    /** Nerompi // TODO varauksien haku, tällä hetkellä kannasta ei haeta muita kuin tämänhetkiset????
+     * 
+     * @param date Päivämäärä jolta varaustiedot haetaan
+     * @return taulukko, jonka ensimmäinen alkio on työpisteiden kokonaismäärä ja 
+     * toinen alkio on varattujen työpisteiden määrä annettuna päivämääränä
+     */
     public int[] getPostOccupationData(Date date) {
         int totalPosts = 0;
         int occupiedPosts = 0;
@@ -226,7 +229,6 @@ public class GraphWindow extends javax.swing.JFrame {
         
         
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(WIDTH, today, today);
     }
     
     
