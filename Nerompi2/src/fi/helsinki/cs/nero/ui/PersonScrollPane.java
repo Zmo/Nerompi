@@ -32,6 +32,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import sun.util.calendar.CalendarDate;
@@ -296,14 +297,23 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         gridLayout.setColumns(1);
                         
                         /* Henkilön avainvaraukset - työn alla*/
-                        /*int rivimaara = 0;
-                        for (rivimaara = 0; rivimaara < 10; rivimaara++){
-                            JLabel tayte = new JLabel("-> " + rivimaara);
-                            avainPaneeli.add(tayte);
+                        int rivimaara = 0;
+                        RoomKeyReservation[] avainVarausLista = personIterator.getPerson().getRoomKeyReservations();
+                        for (rivimaara = 0; rivimaara < avainVarausLista.length; rivimaara++){
+                            Calendar alkupaiva = Calendar.getInstance();
+                            Calendar loppupaiva = Calendar.getInstance();
+                            alkupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getStartDate());
+                            loppupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getEndDate());
+                            String alkuTekstina = alkupaiva.get(Calendar.DAY_OF_MONTH) + "." + (alkupaiva.get(Calendar.MONTH)+1) + "." + alkupaiva.get(Calendar.YEAR);
+                            String loppuTekstina = loppupaiva.get(Calendar.DAY_OF_MONTH) + "." + (loppupaiva.get(Calendar.MONTH)+1) + "." + loppupaiva.get(Calendar.YEAR);
+                            JLabel avainKentta = new JLabel("Avainvaraus " + avainVarausLista[rivimaara].getTargetRoom().getRoomName() + ":" + alkuTekstina + " - " + loppuTekstina);
+                            
+                            avainPaneeli.add(avainKentta);
                         }
                         gridLayout.setRows(rivimaara);
+                        avainPaneeli.setBackground(HEADER_BG);
                         avainPaneeli.setLayout(gridLayout);
-                        personsInfo.add(avainPaneeli);*/
+                        personsInfo.add(avainPaneeli);
                         /* end of avainvaraukset */
 			
 			while(rowIterator.hasNext()) {
