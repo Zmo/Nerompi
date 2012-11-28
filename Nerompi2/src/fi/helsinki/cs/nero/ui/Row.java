@@ -137,7 +137,7 @@ public class Row {
         return this.add(reservation, true, resizable);
     }
     
-    public boolean addReservation(Object reservation, boolean resizable) {
+    public boolean addReservation(RoomKeyReservation reservation, boolean resizable) {
         return this.add(reservation, false, resizable);
     }
     

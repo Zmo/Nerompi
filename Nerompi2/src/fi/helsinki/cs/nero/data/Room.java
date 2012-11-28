@@ -42,7 +42,7 @@ public class Room {
 	private String description;
         
         /**Huoneeseen kohdistuvat avainvaraukset*/
-        private ArrayList roomKeyReservations;
+        private ArrayList<RoomKeyReservation> roomKeyReservations;
         
 	/**Vakio, joka kertoo ett? huoneessa ei ole yht??n ty?pistett?*/
 	public static final int NO_POSTS = 0;
@@ -81,7 +81,7 @@ public class Room {
 		this.roomName = roomName;
 		this.roomSize = roomSize;
 		this.description = description;
-                this.roomKeyReservations = new ArrayList();
+                this.roomKeyReservations = new ArrayList<RoomKeyReservation>();
 	}	
 
 	/**
@@ -106,36 +106,18 @@ public class Room {
          */
         public void addRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
             this.roomKeyReservations.add(roomKeyReservation);
-            
-            
-            
-//            RoomKeyReservation[] newArray;
-//            if(this.roomKeyReservationNumber == 0) {
-//                this.roomKeyReservations = new RoomKeyReservation[10];
-//                this.roomKeyReservations[0] = roomKeyReservation;
-//                ++roomKeyReservationNumber;
-//            } else if(this.roomKeyReservations.length==roomKeyReservationNumber) {
-//                newArray = new RoomKeyReservation[this.roomKeyReservationNumber*2];
-//                for(int i=0; i<this.roomKeyReservations.length; ++i) {
-//                    newArray[i] = this.roomKeyReservations[i];
-//                }
-//                newArray[roomKeyReservationNumber] = roomKeyReservation;
-//                this.roomKeyReservations = newArray;
-//                ++roomKeyReservationNumber;
-//            }
-//            else {
-//                this.roomKeyReservations[this.roomKeyReservationNumber] = roomKeyReservation;
-//                ++roomKeyReservationNumber;
-//            }
         }
         
         /** Nerompi
          * Poistaa huoneelta annetun avainvarauksen
          * @param roomKeyReservation poistettava avainvaraus
          */
-        public void deleteRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
-            if(this.roomKeyReservations.contains(roomKeyReservation))
+        public boolean deleteRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+            if(this.roomKeyReservations.contains(roomKeyReservation)) {
                 this.roomKeyReservations.remove(roomKeyReservation);
+                return true;
+            } else
+                return false;
         }
 	
 	/**
