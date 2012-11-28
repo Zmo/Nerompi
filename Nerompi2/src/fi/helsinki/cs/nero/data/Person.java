@@ -544,6 +544,10 @@ public class Person implements Comparable {
     public void addRoomKeyReservation(RoomKeyReservation reservation) {
         this.roomKeyReservations.add(reservation);
     }
+    
+    public RoomKeyReservation[] getRoomKeyReservations() {
+        return this.roomKeyReservations.toArray(new RoomKeyReservation[0]);
+    }
     /**
      * Palauttaa Person-olion merkkijonoesityksen
      *
