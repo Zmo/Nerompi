@@ -81,6 +81,12 @@ public class Kalenterinappi extends JCalendarButton {
                 this.setAikaTeksti();
                 this.alustaViimeAika();
                 System.out.println("Muutettu kohde: " + this.getTargetDate() + "\n - - Paivavalinta muuttui - -");
+                if (this.onkoAlku){
+                    this.element.getTimeSlice().setStartDate(this.getTargetDate());
+                } 
+                else{
+                    this.element.getTimeSlice().setEndDate(this.getTargetDate());
+                }
                 this.element.storeToDB();
     }
     
@@ -104,7 +110,7 @@ public class Kalenterinappi extends JCalendarButton {
         Calendar aika = Calendar.getInstance();
         aika.setTime(date);
         try {
-            aika.set(aika.HOUR_OF_DAY, 0);
+            aika.set(Calendar.HOUR_OF_DAY, 0);
             int kuunumero = -1;
             for (int i = 0; i < kuulyhenteet.length && (kuunumero == -1); i++) {
                 if (kuulyhenteet[i].equalsIgnoreCase(evt.substring(4, 7))) {
