@@ -218,7 +218,7 @@ public class Row {
         TimelineElement element = null;
         if(object instanceof RoomKeyReservation) {
             RoomKeyReservation rkReservation = (RoomKeyReservation)object;
-            element = new TimelineElement(rkReservation.getTimeSlice(), scale, new Color(39,177,39), rkReservation.getReserver(), rkReservation.getSession());
+            element = new TimelineElement(rkReservation.getTimeSlice(), scale, new Color(39,177,39), rkReservation.getReserverName(), rkReservation.getSession());
         } else if(reservation) {
             if(resizable) {
                 element = new UIReservation((Reservation)object, this, scale);

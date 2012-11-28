@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import fi.helsinki.cs.nero.logic.Session;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
@@ -60,9 +59,7 @@ public class Person implements Comparable {
     private String etunimi;
     private String sukunimi;
     private Session session;
-
-
-    
+    private ArrayList<RoomKeyReservation> roomKeyReservations;
 
     /**
      * Konstruktori. Saa parametrinaan session johon liittyy, henkilön
@@ -117,10 +114,8 @@ public class Person implements Comparable {
         this.address = henkiloHash.get("katuosoite");
         this.postnumber = henkiloHash.get("postinro");
         this.postitoimiPaikka = henkiloHash.get("postitoimipaikka");
-        //this.valvontaSaldo = henkiloHash.get("valvontasaldo");
         this.sahkoposti = henkiloHash.get("sahkopostiosoite");
         this.hallinnollinenKommentti = henkiloHash.get("hallinnollinen_kommentti");
-        //this.opiskelijaKommentti = henkiloHash.get("opiskelija_kommentti");
         this.kTunnus = henkiloHash.get("ktunnus");
         this.kannykka = henkiloHash.get("kannykka");
         this.postilokeroHuone = henkiloHash.get("postilokerohuone");
@@ -129,6 +124,7 @@ public class Person implements Comparable {
         this.etunimi = henkiloHash.get("etunimet");
         this.sukunimi = henkiloHash.get("sukunimi");
         this.session = session;
+        this.roomKeyReservations = new ArrayList();
     }
 
     /**
@@ -204,10 +200,6 @@ public class Person implements Comparable {
     public String getPostitoimiPaikka() {
         return postitoimiPaikka;
     }
-
-//        public String getValvontaSaldo() {
-//            return valvontaSaldo;
-//        }
 
     public String getValvontaSaldo() {
         return valvontaSaldo;
@@ -296,7 +288,6 @@ public class Person implements Comparable {
     public void setValvontaSaldo(String valvontaSaldo) {
         this.valvontaSaldo = valvontaSaldo;
     }
-
 
     public void setSahkoposti(String sahkoposti) {
         this.sahkoposti = sahkoposti;
@@ -550,6 +541,9 @@ public class Person implements Comparable {
 
     }
 
+    public void addRoomKeyReservation(RoomKeyReservation reservation) {
+        this.roomKeyReservations.add(reservation);
+    }
     /**
      * Palauttaa Person-olion merkkijonoesityksen
      *
