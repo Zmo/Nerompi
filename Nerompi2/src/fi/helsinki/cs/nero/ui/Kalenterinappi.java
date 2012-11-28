@@ -61,8 +61,8 @@ public class Kalenterinappi extends JCalendarButton {
     
     private boolean lapikayntiVertailu(Reservation[] saadutVaraukset, Date kohde) {
         for (int a = 0; a < saadutVaraukset.length; a++) {
-            System.out.println(saadutVaraukset[a].getTimeSlice().getStartDate() + " - "
-                    + saadutVaraukset[a].getTimeSlice().getEndDate());
+            /*System.out.println(saadutVaraukset[a].getTimeSlice().getStartDate() + " - "
+                    + saadutVaraukset[a].getTimeSlice().getEndDate());*/
             if (saadutVaraukset[a].getReservationID().equals(this.element.getReservation().getReservationID())) {
             } else {
                 TimeSlice vertausaikavali = saadutVaraukset[a].getTimeSlice();
