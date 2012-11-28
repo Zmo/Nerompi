@@ -6,6 +6,7 @@ package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;
 
@@ -31,10 +32,13 @@ public class UusiAvainvarausNappi extends JButton {
             Date alkuaika = this.person.getSession().getTimeScaleSlice().getStartDate();
             
             if (this.person.getSession().getActiveRoom().getRoomKeyReservations() != null) {
-                RoomKeyReservation[] avainVaraukset = this.person.getSession().getActiveRoom().getRoomKeyReservations();
-                for (int a = 0; a < this.person.getSession().getActiveRoom().getRoomKeyReservationNumber(); a++) {
-                    if ((avainVaraukset[a].getReserver().equalsIgnoreCase(this.person.getName()))) {
-                        alkuaika = avainVaraukset[a].getTimeSlice().getEndDate();
+                ArrayList avainVaraukset = this.person.getSession().getActiveRoom().getRoomKeyReservations();
+                for (int a = 0; a < this.person.getSession().getActiveRoom().getRoomKeyReservations().size(); a++) {
+                    if ((avainVaraukset.get(a) instanceof RoomKeyReservation)) {
+                        RoomKeyReservation avainVaraus = (RoomKeyReservation)avainVaraukset.get(a);
+                        if (avainVaraus.getReserver().equalsIgnoreCase(this.person.getName())){
+                            alkuaika = avainVaraus.getTimeSlice().getEndDate();
+                        }
                     }
                     else {}
                 }
