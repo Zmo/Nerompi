@@ -25,7 +25,7 @@ public class RoomKeyReservations {
         this.room = room;
         this.rows = new LinkedList();
         
-        ArrayList rkreservations = room.getRoomKeyReservations();
+        ArrayList<RoomKeyReservation> rkreservations = room.getRoomKeyReservations();
         
         Row reservationsRow = new Row(scale, session, person);
         this.rows.add(reservationsRow);
