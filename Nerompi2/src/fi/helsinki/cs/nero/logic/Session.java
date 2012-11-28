@@ -41,6 +41,7 @@ public class Session {
      * Aikajakso, hakuehto. Ei voi olla null.
      */
     private TimeSlice timescale;
+
     /**
      * Henkilön nimi, hakuehto. Voi olla tyhjä merkkijono, mutta ei voi olla
      * null.
@@ -140,7 +141,7 @@ public class Session {
         // tästä päivästä kolme kuukautta eteenpäin
         cal2.add(Calendar.MONTH, 3);
         this.timescale = new TimeSlice(cal.getTime(), cal2.getTime());
-        // osa-aikavï¿½liksi koko aikavï¿½li
+        // osa-aikaväliksi koko aikaväli
         this.timescaleSlice = this.timescale;
         obsman.notifyObservers(NeroObserverTypes.TIMESCALE);
         obsman.notifyObservers(NeroObserverTypes.TIMESCALESLICE);
@@ -151,6 +152,9 @@ public class Session {
      * kerran, sen jï¿½lkeen se heittï¿½ï¿½ poikkeuksen.
      *
      * @param db kï¿½ytettï¿½vï¿½ tietokantayhteys
+     * Asettaa käytettävän tietokantayhteyden. Metodia voi kutsua vain kerran,
+     * sen jälkeen se heittää poikkeuksen.
+     * @param db käytettävä tietokantayhteys
      * @throws IllegalArgumentException jos annettu tk-yhteys on null
      * @throws IllegalStateException jos metodia kutsutaan uudelleen
      */
@@ -166,8 +170,9 @@ public class Session {
 
     /**
      * Palauttaa kï¿½ytettï¿½vï¿½n tietokantayhteyden.
-     *
      * @return kï¿½ytettï¿½vï¿½ tietokantayhteys
+     * Palauttaa käytettävän tietokantayhteyden.
+     * @return käytettävä tietokantayhteys
      */
     public NeroDatabase getDatabase() {
         return db;
@@ -186,6 +191,9 @@ public class Session {
         this.timescale = timescale;
 
         // jos osa-aikavï¿½li ei mahdu uuden aikavï¿½lin sisï¿½lle, typistï¿½ sitï¿½
+    	this.timescale = timescale;
+        
+        // jos osa-aikaväli ei mahdu uuden aikavälin sisälle, typistä sitä
         boolean sliceChanged = false;
         if (timescaleSlice.getStartDate().compareTo(timescale.getStartDate()) < 0) {
             timescaleSlice.setStartDate(timescale.getStartDate());
@@ -198,6 +206,8 @@ public class Session {
 
         // Tyhjennï¿½ tyï¿½pisteiden tallettama tieto niihin liittyvistï¿½ varauksista, koska
         // aikavï¿½li on muuttunut ja sen vuoksi varaukset pitï¿½ï¿½ hakea uudelleen
+    	// Tyhjennä työpisteiden tallettama tieto niihin liittyvistä varauksista, koska
+    	// aikaväli on muuttunut ja sen vuoksi varaukset pitää hakea uudelleen
         // NOTE junit-testien aikana db saattaa olla null
         if (db != null) {
             Room[] rooms = db.getRooms();
@@ -764,6 +774,7 @@ public class Session {
             }
             // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.ROOMS);
+    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen
             setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
         } else {
             setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");

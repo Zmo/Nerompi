@@ -49,7 +49,7 @@ public class UusiVarausNappi extends JButton {
             alkamisPaiva = this.person.getLastReservation().getTimeSlice().getEndDate();
         }
         if (!(alkamisPaiva.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
-            System.out.println(" - Virhe - UusiVarausPopup: Aikavälillä ei ole tilaa!");
+            this.person.getSession().setStatusMessage("Henkilöllä on jo varaukset koko tarkastellulle aikavälille!");
         } else {
             this.person.getSession().createReservation(post, this.person, new TimeSlice(alkamisPaiva, this.person.getSession().getTimeScaleSlice().getEndDate()));
         }
