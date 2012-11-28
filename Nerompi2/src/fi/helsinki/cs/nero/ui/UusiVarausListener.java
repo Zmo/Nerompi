@@ -4,11 +4,8 @@
  */
 package fi.helsinki.cs.nero.ui;
 
-import fi.helsinki.cs.nero.data.Room;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 /**
  *
