@@ -45,7 +45,7 @@ public class Kalenterinappi extends JCalendarButton {
         if (evt.getPropertyName().equalsIgnoreCase("date")) {
             Calendar tulos = Calendar.getInstance();
             tulos.setTime(this.parseAika(evt.getNewValue().toString(), this.getTargetDate()));
-            tulos.set(tulos.HOUR_OF_DAY, 0);
+            tulos.set(Calendar.HOUR_OF_DAY, 0);
             // Tuloksen tunti nollaksi!
             if (((this.onkoAlku && (tulos.getTime().before(this.element.getLoppukalenteri().getTargetDate())))
                     || (!(this.onkoAlku) && (tulos.getTime().after(this.element.getAlkukalenteri().getTargetDate()))))
@@ -93,9 +93,9 @@ public class Kalenterinappi extends JCalendarButton {
     private void alustaViimeAika(){
         Calendar kopio = Calendar.getInstance();
         kopio.setTime(this.getTargetDate());
-        this.viimeAika[0] = kopio.get(kopio.DAY_OF_MONTH);
-        this.viimeAika[1] = kopio.get(kopio.MONTH);
-        this.viimeAika[2] = kopio.get(kopio.YEAR);
+        this.viimeAika[0] = kopio.get(Calendar.DAY_OF_MONTH);
+        this.viimeAika[1] = kopio.get(Calendar.MONTH);
+        this.viimeAika[2] = kopio.get(Calendar.YEAR);
     }
     
     private void palautaViimeAika(){
