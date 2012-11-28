@@ -4,13 +4,20 @@
 package fi.helsinki.cs.nero.ui;
 
 
+import fi.helsinki.cs.nero.NeroApplication;
+import fi.helsinki.cs.nero.data.PhoneNumber;
+import fi.helsinki.cs.nero.data.Post;
+import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.TimeSlice;
+import fi.helsinki.cs.nero.event.NeroObserver;
+import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.logic.Session;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -21,16 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-
-import fi.helsinki.cs.nero.NeroApplication;
-import fi.helsinki.cs.nero.data.PhoneNumber;
-import fi.helsinki.cs.nero.data.Post;
-import fi.helsinki.cs.nero.data.Room;
-import fi.helsinki.cs.nero.data.RoomKeyReservation;
-import fi.helsinki.cs.nero.data.TimeSlice;
-import fi.helsinki.cs.nero.event.NeroObserver;
-import fi.helsinki.cs.nero.event.NeroObserverTypes;
-import fi.helsinki.cs.nero.logic.Session;
+import javax.swing.border.EtchedBorder;
 
 /**
  * Rakentaa aktiivisen huoneen tiedoista esityksen.
@@ -87,9 +85,9 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
      */
     private JFrame mainFrame = null;
     
-	private static Border lineBorder = BorderFactory.createLineBorder(Color.BLACK);
     private static Border raisedBevel = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-
+    private static Border raisedEtched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+    
     private static final Color ROOM_HEADER_BG = Color.LIGHT_GRAY;
     private static final Color POST_HEADER_BG = new Color(255,240,192);
 	private static final Color BG = new Color(90,119,173);
@@ -339,6 +337,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                 //Luodaan jokaisen rivin jokaista varausjaksoa koskeva JPanel.
                 while(row.hasNext()) {
                     TimelineElement reservation = (TimelineElement)row.next();
+                    reservation.setBorder(raisedEtched);
                     rowPanel.add(reservation);
                 }
                 postsPanel.add(rowPanel);
