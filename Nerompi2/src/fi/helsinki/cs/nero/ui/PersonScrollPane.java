@@ -164,6 +164,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                 
 		updateScale();
 		this.generate(this.sessio);
+                this.sessio.personScrollPane = this;
 	}
 	
 	/**
@@ -297,7 +298,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         gridLayout.setColumns(1);
                         
                         /* Henkilön avainvaraukset - työn alla*/
-                        int rivimaara = 0;
+                        int rivimaara = 0; // IDE valehtelee, kyllä tätä käytetään!
                         RoomKeyReservation[] avainVarausLista = personIterator.getPerson().getRoomKeyReservations();
                         for (rivimaara = 0; rivimaara < avainVarausLista.length; rivimaara++){
                             Calendar alkupaiva = Calendar.getInstance();
