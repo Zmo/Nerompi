@@ -308,7 +308,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                             String alkuTekstina = alkupaiva.get(Calendar.DAY_OF_MONTH) + "." + (alkupaiva.get(Calendar.MONTH)+1) + "." + alkupaiva.get(Calendar.YEAR);
                             String loppuTekstina = loppupaiva.get(Calendar.DAY_OF_MONTH) + "." + (loppupaiva.get(Calendar.MONTH)+1) + "." + loppupaiva.get(Calendar.YEAR);
                             JLabel avainKentta = new JLabel("Avainvaraus " + avainVarausLista[rivimaara].getTargetRoom().getRoomName() + ":" + alkuTekstina + " - " + loppuTekstina);
-                            AvaimenpoistoNappi poistoNappi = new AvaimenpoistoNappi(avainVarausLista[rivimaara]);
+                            AvaimenpoistoNappi poistoNappi = new AvaimenpoistoNappi(personIterator.getPerson(), avainVarausLista[rivimaara]);
                             avainPaneeli.add(avainKentta);
                             avainPaneeli.add(poistoNappi);
                         }
