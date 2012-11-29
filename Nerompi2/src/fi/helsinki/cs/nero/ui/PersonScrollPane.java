@@ -293,7 +293,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 						
 			personsInfo.add(extraHeader);
 			personsInfo.add(header);
-                        JPanel avainPaneeli = new JPanel();
+                        JPanel avainRivit = new JPanel();
                         GridLayout gridLayout = new GridLayout();
                         gridLayout.setColumns(1);
                         
@@ -307,15 +307,19 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                             loppupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getEndDate());
                             String alkuTekstina = alkupaiva.get(Calendar.DAY_OF_MONTH) + "." + (alkupaiva.get(Calendar.MONTH)+1) + "." + alkupaiva.get(Calendar.YEAR);
                             String loppuTekstina = loppupaiva.get(Calendar.DAY_OF_MONTH) + "." + (loppupaiva.get(Calendar.MONTH)+1) + "." + loppupaiva.get(Calendar.YEAR);
-                            JLabel avainKentta = new JLabel("Avainvaraus " + avainVarausLista[rivimaara].getTargetRoom().getRoomName() + ":" + alkuTekstina + " - " + loppuTekstina);
+                            JLabel avainKentta = new JLabel("Avain " + avainVarausLista[rivimaara].getTargetRoom().getRoomName() + ": " + alkuTekstina + " - " + loppuTekstina);
                             AvaimenpoistoNappi poistoNappi = new AvaimenpoistoNappi(personIterator.getPerson(), avainVarausLista[rivimaara]);
+                            poistoNappi.setBorder(loweredEtched);
+                            // poistoNappi.setBackground(HEADER_BG);
+                            JPanel avainPaneeli = new JPanel();
                             avainPaneeli.add(avainKentta);
                             avainPaneeli.add(poistoNappi);
+                            avainPaneeli.setBackground(HEADER_BG);
+                            avainRivit.add(avainPaneeli);
                         }
                         gridLayout.setRows(rivimaara);
-                        avainPaneeli.setBackground(HEADER_BG);
-                        avainPaneeli.setLayout(gridLayout);
-                        personsInfo.add(avainPaneeli);
+                        avainRivit.setLayout(gridLayout);
+                        personsInfo.add(avainRivit);
                         /* end of avainvaraukset */
 			
 			while(rowIterator.hasNext()) {
