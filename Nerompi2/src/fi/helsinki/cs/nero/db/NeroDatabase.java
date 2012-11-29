@@ -1550,17 +1550,20 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(true);
             PreparedStatement prep;
             Post post = phone.getPost();
+            String personID = phone.getPersonID();
             
             try {
 		if(this.prepUpdatePhoneNumber == null) {
-                    this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ? WHERE id = ?");
+                    this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ?, h_tunnus = ? WHERE id = ?");
 		}
 		if(post == null) {
                     this.prepUpdatePhoneNumber.setString(1, "");
 		} else {
                     this.prepUpdatePhoneNumber.setString(1, post.getPostID());
 		}
-		this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
+                this.prepUpdatePhoneNumber.setString(2, personID);
+		this.prepUpdatePhoneNumber.setString(3, phone.getPhoneNumberID());
+                
                 int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
 		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
                     success = true;
@@ -1568,9 +1571,13 @@ public class NeroDatabase implements NeroObserver {
                     prep.setString(1, post.getPostID());
                     ResultSet rs = prep.executeQuery();
                     rs.next();
-                    if(rs.getString("HENKLO_HTUNNUS")!=null)
+                    if(rs.getString("HENKLO_HTUNNUS")!=null) {
                         this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                    System.out.println("megadurr");
+                    } else {
+                        this.updateWorkPhone(personID, phone.getPhoneNumber());
+                    }
+                    
+
                     /* XXX Raskas operaatio */
                     
                     loadRooms();
@@ -1733,7 +1740,40 @@ public class NeroDatabase implements NeroObserver {
         this.session.waitState(false);
         return success;
     }
-
+    public boolean removePhoneNumberFromPerson(PhoneNumber phone) {
+        if (phone.getPersonID() == null) {
+            throw new IllegalArgumentException();
+        }       
+        
+        PreparedStatement prep;
+        boolean success = false;
+        String updatePhoneNumber = "UPDATE PUHELINNUMERO SET h_tunnus='' WHERE id=?";
+        
+        
+        
+        try {
+            prep = this.connection.prepareStatement(updatePhoneNumber);
+            prep.setString(1, phone.getPhoneNumberID());
+            int updatedRows = prep.executeUpdate();
+            if (updatedRows > 0) {
+                success = true;
+                //prep = this.connection.prepareStatement(getpersons);
+                prep.setString(1, phone.getPost().getPostID());
+                ResultSet rs = prep.executeQuery();
+                while (rs.next()) {
+                    this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
+                }
+                /* XXX Raskas operaatio */
+                loadRooms();
+                loadPhoneNumbers();
+            }
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+        this.session.waitState(false);
+        return success;
+        
+    }
     /**
      * Palauttaa annetun tyï¿½huoneen puhelinnumerot.
      *
