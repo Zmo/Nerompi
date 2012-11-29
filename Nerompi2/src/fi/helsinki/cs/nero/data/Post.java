@@ -125,8 +125,9 @@ public class Post {
 	 * @return Työpistevaraukset <code>Reservation[]</code> oliona.
 	 */
 	public Reservation[] getReservations(){
-		if(reservations == null)
+		if(reservations == null){
 			reservations = session.getReservations(this);
+                }
 		return reservations;
 	}
 	
@@ -139,15 +140,17 @@ public class Post {
 	}
 	
     /**
-     * Palauttaa ne ty?pisteeseen liittyv?t varaukset, jotka kuuluvat annetulle osa-aikav?lille.
+     * Palauttaa ne työpisteeseen liittyvät varaukset, jotka kuuluvat annetulle osa-aikavälille.
      * @return Collection-rajapinnan toteuttava joukko varauksia. Alkiot ovat Reservation-olioita.
      */
     private Collection getReservations(TimeSlice slice) {
         Reservation[] allReservations = getReservations();
         Collection reservationsInSlice = new LinkedList();
-        for(int i=0; i<allReservations.length; ++i)
-            if(allReservations[i].getTimeSlice().overlaps(slice))
+        for(int i=0; i<allReservations.length; ++i){
+            if(allReservations[i].getTimeSlice().overlaps(slice)){
                 reservationsInSlice.add(allReservations[i]);
+            }
+        }
         return reservationsInSlice;
     }
     

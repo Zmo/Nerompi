@@ -673,11 +673,6 @@ public class Session {
 
         TimeSlice reservationTime = new TimeSlice(start, end);
         if (reservationTime.length() < 1) {
-            System.out.println(" - Alku:   " + reservationTime.getStartDate()
-                    + "\n - Loppu:  " + reservationTime.getEndDate()
-                    + "\n - Pituus: " + reservationTime.length()
-                    + "\n - Alkup. timeslice alku:  " + this.timescaleSlice.getStartDate()
-                    + "\n - Alkup. timeslice loppu: " + this.timescaleSlice.getEndDate());
             setStatusMessage("Henkilöllä on jo työpiste aikavälillä " + timeSlice);
             return;
         }
@@ -919,14 +914,25 @@ public class Session {
     }
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
-        this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this));
+        RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
+        this.activeRoom.addRoomKeyReservation(uusiVaraus);
+        person.addRoomKeyReservation(uusiVaraus);
         db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
-        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
     }
 
+    public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
+        this.deleteRoomkeyReservation(roomKeyReservation);
+        this.updatePerson(person);
+        for (int a = 0; a < person.getRoomKeyReservations().length; a++){
+            System.out.println("------ ------>" + person.getRoomKeyReservations()[a].getTargetRoom());
+        }
+    }
+    
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {
-        this.activeRoom.deleteRoomKeyReservation(roomKeyReservation);
+        this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
     }
