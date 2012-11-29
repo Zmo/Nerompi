@@ -260,7 +260,7 @@ public class NeroDatabase implements NeroObserver {
         }
         if (this.prepPostPhoneNumbers == null) {
             this.prepPostPhoneNumbers = this.connection.prepareStatement(
-                    "SELECT id, puhelinnumero FROM PUHELINNUMERO WHERE tp_id = ?");
+                    "SELECT id, puhelinnumero, h_tunnus FROM PUHELINNUMERO WHERE tp_id = ?");
         }
         if (this.prepRoomKeyReservations == null) {
             this.prepRoomKeyReservations = this.connection.prepareStatement(
@@ -296,7 +296,7 @@ public class NeroDatabase implements NeroObserver {
                 while (pnrs.next()) {
                     PhoneNumber pn = new PhoneNumber(this.session,
                             pnrs.getString("id"), post,
-                            pnrs.getString("puhelinnumero"), null);
+                            pnrs.getString("puhelinnumero"), pnrs.getString("h_tunnus"));
                     numbers.add(pn);
                     numbercount++;
 
@@ -1543,6 +1543,8 @@ public class NeroDatabase implements NeroObserver {
                                     + " where ALKUPVM<CURRENT_TIMESTAMP"
                                     + " AND LOPPUPVM>CURRENT_TIMESTAMP"
                                     + " AND TPISTE_ID=?";
+            
+            
             
             boolean success = false;
             this.session.waitState(true);

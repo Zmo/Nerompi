@@ -65,6 +65,7 @@ public class PhoneNumber implements Comparable {
 		this.post = post;
                 this.personID = personID;
 	}
+
 	
 	/**
 	 * Palauttaa puhelinnumeron tunnuksen.

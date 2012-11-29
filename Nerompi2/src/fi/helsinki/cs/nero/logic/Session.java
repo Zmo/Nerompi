@@ -757,7 +757,7 @@ public class Session {
 
     public void addPhoneNumber(Post post, PhoneNumber phone, String personID) {
         if(post == null && personID == null) {
-            throw new IllegalArgumentException("työpiste ja henkilö eivät saa molemmat olla null");
+            throw new IllegalArgumentException("työpiste ja henkilö ei saa olla null");
         }
         if (phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
