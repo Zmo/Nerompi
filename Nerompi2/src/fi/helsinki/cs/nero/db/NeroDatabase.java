@@ -30,6 +30,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Jyrki Muukkonen
@@ -258,7 +260,7 @@ public class NeroDatabase implements NeroObserver {
         }
         if (this.prepPostPhoneNumbers == null) {
             this.prepPostPhoneNumbers = this.connection.prepareStatement(
-                    "SELECT id, puhelinnumero FROM PUHELINNUMERO WHERE tp_id = ?");
+                    "SELECT id, puhelinnumero, h_tunnus FROM PUHELINNUMERO WHERE tp_id = ?");
         }
         if (this.prepRoomKeyReservations == null) {
             this.prepRoomKeyReservations = this.connection.prepareStatement(
@@ -273,6 +275,7 @@ public class NeroDatabase implements NeroObserver {
         /* NOTE rhuone-taulussa on sekä "numero" että "huone_nro" kentät */
         int numbercount = 0;
         while (rs.next()) {
+
 
             Room room = new Room(this.session, rs.getString("id"),
                     rs.getString("rakenn_nimi"),
@@ -293,9 +296,10 @@ public class NeroDatabase implements NeroObserver {
                 while (pnrs.next()) {
                     PhoneNumber pn = new PhoneNumber(this.session,
                             pnrs.getString("id"), post,
-                            pnrs.getString("puhelinnumero"), null);
+                            pnrs.getString("puhelinnumero"), pnrs.getString("h_tunnus"));
                     numbers.add(pn);
                     numbercount++;
+
                 }
                 pnrs.close();
                 post.setPhoneNumbers((PhoneNumber[]) numbers.toArray(new PhoneNumber[0]));
@@ -318,13 +322,130 @@ public class NeroDatabase implements NeroObserver {
                     room.addRoomKeyReservation(keyReservation);
                     this.roomKeyReservations.add(keyReservation);
                 }
+
             }
+      
+            //roomKeysResult;
             roomPosts.clear();
             this.rooms.put(rs.getString("id"), room);
         }
-        rs.close();
-        session.setStatusMessage("Ladattu tiedot " + this.rooms.size() + " huoneesta.");
+		
+		rs.close();
+		session.setStatusMessage("Ladattu tiedot " + this.rooms.size() + " huoneesta.");
     }
+
+	/**
+	 * Lataa jï¿½rjestelmï¿½n tuntemat puhelinnumerot.
+	 * Saa kutsua vasta loadRooms() jï¿½lkeen.
+	 * @throws SQLException
+	 */
+	private void loadPhoneNumbers() throws SQLException {
+		this.phoneNumbers = new Hashtable();
+
+		session.setStatusMessage("Ladataan puhelinnumeroita...");
+		if(this.prepAllPhoneNumbers == null) {
+			this.prepAllPhoneNumbers = this.connection.prepareStatement(
+					"SELECT id, puhelinnumero, tp_id, h_tunnus FROM PUHELINNUMERO"
+			);
+                        
+		}
+		ResultSet rs = prepAllPhoneNumbers.executeQuery();
+		
+		int count = 0;
+		while (rs.next()) {
+			PhoneNumber pn;
+			String tpid = rs.getString("tp_id");
+			String pnid = rs.getString("id");
+			String number = rs.getString("puhelinnumero");
+                        String htunnus = rs.getString("h_tunnus");
+			if(tpid == null) {
+				pn = new PhoneNumber(this.session, pnid, null, number, htunnus);
+				tpid = "free";
+			} else {
+				pn = new PhoneNumber(this.session, pnid, 
+						(Post)this.posts.get(tpid), number, htunnus);
+			}
+			Collection tpn = (Collection)this.phoneNumbers.get(tpid);
+			if(tpn == null) {
+				tpn = new Vector();
+				this.phoneNumbers.put(tpid, tpn);
+			}
+			tpn.add(pn);
+			count++;
+		}
+		rs.close();
+		session.setStatusMessage("Ladattu tiedot " + count + " puhelinnumerosta.");
+	}
+	
+
+	/* --- Tyï¿½pistevarauksiin liittyvï¿½t metodit alkaa --- */ 
+	
+	/**
+	 * Palauttaa parametrina annetun henkilï¿½n tyï¿½pistevaraukset, jotka
+	 * leikkaavat parametrina annettua aikavï¿½liï¿½. Varaukset palautetaan
+     * jï¿½rjestettynï¿½ ensisijaisesti alkuajankohdan, toissijaisesti loppuajankohdan
+     * mukaan.
+	 * 
+	 * @param person
+	 *            Henkilï¿½, jonka tyï¿½pistevarauksia haetaan.
+	 * @param timeslice
+	 *            Aikavï¿½li, jonka aikana varauksen tulee olla ainakin osittain
+	 *            voimassa.
+	 * @return varaukset <code>Reservation[]</code> oliona.
+	 */
+
+	public Reservation[] getReservations(Person person, TimeSlice timeslice) {
+		Collection reservations = new Vector();
+		this.session.waitState(true);
+		try {
+			if(this.prepPersonReservations ==  null) {
+				this.prepPersonReservations = this.connection.prepareStatement(
+						"SELECT DISTINCT tpv.id, tpv.alkupvm, tpv.loppupvm,"
+						+ " tpv.viikkotunnit, tpv.selite, tpv.tpiste_id, tp.rhuone_id"
+						+ " FROM TYOPISTEVARAUS tpv, TYOPISTE tp"
+						+ " WHERE tpv.henklo_htunnus = ?"
+						+ " AND tpv.tpiste_id = tp.id"
+						+ " AND ? <= tpv.loppupvm AND ? >= tpv.alkupvm"
+						+ " ORDER BY tpv.alkupvm, tpv.loppupvm"
+				);
+			}
+			this.prepPersonReservations.setString(1, person.getPersonID());
+			this.prepPersonReservations.setDate(2, timeslice.getSQLStartDate());
+			this.prepPersonReservations.setDate(3, timeslice.getSQLEndDate());
+			
+			ResultSet rs = this.prepPersonReservations.executeQuery();
+			while(rs.next()) {
+				Date start = new Date(rs.getDate("alkupvm").getTime());
+				Date end = new Date(rs.getDate("loppupvm").getTime());
+				TimeSlice ts = new TimeSlice(start, end);
+				Post post = (Post) this.posts.get(rs.getString("tpiste_id"));
+				
+				Reservation r = new Reservation(this.session,
+						rs.getString("id"), post, person, ts,
+						rs.getDouble("viikkotunnit"), rs.getString("selite"));
+				reservations.add(r);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.err.println("Tietokantavirhe: " + e.getMessage());
+		}
+		this.session.waitState(false);
+		return (Reservation[])reservations.toArray(new Reservation[0]);
+	}
+        
+//        public ArrayList<HashMap<String, String>> getKannykat() {
+//            HashMap hashMap;
+//            ArrayList arry = new ArrayList<HashMap<String, String>>();
+//            
+//            try {
+//            
+//            }
+//            roomPosts.clear();
+//            this.rooms.put(rs.getString("id"), room);
+//        
+//        rs.close();
+//        session.setStatusMessage("Ladattu tiedot " + this.rooms.size() + " huoneesta.");
+//    }
 
     /**
      * Lataa jï¿½rjestelmï¿½n tuntemat puhelinnumerot. Saa kutsua vasta
@@ -332,41 +453,7 @@ public class NeroDatabase implements NeroObserver {
      *
      * @throws SQLException
      */
-    private void loadPhoneNumbers() throws SQLException {
-        this.phoneNumbers = new Hashtable();
-
-        session.setStatusMessage("Ladataan puhelinnumeroita...");
-        if (this.prepAllPhoneNumbers == null) {
-            this.prepAllPhoneNumbers = this.connection.prepareStatement(
-                    "SELECT id, puhelinnumero, tp_id FROM PUHELINNUMERO");
-
-        }
-        ResultSet rs = prepAllPhoneNumbers.executeQuery();
-
-        int count = 0;
-        while (rs.next()) {
-            PhoneNumber pn;
-            String tpid = rs.getString("tp_id");
-            String pnid = rs.getString("id");
-            String number = rs.getString("puhelinnumero");
-            if (tpid == null) {
-                pn = new PhoneNumber(this.session, pnid, null, number, null);
-                tpid = "free";
-            } else {
-                pn = new PhoneNumber(this.session, pnid,
-                        (Post) this.posts.get(tpid), number, null);
-            }
-            Collection tpn = (Collection) this.phoneNumbers.get(tpid);
-            if (tpn == null) {
-                tpn = new Vector();
-                this.phoneNumbers.put(tpid, tpn);
-            }
-            tpn.add(pn);
-            count++;
-        }
-        rs.close();
-        session.setStatusMessage("Ladattu tiedot " + count + " puhelinnumerosta.");
-    }
+    
 
 
     /* --- Tyï¿½pistevarauksiin liittyvï¿½t metodit alkaa --- */
@@ -381,43 +468,7 @@ public class NeroDatabase implements NeroObserver {
      * osittain voimassa.
      * @return varaukset <code>Reservation[]</code> oliona.
      */
-    public Reservation[] getReservations(Person person, TimeSlice timeslice) {
-        Collection reservations = new Vector();
-        this.session.waitState(true);
-        try {
-            if (this.prepPersonReservations == null) {
-                this.prepPersonReservations = this.connection.prepareStatement(
-                        "SELECT DISTINCT tpv.id, tpv.alkupvm, tpv.loppupvm,"
-                        + " tpv.viikkotunnit, tpv.selite, tpv.tpiste_id, tp.rhuone_id"
-                        + " FROM TYOPISTEVARAUS tpv, TYOPISTE tp"
-                        + " WHERE tpv.henklo_htunnus = ?"
-                        + " AND tpv.tpiste_id = tp.id"
-                        + " AND ? <= tpv.loppupvm AND ? >= tpv.alkupvm"
-                        + " ORDER BY tpv.alkupvm, tpv.loppupvm");
-            }
-            this.prepPersonReservations.setString(1, person.getPersonID());
-            this.prepPersonReservations.setDate(2, timeslice.getSQLStartDate());
-            this.prepPersonReservations.setDate(3, timeslice.getSQLEndDate());
-
-            ResultSet rs = this.prepPersonReservations.executeQuery();
-            while (rs.next()) {
-                Date start = new Date(rs.getDate("alkupvm").getTime());
-                Date end = new Date(rs.getDate("loppupvm").getTime());
-                TimeSlice ts = new TimeSlice(start, end);
-                Post post = (Post) this.posts.get(rs.getString("tpiste_id"));
-
-                Reservation r = new Reservation(this.session,
-                        rs.getString("id"), post, person, ts,
-                        rs.getDouble("viikkotunnit"), rs.getString("selite"));
-                reservations.add(r);
-            }
-            rs.close();
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-        this.session.waitState(false);
-        return (Reservation[]) reservations.toArray(new Reservation[0]);
-    }
+   
 
     public ArrayList<HashMap<String, String>> getKannykat() {
         HashMap hashMap;
@@ -1253,6 +1304,7 @@ public class NeroDatabase implements NeroObserver {
         this.session.waitState(false);
         return success;
     }
+        
 
     /**
      * Lisää työpisteen huoneeseen
@@ -1286,6 +1338,7 @@ public class NeroDatabase implements NeroObserver {
                 success = true;
                 // XXX Raskas operaatio
                 this.loadRooms();
+
             }
         } catch (SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -1456,6 +1509,81 @@ public class NeroDatabase implements NeroObserver {
         }
     }
 
+	/* --- Huoneisiin liittyvï¿½t metodit loppuu --- */ 
+
+	/* --- Puhelinnumeroihin liittyvï¿½t metodit alkaa --- */ 
+
+	/**
+	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat puhelinnumerot jï¿½rjestettynï¿½
+	 * PhoneNumber[] -taulukkona.
+	 * @return PhoneNumber[] -taulukko.
+	 */
+	public PhoneNumber[] getAllPhoneNumbers() {
+		Collection all = new Vector();
+		Iterator iter = this.phoneNumbers.values().iterator();
+		while(iter.hasNext()) {
+			all.addAll((Collection)iter.next());
+		}
+		PhoneNumber[] numbers = (PhoneNumber[]) all.toArray(new PhoneNumber[0]);
+		Arrays.sort(numbers);
+		return numbers;
+	}
+
+	/**
+	 * Pï¿½ivittï¿½ï¿½ tietokannassa olevan puhelinnumero-olion annetun mallin
+	 * mukaiseksi ja päivittää puhelinnumeron työpisteen varaajalle jos sellainen on.
+	 * 
+	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
+	 * @return Onnistuiko päivitys.
+	 */
+	public boolean updatePhoneNumber(PhoneNumber phone) {
+            
+            String getpersons = "select HENKLO_HTUNNUS"
+                                    + " from TYOPISTEVARAUS"
+                                    + " where ALKUPVM<CURRENT_TIMESTAMP"
+                                    + " AND LOPPUPVM>CURRENT_TIMESTAMP"
+                                    + " AND TPISTE_ID=?";
+            
+            
+            
+            boolean success = false;
+            this.session.waitState(true);
+            PreparedStatement prep;
+            Post post = phone.getPost();
+            
+            try {
+		if(this.prepUpdatePhoneNumber == null) {
+                    this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ? WHERE id = ?");
+		}
+		if(post == null) {
+                    this.prepUpdatePhoneNumber.setString(1, "");
+		} else {
+                    this.prepUpdatePhoneNumber.setString(1, post.getPostID());
+		}
+		this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
+                int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
+		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
+                    success = true;
+                    prep = this.connection.prepareStatement(getpersons);
+                    prep.setString(1, post.getPostID());
+                    ResultSet rs = prep.executeQuery();
+                    rs.next();
+                    if(rs.getString("HENKLO_HTUNNUS")!=null)
+                        this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
+                    System.out.println("megadurr");
+                    /* XXX Raskas operaatio */
+                    
+                    loadRooms();
+                    
+                    loadPhoneNumbers();
+
+		}
+            } catch (SQLException e) {
+            	System.err.println("Tietokantavirhe: " + e.getMessage());
+            }
+            this.session.waitState(false);
+            return success;
+        }
     /**
      * Nerompi Lisää Huonevaraus -tauluun uuden huonevarauksen
      *
@@ -1495,77 +1623,70 @@ public class NeroDatabase implements NeroObserver {
         }
     }
 
-    /* --- Huoneisiin liittyvï¿½t metodit loppuu --- */
+	/* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */ 
 
-    /* --- Puhelinnumeroihin liittyvï¿½t metodit alkaa --- */
-    /**
-     * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat puhelinnumerot
-     * jï¿½rjestettynï¿½ PhoneNumber[] -taulukkona.
-     *
-     * @return PhoneNumber[] -taulukko.
-     */
-    public PhoneNumber[] getAllPhoneNumbers() {
-        Collection all = new Vector();
-        Iterator iter = this.phoneNumbers.values().iterator();
-        while (iter.hasNext()) {
-            all.addAll((Collection) iter.next());
-        }
-        PhoneNumber[] numbers = (PhoneNumber[]) all.toArray(new PhoneNumber[0]);
-        Arrays.sort(numbers);
-        return numbers;
-    }
+	/* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
 
-    /**
-     * Pï¿½ivittï¿½ï¿½ tietokannassa olevan puhelinnumero-olion annetun mallin
-     * mukaiseksi ja päivittää puhelinnumeron työpisteen varaajalle jos
-     * sellainen on.
-     *
-     * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
-     * @return Onnistuiko päivitys.
-     */
-    public boolean updatePhoneNumber(PhoneNumber phone) {
+	/**
+	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat projektit jï¿½rjestettynï¿½
+	 * Project[] -taulukkona.
+	 * 
+	 * @return projektit <code>Project[]</code> oliona
+	 */
+	public Project[] getProjects() {
+		Project[] projs = (Project[]) projects.values().toArray(new Project[0]);
+		/* HashTable hukkaa jï¿½rjestyksen, joten sortataan */
+		Arrays.sort(projs);
+		return projs;
+	}
 
-        String getpersons = "select HENKLO_HTUNNUS"
-                + " from TYOPISTEVARAUS"
-                + " where ALKUPVM<CURRENT_TIMESTAMP"
-                + " AND LOPPUPVM>CURRENT_TIMESTAMP"
-                + " AND TPISTE_ID=?";
+	/* --- Projekteihin liittyvï¿½t metodit loppuu --- */ 
 
-        boolean success = false;
-        this.session.waitState(true);
-        PreparedStatement prep;
-        Post post = phone.getPost();
+	/* --- Muut metodit alkaa --- */ 
 
-        try {
-            if (this.prepUpdatePhoneNumber == null) {
-                this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ? WHERE id = ?");
-            }
-            if (post == null) {
-                this.prepUpdatePhoneNumber.setString(1, "");
-            } else {
-                this.prepUpdatePhoneNumber.setString(1, post.getPostID());
-            }
-            this.prepUpdatePhoneNumber.setString(2, phone.getPhoneNumberID());
-            int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
-            if (updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
-                success = true;
-                prep = this.connection.prepareStatement(getpersons);
-                prep.setString(1, post.getPostID());
-                ResultSet rs = prep.executeQuery();
-                rs.next();
-                if (rs.getString("HENKLO_HTUNNUS") != null) {
-                    this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                }
-                /* XXX Raskas operaatio */
-                loadRooms();
-                loadPhoneNumbers();
-            }
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-        this.session.waitState(false);
-        return success;
-    }
+	/**
+	 * Palauttaa tietokantayhteyden. Kï¿½ytï¿½ varovaisesti, tarkoitettu lï¿½hinnï¿½
+	 * testejï¿½ varten.
+	 * @return Yhteys <code>Connection</code> oliona.
+	 */
+	public Connection getConnection() {
+		return connection;
+	}
+
+	/**
+	 * NeroObserver-kuuntelija. Kï¿½ytï¿½nnï¿½ssï¿½ kuuntelee vain TIMESCALE ja ROOMS
+	 * tyyppejï¿½, mutta ei tarkista mikï¿½ tyyppi vastaanotettiin.
+	 * @param type Kuuntelijatyyppi, ei vaikutusta. 
+	 * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
+	 */
+	public void updateObserved(int type) {
+		// Aikajakso tai huonetiedot ovat muuttuneet. Tiedot henkilï¿½istï¿½ eivï¿½t enï¿½ï¿½
+		// ole ajan tasalla.
+		//System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
+		people.clear();
+	}
+        
+	/**
+	 * Main-metodi pienimuotoista testailua varten.
+	 * @param args Komentoriviparametrit.
+	 * @throws SQLException
+	 */
+	public static void main(String[] args) throws SQLException {
+		NeroApplication.readIni(NeroApplication.DEFAULT_INI);
+		NeroDatabase ndb = new NeroDatabase(new Session(),
+				NeroApplication.getProperty("db_class"),
+				NeroApplication.getProperty("db_connection"),
+				NeroApplication.getProperty("db_username"),
+				NeroApplication.getProperty("db_password"));
+		/* tahtoo katsoa versiot, jotkut toimii ja jotkut ei. */
+		System.out.println(ndb.connection.getMetaData().getDriverVersion());
+		System.out.println(ndb.connection.getMetaData()
+				.getDatabaseProductVersion());
+		// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
+		System.out.println("done.");
+	}
+
+
 
     /**
      * Poistaa työpisteeltä puhelinnumeron
@@ -1660,83 +1781,6 @@ public class NeroDatabase implements NeroObserver {
         return numbers;
     }
 
-    public PhoneNumber[] getPhoneNumbers(Person person) {
-
-        String key = "free";
-        if (person != null) {
-            key = person.getPersonID();
-        }
-        Collection c = (Collection) this.phoneNumbers.get(key);
-        if (c == null) {
-            return new PhoneNumber[0];
-        }
-        PhoneNumber[] numbers = (PhoneNumber[]) c.toArray(new PhoneNumber[0]);
-        Arrays.sort(numbers);
-        return numbers;
-    }
-    /* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */
-
-    /* --- Projekteihin liittyvï¿½t metodit alkaa --- */
-    /**
-     * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat projektit jï¿½rjestettynï¿½
-     * Project[] -taulukkona.
-     *
-     * @return projektit <code>Project[]</code> oliona
-     */
-    public Project[] getProjects() {
-        Project[] projs = (Project[]) projects.values().toArray(new Project[0]);
-        /* HashTable hukkaa jï¿½rjestyksen, joten sortataan */
-        Arrays.sort(projs);
-        return projs;
-    }
-
-    /* --- Projekteihin liittyvï¿½t metodit loppuu --- */
-
-    /* --- Muut metodit alkaa --- */
-    /**
-     * Palauttaa tietokantayhteyden. Kï¿½ytï¿½ varovaisesti, tarkoitettu
-     * lï¿½hinnï¿½ testejï¿½ varten.
-     *
-     * @return Yhteys <code>Connection</code> oliona.
-     */
-    public Connection getConnection() {
-        return connection;
-    }
-
-    /**
-     * NeroObserver-kuuntelija. Kï¿½ytï¿½nnï¿½ssï¿½ kuuntelee vain TIMESCALE ja
-     * ROOMS tyyppejï¿½, mutta ei tarkista mikï¿½ tyyppi vastaanotettiin.
-     *
-     * @param type Kuuntelijatyyppi, ei vaikutusta.
-     * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
-     */
-    public void updateObserved(int type) {
-        // Aikajakso tai huonetiedot ovat muuttuneet. Tiedot henkilï¿½istï¿½ eivï¿½t enï¿½ï¿½
-        // ole ajan tasalla.
-        //System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
-        people.clear();
-    }
-
-    /**
-     * Main-metodi pienimuotoista testailua varten.
-     *
-     * @param args Komentoriviparametrit.
-     * @throws SQLException
-     */
-    public static void main(String[] args) throws SQLException {
-        NeroApplication.readIni(NeroApplication.DEFAULT_INI);
-        NeroDatabase ndb = new NeroDatabase(new Session(),
-                NeroApplication.getProperty("db_class"),
-                NeroApplication.getProperty("db_connection"),
-                NeroApplication.getProperty("db_username"),
-                NeroApplication.getProperty("db_password"));
-        /* tahtoo katsoa versiot, jotkut toimii ja jotkut ei. */
-        System.out.println(ndb.connection.getMetaData().getDriverVersion());
-        System.out.println(ndb.connection.getMetaData()
-                .getDatabaseProductVersion());
-        // testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
-        System.out.println("done.");
-    }
-
     /* --- Muut metodit loppuu --- */
+
 }

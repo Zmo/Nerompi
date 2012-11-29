@@ -113,11 +113,13 @@ public class Room {
          * @param roomKeyReservation poistettava avainvaraus
          */
         public boolean deleteRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
-            if(this.roomKeyReservations.contains(roomKeyReservation)) {
+            if (this.roomKeyReservations.contains(roomKeyReservation)) {
                 this.roomKeyReservations.remove(roomKeyReservation);
                 return true;
-            } else
+            } 
+            else {
                 return false;
+            }
         }
 	
 	/**

@@ -7,6 +7,7 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;

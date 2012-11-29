@@ -187,34 +187,32 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
 
     private void varaaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_varaaButtonActionPerformed
      
-//        if(allnumbersList.getSelectedValue()!=null){
-//            PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
-//            //muuta sallimaan henkilöt
+        if(allnumbersList.getSelectedValue()!=null){
+            PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
+            //muuta sallimaan henkilöt
         
-        //tämä seuraavaksi
-        
-//            session.addPhoneNumber(post, p);
-//
-//            //tyhjennetään vektorit
-//            allNumbersVector.removeAllElements();
-//            reservedNumbersVector.removeAllElements();
-//
-//            //päivitetään kaikki tiedot sessiolta (eli kannasta asti)
-//            PhoneNumber[] pn = session.getPhoneNumbers(post);
-//            for(int i=0; i < pn.length; i++){
-//                reservedNumbersVector.add(pn[i]);
-//                }	
-//            PhoneNumber[] pn2 = session.getAllPhoneNumbers();
-//            for(int i=0; i < pn2.length; i++){
-//            allNumbersVector.add(pn2[i]);
-//            }	
-//
-//            allnumbersList.setListData(allNumbersVector);				
-//            reservednumbersList.setListData(reservedNumbersVector);
-//            
-//            reservedNumbersVector.clear();
-//            allNumbersVector.clear();
-//        }         
+            session.addPhoneNumber(null, p, this.person.getPersonID());
+
+            //tyhjennetään vektorit
+            allNumbersVector.removeAllElements();
+            reservedNumbersVector.removeAllElements();
+
+            //päivitetään kaikki tiedot sessiolta (eli kannasta asti)
+            PhoneNumber[] numberArray = session.getAllPhoneNumbers();
+	    for(int i=0; i < numberArray.length; i++){
+                this.allNumbersVector.add(numberArray[i]);
+
+                if (numberArray[i].getPersonID().equals(this.person.getPersonID())) {
+                    this.reservedNumbersVector.add(i);
+                }
+	    }               
+
+            allnumbersList.setListData(allNumbersVector);				
+            reservednumbersList.setListData(reservedNumbersVector);
+            
+            reservedNumbersVector.clear();
+            allNumbersVector.clear();
+        }         
     }//GEN-LAST:event_varaaButtonActionPerformed
 
     private void vapautaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vapautaButtonActionPerformed

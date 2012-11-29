@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverManager;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
+import fi.helsinki.cs.nero.ui.PersonScrollPane;
 import fi.helsinki.cs.nero.ui.RoomScrollPane;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class Session {
     private int cursortype;
     private boolean cursorlocked;
     public RoomScrollPane roomScrollPane;
+    public PersonScrollPane personScrollPane;
 
     /**
      * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman
@@ -125,7 +127,8 @@ public class Session {
         statusMessage = new String("");
         cursortype = java.awt.Cursor.DEFAULT_CURSOR;
         cursorlocked = false;
-        this.roomScrollPane = null;
+        this.roomScrollPane = null;     // Nämä saadaan kyseisiltä luokilta konstruktoreista
+        this.personScrollPane = null;   // Nämä saadaan kyseisiltä luokilta konstruktoreista
     }
 
     /**
@@ -517,13 +520,6 @@ public class Session {
         return db.getPhoneNumbers(post);
     }
 
-    public PhoneNumber[] getPhoneNumbers(Person person) {
-        if (person == null) {
-            throw new IllegalArgumentException();
-        }
-        return db.getPhoneNumbers(person);
-    }
-
     /**
      * Palauttaa "kaikki" puhelinnumerot ks. db:n vastaava metodi
      */
@@ -677,11 +673,6 @@ public class Session {
 
         TimeSlice reservationTime = new TimeSlice(start, end);
         if (reservationTime.length() < 1) {
-            System.out.println(" - Alku:   " + reservationTime.getStartDate()
-                    + "\n - Loppu:  " + reservationTime.getEndDate()
-                    + "\n - Pituus: " + reservationTime.length()
-                    + "\n - Alkup. timeslice alku:  " + this.timescaleSlice.getStartDate()
-                    + "\n - Alkup. timeslice loppu: " + this.timescaleSlice.getEndDate());
             setStatusMessage("Henkilöllä on jo työpiste aikavälillä " + timeSlice);
             return;
         }
@@ -758,27 +749,27 @@ public class Session {
      * @param phone lisättävä puhelinnumero
      * @throws IllegalArgumentException jos työpiste tai puhelinnumero on null
      */
-    public void addPhoneNumber(Post post, PhoneNumber phone, Person person) {
-        if (post == null && person == null) {
-            throw new IllegalArgumentException("työpiste ja henkilö eivät saa molemmat olla null");
+
+    public void addPhoneNumber(Post post, PhoneNumber phone, String personID) {
+        if(post == null && personID == null) {
+            throw new IllegalArgumentException("työpiste ja henkilö ei saa olla null");
         }
         if (phone == null) {
             throw new IllegalArgumentException("puhelinnumero ei saa olla null");
         }
-        // luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen
-        PhoneNumber newPhone = new PhoneNumber(phone, post);
-        if (db.updatePhoneNumber(newPhone)) {
-            // jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
-            if (this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
-                this.switchActiveRoom();
+    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen, tai uuteen henkilöön
+            PhoneNumber newPhone = new PhoneNumber(phone, post, personID);
+            if(db.updatePhoneNumber(newPhone)) {
+                    // jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
+                    if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
+                            this.switchActiveRoom();
+                    }
+                    // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
+                    obsman.notifyObservers(NeroObserverTypes.ROOMS);
+                setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
+            } else {
+                setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
             }
-            // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
-            obsman.notifyObservers(NeroObserverTypes.ROOMS);
-    	// luodaan puhelinnumero-oliosta versio, joka viittaa uuteen työpisteeseen
-            setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
-        } else {
-            setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
-        }
     }
 
     /**
@@ -924,14 +915,20 @@ public class Session {
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
         this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this));
-        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
-        this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+        //db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+        
+        this.personScrollPane.updateObserved(NeroObserverTypes.TIMESCALE);
+        this.roomScrollPane.updateObserved(NeroObserverTypes.TIMESCALE);
+//        this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+//        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
     }
 
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {
-        this.activeRoom.deleteRoomKeyReservation(roomKeyReservation);
+        //this.activeRoom.deleteRoomKeyReservation(roomKeyReservation);
+        this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+        obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
     }
     /* Kuuntelijoihin liittyvät operaatiot */
 
