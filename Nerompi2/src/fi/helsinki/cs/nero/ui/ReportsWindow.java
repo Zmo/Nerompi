@@ -326,6 +326,11 @@ public class ReportsWindow extends javax.swing.JFrame {
                 restrictByHasLockerItemStateChanged(evt);
             }
         });
+        restrictByHasLocker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByHasLockerActionPerformed(evt);
+            }
+        });
 
         rajauksetHeader.setText("Rajaukset");
 
@@ -824,6 +829,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void firstCalendarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstCalendarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_firstCalendarActionPerformed
+
+    private void restrictByHasLockerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByHasLockerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_restrictByHasLockerActionPerformed
 
     /**
      * @param args the command line arguments
