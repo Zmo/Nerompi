@@ -1758,6 +1758,8 @@ public class NeroDatabase implements NeroObserver {
         
         PreparedStatement prep;
         boolean success = false;
+        phone.getPersonID();
+        
         
         String updatePhoneNumber = "UPDATE PUHELINNUMERO SET h_tunnus='' WHERE id=?";
         

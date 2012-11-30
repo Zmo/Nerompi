@@ -548,6 +548,16 @@ public class Person implements Comparable {
     public RoomKeyReservation[] getRoomKeyReservations() {
         return this.roomKeyReservations.toArray(new RoomKeyReservation[0]);
     }
+    
+    public RoomKeyReservation deleteRoomKeyReservation(RoomKeyReservation toBeRemoved) {
+        for (RoomKeyReservation reservation : this.roomKeyReservations) {
+            if(reservation==toBeRemoved) {
+                this.roomKeyReservations.remove(reservation);
+                return reservation;
+            }
+        }
+        return null;
+    }
     /**
      * Palauttaa Person-olion merkkijonoesityksen
      *

@@ -798,6 +798,16 @@ public class Session {
             setStatusMessage("Puhelinnumeron poistaminen epäonnistui.");
         }
     }
+    public void deletePhoneNumberFromPerson(PhoneNumber phone) {
+        if (phone == null) {
+            throw new IllegalArgumentException();
+        }
+        if (db.removePhoneNumberFromPerson(phone)) {
+            setStatusMessage("Puhelinnumero poistettu työpisteestä.");
+        } else {
+            setStatusMessage("Puhelinnumeron poistaminen epäonnistui.");
+        }
+    }
 
     /* Dataolioiden tarvitsemat tiedonhakuoperaatiot */
     /**
