@@ -31,8 +31,6 @@ public class GraphWindow extends javax.swing.JFrame {
     
     private Date endDate;
     
-    private ChartPanel chartPanel;
-    
     /**
      * Creates new form GraphWindow
      */
@@ -47,7 +45,6 @@ public class GraphWindow extends javax.swing.JFrame {
         this.setVisible(true);
         
         this.drawChart();
-        this.jPanel1.add(chartPanel);
     }
 
     /**
@@ -210,6 +207,7 @@ public class GraphWindow extends javax.swing.JFrame {
         if (evt.getNewValue() instanceof Date) {
             this.startDate = (((Date) evt.getNewValue()));
             this.jTextField1.setText(dateToShortString(startDate));
+            this.drawChart();
         }
     }//GEN-LAST:event_jCalendarButton1PropertyChange
 
@@ -217,6 +215,7 @@ public class GraphWindow extends javax.swing.JFrame {
         if (evt.getNewValue() instanceof Date) {
             this.endDate = (((Date) evt.getNewValue()));
             this.jTextField2.setText(dateToShortString(endDate));
+            this.drawChart();
         }
     }//GEN-LAST:event_jCalendarButton2PropertyChange
 
@@ -238,9 +237,9 @@ public class GraphWindow extends javax.swing.JFrame {
      * @param date P‰iv‰m‰‰r‰ jolta varaustiedot haetaan
      * @return taulukko, jonka ensimm‰inen alkio on tyˆpisteiden kokonaism‰‰r‰ suhteutettuna varattujen tyˆpisteiden m‰‰r‰‰n annettuna p‰iv‰m‰‰r‰n‰
      */
-    public int getPostOccupationData(Date date) {
-        int totalPosts = 0;
-        int occupiedPosts = 0;
+    public double getPostOccupationData(Date date) {
+        double totalPosts = 0;
+        double occupiedPosts = 0;
         
         for (Room room : this.session.getRooms()) {
             for (Post post : room.getPosts()) {
@@ -251,7 +250,7 @@ public class GraphWindow extends javax.swing.JFrame {
                 }
             }
         }
-        return occupiedPosts/totalPosts*100;
+        return (occupiedPosts/totalPosts)*100.0;
     }
     
     public void drawChart() {
@@ -267,12 +266,14 @@ public class GraphWindow extends javax.swing.JFrame {
         CategoryDataset dataset = createDataset();
         JFreeChart chart = createChart(dataset);
         
+        ChartPanel chartPanel = new ChartPanel(chart);
         
+        chartPanel.setPreferredSize(new Dimension(50, 27));
+        chartPanel.setMaximumSize(new Dimension(100, 100));
+        chartPanel.setBounds(0, 0, 650, 400);
         
-        this.chartPanel = new ChartPanel(chart);
-        this.chartPanel.setPreferredSize(new Dimension(50, 27));
-        this.chartPanel.setMaximumSize(new Dimension(100, 100));
-        this.chartPanel.setBounds(0, 0, 600, 400);
+        jPanel1.removeAll();
+        this.jPanel1.add(chartPanel);
     }
     
     public CategoryDataset createDataset() {
