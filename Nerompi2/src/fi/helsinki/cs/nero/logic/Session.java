@@ -798,6 +798,16 @@ public class Session {
             setStatusMessage("Puhelinnumeron poistaminen epäonnistui.");
         }
     }
+    public void deletePhoneNumberFromPerson(PhoneNumber phone) {
+        if (phone == null) {
+            throw new IllegalArgumentException();
+        }
+        if (db.removePhoneNumberFromPerson(phone)) {
+            setStatusMessage("Puhelinnumero poistettu työpisteestä.");
+        } else {
+            setStatusMessage("Puhelinnumeron poistaminen epäonnistui.");
+        }
+    }
 
     /* Dataolioiden tarvitsemat tiedonhakuoperaatiot */
     /**
@@ -928,10 +938,8 @@ public class Session {
 
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
         this.deleteRoomkeyReservation(roomKeyReservation);
+        // person.deleteRoomKeyReservation(roomKeyReservation);
         this.updatePerson(person);
-        for (int a = 0; a < person.getRoomKeyReservations().length; a++){
-            System.out.println("------ ------>" + person.getRoomKeyReservations()[a].getTargetRoom());
-        }
     }
     
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {

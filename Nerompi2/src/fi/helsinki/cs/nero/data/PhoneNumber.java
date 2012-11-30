@@ -89,10 +89,8 @@ public class PhoneNumber implements Comparable {
 	 * Palauttaa puhelinnumeron.
 	 * @return phoneNumber puhelinnumero Stringinä.
 	 */
-	public String getPhoneNumber(){
-		
-			return phoneNumber;
-		
+	public String getPhoneNumber(){		
+			return phoneNumber;		
 	}
 
         public String getPersonID() {
@@ -118,8 +116,7 @@ public class PhoneNumber implements Comparable {
             
             else
                 return phoneNumber + " (" + post + ")" + " " + this.person;
-	}
-	
+	}	
 	public int compareTo(Object obj) {
 		PhoneNumber p = (PhoneNumber)obj;
 		return this.phoneNumber.compareTo(p.getPhoneNumber());
