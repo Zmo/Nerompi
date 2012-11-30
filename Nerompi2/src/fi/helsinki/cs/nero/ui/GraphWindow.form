@@ -142,6 +142,10 @@
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox4ActionPerformed"/>
+        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jComboBox4PropertyChange"/>
+      </Events>
     </Component>
     <Component class="net.sourceforge.jcalendarbutton.JCalendarButton" name="jCalendarButton1">
       <Events>
