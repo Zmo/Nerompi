@@ -6,6 +6,9 @@ package fi.helsinki.cs.nero.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,7 +22,11 @@ public class AvaimenpoistoNappiListener implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        nappi.poistaAvain();
+        try {
+            nappi.poistaAvain();
+        } catch (SQLException ex) {
+            Logger.getLogger(AvaimenpoistoNappiListener.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
