@@ -761,15 +761,18 @@ public class Session {
             PhoneNumber newPhone = new PhoneNumber(phone, post, personID);
             if(db.updatePhoneNumber(newPhone)) {
                     // jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
+                if (post != null) {
                     if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
                             this.switchActiveRoom();
                     }
                     // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
                     obsman.notifyObservers(NeroObserverTypes.ROOMS);
-                setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
+                        setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
+                }
+                setStatusMessage("Puhelinnumero liitetty henkilöön.");
             } else {
-                setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
-            }
+                    setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
+                }
     }
 
     /**
@@ -914,21 +917,27 @@ public class Session {
     }
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
-        this.activeRoom.addRoomKeyReservation(new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this));
-        //db.addRoomKeyReservation(this.activeRoom, person, timeslice);
-        
-        this.personScrollPane.updateObserved(NeroObserverTypes.TIMESCALE);
-        this.roomScrollPane.updateObserved(NeroObserverTypes.TIMESCALE);
-//        this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
-//        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
+        this.activeRoom.addRoomKeyReservation(uusiVaraus);
+        person.addRoomKeyReservation(uusiVaraus);
+        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+
+        this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
     }
 
+    public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
+        this.deleteRoomkeyReservation(roomKeyReservation);
+        this.updatePerson(person);
+        for (int a = 0; a < person.getRoomKeyReservations().length; a++){
+            System.out.println("------ ------>" + person.getRoomKeyReservations()[a].getTargetRoom());
+        }
+    }
+    
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {
-        //this.activeRoom.deleteRoomKeyReservation(roomKeyReservation);
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
-        obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
     }
     /* Kuuntelijoihin liittyvät operaatiot */
 

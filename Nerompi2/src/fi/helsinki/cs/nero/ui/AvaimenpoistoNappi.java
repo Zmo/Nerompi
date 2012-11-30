@@ -4,8 +4,9 @@
  */
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
-import fi.helsinki.cs.nero.logic.Session;
+import java.sql.SQLException;
 import javax.swing.JButton;
 
 /**
@@ -15,23 +16,23 @@ import javax.swing.JButton;
 public class AvaimenpoistoNappi extends JButton{
     
     private RoomKeyReservation roomKeyReservation = null;
-    private Session sessio;
+    private Person person;
     
-    public AvaimenpoistoNappi(RoomKeyReservation roomKeyReservation){
+    public AvaimenpoistoNappi(Person person, RoomKeyReservation roomKeyReservation){
         super();
         this.setText("Poista avainvaraus");
         this.roomKeyReservation = roomKeyReservation;
-        this.sessio = roomKeyReservation.getSession();
+        this.person = person;
         this.addMouseListener(new AvaimenpoistoNappiListener(this));
     }
     
-    public void poistaAvain(){
+    public void poistaAvain() throws SQLException{
         if (this.roomKeyReservation == null){
-            this.sessio.setStatusMessage(" - Virhe - AvaimenpoistoNappi: avainvarausta ei en‰‰ ole!");
+            this.person.getSession().setStatusMessage(" - Virhe - AvaimenpoistoNappi: avainvarausta ei en‰‰ ole!");
             return;
         }
-        this.sessio.deleteRoomkeyReservation(this.roomKeyReservation);
-        this.sessio.setStatusMessage("Avainvaraus poistettu");
+        this.person.getSession().deleteRoomkeyReservation(this.roomKeyReservation, this.person);
+        this.person.getSession().setStatusMessage("Avainvaraus poistettu");
         this.roomKeyReservation = null;
     };
     
