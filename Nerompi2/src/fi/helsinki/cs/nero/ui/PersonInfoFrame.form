@@ -147,7 +147,7 @@
                   </Group>
                   <Component id="MoreField" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="24" max="32767" attributes="0"/>
               <Component id="errorMessageLabel" min="-2" pref="29" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -418,9 +418,6 @@
     <Component class="javax.swing.JTextField" name="omistajaField">
     </Component>
     <Component class="javax.swing.JLabel" name="tyopuhelinLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="sss"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JRadioButton" name="tyosuhdeButton">
       <Properties>

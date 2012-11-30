@@ -36,8 +36,15 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         huoneLabel.setText(person.getRoom());
         hetuField.setText(person.getHetu());
         oppiarvoField.setText(person.getOppiarvo());
-        titteliField.setText(person.getTitteli());
-        tyopuhelinLabel.setText(person.getWorkPhone());
+        titteliField.setText(person.getTitteli())
+                ;
+        if (person.getWorkPhone() != null) {
+            if (person.getWorkPhone().startsWith("(09) 191")) {
+                tyopuhelinLabel.setText(person.getWorkPhone());
+            } else {
+                tyopuhelinLabel.setText("(09) 191"+person.getWorkPhone());
+            }
+        }
         kotipuhelinField.setText(person.getHomePhone());
         kannykkaField.setText(person.getKannykka());
         katuosoiteField.setText(person.getAddress());
@@ -289,8 +296,6 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Kännykän omistaja");
 
-        tyopuhelinLabel.setText("sss");
-
         tyosuhdeButton.setText("Työsuhteessa");
 
         puhelinluettelossaButton.setText("Puhelinluettelossa");
@@ -407,7 +412,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                 .addComponent(tyopuhelinLabel))
                             .addComponent(lisaapoistaButton)))
                     .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

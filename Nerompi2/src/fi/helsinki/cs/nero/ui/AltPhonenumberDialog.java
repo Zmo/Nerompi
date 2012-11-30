@@ -221,11 +221,11 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
     }//GEN-LAST:event_varaaButtonActionPerformed
 
     private void vapautaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vapautaButtonActionPerformed
-        if(allnumbersList.getSelectedValue()!=null){
-            if (reservedNumbersVector.size() < 1) {
-            PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
+        if(reservednumbersList.getSelectedValue()!=null){
+  
+            PhoneNumber p = (PhoneNumber)reservednumbersList.getSelectedValue();
         
-            session.addPhoneNumber(null, p, this.person.getPersonID());
+            this.session.deletePhoneNumberFromPerson(p);
 
             //tyhjennetään vektorit
             allNumbersVector.removeAllElements();
@@ -249,7 +249,7 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
             } else {
                 System.out.println("vain yksi numero kerrallaan");
             }
-        }
+        
     }//GEN-LAST:event_vapautaButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
