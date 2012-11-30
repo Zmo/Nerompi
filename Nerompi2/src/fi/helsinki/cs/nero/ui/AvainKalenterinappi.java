@@ -30,6 +30,7 @@ public class AvainKalenterinappi extends JCalendarButton{
             this.setTargetDate(roomKeyReservation.getTimeSlice().getEndDate());
         }
         
+        this.onkoAlku = onkoAlku;
         this.roomKeyReservation = roomKeyReservation;
         this.person = person;
         
@@ -40,8 +41,38 @@ public class AvainKalenterinappi extends JCalendarButton{
     @Override
     public void propertyChange(PropertyChangeEvent evt){
         if (evt.getPropertyName().equalsIgnoreCase("date")){
+            Date kohdeaika = (Date)evt.getNewValue();
             System.out.println("Huoneen " + this.roomKeyReservation.getTargetRoom().getRoomName() + " avainvarausta koitettiin muuttaa");
-            this.setTargetDate((Date)evt.getNewValue());
+            
+            // Verrataan tämän varauksen toiseen aikarajaan
+            if ((this.onkoAlku && kohdeaika.after(this.roomKeyReservation.getTimeSlice().getEndDate())) || 
+                    ((this.onkoAlku == false) && kohdeaika.before(this.roomKeyReservation.getTimeSlice().getStartDate()))){
+                System.out.println(" -|- " + kohdeaika.toString() + 
+                                 "\n -|- " + this.roomKeyReservation.getTimeSlice().getStartDate() + 
+                                 "\n -|- " + this.roomKeyReservation.getTimeSlice().getEndDate() + 
+                                 "\n -|-> " + this.onkoAlku);
+                this.roomKeyReservation.getSession().setStatusMessage("Varauksen alkupäivän tulee olla ennen loppupäivää!");
+                return;
+            }
+            
+            // verrataan henkilön muihin avainvarauksiin
+            /*
+            RoomKeyReservation[] avainVaraukset = this.person.getRoomKeyReservations();
+            for (int indeksi = 0; indeksi < avainVaraukset.length; indeksi++){
+                if (avainVaraukset[indeksi].getTargetRoom() == this.roomKeyReservation.getTargetRoom()){
+                    if (this.onkoAlku && (avainVaraukset[indeksi].getTimeSlice().)){}
+                    else {}
+                }
+            }*/
+            
+            // Vaikutusten tekeminen kantaan ja sessioon
+            /*
+            if (this.onkoAlku){
+            } 
+            else {
+            }
+            */
+            this.setTargetDate(kohdeaika);
             this.setText(updateAikaTeksti(this.getTargetDate()));
         }
     }

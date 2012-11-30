@@ -322,7 +322,6 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                             JLabel avainNimi = new JLabel("Avain " + avainVarausLista[rivimaara].getTargetRoom().getRoomName());
                             AvaimenpoistoNappi poistoNappi = new AvaimenpoistoNappi(personIterator.getPerson(), avainVarausLista[rivimaara]);
                             poistoNappi.setBorder(loweredEtched);
-                            // poistoNappi.setBackground(HEADER_BG);
                             JPanel avainPaneeli = new JPanel();
                             avainPaneeli.add(avainNimi);
                             avainPaneeli.add(alkuAvainKalenteri);
