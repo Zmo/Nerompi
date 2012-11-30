@@ -1010,6 +1010,17 @@ public class NeroDatabase implements NeroObserver {
         session.setStatusMessage("Löytyi " + filteredPeople.size() + " henkilöä.");
         return (Person[]) filteredPeople.toArray(new Person[0]);
     }
+    public void getPersonInfo(Person person) {
+        
+        String sqlQuery = "SELECT htunnus, sukunimi,"
+                + " etunimet, huone_nro, kutsumanimi,"
+                + " aktiivisuus, hetu, oppiarvo, titteli,"
+                + " puhelin_tyo, puhelin_koti, katuosoite, katuosoite,"
+                + " postinro, postitoimipaikka, valvontasaldo, sahkopostiosoite,"
+                + " hallinnollinen_kommentti, opiskelija_kommentti, ktunnus,"
+                + " kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa"
+                + " FROM HENKILO WHERE h_tunnus = ?";
+    }
 
     public void updatePersonInfo(Person person) throws SQLException {
         this.session.waitState(true);
@@ -1017,7 +1028,7 @@ public class NeroDatabase implements NeroObserver {
         PreparedStatement prepModifyperson = this.connection.prepareStatement(
                 " UPDATE henkilo"
                 + " SET htunnus = ?, etunimet = ?, sukunimi = ?, kutsumanimi = ?, aktiivisuus = ?, huone_nro = ?,"
-                + " hetu = ?, oppiarvo = ?, titteli = ?, puhelin_tyo = ?, puhelin_koti = ?, katuosoite = ?,"
+                + " hetu = ?, oppiarvo = ?, titteli = ?, puhelin_koti = ?, katuosoite = ?,"
                 + " postinro = ?, postitoimipaikka = ?, sahkopostiosoite = ?, hallinnollinen_kommentti = ?,"
                 + " ktunnus = ?, kannykka = ?, postilokerohuone = ?, hy_tyosuhde = ?, hy_puhelinluettelossa = ?"
                 + " WHERE htunnus = ? AND etunimet = ? AND sukunimi = ?");
@@ -1031,21 +1042,20 @@ public class NeroDatabase implements NeroObserver {
         prepModifyperson.setString(7, person.getHetu());
         prepModifyperson.setString(8, person.getOppiarvo());
         prepModifyperson.setString(9, person.getTitteli());
-        prepModifyperson.setString(10, person.getWorkPhone());
-        prepModifyperson.setString(11, person.getHomePhone());
-        prepModifyperson.setString(12, person.getAddress());
-        prepModifyperson.setString(13, person.getPostnumber());
-        prepModifyperson.setString(14, person.getPostitoimiPaikka());
-        prepModifyperson.setString(15, person.getSahkoposti());
-        prepModifyperson.setString(16, person.getHallinnollinenKommentti());
-        prepModifyperson.setString(17, person.getkTunnus());
-        prepModifyperson.setString(18, person.getKannykka());
-        prepModifyperson.setString(19, person.getPostilokeroHuone());
-        prepModifyperson.setString(20, person.getHyTyosuhde());
-        prepModifyperson.setString(21, person.getHyPuhelinluettelossa());
-        prepModifyperson.setString(22, person.getPersonID());
-        prepModifyperson.setString(23, person.getEtunimi());
-        prepModifyperson.setString(24, person.getSukunimi());
+        prepModifyperson.setString(10, person.getHomePhone());
+        prepModifyperson.setString(11, person.getAddress());
+        prepModifyperson.setString(12, person.getPostnumber());
+        prepModifyperson.setString(13, person.getPostitoimiPaikka());
+        prepModifyperson.setString(14, person.getSahkoposti());
+        prepModifyperson.setString(15, person.getHallinnollinenKommentti());
+        prepModifyperson.setString(16, person.getkTunnus());
+        prepModifyperson.setString(17, person.getKannykka());
+        prepModifyperson.setString(18, person.getPostilokeroHuone());
+        prepModifyperson.setString(19, person.getHyTyosuhde());
+        prepModifyperson.setString(20, person.getHyPuhelinluettelossa());
+        prepModifyperson.setString(21, person.getPersonID());
+        prepModifyperson.setString(22, person.getEtunimi());
+        prepModifyperson.setString(23, person.getSukunimi());
 
         prepModifyperson.executeUpdate();
 
@@ -1058,10 +1068,10 @@ public class NeroDatabase implements NeroObserver {
 
         PreparedStatement prepCreateperson = this.connection.prepareStatement(
                 " INSERT INTO henkilo (htunnus, etunimet, sukunimi, kutsumanimi, aktiivisuus, huone_nro,"
-                + " hetu, oppiarvo, titteli, puhelin_tyo, puhelin_koti, katuosoite,"
+                + " hetu, oppiarvo, titteli, puhelin_koti, katuosoite,"
                 + " postinro, postitoimipaikka, sahkopostiosoite, hallinnollinen_kommentti,"
                 + " ktunnus, kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa)"
-                + " VALUES (?, ?, ?, ?, ?, ?,"
+                + " VALUES (?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?, ?,"
                 + " ?, ?, ?, ?, ?, ?,"
                 + " ?, ?, ?)");
@@ -1543,9 +1553,7 @@ public class NeroDatabase implements NeroObserver {
                                     + " where ALKUPVM<CURRENT_TIMESTAMP"
                                     + " AND LOPPUPVM>CURRENT_TIMESTAMP"
                                     + " AND TPISTE_ID=?";
-            
-            
-            
+                      
             boolean success = false;
             this.session.waitState(true);
             PreparedStatement prep;
@@ -1567,14 +1575,17 @@ public class NeroDatabase implements NeroObserver {
                 int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
 		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
                     success = true;
+                if (post != null)    {
+                                  
                     prep = this.connection.prepareStatement(getpersons);
                     prep.setString(1, post.getPostID());
                     ResultSet rs = prep.executeQuery();
                     rs.next();
                     if(rs.getString("HENKLO_HTUNNUS")!=null) {
                         this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                    } else {
-                        this.updateWorkPhone(personID, phone.getPhoneNumber());
+                    }
+                } else {
+                    this.updateWorkPhone(personID, phone.getPhoneNumber());
                     }
                     
 
@@ -1747,9 +1758,8 @@ public class NeroDatabase implements NeroObserver {
         
         PreparedStatement prep;
         boolean success = false;
+        
         String updatePhoneNumber = "UPDATE PUHELINNUMERO SET h_tunnus='' WHERE id=?";
-        
-        
         
         try {
             prep = this.connection.prepareStatement(updatePhoneNumber);
@@ -1757,12 +1767,7 @@ public class NeroDatabase implements NeroObserver {
             int updatedRows = prep.executeUpdate();
             if (updatedRows > 0) {
                 success = true;
-                //prep = this.connection.prepareStatement(getpersons);
-                prep.setString(1, phone.getPost().getPostID());
-                ResultSet rs = prep.executeQuery();
-                while (rs.next()) {
-                    this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
-                }
+                this.updateWorkPhone(phone.getPersonID(), "");
                 /* XXX Raskas operaatio */
                 loadRooms();
                 loadPhoneNumbers();

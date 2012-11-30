@@ -761,15 +761,18 @@ public class Session {
             PhoneNumber newPhone = new PhoneNumber(phone, post, personID);
             if(db.updatePhoneNumber(newPhone)) {
                     // jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
+                if (post != null) {
                     if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
                             this.switchActiveRoom();
                     }
                     // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
                     obsman.notifyObservers(NeroObserverTypes.ROOMS);
-                setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
+                        setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
+                }
+                setStatusMessage("Puhelinnumero liitetty henkilöön.");
             } else {
-                setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
-            }
+                    setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
+                }
     }
 
     /**

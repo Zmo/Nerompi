@@ -42,8 +42,10 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
 	    for(int i=0; i < numberArray.length; i++){
                 allNumbersVector.add(numberArray[i]);
 
-                if (numberArray[i].getPhoneNumber().equals(this.person.getWorkPhone())) {
-                    reservedNumbersVector.add(i);
+                if (numberArray[i].getPersonID() != null) {
+                    if (numberArray[i].getPersonID().equals(this.person.getPersonID())) {
+                        reservedNumbersVector.add(numberArray[i]);
+                    }
                 }
 	    }                       
             allnumbersList.setListData(allNumbersVector);                //allnumbersList.getParent().
@@ -57,8 +59,7 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
             reservednumbersList.setFixedCellWidth(15);
             reservednumbersList.addListSelectionListener(this);
 
-            reservedNumbersVector.clear();
-            allNumbersVector.clear();
+           
             //phonenumberPane.add(allnumbersList);
                 
             this.setVisible(true);
@@ -187,7 +188,9 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
 
     private void varaaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_varaaButtonActionPerformed
      
+        
         if(allnumbersList.getSelectedValue()!=null){
+            if (reservedNumbersVector.size() < 1) {
             PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
             //muuta sallimaan henkilöt
         
@@ -202,16 +205,19 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
 	    for(int i=0; i < numberArray.length; i++){
                 this.allNumbersVector.add(numberArray[i]);
 
-                if (numberArray[i].getPersonID().equals(this.person.getPersonID())) {
-                    this.reservedNumbersVector.add(i);
+                if (numberArray[i].getPersonID() != null) {
+                    if (numberArray[i].getPersonID().equals(this.person.getPersonID())) {
+                        this.reservedNumbersVector.add(numberArray[i]);
+                    }
                 }
 	    }               
 
             allnumbersList.setListData(allNumbersVector);				
             reservednumbersList.setListData(reservedNumbersVector);
             
-            reservedNumbersVector.clear();
-            allNumbersVector.clear();
+            } else {
+                System.out.println("vain yksi numero kerrallaan");
+            }
         }         
     }//GEN-LAST:event_varaaButtonActionPerformed
 
