@@ -946,6 +946,7 @@ public class Session {
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
     }
     /* Kuuntelijoihin liittyvät operaatiot */
 
