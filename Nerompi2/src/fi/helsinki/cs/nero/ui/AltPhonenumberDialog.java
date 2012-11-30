@@ -192,7 +192,6 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
         if(allnumbersList.getSelectedValue()!=null){
             if (reservedNumbersVector.size() < 1) {
             PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
-            //muuta sallimaan henkilöt
         
             session.addPhoneNumber(null, p, this.person.getPersonID());
 
@@ -222,7 +221,35 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
     }//GEN-LAST:event_varaaButtonActionPerformed
 
     private void vapautaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vapautaButtonActionPerformed
-        reservedNumbersVector.remove(reservednumbersList.getSelectedValue());
+        if(allnumbersList.getSelectedValue()!=null){
+            if (reservedNumbersVector.size() < 1) {
+            PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
+        
+            session.addPhoneNumber(null, p, this.person.getPersonID());
+
+            //tyhjennetään vektorit
+            allNumbersVector.removeAllElements();
+            reservedNumbersVector.removeAllElements();
+
+            //päivitetään kaikki tiedot sessiolta (eli kannasta asti)
+            PhoneNumber[] numberArray = session.getAllPhoneNumbers();
+	    for(int i=0; i < numberArray.length; i++){
+                this.allNumbersVector.add(numberArray[i]);
+
+                if (numberArray[i].getPersonID() != null) {
+                    if (numberArray[i].getPersonID().equals(this.person.getPersonID())) {
+                        this.reservedNumbersVector.add(numberArray[i]);
+                    }
+                }
+	    }               
+
+            allnumbersList.setListData(allNumbersVector);				
+            reservednumbersList.setListData(reservedNumbersVector);
+            
+            } else {
+                System.out.println("vain yksi numero kerrallaan");
+            }
+        }
     }//GEN-LAST:event_vapautaButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
