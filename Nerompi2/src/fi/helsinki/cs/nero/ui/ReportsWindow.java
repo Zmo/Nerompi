@@ -326,11 +326,6 @@ public class ReportsWindow extends javax.swing.JFrame {
                 restrictByHasLockerItemStateChanged(evt);
             }
         });
-        restrictByHasLocker.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                restrictByHasLockerActionPerformed(evt);
-            }
-        });
 
         rajauksetHeader.setText("Rajaukset");
 
@@ -830,10 +825,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_firstCalendarActionPerformed
 
-    private void restrictByHasLockerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByHasLockerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_restrictByHasLockerActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -1155,18 +1146,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setModel(Data.getModel());
         sorter.setRowFilter(filter);
-        Data.setRowSorter(rowSorter);
+   //     Data.setRowSorter(rowSorter);
     }
 
     private RowFilter setDateRestrictionAfter(Date date) {
+        int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
-                date, Data.getColumnModel().getColumnIndex(varaus));
+                date, index);
         return newFilter;
     }
 
     private RowFilter setDateRestrictionBefore(Date date) {
+         int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
-                date, Data.getColumnModel().getColumnIndex(varaus));
+                date, index);
         return newFilter;
     }
 
