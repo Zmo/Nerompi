@@ -1586,7 +1586,6 @@ public class NeroDatabase implements NeroObserver {
                     rs.next();
                     if(rs.getString("HENKLO_HTUNNUS")!=null) {
                         this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                    }
                 } else {
                     this.updateWorkPhone(personID, phone.getPhoneNumber());
                     }
@@ -1746,6 +1745,7 @@ public class NeroDatabase implements NeroObserver {
         }
 
         String updatePhoneNumber = "UPDATE PUHELINNUMERO SET tp_id='' WHERE id=?";
+       
 
         String getpersons = "select HENKLO_HTUNNUS"
                 + " from TYOPISTEVARAUS"
@@ -1768,6 +1768,9 @@ public class NeroDatabase implements NeroObserver {
                 ResultSet rs = prep.executeQuery();
                 while (rs.next()) {
                     this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
+                    if (phone.getPersonID() != null) {
+                        this.updateWorkPhone(phone.getPersonID(), "");
+                    }
                 }
                 /* XXX Raskas operaatio */
                 loadRooms();
@@ -1781,7 +1784,8 @@ public class NeroDatabase implements NeroObserver {
     }
     public boolean removePhoneNumberFromPerson(PhoneNumber phone) {
         if (phone.getPersonID() == null) {
-            throw new IllegalArgumentException();
+            System.out.println("henkilö ei saa olla null");
+            return false;
         }       
         
         PreparedStatement prep;

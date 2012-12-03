@@ -768,8 +768,9 @@ public class Session {
                     // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
                     obsman.notifyObservers(NeroObserverTypes.ROOMS);
                         setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
-                }
+                } else {
                 setStatusMessage("Puhelinnumero liitetty henkilöön.");
+                }
             } else {
                     setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
                 }
@@ -788,6 +789,7 @@ public class Session {
         // luodaan puhelinnumero-oliosta versio, joka ei viittaa mihinkään työpisteeseen
         //PhoneNumber newPhone = new PhoneNumber(phone, null);
         if (db.removePhoneNumberFromPost(phone)) {
+            this.deletePhoneNumberFromPerson(phone);
             // ei tietoa ollaanko juuri tätä näyttämässä, mutta päivitetään silti
             // vrt. tarkastukset updatePhoneNumberissa ^^
             this.switchActiveRoom();
