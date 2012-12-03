@@ -617,7 +617,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void roomButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomButtonMouseReleased
         Data = new JTable(roomData, roomColumnNames);
         Data.setAutoCreateColumnsFromModel(false);
-        Data.setAutoCreateRowSorter(true);
         roomColumnModel = Data.getColumnModel();
         setSelected(roomComponents);
         addSorter();
@@ -631,6 +630,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnModel = Data.getColumnModel();
         peopleModel.setColumnModel(peopleColumnModel);
         Data.setAutoCreateColumnsFromModel(false);
+        peopleModel.setTable(Data);
         
         
         // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
@@ -1260,6 +1260,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         // laitetaan sen rivin data listaan
         // mallin sarakenumero pitää muuttaa sarakemallin indeksiksi, jotta myös
         // sarakkeen data saadaan oikeaan kohtaan
+        
+        //TODO: ehkä tuon päivämäärän lyhentämisen voi tehdä myöskin jossain muualla
         for (int i = 0; i < rowCount; i++) {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);
