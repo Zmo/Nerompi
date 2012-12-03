@@ -70,7 +70,7 @@ public class AvainKalenterinappi extends JCalendarButton{
                     if (avainVaraukset[indeksi].getTimeSlice().contains(kohdeaika.getTime())) {
                         if ((this.onkoAlku && kohdeaika.getTime().before(avainVaraukset[indeksi].getTimeSlice().getEndDate())) ||
                                 (!(this.onkoAlku) && kohdeaika.getTime().after(avainVaraukset[indeksi].getTimeSlice().getStartDate()))) {
-                            System.out.println("Avainvarauksia ei voi laittaa p‰‰llekk‰in!");
+                            this.roomKeyReservation.getSession().setStatusMessage("Avainvarauksia ei voi laittaa p‰‰llekk‰in!");
                             return;
                         }
                     }
@@ -87,6 +87,8 @@ public class AvainKalenterinappi extends JCalendarButton{
                 uusiTimeSlice = new TimeSlice(this.roomKeyReservation.getTimeSlice().getStartDate(), kohdeaika.getTime());
             }
             this.roomKeyReservation.setTimeSlice(uusiTimeSlice);
+            this.roomKeyReservation.getSession().modifyRoomKeyReservation(roomKeyReservation);
+            this.roomKeyReservation.getSession().setStatusMessage("Huonevarauksen aikav‰li‰ muutettu");
             // db- ja sessiomuutokset
             this.setTargetDate(kohdeaika.getTime());
             this.setText(updateAikaTeksti(this.getTargetDate()));
