@@ -48,9 +48,9 @@ public class AvainKalenterinappi extends JCalendarButton{
             System.out.println("Huoneen " + this.roomKeyReservation.getTargetRoom().getRoomName() + " avainvarausta koitettiin muuttaa");
             
             // Verrataan tämän varauksen toiseen aikarajaan
-            if ((this.onkoAlku && kohdeaika.after(this.roomKeyReservation.getTimeSlice().getEndDate())) || 
-                    ((this.onkoAlku == false) && kohdeaika.before(this.roomKeyReservation.getTimeSlice().getStartDate()))){
-                System.out.println(" -|- Kohdeaika: " + kohdeaika.toString() + 
+            if ((this.onkoAlku && kohdeaika.getTime().after(this.roomKeyReservation.getTimeSlice().getEndDate())) || 
+                    ((this.onkoAlku == false) && kohdeaika.getTime().before(this.roomKeyReservation.getTimeSlice().getStartDate()))){
+                System.out.println(" -|- Kohdeaika: " + kohdeaika.getTime().toString() + 
                                  "\n -|- Alkuaika:  " + this.roomKeyReservation.getTimeSlice().getStartDate() + 
                                  "\n -|- Loppuaika: " + this.roomKeyReservation.getTimeSlice().getEndDate() + 
                                  "\n -|- Onko muutettu aika alkuaika: " + this.onkoAlku);
