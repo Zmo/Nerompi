@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.RowFilter.ComparisonType;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -326,11 +327,6 @@ public class ReportsWindow extends javax.swing.JFrame {
                 restrictByHasLockerItemStateChanged(evt);
             }
         });
-        restrictByHasLocker.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                restrictByHasLockerActionPerformed(evt);
-            }
-        });
 
         rajauksetHeader.setText("Rajaukset");
 
@@ -627,7 +623,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void roomButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomButtonMouseReleased
         Data = new JTable(roomData, roomColumnNames);
         Data.setAutoCreateColumnsFromModel(false);
-        Data.setAutoCreateRowSorter(true);
         roomColumnModel = Data.getColumnModel();
         setSelected(roomComponents);
         addSorter();
@@ -641,6 +636,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnModel = Data.getColumnModel();
         peopleModel.setColumnModel(peopleColumnModel);
         Data.setAutoCreateColumnsFromModel(false);
+        peopleModel.setTable(Data);
         
         
         // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
@@ -830,10 +826,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_firstCalendarActionPerformed
 
-    private void restrictByHasLockerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByHasLockerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_restrictByHasLockerActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -1013,7 +1005,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
             if (people[i].getLastReservation() == null) {
-                peopleRow.add("ei työpistevarausta");
+                peopleRow.add(null);
             } else { 
                 peopleRow.add(people[i].getLastReservation().getLastDay());
             }
@@ -1140,41 +1132,33 @@ public class ReportsWindow extends javax.swing.JFrame {
             filter = setDateRestrictionContains(firstDate, lastDate);
         } else if (firstDate == null && lastDate != null) {
             // loppupäivämäärä on
-            filter = setDateRestrictionBefore(lastDate);
+            filter = setDateRestriction(lastDate, RowFilter.ComparisonType.BEFORE);
         } else if (firstDate != null && lastDate == null) {
             // alkupäivämäärä on
-            filter = setDateRestrictionAfter(firstDate);
+            filter = setDateRestriction(firstDate, RowFilter.ComparisonType.AFTER);
         } else {
             // kumpaakaan ei asetettu -> poistetaan 
             filter = removeDateRestriction();
         }
 
-         // tablerowsorter modelilla ei näytä toimivan lainkaan
-        // sen sijaan jos käyttää defaultrowsorteria, niin se toimii
-        // mutta ei taas ymmärrä, että kun sarake on poistettu, sen tyyppi muuttuu
         TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setModel(Data.getModel());
         sorter.setRowFilter(filter);
-        Data.setRowSorter(rowSorter);
     }
 
-    private RowFilter setDateRestrictionAfter(Date date) {
-        RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
-                date, Data.getColumnModel().getColumnIndex(varaus));
-        return newFilter;
-    }
 
-    private RowFilter setDateRestrictionBefore(Date date) {
-        RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
-                date, Data.getColumnModel().getColumnIndex(varaus));
+    private RowFilter setDateRestriction(Date date, ComparisonType type) {
+        int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
+        RowFilter newFilter = RowFilter.dateFilter(type,
+                date, index);
         return newFilter;
     }
 
     private RowFilter setDateRestrictionContains(Date first, Date last) {
         // and filter 
         List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
-        filters.add(setDateRestrictionBefore(last));
-        filters.add(setDateRestrictionAfter(first));
+        filters.add(setDateRestriction(last, RowFilter.ComparisonType.BEFORE));
+        filters.add(setDateRestriction(first, RowFilter.ComparisonType.AFTER));
         RowFilter<Object, Object> newFilter = RowFilter.andFilter(filters);
         return newFilter;
     }
@@ -1278,6 +1262,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         // laitetaan sen rivin data listaan
         // mallin sarakenumero pitää muuttaa sarakemallin indeksiksi, jotta myös
         // sarakkeen data saadaan oikeaan kohtaan
+        
+        //TODO: ehkä tuon päivämäärän lyhentämisen voi tehdä myöskin jossain muualla
         for (int i = 0; i < rowCount; i++) {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);
