@@ -42,16 +42,18 @@ public class AvainKalenterinappi extends JCalendarButton{
     @Override
     public void propertyChange(PropertyChangeEvent evt){
         if (evt.getPropertyName().equalsIgnoreCase("date")){
-            Date kohdeaika = (Date)evt.getNewValue();
+            Calendar kohdeaika = Calendar.getInstance();
+            kohdeaika.setTime((Date)evt.getNewValue());
+            kohdeaika.set(Calendar.HOUR_OF_DAY, 0);
             System.out.println("Huoneen " + this.roomKeyReservation.getTargetRoom().getRoomName() + " avainvarausta koitettiin muuttaa");
             
             // Verrataan t‰m‰n varauksen toiseen aikarajaan
             if ((this.onkoAlku && kohdeaika.after(this.roomKeyReservation.getTimeSlice().getEndDate())) || 
                     ((this.onkoAlku == false) && kohdeaika.before(this.roomKeyReservation.getTimeSlice().getStartDate()))){
-                System.out.println(" -|- " + kohdeaika.toString() + 
-                                 "\n -|- " + this.roomKeyReservation.getTimeSlice().getStartDate() + 
-                                 "\n -|- " + this.roomKeyReservation.getTimeSlice().getEndDate() + 
-                                 "\n -|-> " + this.onkoAlku);
+                System.out.println(" -|- Kohdeaika: " + kohdeaika.toString() + 
+                                 "\n -|- Alkuaika:  " + this.roomKeyReservation.getTimeSlice().getStartDate() + 
+                                 "\n -|- Loppuaika: " + this.roomKeyReservation.getTimeSlice().getEndDate() + 
+                                 "\n -|- Onko muutettu aika alkuaika: " + this.onkoAlku);
                 this.roomKeyReservation.getSession().setStatusMessage("Varauksen alkup‰iv‰n tulee olla ennen loppup‰iv‰‰!");
                 return;
             }
@@ -63,7 +65,7 @@ public class AvainKalenterinappi extends JCalendarButton{
                 if (avainVaraukset[indeksi] == this.roomKeyReservation){
                 }
                 else if (avainVaraukset[indeksi].getTargetRoom() == this.roomKeyReservation.getTargetRoom()){
-                    if (avainVaraukset[indeksi].getTimeSlice().contains(kohdeaika)){
+                    if (avainVaraukset[indeksi].getTimeSlice().contains(kohdeaika.getTime())){
                         System.out.println("Avainvarauksia ei voi laittaa p‰‰llekk‰in!");
                         return;
                     }
@@ -74,14 +76,14 @@ public class AvainKalenterinappi extends JCalendarButton{
             
             TimeSlice uusiTimeSlice;
             if (this.onkoAlku){
-                uusiTimeSlice = new TimeSlice(kohdeaika, this.roomKeyReservation.getTimeSlice().getEndDate());
+                uusiTimeSlice = new TimeSlice(kohdeaika.getTime(), this.roomKeyReservation.getTimeSlice().getEndDate());
             } 
             else {
-                uusiTimeSlice = new TimeSlice(this.roomKeyReservation.getTimeSlice().getStartDate(), kohdeaika);
+                uusiTimeSlice = new TimeSlice(this.roomKeyReservation.getTimeSlice().getStartDate(), kohdeaika.getTime());
             }
             this.roomKeyReservation.setTimeSlice(uusiTimeSlice);
             // db- ja sessiomuutokset
-            this.setTargetDate(kohdeaika);
+            this.setTargetDate(kohdeaika.getTime());
             this.setText(updateAikaTeksti(this.getTargetDate()));
         }
     }
