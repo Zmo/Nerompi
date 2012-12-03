@@ -46,7 +46,6 @@ public class PeopleTableModel extends DefaultTableModel {
             return String.class;
         }
     }
-    
 
     @Override
     public int getColumnCount() {
@@ -57,19 +56,5 @@ public class PeopleTableModel extends DefaultTableModel {
         }
     }
 
-//    @Override
-//    public Object getValueAt(int row, int column) {
-//        if (table != null) {
-//
-//
-//            column = table.convertColumnIndexToModel(column);
-//
-//            Vector rowVector = (Vector) super.dataVector.elementAt(row);
-//            return rowVector.elementAt(column);
-//
-//
-//        } else {
-//            return super.getValueAt(row, column);
-//        }
-//    }
+
 }
