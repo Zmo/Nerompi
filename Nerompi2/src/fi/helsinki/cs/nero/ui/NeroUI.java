@@ -22,7 +22,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
@@ -77,18 +76,25 @@ public class NeroUI {
         frame.setSize(1280, HEIGHT + 65);
         frame.setResizable(true);
         
-        // Tehd‰‰n valikkopalkki, siihen nappi ja nappiin valikko
+        // Tehd‰‰n valikkopalkki, siihen nappi ja nappiin valikko, johon laitetaan tarvittavat napit
         JMenuItem addPerson = new JMenuItem("Lis‰‰ henkilˆ");
         JMenuItem reports = new JMenuItem("Raportit");
+        JMenuItem graphs = new JMenuItem("Graafit");
+        
         addPerson.setActionCommand("addPerson");
         reports.setActionCommand("reports");
+        graphs.setActionCommand("graphs");
+        
         ButtonListener listener = new ButtonListener(this.session);
+        
         addPerson.addActionListener(listener);
         reports.addActionListener(listener);
+        graphs.addActionListener(listener);
         
         JMenu menu = new JMenu("Valikko");
         menu.add(addPerson);
         menu.add(reports);
+        menu.add(graphs);
         
         JMenuBar menubar = new JMenuBar();
         menubar.add(menu);

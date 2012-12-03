@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.NeroApplication;
@@ -18,20 +15,19 @@ import javax.swing.TransferHandler;
 
 import fi.helsinki.cs.nero.NeroApplication;
 import fi.helsinki.cs.nero.data.Room;
-import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.logic.Session;
 
 /**
- *
- * @author Zmo
+ * Esitt‰‰ huoneen avainvarausten tiedot eli avainvarausten headerin
+ * 
+ * @author Simo
  */
 public class RoomKeyReservationLabel extends TimelineElement {
     
+    /**Kohdehuone*/
     private Room room;
     
-    /**
-     * Avaimen ikoni.
-     */
+    /**Avaimen ikoni*/
     private static final ImageIcon KEY;
     
     static {

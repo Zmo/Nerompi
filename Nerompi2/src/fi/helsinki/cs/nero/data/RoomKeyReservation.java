@@ -1,14 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package fi.helsinki.cs.nero.data;
 
 import fi.helsinki.cs.nero.logic.Session;
 
 /**
- *
- * @author Zmo
+ * Tiettyyn huoneeseen kohdistuva avainvaraus
+ * @author Simo
  */
 public class RoomKeyReservation {
     
@@ -18,8 +15,11 @@ public class RoomKeyReservation {
     /**Huone, johon varaus kohdistuu*/
     private Room targetRoom;
     
-    /**Henkilö, jolle varaus kuuluu*/
-    private String reserver;
+    /**Varaajan htunnus*/
+    private String reserverID;
+    
+    /**Varaajan nimi*/
+    private String reserverName;
     
     /**Varauksen aikaväli*/
     private TimeSlice timeslice;
@@ -34,10 +34,11 @@ public class RoomKeyReservation {
      * @param timeslice Varauksen aikaväli
      * @param session sessio Session -oliona
      */
-    public RoomKeyReservation(int reservationID, Room targetRoom, String reserver, TimeSlice timeslice, Session session) {
+    public RoomKeyReservation(int reservationID, Room targetRoom, String reserverID, String reserverName, TimeSlice timeslice, Session session) {
         this.reservationID = reservationID;
         this.targetRoom = targetRoom;
-        this.reserver = reserver;
+        this.reserverID = reserverID;
+        this.reserverName = reserverName;
         this.timeslice = timeslice;
         this.session = session;
     }
@@ -50,8 +51,12 @@ public class RoomKeyReservation {
         return this.targetRoom;
     }
     
-    public String getReserver() {
-        return this.reserver;
+    public String getReserverID() {
+        return this.reserverID;
+    }
+    
+    public String getReserverName() {
+        return this.reserverName;
     }
     
     public TimeSlice getTimeSlice() {

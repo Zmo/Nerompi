@@ -4,7 +4,6 @@
  */
 package fi.helsinki.cs.nero.ui;
 
-import fi.helsinki.cs.nero.data.Person;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

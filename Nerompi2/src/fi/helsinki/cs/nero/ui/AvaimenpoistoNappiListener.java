@@ -6,24 +6,29 @@ package fi.helsinki.cs.nero.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author rkolagus
  */
-public class UusiVarausListener implements MouseListener {
-    
-    UusiVarausNappi varausPopup;
-    
-    public UusiVarausListener(UusiVarausNappi popupMenu){
-        super();
-        this.varausPopup = popupMenu;
+public class AvaimenpoistoNappiListener implements MouseListener {
+    AvaimenpoistoNappi nappi;
+    public AvaimenpoistoNappiListener(AvaimenpoistoNappi nappi){
+        this.nappi = nappi;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        this.varausPopup.naytaPopup(e);
+        try {
+            nappi.poistaAvain();
+        } catch (SQLException ex) {
+            Logger.getLogger(AvaimenpoistoNappiListener.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
     @Override
     public void mousePressed(MouseEvent e) {}
 
@@ -35,5 +40,4 @@ public class UusiVarausListener implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {}
-
 }

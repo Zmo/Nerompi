@@ -24,6 +24,7 @@ import javax.swing.border.EtchedBorder;
 import fi.helsinki.cs.nero.NeroApplication;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Reservation;
+import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import fi.helsinki.cs.nero.event.NeroObserver;
 import fi.helsinki.cs.nero.event.NeroObserverTypes;
@@ -31,6 +32,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import sun.util.calendar.CalendarDate;
@@ -162,6 +164,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                 
 		updateScale();
 		this.generate(this.sessio);
+                this.sessio.personScrollPane = this;
 	}
 	
 	/**
@@ -233,7 +236,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         personNameLabel.addMouseListener(new PersonNameLabelListener());
                         header.add(personNameLabel);
                         
-                        UusiVarausPopup varausNappi = new UusiVarausPopup(personIterator.getPerson());
+                        UusiVarausNappi varausNappi = new UusiVarausNappi(personIterator.getPerson());
                         varausNappi.setBorder(loweredEtched);
                         varausNappi.setBackground(HEADER_BG);
                         header.add(varausNappi);
@@ -290,6 +293,48 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 						
 			personsInfo.add(extraHeader);
 			personsInfo.add(header);
+                        JPanel avainRivit = new JPanel();
+                        GridLayout gridLayout = new GridLayout();
+                        gridLayout.setColumns(1);
+                        
+                        /* Henkilön avainvaraukset - työn alla*/
+                        int rivimaara = 0; // IDE valehtelee, kyllä tätä käytetään!
+                        RoomKeyReservation[] avainVarausLista = personIterator.getPerson().getRoomKeyReservations();
+                        for (rivimaara = 0; rivimaara < avainVarausLista.length; rivimaara++){
+                            Calendar alkupaiva = Calendar.getInstance();
+                            Calendar loppupaiva = Calendar.getInstance();
+                            alkupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getStartDate());
+                            loppupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getEndDate());
+                            
+                            /*
+                            String alkuTekstina = alkupaiva.get(Calendar.DAY_OF_MONTH) + "." + 
+                                                 (alkupaiva.get(Calendar.MONTH)+1) + "." + 
+                                                  alkupaiva.get(Calendar.YEAR);7
+                            */
+                            /*
+                            String loppuTekstina = loppupaiva.get(Calendar.DAY_OF_MONTH) + "." + 
+                                                  (loppupaiva.get(Calendar.MONTH)+1) + "." + 
+                                                   loppupaiva.get(Calendar.YEAR);
+                            */
+                            AvainKalenterinappi alkuAvainKalenteri = new AvainKalenterinappi(avainVarausLista[rivimaara], personIterator.getPerson(), true);
+                            AvainKalenterinappi loppuAvainKalenteri = new AvainKalenterinappi(avainVarausLista[rivimaara], personIterator.getPerson(), false);
+                            
+                            JLabel avainNimi = new JLabel("Avain " + avainVarausLista[rivimaara].getTargetRoom().getRoomName());
+                            AvaimenpoistoNappi poistoNappi = new AvaimenpoistoNappi(personIterator.getPerson(), avainVarausLista[rivimaara]);
+                            poistoNappi.setBorder(loweredEtched);
+                            JPanel avainPaneeli = new JPanel();
+                            avainPaneeli.add(avainNimi);
+                            avainPaneeli.add(alkuAvainKalenteri);
+                            avainPaneeli.add(new JLabel(" - "));
+                            avainPaneeli.add(loppuAvainKalenteri);
+                            avainPaneeli.add(poistoNappi);
+                            avainPaneeli.setBackground(HEADER_BG);
+                            avainRivit.add(avainPaneeli);
+                        }
+                        gridLayout.setRows(rivimaara);
+                        avainRivit.setLayout(gridLayout);
+                        personsInfo.add(avainRivit);
+                        /* end of avainvaraukset */
 			
 			while(rowIterator.hasNext()) {
 				

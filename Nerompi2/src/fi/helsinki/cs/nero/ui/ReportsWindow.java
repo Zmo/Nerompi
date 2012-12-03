@@ -326,6 +326,11 @@ public class ReportsWindow extends javax.swing.JFrame {
                 restrictByHasLockerItemStateChanged(evt);
             }
         });
+        restrictByHasLocker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restrictByHasLockerActionPerformed(evt);
+            }
+        });
 
         rajauksetHeader.setText("Rajaukset");
 
@@ -354,6 +359,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         firstCalendar.setToolTipText("Aikavälin ensimmäinen päivä");
+        firstCalendar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                firstCalendarActionPerformed(evt);
+            }
+        });
         firstCalendar.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 firstCalendarPropertyChange(evt);
@@ -815,6 +825,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         sorter.setRowFilter(generalFilter);
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByPostRoomItemStateChanged
+
+    private void firstCalendarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstCalendarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_firstCalendarActionPerformed
+
+    private void restrictByHasLockerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByHasLockerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_restrictByHasLockerActionPerformed
 
     /**
      * @param args the command line arguments

@@ -1,6 +1,7 @@
 package fi.helsinki.cs.nero.data;
 
 import fi.helsinki.cs.nero.logic.Session;
+import java.util.ArrayList;
 
 
 /*
@@ -41,10 +42,7 @@ public class Room {
 	private String description;
         
         /**Huoneeseen kohdistuvat avainvaraukset*/
-        private RoomKeyReservation[] roomKeyReservations;
-        
-        /**Huoneeseen kohdistuvien avainvarausten lukum‰‰r‰*/
-        private int roomKeyReservationNumber;
+        private ArrayList<RoomKeyReservation> roomKeyReservations;
         
 	/**Vakio, joka kertoo ett? huoneessa ei ole yht??n ty?pistett?*/
 	public static final int NO_POSTS = 0;
@@ -83,8 +81,7 @@ public class Room {
 		this.roomName = roomName;
 		this.roomSize = roomSize;
 		this.description = description;
-                this.roomKeyReservations = null;
-                this.roomKeyReservationNumber = 0;
+                this.roomKeyReservations = new ArrayList<RoomKeyReservation>();
 	}	
 
 	/**
@@ -93,36 +90,35 @@ public class Room {
 	 * @throws IllegalArgumentException jos annettu taulukko on null
 	 * @throws IllegalStateException jos metodia kutsutaan toistamiseen
 	 */
-	public void setPosts(Post[] posts) {
-		if(posts == null)
-			throw new IllegalArgumentException();
-		if(this.posts != null)
-			throw new IllegalStateException();
-		this.posts = posts;
-	}
+        public void setPosts(Post[] posts) {
+            if (posts == null) {
+                    throw new IllegalArgumentException();
+            }
+            if (this.posts != null) {
+                throw new IllegalStateException();
+            }
+            this.posts = posts;
+        }
         
         /** Nerompi
          * Lis‰‰ huoneelle annetun avainvarauksen
          * @param roomKeyReservation lis‰tt‰v‰ avainvaraus
          */
         public void addRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
-            RoomKeyReservation[] newArray;
-            if(this.roomKeyReservationNumber == 0) {
-                this.roomKeyReservations = new RoomKeyReservation[10];
-                this.roomKeyReservations[0] = roomKeyReservation;
-                ++roomKeyReservationNumber;
-            } else if(this.roomKeyReservations.length==roomKeyReservationNumber) {
-                newArray = new RoomKeyReservation[this.roomKeyReservationNumber*2];
-                for(int i=0; i<this.roomKeyReservations.length; ++i) {
-                    newArray[i] = this.roomKeyReservations[i];
-                }
-                newArray[roomKeyReservationNumber] = roomKeyReservation;
-                this.roomKeyReservations = newArray;
-                ++roomKeyReservationNumber;
-            }
+            this.roomKeyReservations.add(roomKeyReservation);
+        }
+        
+        /** Nerompi
+         * Poistaa huoneelta annetun avainvarauksen
+         * @param roomKeyReservation poistettava avainvaraus
+         */
+        public boolean deleteRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+            if (this.roomKeyReservations.contains(roomKeyReservation)) {
+                this.roomKeyReservations.remove(roomKeyReservation);
+                return true;
+            } 
             else {
-                this.roomKeyReservations[this.roomKeyReservationNumber] = roomKeyReservation;
-                ++roomKeyReservationNumber;
+                return false;
             }
         }
 	
@@ -212,12 +208,8 @@ public class Room {
 		}
 	}
         
-        public RoomKeyReservation[] getRoomKeyReservations() {
+        public ArrayList getRoomKeyReservations() {
             return this.roomKeyReservations;
-        }
-        
-        public int getRoomKeyReservationNumber() {
-            return this.roomKeyReservationNumber;
         }
         	
 	/**

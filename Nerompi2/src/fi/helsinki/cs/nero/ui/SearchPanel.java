@@ -312,7 +312,7 @@ public class SearchPanel extends JPanel implements PropertyChangeListener, Actio
 			}
 			
 		}	
-		else if(cb.getName()=="maxPosts"){			
+		else if(cb.getName()=="maxPosts") {			
 			if(cb.getSelectedIndex()==0 || cb.getSelectedIndex()==-1){ //"-" valittu, tai valinta ei ole listasta			
 				session.setFilterMaxPosts(-1);
 			}
@@ -320,7 +320,7 @@ public class SearchPanel extends JPanel implements PropertyChangeListener, Actio
 				session.setFilterMaxPosts(Integer.parseInt((String)cb.getSelectedItem()));   
 			}
 		}	
-		else if(cb.getName()=="minFree"){			
+		else if(cb.getName()=="minFree") {			
 			if(cb.getSelectedIndex()==0 || cb.getSelectedIndex()==-1){ //"-" valittu, tai valinta ei ole listasta			
 				session.setFilterFreePosts(1);
 			}

@@ -36,10 +36,17 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         huoneLabel.setText(person.getRoom());
         hetuField.setText(person.getHetu());
         oppiarvoField.setText(person.getOppiarvo());
-        titteliField.setText(person.getTitteli());
-        tyopuhelinLabel.setText(person.getWorkPhone());
+        titteliField.setText(person.getTitteli())
+                ;
+        if (person.getWorkPhone() != null) {
+            if (person.getWorkPhone().startsWith("(09) 191")) {
+                tyopuhelinLabel.setText(person.getWorkPhone());
+            } else {
+                tyopuhelinLabel.setText("(09) 191"+person.getWorkPhone());
+            }
+        }
         kotipuhelinField.setText(person.getHomePhone());
-        kannykkaLabel.setText(person.getKannykka());
+        kannykkaField.setText(person.getKannykka());
         katuosoiteField.setText(person.getAddress());
         postinumeroField.setText(person.getPostnumber());
         postitoimipaikkaField.setText(person.getPostitoimiPaikka());        
@@ -47,6 +54,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         hallinnollinenkommenttiField.setText(person.getHallinnollinenKommentti());        
         ktunnusField.setText(person.getkTunnus());
         postilokeroField.setText(person.getPostilokeroHuone());
+        //omistajaField.setText(this.session.getKannykat(person);
         
         if (person.getActivity().equals("K")) {
             aktiivinenButton.setSelected(true);
@@ -63,8 +71,9 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         } else {
             puhelinluettelossaButton.setSelected(false);
         }
-
-        this.setSize(610, 400);
+     
+        this.setSize(600, 600);
+        this.setResizable(false);
         MoreField.setVisible(false);
         this.setVisible(true);
     }
@@ -78,7 +87,8 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         tyosuhdeButton.setSelected(false);
         aktiivinenButton.setSelected(false);
         
-        this.setSize(680, 400);
+        this.setSize(600, 600);
+        this.setResizable(false);
         MoreField.setVisible(false);
         this.setVisible(true);
     }
@@ -105,7 +115,6 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         MoreField = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         oppiarvoField = new javax.swing.JTextField();
-        hetuField = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         katuosoiteField = new javax.swing.JTextField();
@@ -119,8 +128,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        puhelinluettelossaButton = new javax.swing.JRadioButton();
-        tyosuhdeButton = new javax.swing.JRadioButton();
+        hetuField = new javax.swing.JTextField();
         sukunimiField = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -132,9 +140,13 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         errorMessageLabel = new javax.swing.JLabel();
         huoneLabel = new javax.swing.JLabel();
         aktiivinenButton = new javax.swing.JRadioButton();
+        kannykkaField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        omistajaField = new javax.swing.JTextField();
         tyopuhelinLabel = new javax.swing.JLabel();
+        tyosuhdeButton = new javax.swing.JRadioButton();
+        puhelinluettelossaButton = new javax.swing.JRadioButton();
         lisaapoistaButton = new javax.swing.JButton();
-        kannykkaLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("tietoruutu");
@@ -179,6 +191,12 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel10.setText("Postinumero");
 
+        htunnusField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                htunnusFieldActionPerformed(evt);
+            }
+        });
+
         jLabel11.setText("H_tunnus");
 
         jLabel13.setText("Hallinnollinen kommentti");
@@ -187,10 +205,6 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel15.setText("Postitoimipaikka");
 
-        puhelinluettelossaButton.setText("Puhelinluettelossa");
-
-        tyosuhdeButton.setText("Työsuhteessa");
-
         javax.swing.GroupLayout MoreFieldLayout = new javax.swing.GroupLayout(MoreField);
         MoreField.setLayout(MoreFieldLayout);
         MoreFieldLayout.setHorizontalGroup(
@@ -198,71 +212,71 @@ public class PersonInfoFrame extends javax.swing.JFrame {
             .addGroup(MoreFieldLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(postinumeroField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(oppiarvoField, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(katuosoiteField, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(hetuField, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(puhelinluettelossaButton))
-                .addGap(44, 44, 44)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tyosuhdeButton)
-                    .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(htunnusField, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
-                        .addComponent(hallinnollinenkommenttiField)
-                        .addComponent(sahkopostiField)
-                        .addComponent(postitoimipaikkaField))
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel15)
-                    .addComponent(jLabel13))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .addGroup(MoreFieldLayout.createSequentialGroup()
+                        .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(hallinnollinenkommenttiField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(postinumeroField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(hetuField, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(postitoimipaikkaField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                                        .addComponent(htunnusField, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(oppiarvoField, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(katuosoiteField, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel14)
+                                    .addComponent(sahkopostiField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel11))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(MoreFieldLayout.createSequentialGroup()
+                        .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(MoreFieldLayout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MoreFieldLayout.createSequentialGroup()
+                                .addGap(0, 1, Short.MAX_VALUE)
+                                .addComponent(jLabel13)))
+                        .addContainerGap())))
         );
         MoreFieldLayout.setVerticalGroup(
             MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MoreFieldLayout.createSequentialGroup()
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MoreFieldLayout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel11))
-                    .addGroup(MoreFieldLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(oppiarvoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(htunnusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(28, 28, 28)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(puhelinluettelossaButton)
-                    .addComponent(tyosuhdeButton))
-                .addGap(18, 18, 18)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel13))
+                .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(hallinnollinenkommenttiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(hetuField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(oppiarvoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel14))
+                .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(katuosoiteField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sahkopostiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(hetuField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel15))
+                .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(postitoimipaikkaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(postinumeroField)))
+                .addComponent(htunnusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(katuosoiteField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel15)
+                .addGap(9, 9, 9)
+                .addComponent(postitoimipaikkaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(postinumeroField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sahkopostiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(hallinnollinenkommenttiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel16.setText("Sukunimi");
@@ -280,16 +294,18 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         aktiivinenButton.setText("Aktiivinen");
 
-        tyopuhelinLabel.setText("---");
+        jLabel3.setText("Kännykän omistaja");
 
-        lisaapoistaButton.setText("Lisää / Poista Kännykkä");
+        tyosuhdeButton.setText("Työsuhteessa");
+
+        puhelinluettelossaButton.setText("Puhelinluettelossa");
+
+        lisaapoistaButton.setText("Varaa työnumero");
         lisaapoistaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lisaapoistaButtonActionPerformed(evt);
             }
         });
-
-        kannykkaLabel.setText("jLabel3");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -299,110 +315,110 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel20)
+                            .addComponent(kotipuhelinField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(omistajaField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(kannykkaField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel16)
+                                    .addComponent(tyopuhelinLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(titteliField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ktunnusField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(etunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sukunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel21)
+                                    .addComponent(jLabel5)
+                                    .addComponent(postilokeroField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lisaapoistaButton)
+                                    .addComponent(jLabel2)
+                                    .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(aktiivinenButton)
+                                    .addComponent(tyosuhdeButton)
+                                    .addComponent(puhelinluettelossaButton))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(MoreButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lisaapoistaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(etunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(aktiivinenButton)
-                                    .addComponent(jLabel2)
-                                    .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(43, 43, 43)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(titteliField, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(postilokeroField)
-                                        .addComponent(jLabel17)
-                                        .addComponent(jLabel5)
-                                        .addComponent(jLabel16)
-                                        .addComponent(sukunimiField, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel20)
-                                    .addComponent(ktunnusField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                                    .addComponent(kotipuhelinField))
-                                .addGap(43, 43, 43)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel18)
-                                    .addComponent(jLabel21)
-                                    .addComponent(tyopuhelinLabel)
-                                    .addComponent(kannykkaLabel))))
-                        .addGap(31, 31, 31)
-                        .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(608, 608, 608))
+                        .addComponent(MoreButton, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addGap(7, 7, 7)
-                                .addComponent(sukunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(postilokeroField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(7, 7, 7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(etunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sukunimiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(huoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(1, 1, 1)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(29, 29, 29)
-                                        .addComponent(aktiivinenButton))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(25, 25, 25)
-                                        .addComponent(jLabel17)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(titteliField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGap(36, 36, 36)
+                                .addComponent(aktiivinenButton)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(ktunnusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(kannykkaLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel20)
-                                    .addComponent(jLabel21))))
+                        .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(kotipuhelinField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tyopuhelinLabel)))
+                            .addComponent(ktunnusField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tyosuhdeButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(titteliField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(puhelinluettelossaButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(postilokeroField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8)
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(kannykkaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(omistajaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel20)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(kotipuhelinField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel21)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tyopuhelinLabel))
+                            .addComponent(lisaapoistaButton)))
                     .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
-                .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(errorMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
                     .addComponent(CancelButton)
-                    .addComponent(MoreButton)
-                    .addComponent(lisaapoistaButton))
+                    .addComponent(MoreButton))
                 .addContainerGap())
         );
 
@@ -431,7 +447,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         henkiloHash.put("titteli", titteliField.getText());
         henkiloHash.put("puhelin_tyo", tyopuhelinLabel.getText());
         henkiloHash.put("puhelin_koti", kotipuhelinField.getText());
-        henkiloHash.put("kannykka", kannykkaLabel.getText());
+        henkiloHash.put("kannykka", kannykkaField.getText());
         henkiloHash.put("katuosoite", katuosoiteField.getText());
         henkiloHash.put("postinro", postinumeroField.getText());
         henkiloHash.put("postitoimipaikka", postitoimipaikkaField.getText());
@@ -473,21 +489,26 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
     private void MoreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoreButtonActionPerformed
         if (MoreField.isVisible()) {
-            this.setSize(610, 400);
+            //this.setSize(610, 400);
             MoreField.setVisible(false);
         } else {
-            this.setSize(900, 400);
+            //this.setSize(900, 400);
             MoreField.setVisible(true);
         }
     }//GEN-LAST:event_MoreButtonActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
+        
         this.dispose();
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void lisaapoistaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lisaapoistaButtonActionPerformed
-        CellphoneDialog cellDialog = new CellphoneDialog(this.session, this.person, this, true);
+        AltPhonenumberDialog apd = new AltPhonenumberDialog(this, true, this.session, this.person);
     }//GEN-LAST:event_lisaapoistaButtonActionPerformed
+
+    private void htunnusFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_htunnusFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_htunnusFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -546,16 +567,18 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel kannykkaLabel;
+    private javax.swing.JTextField kannykkaField;
     private javax.swing.JTextField katuosoiteField;
     private javax.swing.JTextField kotipuhelinField;
     private javax.swing.JTextField ktunnusField;
     private javax.swing.JButton lisaapoistaButton;
+    private javax.swing.JTextField omistajaField;
     private javax.swing.JTextField oppiarvoField;
     private javax.swing.JTextField postilokeroField;
     private javax.swing.JTextField postinumeroField;

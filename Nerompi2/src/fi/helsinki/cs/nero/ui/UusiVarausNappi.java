@@ -14,12 +14,12 @@ import javax.swing.JPopupMenu;
  *
  * @author rkolagus
  */
-public class UusiVarausPopup extends JButton {
+public class UusiVarausNappi extends JButton {
     Person person;
     JPopupMenu popupMenu;
     Post[] posts;
     
-    public UusiVarausPopup(Person person){
+    public UusiVarausNappi(Person person){
         this.setText("Uusi varaus");
         this.addMouseListener(new UusiVarausListener(this));
         this.person = person;
@@ -49,7 +49,7 @@ public class UusiVarausPopup extends JButton {
             alkamisPaiva = this.person.getLastReservation().getTimeSlice().getEndDate();
         }
         if (!(alkamisPaiva.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
-            System.out.println(" - Virhe - UusiVarausPopup: Aikavälillä ei ole tilaa!");
+            this.person.getSession().setStatusMessage("Henkilöllä on jo varaukset koko tarkastellulle aikavälille!");
         } else {
             this.person.getSession().createReservation(post, this.person, new TimeSlice(alkamisPaiva, this.person.getSession().getTimeScaleSlice().getEndDate()));
         }
