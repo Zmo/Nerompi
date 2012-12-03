@@ -66,4 +66,8 @@ public class RoomKeyReservation {
     public Session getSession() {
         return this.session;
     }
+    
+    public void setTimeSlice(TimeSlice timeSlice){
+        this.timeslice = timeSlice;
+    }
 }

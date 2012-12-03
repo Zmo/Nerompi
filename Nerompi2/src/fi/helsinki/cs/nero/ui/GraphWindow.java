@@ -24,11 +24,12 @@ public class GraphWindow extends javax.swing.JFrame {
 
     private Session session;
     
-    private Date startDate;
-    
-    private Date endDate;
+    private Date startDate, endDate;
     
     ChartPanel chartPanel;
+    
+    String numberLabel1, numberLabel2;
+    
     
     /**
      * Creates new form GraphWindow
@@ -41,8 +42,11 @@ public class GraphWindow extends javax.swing.JFrame {
         this.startDate.setYear(startDate.getYear()-1);
         
         initComponents();
+        
         createOccupiedPostPercentageChart();
-        this.jPanel1.add(chartPanel);
+        
+        this.numberLabel1 = this.getNumberLabelData1();
+        this.numberLabel2 = this.getNumberLabelData2();
         
         this.setVisible(true);
     }
@@ -68,6 +72,10 @@ public class GraphWindow extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -86,9 +94,15 @@ public class GraphWindow extends javax.swing.JFrame {
         setTitle("Graafit");
         setAlwaysOnTop(true);
 
+        jLabel1.setLabelFor(jCalendarButton1);
         jLabel1.setText("Alkupvm.");
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Työpisteiden varausaste", "Työpisteiden täyttöaste" }));
+        jComboBox4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox4ItemStateChanged(evt);
+            }
+        });
         jComboBox4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox4ActionPerformed(evt);
@@ -121,6 +135,7 @@ public class GraphWindow extends javax.swing.JFrame {
 
         jTextField2.setText(dateToShortString(endDate));
 
+        jLabel2.setLabelFor(jCalendarButton2);
         jLabel2.setText("Loppupvm.");
 
         jLabel3.setText("Tyyppi");
@@ -143,37 +158,50 @@ public class GraphWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText(getNumberLabelData1());
+
+        jLabel5.setText(getNumberLabelData2());
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kaikki", "1 työpiste", "2 työpistettä", "3 työpistettä", ">3 työpistettä" }));
+
+        jLabel6.setText("Huoneen koko");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jCalendarButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jCalendarButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jCalendarButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addGap(86, 86, 86)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 248, Short.MAX_VALUE))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jCalendarButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -189,16 +217,21 @@ public class GraphWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
                 .addGap(6, 6, 6))
         );
 
@@ -241,6 +274,28 @@ public class GraphWindow extends javax.swing.JFrame {
 //            createPeoplePerPostChart();
     }//GEN-LAST:event_jComboBox4PropertyChange
 
+    private void jComboBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox4ItemStateChanged
+        int index = this.jComboBox4.getSelectedIndex();
+        if(index == 0) {
+            createOccupiedPostPercentageChart();
+            this.jLabel4.setText(numberLabel1);
+            this.jLabel5.setText(numberLabel2);
+        }
+        else if(index == 1) {
+            createPeoplePerPostChart();
+            this.jLabel4.setText(numberLabel1);
+            this.jLabel5.setText(numberLabel2);
+        }
+    }//GEN-LAST:event_jComboBox4ItemStateChanged
+
+    public String getNumberLabelData1() {
+        return this.numberLabel1;
+    }
+    
+    public String getNumberLabelData2() {
+        return this.numberLabel2;
+    }
+    
     private String dateToShortString(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -254,10 +309,10 @@ public class GraphWindow extends javax.swing.JFrame {
         }
     }
     
-    /** Nerompi // TODO varauksien haku, tällä hetkellä kannasta ei haeta muita kuin tämänhetkiset????
-     * 
+    /**
+     * Laskee kuinka monta työpistettä on annettuna päivämääränä ja kuinka moni niistä on varattu
      * @param date Päivämäärä jolta varaustiedot haetaan
-     * @return taulukko, jonka ensimmäinen alkio on työpisteiden kokonaismäärä suhteutettuna varattujen työpisteiden määrään annettuna päivämääränä
+     * @return Kuinka suuri prosenttuaalinen osuus kaikista työpisteistä on varattuja
      */
     public double getPostOccupationData(Date date) {
         double totalPosts = 0;
@@ -267,12 +322,49 @@ public class GraphWindow extends javax.swing.JFrame {
             for (Post post : room.getPosts()) {
                 ++totalPosts;
                 for (Reservation reservation : post.getReservations()) {
-                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date))
+                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
                         ++occupiedPosts;
+                        break;
+                    }
                 }
             }
         }
+        this.numberLabel2 = "Työpisteiden kokonaismäärä: "+totalPosts;
+        this.numberLabel1 = "Varattujen työpisteiden määrä: "+occupiedPosts;
         return (occupiedPosts/totalPosts)*100.0;
+    }
+    
+    /**
+     * 
+     * @param date Päivämäärä jolta varaustiedot haetaan
+     * @return Kuinka monta ihmistä keskimäärin on per varattu työpiste
+     */
+    public double getPeoplePerTakenPostData(Date date) {
+        double occupiedPosts = 0.0;
+        double people = 0.0;
+        
+        for (Room room : this.session.getRooms()) {
+            for (Post post : room.getPosts()) {
+                for (Reservation reservation : post.getReservations()) {
+                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                        ++people;
+                    }
+                }
+            }
+        }
+        for (Room room : this.session.getRooms()) {
+            for (Post post : room.getPosts()) {
+                for (Reservation reservation : post.getReservations()) {
+                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                        ++occupiedPosts;
+                        break;
+                    }
+                }
+            }
+        }
+        this.numberLabel1 = "Työpisteen omaavia ihmisiä: "+people;
+        this.numberLabel2 = "Varattujen työpisteiden määrä: "+occupiedPosts;
+        return people/occupiedPosts;
     }
     
     public void drawChart(JFreeChart chart) {
@@ -280,23 +372,27 @@ public class GraphWindow extends javax.swing.JFrame {
         
         this.chartPanel = new ChartPanel(chart);
         chartPanel.setBounds(0, 0, this.jPanel1.getBounds().width, this.jPanel1.getBounds().height);
+        jPanel1.add(chartPanel);
     }
     
+    /**
+     * Tehdään graafi siitä kuinka suuri osa työpisteistä on varattuja
+     */
     public void createOccupiedPostPercentageChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
         int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
         
-        Date current = startDate;
+        Date current = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
         String series1 = "First";
         
         for(int i=0; i<months; ++i) {
-            dataset.addValue(getPostOccupationData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100)/*this.monthMap.get((i%12)+1)*/);
+            dataset.addValue(getPostOccupationData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));
             current.setMonth(current.getMonth()+1);
         }
         
         JFreeChart chart = ChartFactory.createLineChart(
-            "Työpisteiden täyttöaste",     // chart title
+            "Työpisteiden varausaste",     // chart title
             "Kuukausi",                    // domain axis label
             "Täyttöaste",                  // range axis label
             dataset,                       // data
@@ -309,21 +405,24 @@ public class GraphWindow extends javax.swing.JFrame {
         drawChart(chart);
     }
     
+    /**
+     * Tehdään graafi siitä kuinka monta henkilöä keskimäärin istuu varatuilla työpisteillä
+     */
     public void createPeoplePerPostChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
         int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
         
-        Date current = startDate;
+        Date current = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
         String series1 = "First";
         
         for(int i=0; i<months; ++i) {
-            // tee metodi työpisteiden 
+            dataset.addValue(getPeoplePerTakenPostData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));// tee metodi työpisteiden 
             current.setMonth(current.getMonth()+1);
         }
         
         JFreeChart chart = ChartFactory.createLineChart(
-            "Ihmisten määrä",     // chart title
+            "Varattujen työpisteiden täyttöaste",     // chart title
             "Kuukausi",                    // domain axis label
             "Täyttöaste",                  // range axis label
             dataset,                       // data
@@ -332,9 +431,7 @@ public class GraphWindow extends javax.swing.JFrame {
             false,                         // tooltips
             false                          // urls
         );
-        
         // tähän chartin väritystä sun muuta turhuutta jos halutaan
-        
         drawChart(chart);
     }
     /**
@@ -378,11 +475,15 @@ public class GraphWindow extends javax.swing.JFrame {
     private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
     private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton2;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JComboBox jComboBox4;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;

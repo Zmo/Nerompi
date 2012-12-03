@@ -348,7 +348,8 @@ public class NeroDatabase implements NeroObserver {
 					"SELECT id, puhelinnumero, tp_id, h_tunnus FROM PUHELINNUMERO"
 			);
                         
-		}
+		}             
+                
 		ResultSet rs = prepAllPhoneNumbers.executeQuery();
 		
 		int count = 0;
@@ -358,6 +359,8 @@ public class NeroDatabase implements NeroObserver {
 			String pnid = rs.getString("id");
 			String number = rs.getString("puhelinnumero");
                         String htunnus = rs.getString("h_tunnus");
+                        
+                        
 			if(tpid == null) {
 				pn = new PhoneNumber(this.session, pnid, null, number, htunnus);
 				tpid = "free";
@@ -1602,6 +1605,10 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(false);
             return success;
         }
+    /* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */
+        
+    /* --- Avainvarauksiin liittyvät metodit alkaa --- */
+        
     /**
      * Nerompi Lisää Huonevaraus -tauluun uuden huonevarauksen
      *
@@ -1625,25 +1632,49 @@ public class NeroDatabase implements NeroObserver {
             System.err.println("Tietokantavirhe: " + e.getMessage());
         }
     }
-
+    /**
+     * Poistaa annetun avainvarauksen tietokannasta
+     * @param id poistettavan avainvarauksen id
+     */
     public void deleteRoomKeyReservation(int id) {
-
-        String updateQuery = "DELETE FROM huonevaraus where id=?";
+        String deleteQuery = "DELETE FROM huonevaraus where id=?";
 
         PreparedStatement prep;
 
         try {
-            prep = this.connection.prepareStatement(updateQuery);
+            prep = this.connection.prepareStatement(deleteQuery);
             prep.setInt(1, id);
             prep.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
         }
     }
+    /**
+     * Päivittää annetun avainvarauksen alku- ja loppupäivämäärän
+     * @param roomKeyReservation muutettava avainvaraus
+     * @return onnistuiko päivitys
+     */
+    public boolean modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+        String updateQuery = "UPDATE huonevaraus SET alkupvm=?, loppupvm=? where id=?";
+        
+        PreparedStatement prep;
+        
+        try {
+            prep = this.connection.prepareStatement(updateQuery);
+            prep.setDate(1, roomKeyReservation.getTimeSlice().getSQLStartDate());
+            prep.setDate(2, roomKeyReservation.getTimeSlice().getSQLEndDate());
+            prep.setInt(3, roomKeyReservation.getReservationID());
+            prep.executeUpdate();
+            return true;
+        } catch(SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+            return false;
+        }
+    }
 
-	/* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */ 
+    /* --- Avainvarauksiin liittyvät metodit loppuu --- */
 
-	/* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
+    /* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
 	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat projektit jï¿½rjestettynï¿½
@@ -1689,22 +1720,19 @@ public class NeroDatabase implements NeroObserver {
 	 * @param args Komentoriviparametrit.
 	 * @throws SQLException
 	 */
-	public static void main(String[] args) throws SQLException {
-		NeroApplication.readIni(NeroApplication.DEFAULT_INI);
-		NeroDatabase ndb = new NeroDatabase(new Session(),
-				NeroApplication.getProperty("db_class"),
-				NeroApplication.getProperty("db_connection"),
-				NeroApplication.getProperty("db_username"),
-				NeroApplication.getProperty("db_password"));
-		/* tahtoo katsoa versiot, jotkut toimii ja jotkut ei. */
-		System.out.println(ndb.connection.getMetaData().getDriverVersion());
-		System.out.println(ndb.connection.getMetaData()
-				.getDatabaseProductVersion());
-		// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
-		System.out.println("done.");
-	}
-
-
+    public static void main(String[] args) throws SQLException {
+	NeroApplication.readIni(NeroApplication.DEFAULT_INI);
+	NeroDatabase ndb = new NeroDatabase(new Session(),
+        	NeroApplication.getProperty("db_class"),
+        	NeroApplication.getProperty("db_connection"),
+		NeroApplication.getProperty("db_username"),
+		NeroApplication.getProperty("db_password"));
+	/* tahtoo katsoa versiot, jotkut toimii ja jotkut ei. */
+	System.out.println(ndb.connection.getMetaData().getDriverVersion());
+	System.out.println(ndb.connection.getMetaData().getDatabaseProductVersion());
+	// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
+    	System.out.println("done.");
+    }
 
     /**
      * Poistaa työpisteeltä puhelinnumeron
