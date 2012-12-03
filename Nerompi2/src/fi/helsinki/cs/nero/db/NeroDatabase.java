@@ -1598,7 +1598,7 @@ public class NeroDatabase implements NeroObserver {
                     loadPhoneNumbers();
 
 		}
-            } catch (SQLException e) {
+            }} catch (SQLException e) {
             	System.err.println("Tietokantavirhe: " + e.getMessage());
             }
             this.session.waitState(false);
