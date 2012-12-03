@@ -44,12 +44,11 @@ public class PhoneNumber implements Comparable {
 		if (session == null || phoneNumberID == null) {
 			throw new IllegalArgumentException();
 		}
-		this.person = person;
+		this.personID = personID;
 		this.session = session;
 		this.phoneNumberID = phoneNumberID;
 		this.post = post;
 		this.phoneNumber = phoneNumber;
-                this.personID = personID;
 	}
 
 	/**
@@ -105,17 +104,17 @@ public class PhoneNumber implements Comparable {
 	 * Laiska toString()
 	 */
 	public String toString() {
-            if (this.post == null && this.person == null)
+            if (this.post == null && this.personID == null)
                 return phoneNumber;
             
             else if(this.post == null)
-                return phoneNumber + " " + this.person;
+                return phoneNumber + " " + this.personID;
             
             else if (this.person == null)
                 return phoneNumber + " (" + this.post + ")";
             
             else
-                return phoneNumber + " (" + post + ")" + " " + this.person;
+                return phoneNumber + " (" + post + ") " + this.personID;
 	}	
 	public int compareTo(Object obj) {
 		PhoneNumber p = (PhoneNumber)obj;

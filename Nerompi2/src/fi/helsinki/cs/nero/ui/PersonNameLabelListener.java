@@ -20,7 +20,6 @@ public class PersonNameLabelListener implements MouseListener {
          	new PersonInfoFrame(pl.getSession(), pl.getPerson());
          }
     }
-
     @Override
     public void mousePressed(MouseEvent e) {
 

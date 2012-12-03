@@ -348,7 +348,8 @@ public class NeroDatabase implements NeroObserver {
 					"SELECT id, puhelinnumero, tp_id, h_tunnus FROM PUHELINNUMERO"
 			);
                         
-		}
+		}             
+                
 		ResultSet rs = prepAllPhoneNumbers.executeQuery();
 		
 		int count = 0;
@@ -358,6 +359,8 @@ public class NeroDatabase implements NeroObserver {
 			String pnid = rs.getString("id");
 			String number = rs.getString("puhelinnumero");
                         String htunnus = rs.getString("h_tunnus");
+                        
+                        
 			if(tpid == null) {
 				pn = new PhoneNumber(this.session, pnid, null, number, htunnus);
 				tpid = "free";
