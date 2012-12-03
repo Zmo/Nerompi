@@ -337,7 +337,9 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			while(rowIterator.hasNext()) {
 				
 				//Tehdään riville paneeli johon elementit tulee peräkkäin.
-				RowPanel rowPanel = new RowPanel(ROW_LENGTH);        
+				RowPanel rowPanel = new RowPanel(ROW_LENGTH);
+				RowPanel barPanel = new RowPanel(ROW_LENGTH);
+                                barPanel.setBackground(HEADER_BG);
 				Row row = (Row)rowIterator.next();
 				boolean firstContract = true;
 				
@@ -351,8 +353,14 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                         nappiRivit.add(post.getKalenterinapit());
                                         korkeus++;
                                     }
-                                        // rowPanel.add(post);
-				}
+                                    // jos palkki on tyhjä tai liian pitkä
+                                    if (post.getReservation() == null || post.getTimeSlice() == null || (post.getTimeSlice().length() > 9000) || post.getTimeSlice().length() <= 0) {
+                                    }
+                                    else {
+                                        barPanel.add(post);
+                                    }
+                                    // rowPanel.add(post);
+                                }
                                 nappiRivit.setLayout(new GridLayout(korkeus, 1));
                                 korkeus = korkeus * 28;
                                 rowPanel.add(nappiRivit);
@@ -360,6 +368,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                 rowPanel.setPreferredSize(new Dimension(ROW_LENGTH, korkeus));
                                 rowPanel.setMaximumSize(new Dimension(ROW_LENGTH, korkeus));
 				personsInfo.add(rowPanel);
+                                personsInfo.add(barPanel);
 			}
 			this.personPanel.add(BorderLayout.CENTER, personsInfo);
 			
