@@ -6,6 +6,7 @@ package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
+import fi.helsinki.cs.nero.data.TimeSlice;
 import java.beans.PropertyChangeEvent;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,22 +57,30 @@ public class AvainKalenterinappi extends JCalendarButton{
             }
             
             // verrataan henkilön muihin avainvarauksiin
-            /*
+            
             RoomKeyReservation[] avainVaraukset = this.person.getRoomKeyReservations();
             for (int indeksi = 0; indeksi < avainVaraukset.length; indeksi++){
-                if (avainVaraukset[indeksi].getTargetRoom() == this.roomKeyReservation.getTargetRoom()){
-                    if (this.onkoAlku && (avainVaraukset[indeksi].getTimeSlice().)){}
-                    else {}
+                if (avainVaraukset[indeksi] == this.roomKeyReservation){
                 }
-            }*/
+                else if (avainVaraukset[indeksi].getTargetRoom() == this.roomKeyReservation.getTargetRoom()){
+                    if (avainVaraukset[indeksi].getTimeSlice().contains(kohdeaika)){
+                        System.out.println("Avainvarauksia ei voi laittaa päällekkäin!");
+                        return;
+                    }
+                    else {
+                    }
+                }
+            }
             
-            // Vaikutusten tekeminen kantaan ja sessioon
-            /*
+            TimeSlice uusiTimeSlice;
             if (this.onkoAlku){
+                uusiTimeSlice = new TimeSlice(kohdeaika, this.roomKeyReservation.getTimeSlice().getEndDate());
             } 
             else {
+                uusiTimeSlice = new TimeSlice(this.roomKeyReservation.getTimeSlice().getStartDate(), kohdeaika);
             }
-            */
+            this.roomKeyReservation.setTimeSlice(uusiTimeSlice);
+            // db- ja sessiomuutokset
             this.setTargetDate(kohdeaika);
             this.setText(updateAikaTeksti(this.getTargetDate()));
         }
