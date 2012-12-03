@@ -8,15 +8,12 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.logic.Session;
-import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -31,7 +28,7 @@ public class GraphWindow extends javax.swing.JFrame {
     
     private Date endDate;
     
-    HashMap<Integer, String> monthMap;
+    ChartPanel chartPanel;
     
     /**
      * Creates new form GraphWindow
@@ -43,22 +40,9 @@ public class GraphWindow extends javax.swing.JFrame {
         this.startDate = new Date();
         this.startDate.setYear(startDate.getYear()-1);
         
-        this.monthMap = new HashMap<Integer, String>();        
-        this.monthMap.put(1, "Tammi");
-        this.monthMap.put(2, "Helmi");
-        this.monthMap.put(3, "Maalis");
-        this.monthMap.put(4, "Huhti");
-        this.monthMap.put(5, "Touko");
-        this.monthMap.put(6, "Kesä");
-        this.monthMap.put(7, "Heinä");
-        this.monthMap.put(8, "Elo");
-        this.monthMap.put(9, "Syys");
-        this.monthMap.put(10, "Loka");
-        this.monthMap.put(11, "Marras");
-        this.monthMap.put(12, "Joulu");
-        
         initComponents();
         createOccupiedPostPercentageChart();
+        this.jPanel1.add(chartPanel);
         
         this.setVisible(true);
     }
@@ -145,11 +129,11 @@ public class GraphWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 399, Short.MAX_VALUE)
+            .addGap(0, 407, Short.MAX_VALUE)
         );
 
         jButton1.setText("Sulje");
@@ -211,10 +195,11 @@ public class GraphWindow extends javax.swing.JFrame {
                             .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addContainerGap())
+                .addGap(6, 6, 6))
         );
 
         pack();
@@ -291,16 +276,13 @@ public class GraphWindow extends javax.swing.JFrame {
     }
     
     public void drawChart(JFreeChart chart) {
-        
         jPanel1.removeAll();
         
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(0, 0, 650, 400);
-        this.jPanel1.add(chartPanel);
+        this.chartPanel = new ChartPanel(chart);
+        chartPanel.setBounds(0, 0, this.jPanel1.getBounds().width, this.jPanel1.getBounds().height);
     }
     
     public void createOccupiedPostPercentageChart() {
-        
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
         int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
@@ -309,7 +291,7 @@ public class GraphWindow extends javax.swing.JFrame {
         String series1 = "First";
         
         for(int i=0; i<months; ++i) {
-            dataset.addValue(getPostOccupationData(current), series1, this.monthMap.get((i%12)+1));
+            dataset.addValue(getPostOccupationData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100)/*this.monthMap.get((i%12)+1)*/);
             current.setMonth(current.getMonth()+1);
         }
         
@@ -323,14 +305,11 @@ public class GraphWindow extends javax.swing.JFrame {
             false,                         // tooltips
             false                          // urls
         );
-        
         // tähän chartin väritystä sun muuta turhuutta jos halutaan
-        
         drawChart(chart);
     }
     
     public void createPeoplePerPostChart() {
-        
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
         int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
