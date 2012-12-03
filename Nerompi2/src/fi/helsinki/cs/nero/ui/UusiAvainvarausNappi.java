@@ -7,10 +7,8 @@ package fi.helsinki.cs.nero.ui;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import javax.swing.JButton;
 
 /**
@@ -50,8 +48,6 @@ public class UusiAvainvarausNappi extends JButton {
             }
             if (alkuaika.getTime().equals(this.person.getSession().getTimeScaleSlice().getEndDate()) || 
                     alkuaika.getTime().after(this.person.getSession().getTimeScaleSlice().getEndDate())) {
-                System.out.println(" ---> Alkuaika: " + alkuaika.getTime() + 
-                                 "\n ---> EndDate:  " + this.person.getSession().getTimeScaleSlice().getEndDate());
                 this.person.getSession().setStatusMessage("Henkilöllä on jo avainvaraus tarkasteluajan loppuun asti!");
             } else {
                 this.person.getSession().addRoomKeyReservation(this.person, new TimeSlice(alkuaika.getTime(), this.person.getSession().getTimeScaleSlice().getEndDate()));
