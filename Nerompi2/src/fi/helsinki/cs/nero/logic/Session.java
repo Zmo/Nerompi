@@ -938,16 +938,15 @@ public class Session {
 
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
         this.deleteRoomkeyReservation(roomKeyReservation);
+        // person.deleteRoomKeyReservation(roomKeyReservation);
         this.updatePerson(person);
-        for (int a = 0; a < person.getRoomKeyReservations().length; a++){
-            System.out.println("------ ------>" + person.getRoomKeyReservations()[a].getTargetRoom());
-        }
     }
     
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
+        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
     }
     /* Kuuntelijoihin liittyvät operaatiot */
 

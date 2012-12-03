@@ -8,15 +8,12 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.logic.Session;
-import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
@@ -31,6 +28,8 @@ public class GraphWindow extends javax.swing.JFrame {
     
     private Date endDate;
     
+    ChartPanel chartPanel;
+    
     /**
      * Creates new form GraphWindow
      */
@@ -42,9 +41,10 @@ public class GraphWindow extends javax.swing.JFrame {
         this.startDate.setYear(startDate.getYear()-1);
         
         initComponents();
-        this.setVisible(true);
+        createOccupiedPostPercentageChart();
+        this.jPanel1.add(chartPanel);
         
-        this.drawChart();
+        this.setVisible(true);
     }
 
     /**
@@ -89,6 +89,16 @@ public class GraphWindow extends javax.swing.JFrame {
         jLabel1.setText("Alkupvm.");
 
         jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox4ActionPerformed(evt);
+            }
+        });
+        jComboBox4.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jComboBox4PropertyChange(evt);
+            }
+        });
 
         jCalendarButton1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -119,11 +129,11 @@ public class GraphWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 399, Short.MAX_VALUE)
+            .addGap(0, 407, Short.MAX_VALUE)
         );
 
         jButton1.setText("Sulje");
@@ -185,11 +195,11 @@ public class GraphWindow extends javax.swing.JFrame {
                             .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addContainerGap())
+                .addGap(6, 6, 6))
         );
 
         pack();
@@ -207,7 +217,7 @@ public class GraphWindow extends javax.swing.JFrame {
         if (evt.getNewValue() instanceof Date) {
             this.startDate = (((Date) evt.getNewValue()));
             this.jTextField1.setText(dateToShortString(startDate));
-            this.drawChart();
+            createOccupiedPostPercentageChart();
         }
     }//GEN-LAST:event_jCalendarButton1PropertyChange
 
@@ -215,9 +225,21 @@ public class GraphWindow extends javax.swing.JFrame {
         if (evt.getNewValue() instanceof Date) {
             this.endDate = (((Date) evt.getNewValue()));
             this.jTextField2.setText(dateToShortString(endDate));
-            this.drawChart();
+            createOccupiedPostPercentageChart();
         }
     }//GEN-LAST:event_jCalendarButton2PropertyChange
+
+    private void jComboBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox4ActionPerformed
+        
+    }//GEN-LAST:event_jComboBox4ActionPerformed
+
+    private void jComboBox4PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBox4PropertyChange
+//        int index = this.jComboBox4.getSelectedIndex();
+//        if(index == 0)
+//            createOccupiedPostPercentageChart();
+//        else if(index == 1)
+//            createPeoplePerPostChart();
+    }//GEN-LAST:event_jComboBox4PropertyChange
 
     private String dateToShortString(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -253,96 +275,68 @@ public class GraphWindow extends javax.swing.JFrame {
         return (occupiedPosts/totalPosts)*100.0;
     }
     
-    public void drawChart() {
-        Calendar start = Calendar.getInstance();
-        start.setTime(startDate);
-        
-        Calendar end = Calendar.getInstance();
-        end.setTime(endDate);
-        
-        start.get(Calendar.MONTH);
-        
-        
-        CategoryDataset dataset = createDataset();
-        JFreeChart chart = createChart(dataset);
-        
-        ChartPanel chartPanel = new ChartPanel(chart);
-        
-        chartPanel.setPreferredSize(new Dimension(50, 27));
-        chartPanel.setMaximumSize(new Dimension(100, 100));
-        chartPanel.setBounds(0, 0, 650, 400);
-        
+    public void drawChart(JFreeChart chart) {
         jPanel1.removeAll();
-        this.jPanel1.add(chartPanel);
+        
+        this.chartPanel = new ChartPanel(chart);
+        chartPanel.setBounds(0, 0, this.jPanel1.getBounds().width, this.jPanel1.getBounds().height);
     }
     
-    public CategoryDataset createDataset() {
-        
+    public void createOccupiedPostPercentageChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
         int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
-        HashMap<Integer, String> monthMap = new HashMap<Integer, String>();
-        
-        monthMap.put(1, "Tammi");
-        monthMap.put(2, "Helmi");
-        monthMap.put(3, "Maalis");
-        monthMap.put(4, "Huhti");
-        monthMap.put(5, "Touko");
-        monthMap.put(6, "Kesä");
-        monthMap.put(7, "Heinä");
-        monthMap.put(8, "Elo");
-        monthMap.put(9, "Syys");
-        monthMap.put(10, "Loka");
-        monthMap.put(11, "Marras");
-        monthMap.put(12, "Joulu");
         
         Date current = startDate;
         String series1 = "First";
         
         for(int i=0; i<months; ++i) {
-            dataset.addValue(getPostOccupationData(current), series1, monthMap.get((i%12)+1));
+            dataset.addValue(getPostOccupationData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100)/*this.monthMap.get((i%12)+1)*/);
             current.setMonth(current.getMonth()+1);
         }
         
-        
-        // Pelkkä esimerkki
-//        final String series2 = "Second";
-//
-//        // column keys...
-//        final String type1 = "Type 1";
-//        final String type2 = "Type 2";
-//        final String type3 = "Type 3";
-//        final String type4 = "Type 4";
-//        final String type5 = "Type 5";
-//
-//        dataset.addValue(5.0, series2, type1);
-//        dataset.addValue(7.0, series2, type2);
-//        dataset.addValue(6.0, series2, type3);
-//        dataset.addValue(8.0, series2, type4);
-//        dataset.addValue(4.0, series2, type5);
-        
-        return dataset;
+        JFreeChart chart = ChartFactory.createLineChart(
+            "Työpisteiden täyttöaste",     // chart title
+            "Kuukausi",                    // domain axis label
+            "Täyttöaste",                  // range axis label
+            dataset,                       // data
+            PlotOrientation.VERTICAL,      // orientation
+            false,                         // include legend
+            false,                         // tooltips
+            false                          // urls
+        );
+        // tähän chartin väritystä sun muuta turhuutta jos halutaan
+        drawChart(chart);
     }
     
-    
-    public JFreeChart createChart(CategoryDataset dataset) {
+    public void createPeoplePerPostChart() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        final JFreeChart chart = ChartFactory.createLineChart(
-            "Otsikko",                  // chart title
+        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
+        
+        Date current = startDate;
+        String series1 = "First";
+        
+        for(int i=0; i<months; ++i) {
+            // tee metodi työpisteiden 
+            current.setMonth(current.getMonth()+1);
+        }
+        
+        JFreeChart chart = ChartFactory.createLineChart(
+            "Ihmisten määrä",     // chart title
             "Kuukausi",                    // domain axis label
-            "Lukumäärä",                     // range axis label
-            dataset,                   // data
-            PlotOrientation.VERTICAL,  // orientation
-            false,                      // include legend
-            false,                      // tooltips
-            false                      // urls
+            "Täyttöaste",                  // range axis label
+            dataset,                       // data
+            PlotOrientation.VERTICAL,      // orientation
+            false,                         // include legend
+            false,                         // tooltips
+            false                          // urls
         );
         
-        // tähän chartin väritystä sun muuta turhuutta
+        // tähän chartin väritystä sun muuta turhuutta jos halutaan
         
-        return chart;
+        drawChart(chart);
     }
-    
     /**
      * @param args the command line arguments
      */

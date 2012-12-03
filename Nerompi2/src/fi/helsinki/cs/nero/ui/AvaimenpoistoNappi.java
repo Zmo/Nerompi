@@ -31,6 +31,7 @@ public class AvaimenpoistoNappi extends JButton{
             this.person.getSession().setStatusMessage(" - Virhe - AvaimenpoistoNappi: avainvarausta ei en‰‰ ole!");
             return;
         }
+        this.person.deleteRoomKeyReservation(this.roomKeyReservation);
         this.person.getSession().deleteRoomkeyReservation(this.roomKeyReservation, this.person);
         this.person.getSession().setStatusMessage("Avainvaraus poistettu");
         this.roomKeyReservation = null;
