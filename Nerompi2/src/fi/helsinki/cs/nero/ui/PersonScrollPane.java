@@ -354,7 +354,9 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                         korkeus++;
                                     }
                                     // jos palkki on tyhjä tai liian pitkä
-                                    if (post.getReservation() == null || post.getTimeSlice() == null || (post.getTimeSlice().length() > 9000) || post.getTimeSlice().length() <= 0) {
+                                    if (post.getTimeSlice() == null 
+                                            || (post.getTimeSlice().length() > 9000)
+                                            || (!(row.hasNext()) && post.getReservation() == null)) {
                                     }
                                     else {
                                         barPanel.add(post);
