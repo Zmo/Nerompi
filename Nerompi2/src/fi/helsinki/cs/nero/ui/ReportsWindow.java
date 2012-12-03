@@ -326,11 +326,6 @@ public class ReportsWindow extends javax.swing.JFrame {
                 restrictByHasLockerItemStateChanged(evt);
             }
         });
-        restrictByHasLocker.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                restrictByHasLockerActionPerformed(evt);
-            }
-        });
 
         rajauksetHeader.setText("Rajaukset");
 
@@ -627,7 +622,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void roomButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomButtonMouseReleased
         Data = new JTable(roomData, roomColumnNames);
         Data.setAutoCreateColumnsFromModel(false);
-        Data.setAutoCreateRowSorter(true);
         roomColumnModel = Data.getColumnModel();
         setSelected(roomComponents);
         addSorter();
@@ -641,6 +635,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnModel = Data.getColumnModel();
         peopleModel.setColumnModel(peopleColumnModel);
         Data.setAutoCreateColumnsFromModel(false);
+        peopleModel.setTable(Data);
         
         
         // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
@@ -829,10 +824,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void firstCalendarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstCalendarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_firstCalendarActionPerformed
-
-    private void restrictByHasLockerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByHasLockerActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_restrictByHasLockerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1155,18 +1146,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setModel(Data.getModel());
         sorter.setRowFilter(filter);
-        Data.setRowSorter(rowSorter);
+   //     Data.setRowSorter(rowSorter);
     }
 
     private RowFilter setDateRestrictionAfter(Date date) {
+        int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
-                date, Data.getColumnModel().getColumnIndex(varaus));
+                date, index);
         return newFilter;
     }
 
     private RowFilter setDateRestrictionBefore(Date date) {
+         int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
-                date, Data.getColumnModel().getColumnIndex(varaus));
+                date, index);
         return newFilter;
     }
 
@@ -1278,6 +1271,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         // laitetaan sen rivin data listaan
         // mallin sarakenumero pitää muuttaa sarakemallin indeksiksi, jotta myös
         // sarakkeen data saadaan oikeaan kohtaan
+        
+        //TODO: ehkä tuon päivämäärän lyhentämisen voi tehdä myöskin jossain muualla
         for (int i = 0; i < rowCount; i++) {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);

@@ -950,6 +950,10 @@ public class Session {
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
     }
+    
+    public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+        this.db.modifyRoomKeyReservation(roomKeyReservation);
+    }
     /* Kuuntelijoihin liittyvät operaatiot */
 
     /**
