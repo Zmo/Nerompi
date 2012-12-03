@@ -9,6 +9,7 @@ import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JButton;
 
@@ -31,23 +32,29 @@ public class UusiAvainvarausNappi extends JButton {
         if (this.person.getSession().getActiveRoom() == null) {
             this.person.getSession().setStatusMessage("Klikkaa haluttua huonetta ensin!");
         } else {
-            Date alkuaika = this.person.getSession().getTimeScaleSlice().getStartDate();
+            Calendar alkuaika = Calendar.getInstance();
+            alkuaika.setTime(this.person.getSession().getTimeScaleSlice().getStartDate());
+            alkuaika.set(Calendar.HOUR_OF_DAY, 0);
             
             if (this.person.getSession().getActiveRoom().getRoomKeyReservations() != null) {
                 ArrayList avainVaraukset = this.person.getSession().getActiveRoom().getRoomKeyReservations();
                 for (int a = 0; a < avainVaraukset.size(); a++) {
                     RoomKeyReservation avainVaraus = (RoomKeyReservation) avainVaraukset.get(a);
-                    if (avainVaraus.getReserverName().equalsIgnoreCase(this.person.getName()) && !(avainVaraus.getTimeSlice().getEndDate().before(alkuaika))) {
-                        alkuaika = avainVaraus.getTimeSlice().getEndDate();
+                    if (avainVaraus.getReserverName().equalsIgnoreCase(this.person.getName()) && !(avainVaraus.getTimeSlice().getEndDate().before(alkuaika.getTime()))) {
+                        alkuaika.setTime(avainVaraus.getTimeSlice().getEndDate());
+                        alkuaika.set(Calendar.HOUR_OF_DAY, 0);
                     }
                     else {
                     }
                 }
             }
-            if (!(alkuaika.before(this.person.getSession().getTimeScaleSlice().getEndDate()))) {
+            if (alkuaika.getTime().equals(this.person.getSession().getTimeScaleSlice().getEndDate()) || 
+                    alkuaika.getTime().after(this.person.getSession().getTimeScaleSlice().getEndDate())) {
+                System.out.println(" ---> Alkuaika: " + alkuaika.getTime() + 
+                                 "\n ---> EndDate:  " + this.person.getSession().getTimeScaleSlice().getEndDate());
                 this.person.getSession().setStatusMessage("Henkilöllä on jo avainvaraus tarkasteluajan loppuun asti!");
             } else {
-                this.person.getSession().addRoomKeyReservation(this.person, new TimeSlice(alkuaika, this.person.getSession().getTimeScaleSlice().getEndDate()));
+                this.person.getSession().addRoomKeyReservation(this.person, new TimeSlice(alkuaika.getTime(), this.person.getSession().getTimeScaleSlice().getEndDate()));
                 this.person.getSession().setStatusMessage("Avainvaraus luotu huoneeseen " + this.person.getSession().getActiveRoom() + ".");
             }
         }

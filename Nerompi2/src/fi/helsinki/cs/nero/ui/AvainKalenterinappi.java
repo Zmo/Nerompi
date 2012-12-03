@@ -6,6 +6,7 @@ package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
+import fi.helsinki.cs.nero.data.TimeSlice;
 import java.beans.PropertyChangeEvent;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,38 +42,48 @@ public class AvainKalenterinappi extends JCalendarButton{
     @Override
     public void propertyChange(PropertyChangeEvent evt){
         if (evt.getPropertyName().equalsIgnoreCase("date")){
-            Date kohdeaika = (Date)evt.getNewValue();
+            Calendar kohdeaika = Calendar.getInstance();
+            kohdeaika.setTime((Date)evt.getNewValue());
+            kohdeaika.set(Calendar.HOUR_OF_DAY, 0);
             System.out.println("Huoneen " + this.roomKeyReservation.getTargetRoom().getRoomName() + " avainvarausta koitettiin muuttaa");
             
             // Verrataan tämän varauksen toiseen aikarajaan
-            if ((this.onkoAlku && kohdeaika.after(this.roomKeyReservation.getTimeSlice().getEndDate())) || 
-                    ((this.onkoAlku == false) && kohdeaika.before(this.roomKeyReservation.getTimeSlice().getStartDate()))){
-                System.out.println(" -|- " + kohdeaika.toString() + 
-                                 "\n -|- " + this.roomKeyReservation.getTimeSlice().getStartDate() + 
-                                 "\n -|- " + this.roomKeyReservation.getTimeSlice().getEndDate() + 
-                                 "\n -|-> " + this.onkoAlku);
+            if ((this.onkoAlku && kohdeaika.getTime().after(this.roomKeyReservation.getTimeSlice().getEndDate())) || 
+                    ((this.onkoAlku == false) && kohdeaika.getTime().before(this.roomKeyReservation.getTimeSlice().getStartDate()))){
+                System.out.println(" -|- Kohdeaika: " + kohdeaika.getTime().toString() + 
+                                 "\n -|- Alkuaika:  " + this.roomKeyReservation.getTimeSlice().getStartDate() + 
+                                 "\n -|- Loppuaika: " + this.roomKeyReservation.getTimeSlice().getEndDate() + 
+                                 "\n -|- Onko muutettu aika alkuaika: " + this.onkoAlku);
                 this.roomKeyReservation.getSession().setStatusMessage("Varauksen alkupäivän tulee olla ennen loppupäivää!");
                 return;
             }
             
             // verrataan henkilön muihin avainvarauksiin
-            /*
+            
             RoomKeyReservation[] avainVaraukset = this.person.getRoomKeyReservations();
             for (int indeksi = 0; indeksi < avainVaraukset.length; indeksi++){
-                if (avainVaraukset[indeksi].getTargetRoom() == this.roomKeyReservation.getTargetRoom()){
-                    if (this.onkoAlku && (avainVaraukset[indeksi].getTimeSlice().)){}
-                    else {}
+                if (avainVaraukset[indeksi] == this.roomKeyReservation){
                 }
-            }*/
+                else if (avainVaraukset[indeksi].getTargetRoom() == this.roomKeyReservation.getTargetRoom()){
+                    if (avainVaraukset[indeksi].getTimeSlice().contains(kohdeaika.getTime())){
+                        System.out.println("Avainvarauksia ei voi laittaa päällekkäin!");
+                        return;
+                    }
+                    else {
+                    }
+                }
+            }
             
-            // Vaikutusten tekeminen kantaan ja sessioon
-            /*
+            TimeSlice uusiTimeSlice;
             if (this.onkoAlku){
+                uusiTimeSlice = new TimeSlice(kohdeaika.getTime(), this.roomKeyReservation.getTimeSlice().getEndDate());
             } 
             else {
+                uusiTimeSlice = new TimeSlice(this.roomKeyReservation.getTimeSlice().getStartDate(), kohdeaika.getTime());
             }
-            */
-            this.setTargetDate(kohdeaika);
+            this.roomKeyReservation.setTimeSlice(uusiTimeSlice);
+            // db- ja sessiomuutokset
+            this.setTargetDate(kohdeaika.getTime());
             this.setText(updateAikaTeksti(this.getTargetDate()));
         }
     }
