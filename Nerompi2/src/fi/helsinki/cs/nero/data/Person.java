@@ -564,7 +564,7 @@ public class Person implements Comparable {
      * @return merkkijonoesitys, esimerkiksi "Testi Teppo Antero"
      */
     public String toString() {
-        return this.name;
+        return name+"";
     }
 
     public int compareTo(Object o) {
