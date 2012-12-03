@@ -8,7 +8,6 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.logic.Session;
-import java.util.Calendar;
 import java.util.Date;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -46,6 +45,8 @@ public class GraphWindow extends javax.swing.JFrame {
         this.roomSize = 0;
         
         initComponents();
+        
+        this.startDateCalendarButton.setTargetDate(startDate);
         
         createOccupiedPostPercentageChart();
         
@@ -96,7 +97,6 @@ public class GraphWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Graafit");
-        setAlwaysOnTop(true);
 
         jLabel1.setLabelFor(startDateCalendarButton);
         jLabel1.setText("Alkupvm.");
@@ -135,8 +135,10 @@ public class GraphWindow extends javax.swing.JFrame {
             }
         });
 
+        startDateDropdown.setEditable(false);
         startDateDropdown.setText(dateToShortString(startDate));
 
+        endDateDropdown.setEditable(false);
         endDateDropdown.setText(dateToShortString(endDate));
 
         jLabel2.setLabelFor(endDateCalendarButton);
@@ -314,10 +316,15 @@ public class GraphWindow extends javax.swing.JFrame {
         return this.numberLabel2;
     }
     
+    /**
+     * Muuttaa annetun date-olion helposti luettavaksi p‰iv‰m‰‰r‰ksi
+     * @param date muutettava p‰iv‰m‰‰r‰
+     * @return helosti luettava p‰iv‰m‰‰r‰
+     */
     private String dateToShortString(Date date) {
         if (date != null) {
             String dateString = ""+date.getDate();
-            dateString = dateString.concat("."+date.getMonth());
+            dateString = dateString.concat("."+(date.getMonth()+1));
             dateString = dateString.concat("."+(date.getYear()+1900));
             return dateString;
         } else {
@@ -389,12 +396,16 @@ public class GraphWindow extends javax.swing.JFrame {
         return people/occupiedPosts;
     }
     
+    /**
+     * Tekee annetusta graafista graafi-ikkunan ja lis‰‰ sen ruutuun
+     * @param chart piirrett‰v‰ graafi
+     */
     public void drawChart(JFreeChart chart) {
         jPanel1.removeAll();
-        
         this.chartPanel = new ChartPanel(chart);
         chartPanel.setBounds(0, 0, this.jPanel1.getBounds().width, this.jPanel1.getBounds().height);
         jPanel1.add(chartPanel);
+        jPanel1.updateUI();
     }
     
     /**
@@ -403,7 +414,7 @@ public class GraphWindow extends javax.swing.JFrame {
     public void createOccupiedPostPercentageChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
+        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12)+1;
         
         Date current = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
         String series1 = "First";
@@ -412,7 +423,6 @@ public class GraphWindow extends javax.swing.JFrame {
             dataset.addValue(getPostOccupationData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));
             current.setMonth(current.getMonth()+1);
         }
-        
         JFreeChart chart = ChartFactory.createLineChart(
             "Tyˆpisteiden varausaste",     // chart title
             "Kuukausi",                    // domain axis label
@@ -423,7 +433,7 @@ public class GraphWindow extends javax.swing.JFrame {
             false,                         // tooltips
             false                          // urls
         );
-        // t‰h‰n chartin v‰rityst‰ sun muuta turhuutta jos halutaan
+       // t‰h‰n chartin v‰rityst‰ sun muuta turhuutta jos halutaan
         drawChart(chart);
     }
     
@@ -433,16 +443,15 @@ public class GraphWindow extends javax.swing.JFrame {
     public void createPeoplePerPostChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
+        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12)+1;
         
         Date current = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
         String series1 = "First";
         
         for(int i=0; i<months; ++i) {
-            dataset.addValue(getPeoplePerTakenPostData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));// tee metodi tyˆpisteiden 
+            dataset.addValue(getPeoplePerTakenPostData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));
             current.setMonth(current.getMonth()+1);
         }
-        
         JFreeChart chart = ChartFactory.createLineChart(
             "Varattujen tyˆpisteiden t‰yttˆaste",     // chart title
             "Kuukausi",                               // domain axis label

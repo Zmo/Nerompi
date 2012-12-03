@@ -33,7 +33,6 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" value="Graafit"/>
-    <Property name="alwaysOnTop" type="boolean" value="true"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -173,6 +172,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="startDateDropdown">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="dateToShortString(startDate)" type="code"/>
         </Property>
@@ -180,6 +180,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="endDateDropdown">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="dateToShortString(endDate)" type="code"/>
         </Property>
