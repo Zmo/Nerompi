@@ -939,16 +939,12 @@ public class Session {
     }
 
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
-        this.deleteRoomkeyReservation(roomKeyReservation);
-        person.deleteRoomKeyReservation(roomKeyReservation).getReservationID();
-        this.updatePerson(person);
-    }
-    
-    public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
-        db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
+        this.db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
+        person.deleteRoomKeyReservation(roomKeyReservation);
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        this.updatePerson(person);
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {

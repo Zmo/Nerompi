@@ -157,7 +157,7 @@ public class TimelineElement extends JPanel {
         Border blackline = BorderFactory.createLineBorder(Color.black);
         this.setBorder(blackline);
         this.kalenterinappipari(label);
-      
+        
         //Listenerit.
         MouseListener listener = new DragMouseAdapter();
         this.addMouseListener(listener);
