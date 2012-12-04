@@ -1589,8 +1589,6 @@ public class NeroDatabase implements NeroObserver {
                     } else {
                         this.updateWorkPhone(personID, phone.getPhoneNumber());
                         }
-
-
                         /* XXX Raskas operaatio */
 
                         loadRooms();

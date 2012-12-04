@@ -26,6 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.RowFilter.ComparisonType;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -1004,7 +1005,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
             if (people[i].getLastReservation() == null) {
-                peopleRow.add("ei tyˆpistevarausta");
+                peopleRow.add(null);
             } else { 
                 peopleRow.add(people[i].getLastReservation().getLastDay());
             }
@@ -1131,34 +1132,24 @@ public class ReportsWindow extends javax.swing.JFrame {
             filter = setDateRestrictionContains(firstDate, lastDate);
         } else if (firstDate == null && lastDate != null) {
             // loppup‰iv‰m‰‰r‰ on
-            filter = setDateRestrictionBefore(lastDate);
+            filter = setDateRestriction(lastDate, RowFilter.ComparisonType.BEFORE);
         } else if (firstDate != null && lastDate == null) {
             // alkup‰iv‰m‰‰r‰ on
-            filter = setDateRestrictionAfter(firstDate);
+            filter = setDateRestriction(firstDate, RowFilter.ComparisonType.AFTER);
         } else {
             // kumpaakaan ei asetettu -> poistetaan 
             filter = removeDateRestriction();
         }
 
-         // tablerowsorter modelilla ei n‰yt‰ toimivan lainkaan
-        // sen sijaan jos k‰ytt‰‰ defaultrowsorteria, niin se toimii
-        // mutta ei taas ymm‰rr‰, ett‰ kun sarake on poistettu, sen tyyppi muuttuu
         TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setModel(Data.getModel());
         sorter.setRowFilter(filter);
-   //     Data.setRowSorter(rowSorter);
     }
 
-    private RowFilter setDateRestrictionAfter(Date date) {
+
+    private RowFilter setDateRestriction(Date date, ComparisonType type) {
         int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
-        RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.AFTER,
-                date, index);
-        return newFilter;
-    }
-
-    private RowFilter setDateRestrictionBefore(Date date) {
-         int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
-        RowFilter newFilter = RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE,
+        RowFilter newFilter = RowFilter.dateFilter(type,
                 date, index);
         return newFilter;
     }
@@ -1166,8 +1157,8 @@ public class ReportsWindow extends javax.swing.JFrame {
     private RowFilter setDateRestrictionContains(Date first, Date last) {
         // and filter 
         List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
-        filters.add(setDateRestrictionBefore(last));
-        filters.add(setDateRestrictionAfter(first));
+        filters.add(setDateRestriction(last, RowFilter.ComparisonType.BEFORE));
+        filters.add(setDateRestriction(first, RowFilter.ComparisonType.AFTER));
         RowFilter<Object, Object> newFilter = RowFilter.andFilter(filters);
         return newFilter;
     }

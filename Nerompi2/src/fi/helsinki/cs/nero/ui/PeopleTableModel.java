@@ -1,6 +1,5 @@
 package fi.helsinki.cs.nero.ui;
 
-import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -35,7 +34,7 @@ public class PeopleTableModel extends DefaultTableModel {
         // -> muut sarakkeet ovat tyyppiä String, joten voidaan palauttaa se
 
         try {
-            int dateIndex = columnModel.getColumnIndex(dateColumnIdentifier);
+            int dateIndex = table.convertColumnIndexToModel(columnModel.getColumnIndex(dateColumnIdentifier));
             if (index == dateIndex) {
                 return java.util.Date.class;
             } else {
@@ -47,6 +46,7 @@ public class PeopleTableModel extends DefaultTableModel {
         }
     }
     
+    
 
     @Override
     public int getColumnCount() {
@@ -57,19 +57,5 @@ public class PeopleTableModel extends DefaultTableModel {
         }
     }
 
-//    @Override
-//    public Object getValueAt(int row, int column) {
-//        if (table != null) {
-//
-//
-//            column = table.convertColumnIndexToModel(column);
-//
-//            Vector rowVector = (Vector) super.dataVector.elementAt(row);
-//            return rowVector.elementAt(column);
-//
-//
-//        } else {
-//            return super.getValueAt(row, column);
-//        }
-//    }
+
 }

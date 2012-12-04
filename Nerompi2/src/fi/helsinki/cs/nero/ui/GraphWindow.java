@@ -8,7 +8,6 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.logic.Session;
-import java.util.Calendar;
 import java.util.Date;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -30,6 +29,8 @@ public class GraphWindow extends javax.swing.JFrame {
     
     String numberLabel1, numberLabel2;
     
+    int roomSize;
+    
     
     /**
      * Creates new form GraphWindow
@@ -41,12 +42,16 @@ public class GraphWindow extends javax.swing.JFrame {
         this.startDate = new Date();
         this.startDate.setYear(startDate.getYear()-1);
         
+        this.roomSize = 0;
+        
         initComponents();
+        
+        this.startDateCalendarButton.setTargetDate(startDate);
         
         createOccupiedPostPercentageChart();
         
-        this.numberLabel1 = this.getNumberLabelData1();
-        this.numberLabel2 = this.getNumberLabelData2();
+        this.jLabel4.setText(numberLabel1);
+        this.jLabel5.setText(numberLabel2);
         
         this.setVisible(true);
     }
@@ -63,18 +68,18 @@ public class GraphWindow extends javax.swing.JFrame {
         jFrame1 = new javax.swing.JFrame();
         jComboBox1 = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox();
-        jCalendarButton1 = new net.sourceforge.jcalendarbutton.JCalendarButton();
-        jCalendarButton2 = new net.sourceforge.jcalendarbutton.JCalendarButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        chartTypeDropdown = new javax.swing.JComboBox();
+        startDateCalendarButton = new net.sourceforge.jcalendarbutton.JCalendarButton();
+        endDateCalendarButton = new net.sourceforge.jcalendarbutton.JCalendarButton();
+        startDateDropdown = new javax.swing.JTextField();
+        endDateDropdown = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
+        roomSizeDropdown = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
@@ -92,50 +97,51 @@ public class GraphWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Graafit");
-        setAlwaysOnTop(true);
 
-        jLabel1.setLabelFor(jCalendarButton1);
+        jLabel1.setLabelFor(startDateCalendarButton);
         jLabel1.setText("Alkupvm.");
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Työpisteiden varausaste", "Työpisteiden täyttöaste" }));
-        jComboBox4.addItemListener(new java.awt.event.ItemListener() {
+        chartTypeDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Työpisteiden varausaste", "Työpisteiden täyttöaste" }));
+        chartTypeDropdown.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox4ItemStateChanged(evt);
+                chartTypeDropdownItemStateChanged(evt);
             }
         });
-        jComboBox4.addActionListener(new java.awt.event.ActionListener() {
+        chartTypeDropdown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox4ActionPerformed(evt);
+                chartTypeDropdownActionPerformed(evt);
             }
         });
-        jComboBox4.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        chartTypeDropdown.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jComboBox4PropertyChange(evt);
+                chartTypeDropdownPropertyChange(evt);
             }
         });
 
-        jCalendarButton1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        startDateCalendarButton.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jCalendarButton1PropertyChange(evt);
+                startDateCalendarButtonPropertyChange(evt);
             }
         });
 
-        jCalendarButton2.addActionListener(new java.awt.event.ActionListener() {
+        endDateCalendarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCalendarButton2ActionPerformed(evt);
+                endDateCalendarButtonActionPerformed(evt);
             }
         });
-        jCalendarButton2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        endDateCalendarButton.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jCalendarButton2PropertyChange(evt);
+                endDateCalendarButtonPropertyChange(evt);
             }
         });
 
-        jTextField1.setText(dateToShortString(startDate));
+        startDateDropdown.setEditable(false);
+        startDateDropdown.setText(dateToShortString(startDate));
 
-        jTextField2.setText(dateToShortString(endDate));
+        endDateDropdown.setEditable(false);
+        endDateDropdown.setText(dateToShortString(endDate));
 
-        jLabel2.setLabelFor(jCalendarButton2);
+        jLabel2.setLabelFor(endDateCalendarButton);
         jLabel2.setText("Loppupvm.");
 
         jLabel3.setText("Tyyppi");
@@ -151,10 +157,10 @@ public class GraphWindow extends javax.swing.JFrame {
             .addGap(0, 407, Short.MAX_VALUE)
         );
 
-        jButton1.setText("Sulje");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        closeButton.setText("Sulje");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                closeButtonActionPerformed(evt);
             }
         });
 
@@ -162,7 +168,12 @@ public class GraphWindow extends javax.swing.JFrame {
 
         jLabel5.setText(getNumberLabelData2());
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kaikki", "1 työpiste", "2 työpistettä", "3 työpistettä", ">3 työpistettä" }));
+        roomSizeDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kaikki", "1 työpiste", "2 työpistettä", "3 työpistettä", ">3 työpistettä" }));
+        roomSizeDropdown.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                roomSizeDropdownItemStateChanged(evt);
+            }
+        });
 
         jLabel6.setText("Huoneen koko");
 
@@ -178,28 +189,28 @@ public class GraphWindow extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
+                        .addComponent(closeButton))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(startDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jCalendarButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCalendarButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(startDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(endDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(endDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chartTypeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(roomSizeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -210,9 +221,9 @@ public class GraphWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jCalendarButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jCalendarButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(startDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(endDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(startDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
@@ -221,15 +232,15 @@ public class GraphWindow extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(endDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chartTypeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(roomSizeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(closeButton)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
                 .addGap(6, 6, 6))
@@ -238,44 +249,39 @@ public class GraphWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void jCalendarButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCalendarButton2ActionPerformed
+    private void endDateCalendarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endDateCalendarButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCalendarButton2ActionPerformed
+    }//GEN-LAST:event_endDateCalendarButtonActionPerformed
 
-    private void jCalendarButton1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jCalendarButton1PropertyChange
+    private void startDateCalendarButtonPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_startDateCalendarButtonPropertyChange
         if (evt.getNewValue() instanceof Date) {
             this.startDate = (((Date) evt.getNewValue()));
-            this.jTextField1.setText(dateToShortString(startDate));
+            this.startDateDropdown.setText(dateToShortString(startDate));
             createOccupiedPostPercentageChart();
         }
-    }//GEN-LAST:event_jCalendarButton1PropertyChange
+    }//GEN-LAST:event_startDateCalendarButtonPropertyChange
 
-    private void jCalendarButton2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jCalendarButton2PropertyChange
+    private void endDateCalendarButtonPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_endDateCalendarButtonPropertyChange
         if (evt.getNewValue() instanceof Date) {
             this.endDate = (((Date) evt.getNewValue()));
-            this.jTextField2.setText(dateToShortString(endDate));
+            this.endDateDropdown.setText(dateToShortString(endDate));
             createOccupiedPostPercentageChart();
         }
-    }//GEN-LAST:event_jCalendarButton2PropertyChange
+    }//GEN-LAST:event_endDateCalendarButtonPropertyChange
 
-    private void jComboBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox4ActionPerformed
+    private void chartTypeDropdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chartTypeDropdownActionPerformed
         
-    }//GEN-LAST:event_jComboBox4ActionPerformed
+    }//GEN-LAST:event_chartTypeDropdownActionPerformed
 
-    private void jComboBox4PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBox4PropertyChange
-//        int index = this.jComboBox4.getSelectedIndex();
-//        if(index == 0)
-//            createOccupiedPostPercentageChart();
-//        else if(index == 1)
-//            createPeoplePerPostChart();
-    }//GEN-LAST:event_jComboBox4PropertyChange
+    private void chartTypeDropdownPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_chartTypeDropdownPropertyChange
+    }//GEN-LAST:event_chartTypeDropdownPropertyChange
 
-    private void jComboBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox4ItemStateChanged
-        int index = this.jComboBox4.getSelectedIndex();
+    private void chartTypeDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chartTypeDropdownItemStateChanged
+        int index = this.chartTypeDropdown.getSelectedIndex();
         if(index == 0) {
             createOccupiedPostPercentageChart();
             this.jLabel4.setText(numberLabel1);
@@ -286,7 +292,21 @@ public class GraphWindow extends javax.swing.JFrame {
             this.jLabel4.setText(numberLabel1);
             this.jLabel5.setText(numberLabel2);
         }
-    }//GEN-LAST:event_jComboBox4ItemStateChanged
+    }//GEN-LAST:event_chartTypeDropdownItemStateChanged
+
+    private void roomSizeDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_roomSizeDropdownItemStateChanged
+        this.roomSize = this.roomSizeDropdown.getSelectedIndex();
+        if(this.chartTypeDropdown.getSelectedIndex() == 0) {
+            createOccupiedPostPercentageChart();
+            this.jLabel4.setText(numberLabel1);
+            this.jLabel5.setText(numberLabel2);
+        }
+        else if(this.chartTypeDropdown.getSelectedIndex() == 1) {
+            createPeoplePerPostChart();
+            this.jLabel4.setText(numberLabel1);
+            this.jLabel5.setText(numberLabel2);
+        }
+    }//GEN-LAST:event_roomSizeDropdownItemStateChanged
 
     public String getNumberLabelData1() {
         return this.numberLabel1;
@@ -296,13 +316,16 @@ public class GraphWindow extends javax.swing.JFrame {
         return this.numberLabel2;
     }
     
+    /**
+     * Muuttaa annetun date-olion helposti luettavaksi päivämääräksi
+     * @param date muutettava päivämäärä
+     * @return helosti luettava päivämäärä
+     */
     private String dateToShortString(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
         if (date != null) {
-            String dateString = ""+calendar.get(Calendar.DAY_OF_MONTH);
-            dateString = dateString.concat("."+(1+calendar.get(Calendar.MONTH)));
-            dateString = dateString.concat("."+calendar.get(Calendar.YEAR));
+            String dateString = ""+date.getDate();
+            dateString = dateString.concat("."+(date.getMonth()+1));
+            dateString = dateString.concat("."+(date.getYear()+1900));
             return dateString;
         } else {
             return null;
@@ -319,12 +342,14 @@ public class GraphWindow extends javax.swing.JFrame {
         double occupiedPosts = 0;
         
         for (Room room : this.session.getRooms()) {
-            for (Post post : room.getPosts()) {
-                ++totalPosts;
-                for (Reservation reservation : post.getReservations()) {
-                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
-                        ++occupiedPosts;
-                        break;
+            if((this.roomSize==0) || (room.getPosts().length == this.roomSize) || ((this.roomSize==4) && (room.getPosts().length>3))) {
+                for (Post post : room.getPosts()) {
+                    ++totalPosts;
+                    for (Reservation reservation : post.getReservations()) {
+                        if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                            ++occupiedPosts;
+                            break;
+                        }
                     }
                 }
             }
@@ -335,7 +360,7 @@ public class GraphWindow extends javax.swing.JFrame {
     }
     
     /**
-     * 
+     * Laskee ihmisten määrän per varattu työpiste annetulla päivämäärällä
      * @param date Päivämäärä jolta varaustiedot haetaan
      * @return Kuinka monta ihmistä keskimäärin on per varattu työpiste
      */
@@ -344,20 +369,24 @@ public class GraphWindow extends javax.swing.JFrame {
         double people = 0.0;
         
         for (Room room : this.session.getRooms()) {
-            for (Post post : room.getPosts()) {
-                for (Reservation reservation : post.getReservations()) {
-                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
-                        ++people;
+            if((this.roomSize==0) || (room.getPosts().length == this.roomSize) || ((this.roomSize==4) && (room.getPosts().length>3))) {
+                for (Post post : room.getPosts()) {
+                    for (Reservation reservation : post.getReservations()) {
+                        if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                            ++people;
+                        }
                     }
                 }
             }
         }
         for (Room room : this.session.getRooms()) {
-            for (Post post : room.getPosts()) {
-                for (Reservation reservation : post.getReservations()) {
-                    if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
-                        ++occupiedPosts;
-                        break;
+            if((this.roomSize==0) || (room.getPosts().length == this.roomSize) || ((this.roomSize==4) && (room.getPosts().length>3))) {
+                for (Post post : room.getPosts()) {
+                    for (Reservation reservation : post.getReservations()) {
+                        if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                            ++occupiedPosts;
+                            break;
+                        }
                     }
                 }
             }
@@ -367,12 +396,16 @@ public class GraphWindow extends javax.swing.JFrame {
         return people/occupiedPosts;
     }
     
+    /**
+     * Tekee annetusta graafista graafi-ikkunan ja lisää sen ruutuun
+     * @param chart piirrettävä graafi
+     */
     public void drawChart(JFreeChart chart) {
         jPanel1.removeAll();
-        
         this.chartPanel = new ChartPanel(chart);
         chartPanel.setBounds(0, 0, this.jPanel1.getBounds().width, this.jPanel1.getBounds().height);
         jPanel1.add(chartPanel);
+        jPanel1.updateUI();
     }
     
     /**
@@ -381,7 +414,7 @@ public class GraphWindow extends javax.swing.JFrame {
     public void createOccupiedPostPercentageChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
+        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12)+1;
         
         Date current = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
         String series1 = "First";
@@ -390,18 +423,17 @@ public class GraphWindow extends javax.swing.JFrame {
             dataset.addValue(getPostOccupationData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));
             current.setMonth(current.getMonth()+1);
         }
-        
         JFreeChart chart = ChartFactory.createLineChart(
             "Työpisteiden varausaste",     // chart title
             "Kuukausi",                    // domain axis label
-            "Täyttöaste",                  // range axis label
+            "Varausaste",                  // range axis label
             dataset,                       // data
             PlotOrientation.VERTICAL,      // orientation
             false,                         // include legend
             false,                         // tooltips
             false                          // urls
         );
-        // tähän chartin väritystä sun muuta turhuutta jos halutaan
+       // tähän chartin väritystä sun muuta turhuutta jos halutaan
         drawChart(chart);
     }
     
@@ -411,25 +443,24 @@ public class GraphWindow extends javax.swing.JFrame {
     public void createPeoplePerPostChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12);
+        int months = (endDate.getMonth()+1)-(startDate.getMonth()+1)+((endDate.getYear()-startDate.getYear())*12)+1;
         
         Date current = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
         String series1 = "First";
         
         for(int i=0; i<months; ++i) {
-            dataset.addValue(getPeoplePerTakenPostData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));// tee metodi työpisteiden 
+            dataset.addValue(getPeoplePerTakenPostData(current), series1, (current.getMonth()%12+1)+"/"+(current.getYear()-100));
             current.setMonth(current.getMonth()+1);
         }
-        
         JFreeChart chart = ChartFactory.createLineChart(
             "Varattujen työpisteiden täyttöaste",     // chart title
-            "Kuukausi",                    // domain axis label
-            "Täyttöaste",                  // range axis label
-            dataset,                       // data
-            PlotOrientation.VERTICAL,      // orientation
-            false,                         // include legend
-            false,                         // tooltips
-            false                          // urls
+            "Kuukausi",                               // domain axis label
+            "Ihmisiä per työpiste",                   // range axis label
+            dataset,                                  // data
+            PlotOrientation.VERTICAL,                 // orientation
+            false,                                    // include legend
+            false,                                    // tooltips
+            false                                     // urls
         );
         // tähän chartin väritystä sun muuta turhuutta jos halutaan
         drawChart(chart);
@@ -471,12 +502,11 @@ public class GraphWindow extends javax.swing.JFrame {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton1;
-    private net.sourceforge.jcalendarbutton.JCalendarButton jCalendarButton2;
+    private javax.swing.JComboBox chartTypeDropdown;
+    private javax.swing.JButton closeButton;
+    private net.sourceforge.jcalendarbutton.JCalendarButton endDateCalendarButton;
+    private javax.swing.JTextField endDateDropdown;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JComboBox jComboBox4;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -485,7 +515,8 @@ public class GraphWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JComboBox roomSizeDropdown;
+    private net.sourceforge.jcalendarbutton.JCalendarButton startDateCalendarButton;
+    private javax.swing.JTextField startDateDropdown;
     // End of variables declaration//GEN-END:variables
 }
