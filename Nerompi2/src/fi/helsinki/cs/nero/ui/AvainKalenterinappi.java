@@ -89,7 +89,7 @@ public class AvainKalenterinappi extends JCalendarButton{
             this.roomKeyReservation.setTimeSlice(uusiTimeSlice);
             this.roomKeyReservation.getSession().modifyRoomKeyReservation(roomKeyReservation);
             this.roomKeyReservation.getSession().setStatusMessage("Huonevarauksen aikaväliä muutettu");
-            // db- ja sessiomuutokset
+            this.person.modifyRoomKeyReservation(this.roomKeyReservation);
             this.setTargetDate(kohdeaika.getTime());
             this.setText(updateAikaTeksti(this.getTargetDate()));
         }

@@ -25,11 +25,11 @@ public class GraphWindow extends javax.swing.JFrame {
     
     private Date startDate, endDate;
     
-    ChartPanel chartPanel;
+    private ChartPanel chartPanel;
     
-    String numberLabel1, numberLabel2;
+    private String numberLabel1, numberLabel2;
     
-    int roomSize;
+    private int roomSize;
     
     
     /**
@@ -150,11 +150,11 @@ public class GraphWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 730, Short.MAX_VALUE)
+            .addGap(0, 1138, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
+            .addGap(0, 611, Short.MAX_VALUE)
         );
 
         closeButton.setText("Sulje");
@@ -236,9 +236,9 @@ public class GraphWindow extends javax.swing.JFrame {
                             .addComponent(chartTypeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(roomSizeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(closeButton)
                     .addComponent(jLabel4)
@@ -262,6 +262,7 @@ public class GraphWindow extends javax.swing.JFrame {
             this.startDate = (((Date) evt.getNewValue()));
             this.startDateDropdown.setText(dateToShortString(startDate));
             createOccupiedPostPercentageChart();
+            updateNumberLabels();
         }
     }//GEN-LAST:event_startDateCalendarButtonPropertyChange
 
@@ -270,6 +271,7 @@ public class GraphWindow extends javax.swing.JFrame {
             this.endDate = (((Date) evt.getNewValue()));
             this.endDateDropdown.setText(dateToShortString(endDate));
             createOccupiedPostPercentageChart();
+            updateNumberLabels();
         }
     }//GEN-LAST:event_endDateCalendarButtonPropertyChange
 
@@ -284,13 +286,11 @@ public class GraphWindow extends javax.swing.JFrame {
         int index = this.chartTypeDropdown.getSelectedIndex();
         if(index == 0) {
             createOccupiedPostPercentageChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
         else if(index == 1) {
             createPeoplePerPostChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
     }//GEN-LAST:event_chartTypeDropdownItemStateChanged
 
@@ -298,13 +298,11 @@ public class GraphWindow extends javax.swing.JFrame {
         this.roomSize = this.roomSizeDropdown.getSelectedIndex();
         if(this.chartTypeDropdown.getSelectedIndex() == 0) {
             createOccupiedPostPercentageChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
         else if(this.chartTypeDropdown.getSelectedIndex() == 1) {
             createPeoplePerPostChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
     }//GEN-LAST:event_roomSizeDropdownItemStateChanged
 
@@ -314,6 +312,11 @@ public class GraphWindow extends javax.swing.JFrame {
     
     public String getNumberLabelData2() {
         return this.numberLabel2;
+    }
+    
+    public void updateNumberLabels() {
+        this.jLabel4.setText(numberLabel1);
+        this.jLabel5.setText(numberLabel2);
     }
     
     /**
@@ -465,41 +468,6 @@ public class GraphWindow extends javax.swing.JFrame {
         // tähän chartin väritystä sun muuta turhuutta jos halutaan
         drawChart(chart);
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GraphWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GraphWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GraphWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GraphWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GraphWindow(new Session()).setVisible(true);
-            }
-        });
-    }
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox chartTypeDropdown;

@@ -1,8 +1,12 @@
 package fi.helsinki.cs.nero.ui;
 
 /**
+ * Mahdollistaa tietojen tallentamisen. N‰ytt‰‰ taulukon, jossa olevaa dataa voi
+ * j‰rjest‰‰ ja rajata haluamallaan tavalla. Taulukossa n‰ytetty data voidaan
+ * tallentaa teksti- tai ODS-muodossa. Saa tietonsa Session-luokalta.
  *
  * @author lpesola
+ * @see Session
  */
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.Room;
@@ -27,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.RowFilter.ComparisonType;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -60,7 +63,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
     private String kayttaja, postihuone, puhelinnumero;
-    private String huonenumero, kerros, pisteiden_lkm;
+    private String huonenumero, kerros, pisteiden_lkm, siipi;
     private String structuredFileType;
     // TODO: pit‰isikˆ olla yksi lista filtereist‰ ja pit‰‰ aina and-filteri‰
     // ja laittaa listaan aina uusi filteri -> voi filterˆid‰ kaikilla rajoittimilla
@@ -129,7 +132,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showPhone2 = new javax.swing.JCheckBox();
         restrictionsContainer = new javax.swing.JPanel();
         wing = new javax.swing.JLabel();
-        wingDropdown = new javax.swing.JComboBox();
+        restrictByWing = new javax.swing.JComboBox();
         floor = new javax.swing.JLabel();
         floorDropdown = new javax.swing.JComboBox();
         restrictByHasLocker = new javax.swing.JComboBox();
@@ -170,6 +173,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showWing.setText("Siipi");
+        showWing.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showWingMouseReleased(evt);
+            }
+        });
 
         showRoomName.setText("Huoneen nimi");
         showRoomName.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -309,8 +317,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         wing.setText("Siipi");
 
-        wingDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D" }));
-        wingDropdown.setToolTipText("");
+        restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "kaikki" }));
+        restrictByWing.setToolTipText("");
+        restrictByWing.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                restrictByWingItemStateChanged(evt);
+            }
+        });
 
         floor.setText("Kerros");
 
@@ -355,11 +368,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         firstCalendar.setToolTipText("Aikav‰lin ensimm‰inen p‰iv‰");
-        firstCalendar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                firstCalendarActionPerformed(evt);
-            }
-        });
         firstCalendar.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 firstCalendarPropertyChange(evt);
@@ -406,7 +414,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                             .addComponent(wing))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(restrictByWing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(87, 87, 87))
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
@@ -465,7 +473,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                                     .addComponent(restrictByHasLocker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(firstCalendar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(restrictByWing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(wing)
                                 .addComponent(jLabel4)
                                 .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -637,9 +645,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleModel.setColumnModel(peopleColumnModel);
         Data.setAutoCreateColumnsFromModel(false);
         peopleModel.setTable(Data);
-        
-        
+
         // asetetaan varaus-sarakkeelle oma renderer p‰iv‰m‰‰r‰‰ varten
+        // jotta se voidaan esitt‰‰ lyhyess‰ muodossa
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
         setSelected(peopleComponents);
@@ -724,15 +732,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else {
             generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(nimi));
         }
-        // t‰lleen tablerowsorter modelin kanssa n‰ytt‰‰ toimivan..
         TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setModel(Data.getModel());
-        
-        
-        
-        //DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByNameActionPerformed
 
     private void restrictByHasLockerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByHasLockerItemStateChanged
@@ -753,6 +755,15 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
+    /**
+     * Tapahtumak‰sittelij‰, joka pyyt‰‰ tallentamaan taulukossa t‰ll‰ hetkell‰
+     * n‰kyviss‰ olevan datan. Tarkistetaan, mik‰ tiedosto on m‰‰ritelty
+     * tallennuksen kohteeksi. Jos se on jokin olemassaoleva, tarkistetaan,
+     * voiko sen p‰‰lle tallentaa.
+     *
+     * @param evt
+     * @see promptForOverWrite()
+     */
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
 
         int option = fileChooserDialog.showSaveDialog(Data);
@@ -785,7 +796,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
             restrictByLastDate.setText(dateToShortString(((Date) evt.getNewValue())));
-            // tsekataan pit‰‰kˆ filterˆid‰ jotenkin
             determineDateRestriction();
         }
     }//GEN-LAST:event_lastCalendarPropertyChange
@@ -815,21 +825,34 @@ public class ReportsWindow extends javax.swing.JFrame {
             // lokeron numero
             generalFilter = RowFilter.regexFilter(room, Data.getColumnModel().getColumnIndex(postihuone));
         }
-        
 
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
         sorter.setRowFilter(generalFilter);
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByPostRoomItemStateChanged
 
-    private void firstCalendarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstCalendarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_firstCalendarActionPerformed
+    private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
+        String value = restrictByWing.getSelectedItem().toString();
+        if(value.equals("kaikki")){
+            value = "";
+        }
+        generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(siipi));
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+    }//GEN-LAST:event_restrictByWingItemStateChanged
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    private void showWingMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showWingMouseReleased
+        if (showWing.isSelected()) {
+            showColumn(siipi, roomColumnModel, hiddenRoomColumns);
+        } else {
+            hideColumn(siipi, roomColumnModel, hiddenRoomColumns);
+        }
+    
+    }//GEN-LAST:event_showWingMouseReleased
+/**
+ * @param args the command line arguments
+ */
+public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -842,27 +865,39 @@ public class ReportsWindow extends javax.swing.JFrame {
                     break;
 
 
-                }
+                
+
+}
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
+
+catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
+
+catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
+
+catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
-            public void run() {
+        public void run() {
                 new ReportsWindow().setVisible(true);
             }
         });
@@ -893,6 +928,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JTextField restrictByLastDate;
     private javax.swing.JTextField restrictByName;
     private javax.swing.JComboBox restrictByPostRoom;
+    private javax.swing.JComboBox restrictByWing;
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JPanel roomAttributes;
     private javax.swing.JRadioButton roomButton;
@@ -911,9 +947,12 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane tableContainer;
     private javax.swing.ButtonGroup viewButtons;
     private javax.swing.JLabel wing;
-    private javax.swing.JComboBox wingDropdown;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Ryhmitet‰‰n checkboxit ja alasvetovalikot niiden k‰yttˆtarkoituksen
+     * mukaan. T‰m‰ on niiden k‰sittelyn helpottamista varten.
+     */
     private void initContainerData() {
 
         /* Checkboxes for rooms view report*/
@@ -939,15 +978,15 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Luodaan mallit, joita GUI:ssa tarvitaan.
+     */
     private void initModels() {
-
 
         /*ColumnModels for different views*/
         hiddenRoomColumns = new HashMap<>();
         hiddenPeopleColumns = new HashMap<>();
         hiddenLockerColumns = new HashMap<>();
-        
-        
 
         /*Dropdown menu models - currently not used*/
         wingsModel = new DefaultComboBoxModel();
@@ -958,20 +997,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (int i = 0; i < floors.length; i++) {
             wingsModel.addElement(wings[i]);
         }
-//        fileTypeModel = new DefaultComboBoxModel();
-//        fileTypeModel.addElement("txt");
-//        fileTypeModel.addElement(structuredFileType);
     }
 
+    /**
+     * Alustaa GUIn taulukkoon datan, jonka saa Sessiolta. Dataa ei koskaan
+     * muuteta - se pysyy samana sen j‰lkeen, kun se on kerran haettu. Dataa on
+     * kolmea erilaista - henkilˆ-, postilokero- ja huonen‰kym‰‰ varten. Datan
+     * lis‰ksi kiinnitet‰‰n sarakkeisiin otsakkeet.
+     */
     private void initColumnData() {
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
-        // niin ja Date-column pit‰‰ saada palauttamaan Date getClassilla
-
-        /* alustetaan data huoneiden tietojen n‰ytt‰mist‰ varten
-         ideana se, ett‰ data taustalla pysyy aina samana ja se sidotaan
-         tiettyihin sarakkeisiin (sarakkeiden identifierit tulevat nimivektorista)
-         k‰ytt‰j‰n inputista riippuen n‰ytet‰‰n tai piilotetaan tietty sarake,
-         mutta data taustalla pysyy samana */
 
         // huone-tarkastelun data ja sarakkeet
         roomData = new Vector<>();
@@ -981,6 +1016,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             v.add(rooms[i].getFloor().toString());
             v.add(new Integer(rooms[i].getPosts().length).toString());
             v.add(rooms[i].getRoomName());
+            v.add(rooms[i].getWing());
             roomData.add(i, v);
         }
 
@@ -1006,7 +1042,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             peopleRow.add(people[i].getRoom());
             if (people[i].getLastReservation() == null) {
                 peopleRow.add(null);
-            } else { 
+            } else {
                 peopleRow.add(people[i].getLastReservation().getLastDay());
             }
             peopleRow.add(people[i].getTitteli());
@@ -1016,6 +1052,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Asetetaan sarakkeiden nimet.
+     */
     private void initColumnNames() {
 
         roomColumnNames = new Vector<>();
@@ -1023,6 +1062,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomColumnNames.add(kerros);
         roomColumnNames.add(pisteiden_lkm);
         roomColumnNames.add(nimi);
+        roomColumnNames.add(siipi);
 
         peopleColumnNames = new Vector<>();
         peopleColumnNames.add(nimi);
@@ -1036,12 +1076,22 @@ public class ReportsWindow extends javax.swing.JFrame {
         lockerColumnNames.add(postihuone);
         lockerColumnNames.add(huone);
         lockerColumnNames.add(puhelinnumero);
-
     }
 
+    /**
+     * N‰ytt‰‰ aiemmin piilotetun sarakkeen. Hakee piilotetut sarakkeet
+     * sis‰lt‰v‰st‰ kartasta oikean sarakkeen ja lis‰‰ sen sarakemalliin. Jos
+     * sarake ei ollut laitimmainen, siirret‰‰n sit‰ tarvittava m‰‰r‰
+     * vasemmalle.
+     *
+     * @param name sarakkeen identifier / sen otsake
+     * @param model taulukkomalli, johon sarake lis‰t‰‰n
+     * @param hiddenColumns map, josta piilotettu sarake haetaan
+     * @see IndexedColumn
+     */
     private void showColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
-   
+
         IndexedColumn column = hiddenColumns.remove(name);
         if (column != null) {
             model.addColumn(column.getTableColumn());
@@ -1052,28 +1102,57 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Piilottaa t‰ll‰ hetkell‰ n‰kyvill‰ olevan sarakkeen. Hakee sarakkeen
+     * saamansa nimen perusteella ja luo sen pohjalta uuden ilmentym‰n
+     * IndexedColumn-luokasta. T‰lle ilmentym‰lle annetaan sama indeksi kuin
+     * mik‰ piilotettavalla sarakkeella on. IndexedColumn s‰ilˆt‰‰n mapiin,
+     * josta se voidaan tarvittaessa hakea taas takaisin n‰ytett‰v‰ksi. T‰m‰n
+     * j‰lkeen poistetaan sarake taulukkomallista.
+     *
+     * @param name sarakkeen identifier / sen otsake
+     * @param model sarakemalli, josta sarake poistetaan
+     * @param hiddenColumns map, johon piilotettava sarake laitetaan talteen
+     * @see IndexedColumn
+     */
     private void hideColumn(String name, TableColumnModel model,
             HashMap<String, IndexedColumn> hiddenColumns) {
-    
+
         int index = model.getColumnIndex(name);
         TableColumn column = model.getColumn(index);
         IndexedColumn indexedColumn = new IndexedColumn(index, column);
         hiddenColumns.put(name, indexedColumn);
-        
         model.removeColumn(column);
     }
 
+    /**
+     * Asettaa kaikkien saamiensa checboxien tilaksi selected.
+     * 
+     * @param components, lista komponenteista, joiden tila muutetaan
+     */
     private void setSelected(ArrayList<JCheckBox> components) {
         for (JCheckBox jcomp : components) {
             jcomp.setSelected(true);
         }
     }
 
+    /**
+     * Lis‰‰ GUIn taulukolle sorterin, joka mahdollistaa datan j‰rjest‰misen
+     * sarakkeittain.
+     */
     private void addSorter() {
         rowSorter = new TableRowSorter<>(Data.getModel());
         Data.setRowSorter(rowSorter);
     }
 
+    /**
+     * K‰y l‰pi n‰kyvill‰ olevat sarakkeet ja palauttaa niiden indeksit. Pyyt‰‰
+     * taulukolta sen sarakemallin ja pyyt‰‰ silt‰ sarakkeet (n‰m‰ ovat siis
+     * n‰kyvill‰). Iteroi niiden l‰pi ja tarkistaa, mik‰ niiden indeksi on.
+     * Lis‰‰ indeksin taulukkoon.
+     *
+     * @return taulukko t‰ll‰ hetkell‰ n‰kyvill‰ olevien sarakkeiden indekseist‰
+     */
     private int[] listShownColumnsByIndex() {
         Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
         int[] neededIndexes = new int[Data.getColumnCount()];
@@ -1086,6 +1165,18 @@ public class ReportsWindow extends javax.swing.JFrame {
         return neededIndexes;
     }
 
+    /**
+     * Hakee GUIn taulukossa t‰ll‰ hetkell‰ n‰kyvill‰ olevan datan. Luo listan,
+     * jonka alkiot vastaavat taulukon rivej‰. Alkiot ovat listoja, joiden
+     * alkiot vastaavat rivin sarakkeita. Hakee n‰kyvill‰ olevat sarakkeiden
+     * nimet ja t‰m‰n j‰lkeen n‰kyvill‰ olevan datan ja yhdist‰‰ n‰m‰ yhdeksi
+     * listaksi.
+     *
+     * @return lista listoja, joka kuvaa GUIn taulukossa t‰ll‰ hetkell‰
+     * n‰kyvill‰ olevan datan
+     * @see getShownColumnIdentifiers()
+     * @see getShownColumnData()
+     */
     private List<List> getTableDataAsList() {
 
         List<List> list = new ArrayList<>();
@@ -1100,7 +1191,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         return list;
     }
 
-
+    /**
+     * Tuottaa Date-oliosta merkkijonon, joka kuvaa sen p‰iv‰m‰‰r‰n.
+     *
+     * @param date p‰iv‰m‰‰r‰, josta teksti muodostetaan
+     * @return annettu p‰iv‰m‰‰r‰ merkkijonona, joka on muotoa pp.kk.vvvv
+     */
     private String dateToShortString(Date date) {
         if (date != null) {
             String dateString = "";
@@ -1113,16 +1209,21 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Tarkistaa, mink‰laisia p‰iv‰m‰‰r‰pohjaisia rajoitteita GUIssa on
+     * m‰‰riteltyn‰ t‰ll‰ hetkell‰ ja rajaa taulukon dataa sen mukaan.
+     *
+     * Jos molemmissa p‰iv‰m‰‰r‰kentiss‰ on jokin p‰iv‰m‰‰r‰, n‰ytet‰‰n vain ne
+     * rivit, joiden varauskent‰n p‰iv‰m‰‰r‰ sijoittuu n‰iden kahden p‰iv‰m‰‰r‰n
+     * v‰lille. Jos vain loppup‰iv‰m‰‰r‰kent‰ss‰ on p‰iv‰m‰‰r‰, n‰ytet‰‰n vain
+     * ne rivit, joiden varauskent‰n p‰iv‰m‰‰r‰ on ennen asetettua p‰iv‰m‰‰r‰‰
+     * Jos vain alkup‰iv‰m‰‰r‰kent‰ss‰ on p‰iv‰m‰‰r‰, n‰ytet‰‰n vain ne rivit,
+     * joiden varauskent‰n p‰iv‰m‰‰r‰ on asetetun p‰iv‰m‰‰r‰n j‰lkeen. Jos
+     * kummassakaan ei ole mit‰‰n, poistetaan p‰iv‰m‰‰r‰rajoitin kokonaan ja
+     * n‰ytet‰‰n kaikki rivit.
+     */
     private void determineDateRestriction() {
-        // n‰kym‰ss‰ tyˆsuhteen loppuajan alkup‰iv‰m‰‰r‰ ja loppup‰iv‰m‰‰r‰
-        // sek‰ kalenterit (n‰ist‰ ei tartte v‰litt‰‰?)
-        // case 1-> jos molemmat asetettu, muodostetaan timeslice niist‰
-        // ja katsotaan sijoittuuko taulukon contract-sarakkeessa oleva loppup‰iv‰ t‰lle v‰lille
-        //  * jos sijoittuu, n‰ytet‰‰n rivi -> ei muita rivej‰
-        // case 2-> jos vain loppu asetettu, katsotaan, onko loppup‰iv‰ ennen v‰lin loppua
-        //  * jos on, n‰ytet‰‰n rivi
-        // case 3-> jos alku asetettu, katso onko loppup‰iv‰ alun j‰lkeen
-        //  * jos on, n‰yt‰ rivi
+
 
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
@@ -1137,7 +1238,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             // alkup‰iv‰m‰‰r‰ on
             filter = setDateRestriction(firstDate, RowFilter.ComparisonType.AFTER);
         } else {
-            // kumpaakaan ei asetettu -> poistetaan 
+            // kumpaakaan ei asetettu
             filter = removeDateRestriction();
         }
 
@@ -1146,7 +1247,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         sorter.setRowFilter(filter);
     }
 
-
+    /**
+     * Luo Date-oliopohjaisen filterin, jota voidaan k‰ytt‰‰ GUIn taulukossa
+     * olevan datan rajaamiseen.
+     *
+     * @param date p‰iv‰m‰‰r‰, johon verrataan
+     * @param type Vertailun tyyppi, t‰ss‰ BEFORE tai AFTER
+     * @return filteri, joka filterˆi saamansa p‰iv‰m‰‰r‰n ja ehdon mukaan
+     */
     private RowFilter setDateRestriction(Date date, ComparisonType type) {
         int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(type,
@@ -1154,6 +1262,17 @@ public class ReportsWindow extends javax.swing.JFrame {
         return newFilter;
     }
 
+    /**
+     * Luo filterin, joka testaa useampaa ehtoa ja jota voidaan k‰ytt‰‰
+     * GUIn taulukossa olevan datan rajaamiseen. Luodaan kaksi Date-pohjaista
+     * filteri‰. Vain molempien ehdot t‰ytt‰v‰t rivit taulukossa n‰ytet‰‰n.
+     * 
+     * @param first alkup‰iv‰m‰‰r‰
+     * @param last loppup‰iv‰m‰‰r‰
+     * @return filteri, joka hyv‰ksyy vain arvot, jotka sijoittuvat parametreina 
+     * saatujen p‰iv‰m‰‰rien v‰lille
+     * @see setDateRestriction(first, last)
+     */
     private RowFilter setDateRestrictionContains(Date first, Date last) {
         // and filter 
         List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
@@ -1163,6 +1282,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         return newFilter;
     }
 
+    /**
+     * Lukee merkkijonon muotoa pp.kk.vvvv ja muodostaa siit‰ Date-olion
+     *
+     * @return jos merkkijono on tyhj‰ tai syˆte on null, palautetaa null,
+     * muuten palautetaan Date-olio, joka vastaa merkkijonon kuvaamaa
+     * p‰iv‰m‰‰r‰‰
+     */
     private Date hasDate(String s) {
         /* Palauttaa muotoa pp.kk.vvvv olevasta merkkijonosta muodostetun p‰iv‰m‰‰r‰n
          Jos merkkijono on tyhj‰ tai syˆte on null, palautetaan null*/
@@ -1173,6 +1299,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * M‰‰ritell‰‰n koko luokassa k‰ytˆss‰ olevien merkkijonomuuttujien arvot.
+     */
     private void initStringVariables() {
         // henkilˆ
         varaus = "Varaus p‰‰ttyy";
@@ -1185,6 +1314,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         huonenumero = "Huoneen nro";
         kerros = "Kerros";
         pisteiden_lkm = "Tyˆpisteiden lkm";
+        siipi = "Siipi";
 
         // postilokero    
         kayttaja = "K‰ytt‰j‰";
@@ -1194,6 +1324,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         structuredFileType = "ODS";
     }
 
+    /**
+     * Muodostaa Date-olion merkkijonon kuvaamasta p‰iv‰m‰‰r‰st‰.
+     *
+     * @param text, merkkijono, josta p‰iv‰m‰‰r‰ luodaan
+     * @return Date-luokan ilmentym‰, joka sis‰lt‰‰ p‰iv‰m‰‰r‰n, jonka 'text'
+     * kuvaa
+     */
     private Date parseDate(String text) {
         Date date = new Date();
         if (text != null) {
@@ -1205,11 +1342,25 @@ public class ReportsWindow extends javax.swing.JFrame {
         return date;
     }
 
+    /**
+     * Poistetaan p‰iv‰m‰‰r‰n mukaan filterˆinti k‰ytˆst‰. Palautetaan
+     * regexp-filtteri, joka hyv‰ksyy mink‰ tahansa merkkijonon.
+     *
+     * @return
+     */
     private RowFilter removeDateRestriction() {
         RowFilter newFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(varaus));
         return newFilter;
     }
 
+    /**
+     * Antaa k‰skyn tulostaa n‰kyvill‰ olevan taulukon datan valitussa
+     * formaatissa. Tarkistaa, mik‰ tiedostomuoto on valittu ja valitsee
+     * tulostamiseen k‰ytetyn luokan sen mukaan. Antaa kirjoittajalle taulukon
+     * n‰ytt‰m‰n datan listana.
+     *
+     * @param f, tiedosto, johon data kirjoitetaan
+     */
     private void print(File f) {
 
         String fileType = fileTypeChooser.getSelectedItem().toString();
@@ -1221,6 +1372,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         printer.print(getTableDataAsList());
     }
 
+    /**
+     * Selvitet‰‰n, saako olemassaolevan tiedoston ylikirjoittaa. N‰ytet‰‰n
+     * k‰ytt‰j‰lle pop-up-ikkuna t‰t‰ varten. Jos k‰ytt‰j‰ painaa OK,
+     * hyv‰ksyt‰‰n ylikirjoitus. Jos k‰ytt‰j‰ tekee mit‰ tahansa muuta (esim.
+     * sulkee ikkunan) ei hyv‰ksyt‰ ylikirjoitusta.
+     *
+     * @return true jos tiedostonylikirjoittaminen on ok ja false jos ei ole
+     */
     private boolean promptForOverWrite() {
 
         int option = JOptionPane.showConfirmDialog(fileChooserDialog,
@@ -1233,6 +1392,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Listaa kaikkien GUIn taulukossa n‰kyvill‰ olevien sarakkeiden otsakkeet.
+     * Pyyt‰‰ mallilta kaikki sarakkeet ja k‰y l‰pi niiden otsaketiedot.
+     *
+     * @return lista n‰kyvill‰ olevien sarakkeiden otsikoista
+     */
     private List getShownColumnIdentifiers() {
 
         Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
@@ -1244,10 +1409,19 @@ public class ReportsWindow extends javax.swing.JFrame {
             z++;
         }
         return rowData;
-
-
     }
 
+    /**
+     * Tuottaa kokoelman, joka sis‰lt‰‰ kaiken GUIn taulukossa n‰kyvill‰ olevan
+     * datan. K‰y l‰pi kaikki n‰kyv‰t rivit (view) ja selvitt‰‰ niiden indeksin
+     * alla olevassa taulukkomallissa (model). Selvitt‰‰ jokaisen n‰kyvill‰
+     * olevan rivin sarakkeen indeksin mallissa (view -> model) ja hakee rivin
+     * ja sarakkeen perusteella taulukosta n‰kyv‰n datan.
+     *
+     * @return kokoelma listoja. Kokoelma sis‰lt‰‰ kaiken n‰kyvill‰ olevan datan
+     * ja se on samassa j‰rjestyksess‰ kuin se on taulukon n‰kym‰ss‰. Listan
+     * alkiot vastaavat rivin sarakkeita ja kokoelman alkiot taulukon rivej‰.
+     */
     private Collection<? extends List> getShownColumnData() {
 
         int[] neededIndexes = listShownColumnsByIndex();
@@ -1257,12 +1431,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         int rowCount = rs.getViewRowCount();
         ArrayList list = new ArrayList(rowCount);
 
-        // k‰yd‰‰n l‰pi kaikki n‰kyvill‰ olevat rivit
-        // tsekataan mit‰ alla olevan mallin rivi‰ niiden indeksi vastaa ja
-        // laitetaan sen rivin data listaan
-        // mallin sarakenumero pit‰‰ muuttaa sarakemallin indeksiksi, jotta myˆs
-        // sarakkeen data saadaan oikeaan kohtaan
-        
+
         //TODO: ehk‰ tuon p‰iv‰m‰‰r‰n lyhent‰misen voi tehd‰ myˆskin jossain muualla
         for (int i = 0; i < rowCount; i++) {
             List rowList = new ArrayList(columnCount);
@@ -1273,15 +1442,18 @@ public class ReportsWindow extends javax.swing.JFrame {
                 String value;
                 if (o == null) {
                     value = "";
-                } else if (o.getClass() == Date.class) {
-                    value = dateToShortString((Date) o);
-                } else {
+                
+
+} else if (o.getClass() == Date.class  
+
+    ) {
+                    value  = dateToShortString((Date) o);
+}
+else {
                     value = o.toString();
                 }
                 rowList.add(j, value);
-                
-//                rowList.add(j, tableModel.getValueAt(rowIndexInView,
-  //                      Data.convertColumnIndexToModel(neededIndexes[j])).toString());
+
             }
             list.add(rowList);
         }

@@ -549,14 +549,17 @@ public class Person implements Comparable {
         return this.roomKeyReservations.toArray(new RoomKeyReservation[0]);
     }
     
-    public RoomKeyReservation deleteRoomKeyReservation(RoomKeyReservation toBeRemoved) {
+    public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation){
+    }
+    
+    public boolean deleteRoomKeyReservation(RoomKeyReservation toBeRemoved) {
         for (RoomKeyReservation reservation : this.roomKeyReservations) {
-            if(reservation==toBeRemoved) {
-                this.roomKeyReservations.remove(reservation);
-                return reservation;
+            if(reservation.getReservationID()==toBeRemoved.getReservationID()) {
+                this.roomKeyReservations.remove(toBeRemoved);
+                return true;
             }
         }
-        return null;
+        return false;
     }
     /**
      * Palauttaa Person-olion merkkijonoesityksen

@@ -184,6 +184,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Siipi"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showWingMouseReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="showRoomName">
               <Properties>
@@ -350,7 +353,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="wingDropdown" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="restrictByWing" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="floorDropdown" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
@@ -427,7 +430,7 @@
                                   </Group>
                                   <Component id="firstCalendar" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="wingDropdown" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="restrictByWing" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="wing" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="restrictByFirstDate" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -460,18 +463,22 @@
                 <Property name="text" type="java.lang.String" value="Siipi"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="wingDropdown">
+            <Component class="javax.swing.JComboBox" name="restrictByWing">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
+                  <StringArray count="5">
                     <StringItem index="0" value="A"/>
                     <StringItem index="1" value="B"/>
                     <StringItem index="2" value="C"/>
                     <StringItem index="3" value="D"/>
+                    <StringItem index="4" value="kaikki"/>
                   </StringArray>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
+              <Events>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="restrictByWingItemStateChanged"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="floor">
               <Properties>
@@ -556,7 +563,6 @@
                 <Property name="toolTipText" type="java.lang.String" value="Aikav&#xe4;lin ensimm&#xe4;inen p&#xe4;iv&#xe4;"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="firstCalendarActionPerformed"/>
                 <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="firstCalendarPropertyChange"/>
               </Events>
             </Component>
