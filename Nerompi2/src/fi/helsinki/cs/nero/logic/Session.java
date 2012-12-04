@@ -940,7 +940,7 @@ public class Session {
 
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
         this.deleteRoomkeyReservation(roomKeyReservation);
-        // person.deleteRoomKeyReservation(roomKeyReservation);
+        person.deleteRoomKeyReservation(roomKeyReservation).getReservationID();
         this.updatePerson(person);
     }
     

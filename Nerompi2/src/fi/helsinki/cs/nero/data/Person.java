@@ -551,9 +551,9 @@ public class Person implements Comparable {
     
     public RoomKeyReservation deleteRoomKeyReservation(RoomKeyReservation toBeRemoved) {
         for (RoomKeyReservation reservation : this.roomKeyReservations) {
-            if(reservation==toBeRemoved) {
-                this.roomKeyReservations.remove(reservation);
-                return reservation;
+            if(reservation.getReservationID()==toBeRemoved.getReservationID()) {
+                this.roomKeyReservations.remove(toBeRemoved);
+                return toBeRemoved;
             }
         }
         return null;
