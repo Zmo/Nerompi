@@ -45,6 +45,8 @@ public class Post {
 
 	/**Työpisteeseen liitetyt työpistevaraukset (haetaan tarvittaessa)*/
 	private Reservation[] reservations = null;
+        
+        private Date addDate;
 	
 	private final Session session;
 	
@@ -60,15 +62,16 @@ public class Post {
 	 * @param postNumber työpisteen numero huoneen sisällä (1,2,3...)
 	 * @throws IllegalArgumentException Jos annettu Session on null.
 	 */
-	public Post(Session session, String postID, Room room, int postNumber){
+	public Post(Session session, String postID, Room room, int postNumber, Date addDate) {
 		
-		if (session == null){
+		if (session == null) {
 			throw new IllegalArgumentException();
 		}
 		this.session = session;
 		this.postID = postID;
 		this.room = room;
 		this.postNumber = postNumber;
+                this.addDate = addDate;
 	}
 	
 	
@@ -90,7 +93,7 @@ public class Post {
 	 * Palauttaa työpisteen tunnuksen.
 	 * @return postID Tunnus Stringinä.
 	 */
-	public String getPostID(){
+	public String getPostID() {
 		
 		return this.postID;
 	}	
@@ -124,12 +127,16 @@ public class Post {
 	 * Palauttaa työpisteeseen liitetyt varaukset.
 	 * @return Työpistevaraukset <code>Reservation[]</code> oliona.
 	 */
-	public Reservation[] getReservations(){
+	public Reservation[] getReservations() {
 		if(reservations == null){
 			reservations = session.getReservations(this);
                 }
 		return reservations;
 	}
+        
+        public Date getAddDate() {
+            return this.addDate;
+        }
 	
 	/**
 	 * Tyhjentää työpisteen säilyttämän tiedon varauksista. Metodia kutsutaan, kun voidaan

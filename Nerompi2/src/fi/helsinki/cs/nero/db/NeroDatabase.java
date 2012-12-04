@@ -256,7 +256,7 @@ public class NeroDatabase implements NeroObserver {
                      + " WHERE rhuone_id = ? AND puh.tp_id = tp.id"
                      + " ORDER BY tp.id, puh.puhelinnumero");
                      */
-                    "SELECT id FROM TYOPISTE WHERE rhuone_id = ? ORDER BY id");
+                    "SELECT id, lisayspvm FROM TYOPISTE WHERE rhuone_id = ? ORDER BY id");
         }
         if (this.prepPostPhoneNumbers == null) {
             this.prepPostPhoneNumbers = this.connection.prepareStatement(
@@ -286,7 +286,7 @@ public class NeroDatabase implements NeroObserver {
             this.prepAllPosts.setString(1, rs.getString("id"));
             ResultSet prs = this.prepAllPosts.executeQuery();
             while (prs.next()) {
-                Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size() + 1);
+                Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size() + 1, prs.getDate("lisayspvm"));
 
                 /* haetaan puhelinnumerot (hidas, kolme sis�kk�ist� prepared statementia
                  * mutta olkoot. */

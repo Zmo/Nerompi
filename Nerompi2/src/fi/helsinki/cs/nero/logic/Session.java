@@ -719,7 +719,7 @@ public class Session {
         if (this.activeRoom == null) {
             throw new IllegalArgumentException();
         }
-        Post newPost = new Post(this, null, this.activeRoom, 0);
+        Post newPost = new Post(this, null, this.activeRoom, 0, new Date());
         if (db.createPost(newPost)) {
             switchActiveRoom();
             // nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille

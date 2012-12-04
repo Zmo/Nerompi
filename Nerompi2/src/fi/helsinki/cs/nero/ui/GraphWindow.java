@@ -347,11 +347,13 @@ public class GraphWindow extends javax.swing.JFrame {
         for (Room room : this.session.getRooms()) {
             if((this.roomSize==0) || (room.getPosts().length == this.roomSize) || ((this.roomSize==4) && (room.getPosts().length>3))) {
                 for (Post post : room.getPosts()) {
-                    ++totalPosts;
-                    for (Reservation reservation : post.getReservations()) {
-                        if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
-                            ++occupiedPosts;
-                            break;
+                    if(post.getAddDate().before(date)) {
+                        ++totalPosts;
+                        for (Reservation reservation : post.getReservations()) {
+                            if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                                ++occupiedPosts;
+                                break;
+                            }
                         }
                     }
                 }
@@ -374,9 +376,11 @@ public class GraphWindow extends javax.swing.JFrame {
         for (Room room : this.session.getRooms()) {
             if((this.roomSize==0) || (room.getPosts().length == this.roomSize) || ((this.roomSize==4) && (room.getPosts().length>3))) {
                 for (Post post : room.getPosts()) {
-                    for (Reservation reservation : post.getReservations()) {
-                        if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
-                            ++people;
+                    if(post.getAddDate().before(date)) {
+                        for (Reservation reservation : post.getReservations()) {
+                            if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                                ++people;
+                            }
                         }
                     }
                 }
@@ -385,10 +389,12 @@ public class GraphWindow extends javax.swing.JFrame {
         for (Room room : this.session.getRooms()) {
             if((this.roomSize==0) || (room.getPosts().length == this.roomSize) || ((this.roomSize==4) && (room.getPosts().length>3))) {
                 for (Post post : room.getPosts()) {
-                    for (Reservation reservation : post.getReservations()) {
-                        if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
-                            ++occupiedPosts;
-                            break;
+                    if(post.getAddDate().before(date)) {
+                        for (Reservation reservation : post.getReservations()) {
+                            if(reservation.getTimeSlice().getStartDate().before(date) && reservation.getTimeSlice().getEndDate().after(date)) {
+                                ++occupiedPosts;
+                                break;
+                            }
                         }
                     }
                 }
@@ -429,7 +435,7 @@ public class GraphWindow extends javax.swing.JFrame {
         JFreeChart chart = ChartFactory.createLineChart(
             "Työpisteiden varausaste",     // chart title
             "Kuukausi",                    // domain axis label
-            "Varausaste",                  // range axis label
+            "Varausaste prosentteina",     // range axis label
             dataset,                       // data
             PlotOrientation.VERTICAL,      // orientation
             false,                         // include legend
