@@ -549,10 +549,14 @@ public class Person implements Comparable {
         return this.roomKeyReservations.toArray(new RoomKeyReservation[0]);
     }
     
+    public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation){
+    }
+    
     public RoomKeyReservation deleteRoomKeyReservation(RoomKeyReservation toBeRemoved) {
         for (RoomKeyReservation reservation : this.roomKeyReservations) {
             if(reservation==toBeRemoved) {
                 this.roomKeyReservations.remove(reservation);
+                System.out.println(toBeRemoved.getTargetRoom());
                 return reservation;
             }
         }
