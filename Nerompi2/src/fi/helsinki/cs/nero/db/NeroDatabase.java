@@ -1578,27 +1578,27 @@ public class NeroDatabase implements NeroObserver {
                 int updatedRows = this.prepUpdatePhoneNumber.executeUpdate();
 		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
                     success = true;
-                if (post != null)    {
-                                  
-                    prep = this.connection.prepareStatement(getpersons);
-                    prep.setString(1, post.getPostID());
-                    ResultSet rs = prep.executeQuery();
-                    rs.next();
-                    if(rs.getString("HENKLO_HTUNNUS")!=null) {
-                        this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                } else {
-                    this.updateWorkPhone(personID, phone.getPhoneNumber());
+                    if (post != null)    {
+
+                        prep = this.connection.prepareStatement(getpersons);
+                        prep.setString(1, post.getPostID());
+                        ResultSet rs = prep.executeQuery();
+                        rs.next();
+                        if(rs.getString("HENKLO_HTUNNUS")!=null) {
+                            this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
+                    } else {
+                        this.updateWorkPhone(personID, phone.getPhoneNumber());
+                        }
+                        /* XXX Raskas operaatio */
+
+                        loadRooms();
+
+                        loadPhoneNumbers();
+
                     }
-                    
-
-                    /* XXX Raskas operaatio */
-                    
-                    loadRooms();
-                    
-                    loadPhoneNumbers();
-
-		}
-            }} catch (SQLException e) {
+                }
+                
+            } catch (SQLException e) {
             	System.err.println("Tietokantavirhe: " + e.getMessage());
             }
             this.session.waitState(false);
