@@ -789,7 +789,7 @@ public class Session {
         // luodaan puhelinnumero-oliosta versio, joka ei viittaa mihinkään työpisteeseen
         //PhoneNumber newPhone = new PhoneNumber(phone, null);
         if (db.removePhoneNumberFromPost(phone)) {
-            this.deletePhoneNumberFromPerson(phone);
+//            this.deletePhoneNumberFromPerson(phone);
             // ei tietoa ollaanko juuri tätä näyttämässä, mutta päivitetään silti
             // vrt. tarkastukset updatePhoneNumberissa ^^
             this.switchActiveRoom();
