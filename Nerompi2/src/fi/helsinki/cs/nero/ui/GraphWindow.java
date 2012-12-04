@@ -25,11 +25,11 @@ public class GraphWindow extends javax.swing.JFrame {
     
     private Date startDate, endDate;
     
-    ChartPanel chartPanel;
+    private ChartPanel chartPanel;
     
-    String numberLabel1, numberLabel2;
+    private String numberLabel1, numberLabel2;
     
-    int roomSize;
+    private int roomSize;
     
     
     /**
@@ -262,6 +262,7 @@ public class GraphWindow extends javax.swing.JFrame {
             this.startDate = (((Date) evt.getNewValue()));
             this.startDateDropdown.setText(dateToShortString(startDate));
             createOccupiedPostPercentageChart();
+            updateNumberLabels();
         }
     }//GEN-LAST:event_startDateCalendarButtonPropertyChange
 
@@ -270,6 +271,7 @@ public class GraphWindow extends javax.swing.JFrame {
             this.endDate = (((Date) evt.getNewValue()));
             this.endDateDropdown.setText(dateToShortString(endDate));
             createOccupiedPostPercentageChart();
+            updateNumberLabels();
         }
     }//GEN-LAST:event_endDateCalendarButtonPropertyChange
 
@@ -284,13 +286,11 @@ public class GraphWindow extends javax.swing.JFrame {
         int index = this.chartTypeDropdown.getSelectedIndex();
         if(index == 0) {
             createOccupiedPostPercentageChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
         else if(index == 1) {
             createPeoplePerPostChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
     }//GEN-LAST:event_chartTypeDropdownItemStateChanged
 
@@ -298,13 +298,11 @@ public class GraphWindow extends javax.swing.JFrame {
         this.roomSize = this.roomSizeDropdown.getSelectedIndex();
         if(this.chartTypeDropdown.getSelectedIndex() == 0) {
             createOccupiedPostPercentageChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
         else if(this.chartTypeDropdown.getSelectedIndex() == 1) {
             createPeoplePerPostChart();
-            this.jLabel4.setText(numberLabel1);
-            this.jLabel5.setText(numberLabel2);
+            updateNumberLabels();
         }
     }//GEN-LAST:event_roomSizeDropdownItemStateChanged
 
@@ -314,6 +312,11 @@ public class GraphWindow extends javax.swing.JFrame {
     
     public String getNumberLabelData2() {
         return this.numberLabel2;
+    }
+    
+    public void updateNumberLabels() {
+        this.jLabel4.setText(numberLabel1);
+        this.jLabel5.setText(numberLabel2);
     }
     
     /**
