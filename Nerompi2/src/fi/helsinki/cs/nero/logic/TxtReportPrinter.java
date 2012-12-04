@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Vastaa txt-muotoon tallentamisesta.
  *
  * @author lpesola
  */
@@ -28,9 +29,19 @@ public class TxtReportPrinter implements ReportWriter {
         }
     }
 
+    /**
+     * Kirjoittaa konstruktorissa m‰‰riteltyyn tiedostoon saamansa datan.
+     * Jotta sarakkeiden pituus voidaan tasata, t‰ytyy selvitt‰‰, mik‰ on
+     * kunkin sarakkeen pisin sana. Lyhyempien sanojen per‰‰n voidaan t‰llˆin
+     * laittaa v‰lilyˆntej‰, niin tiedoston ulkoasu pysyy siistin‰.
+     * 
+     * K‰yd‰‰n l‰pi lista, jossa data on ja lis‰t‰‰n kaikki siell‰ oleva
+     * data tiedostoon. 
+     * 
+     * @param data data, joka tiedostoon tallennetaan
+     */
     @Override
     public void print(List<List> data) {
-
         Integer lengths[] = getLongestWord(data);
         try {
             for (List list : data) {
@@ -49,6 +60,17 @@ public class TxtReportPrinter implements ReportWriter {
         }
     }
 
+    /**
+     * Selvitt‰‰, mik‰ on parametrina saadun "matriisin" kunkin sarakkeen
+     * pisin merkkijono.
+     * K‰y l‰pi listan ja tarkistaa jokaisen alilistan alkion kohdalla, onko se
+     * pidempi kuin toistaiseksi pisin tunnettu sana samalla sarakkeella.
+     * 
+     * @param data taulukko, jonka sarakkeiden pituudet selvitet‰‰n
+     * @return taulukko joka on samanpituinen kuin parametrina saadun listan 
+     * sis‰lt‰mien listojen pituus ja jonka alkiot kuvaavat sit‰, mik‰ on pisin sana
+     * vastaavalla "sarakkeella". 
+     */
     private Integer[] getLongestWord(List<List> data) {
         Integer[] lengths = new Integer[data.get(0).size()];
 
@@ -73,6 +95,17 @@ public class TxtReportPrinter implements ReportWriter {
         return lengths;
     }
 
+    /**
+     * Lis‰‰ merkkijonon per‰‰n tyhji‰ v‰lilyˆntej‰ siten, ett‰ merkkijono
+     * on vaadittavan pituinen.
+     * 
+     * @param original 
+     * @param longest merkkijonon tarvittava pituus
+     * @return jos alkuper‰isen merkkijonon pituus on lyhempi kuin m‰‰ritelty
+     * pisin sana, palauttaa alkuper‰isen merkkijonon, jonka per‰‰n on lis‰tty 
+     * tarvittava m‰‰r‰ tyhji‰ merkkej‰; muutoin palauttaa alkuper‰isen 
+     * merkkijonon
+     */
     private String padWord(Object original, int longest) {
         String word = original.toString();
         while (word.length() < longest) {

@@ -13,7 +13,8 @@ import javax.swing.table.TableModel;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 /**
- *
+ * Vastaa tallentamisesta ods-tiedostoon.
+ * 
  * @author lpesola
  */
 public class ODTReportPrinter implements ReportWriter {
@@ -25,7 +26,11 @@ public class ODTReportPrinter implements ReportWriter {
     }
     
 
-
+    /**
+     * Luo uuden ods-tiedoston ja tallentaa saamansa datan siihen.
+     * 
+     * @param model malli, jonka pohjalta ods-taulukko luodaan.
+     */
     private void print(TableModel model) {
         try {
             SpreadSheet.createEmpty(model).saveAs(file);
@@ -36,13 +41,15 @@ public class ODTReportPrinter implements ReportWriter {
         }
     }
 
+    /**
+     * Muodostaa taulukkomallin saamastaan datasta.
+     * Luo uuden TableModelin, johon saadaan sarakkeiden nimi -vektori
+     * sek‰ data-vektori parametrina saatavasta listasta.
+     * 
+     * @param data, data josta malli muoodstetaan
+     */
     @Override
     public void print(List<List> data) {
-
-        // luodaan uusi TableModel, jolla
-        // - columnNames on n‰kyv‰t sarakkeet
-        // - datana on n‰kyvien sarakkeiden data
-        // --> saadaan puljaamalla hakemalla listasta
 
         //1. lista sis‰lt‰‰ sarakkeiden nimet
         Vector<String> columnNames; 

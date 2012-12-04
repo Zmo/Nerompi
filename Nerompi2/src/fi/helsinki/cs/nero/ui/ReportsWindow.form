@@ -556,7 +556,6 @@
                 <Property name="toolTipText" type="java.lang.String" value="Aikav&#xe4;lin ensimm&#xe4;inen p&#xe4;iv&#xe4;"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="firstCalendarActionPerformed"/>
                 <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="firstCalendarPropertyChange"/>
               </Events>
             </Component>
