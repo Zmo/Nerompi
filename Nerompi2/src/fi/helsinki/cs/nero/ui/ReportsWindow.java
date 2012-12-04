@@ -1040,10 +1040,10 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
             lockerRow.add(people[i].getSahkoposti());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
-            if (people[i].getLastReservation() == null) {
+            if (people[i].getReservationForRoom(people[i].getRoom()) == null) {
                 peopleRow.add(null);
             } else {
-                peopleRow.add(people[i].getLastReservation().getLastDay());
+                peopleRow.add(people[i].getReservationForRoom(people[i].getRoom()).getLastDay());
             }
             peopleRow.add(people[i].getTitteli());
             peopleRow.add(people[i].getSahkoposti());
