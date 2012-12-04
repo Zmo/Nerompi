@@ -95,8 +95,6 @@ public class Room {
         } else {
             this.wing = "muu";
         }
-        System.out.println(this.roomNumber);
-        System.out.println(this.wing);
     }
 
     /**
@@ -223,8 +221,12 @@ public class Room {
     public ArrayList getRoomKeyReservations() {
         return this.roomKeyReservations;
     }
-
-    /**
+    
+    public String getWing() {
+        return this.wing;
+    }
+    
+     /**
      * Palauttaa huoneen vapaustilan tarkasteltavalla osa-aikav‰lill‰. Huoneen
      * vapaustila m‰‰rittyy huoneiden tyˆpisteiden vapaustilan perusteella.
      * Huone on vapaa (FREE), jos se sis‰lt‰‰ v‰hint‰‰n
