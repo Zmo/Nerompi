@@ -1,11 +1,10 @@
 package fi.helsinki.cs.nero.ui;
 
 /**
- * Mahdollistaa tietojen tallentamisen.
- * N‰ytt‰‰ taulukon, jossa olevaa dataa voi j‰rjest‰‰ ja rajata haluamallaan tavalla.
- * Taulukossa n‰ytetty data voidaan tallentaa teksti- tai ODS-muodossa.
- * Saa tietonsa Session-luokalta.
- * 
+ * Mahdollistaa tietojen tallentamisen. N‰ytt‰‰ taulukon, jossa olevaa dataa voi
+ * j‰rjest‰‰ ja rajata haluamallaan tavalla. Taulukossa n‰ytetty data voidaan
+ * tallentaa teksti- tai ODS-muodossa. Saa tietonsa Session-luokalta.
+ *
  * @author lpesola
  * @see Session
  */
@@ -64,7 +63,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
     private String kayttaja, postihuone, puhelinnumero;
-    private String huonenumero, kerros, pisteiden_lkm;
+    private String huonenumero, kerros, pisteiden_lkm, siipi;
     private String structuredFileType;
     // TODO: pit‰isikˆ olla yksi lista filtereist‰ ja pit‰‰ aina and-filteri‰
     // ja laittaa listaan aina uusi filteri -> voi filterˆid‰ kaikilla rajoittimilla
@@ -133,7 +132,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showPhone2 = new javax.swing.JCheckBox();
         restrictionsContainer = new javax.swing.JPanel();
         wing = new javax.swing.JLabel();
-        wingDropdown = new javax.swing.JComboBox();
+        restrictByWing = new javax.swing.JComboBox();
         floor = new javax.swing.JLabel();
         floorDropdown = new javax.swing.JComboBox();
         restrictByHasLocker = new javax.swing.JComboBox();
@@ -174,6 +173,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showWing.setText("Siipi");
+        showWing.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showWingMouseReleased(evt);
+            }
+        });
 
         showRoomName.setText("Huoneen nimi");
         showRoomName.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -313,8 +317,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         wing.setText("Siipi");
 
-        wingDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D" }));
-        wingDropdown.setToolTipText("");
+        restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "kaikki" }));
+        restrictByWing.setToolTipText("");
+        restrictByWing.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                restrictByWingItemStateChanged(evt);
+            }
+        });
 
         floor.setText("Kerros");
 
@@ -405,7 +414,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                             .addComponent(wing))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(restrictByWing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(floorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(87, 87, 87))
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
@@ -464,7 +473,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                                     .addComponent(restrictByHasLocker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(firstCalendar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(wingDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(restrictByWing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(wing)
                                 .addComponent(jLabel4)
                                 .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -747,11 +756,11 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
     /**
-     * Tapahtumak‰sittelij‰, joka pyyt‰‰ tallentamaan taulukossa t‰ll‰ 
-     * hetkell‰ n‰kyviss‰ olevan datan.
-     * Tarkistetaan, mik‰ tiedosto on m‰‰ritelty tallennuksen kohteeksi.
-     * Jos se on jokin olemassaoleva, tarkistetaan, voiko sen p‰‰lle tallentaa.
-     * 
+     * Tapahtumak‰sittelij‰, joka pyyt‰‰ tallentamaan taulukossa t‰ll‰ hetkell‰
+     * n‰kyviss‰ olevan datan. Tarkistetaan, mik‰ tiedosto on m‰‰ritelty
+     * tallennuksen kohteeksi. Jos se on jokin olemassaoleva, tarkistetaan,
+     * voiko sen p‰‰lle tallentaa.
+     *
      * @param evt
      * @see promptForOverWrite()
      */
@@ -822,10 +831,28 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByPostRoomItemStateChanged
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
+        String value = restrictByWing.getSelectedItem().toString();
+        if(value.equals("kaikki")){
+            value = "";
+        }
+        generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(siipi));
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+    }//GEN-LAST:event_restrictByWingItemStateChanged
+
+    private void showWingMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showWingMouseReleased
+        if (showWing.isSelected()) {
+            showColumn(siipi, roomColumnModel, hiddenRoomColumns);
+        } else {
+            hideColumn(siipi, roomColumnModel, hiddenRoomColumns);
+        }
+    
+    }//GEN-LAST:event_showWingMouseReleased
+/**
+ * @param args the command line arguments
+ */
+public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -838,27 +865,39 @@ public class ReportsWindow extends javax.swing.JFrame {
                     break;
 
 
-                }
+                
+
+}
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
+
+catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
+
+catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } 
+
+catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
-            public void run() {
+        public void run() {
                 new ReportsWindow().setVisible(true);
             }
         });
@@ -889,6 +928,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JTextField restrictByLastDate;
     private javax.swing.JTextField restrictByName;
     private javax.swing.JComboBox restrictByPostRoom;
+    private javax.swing.JComboBox restrictByWing;
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JPanel roomAttributes;
     private javax.swing.JRadioButton roomButton;
@@ -907,7 +947,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane tableContainer;
     private javax.swing.ButtonGroup viewButtons;
     private javax.swing.JLabel wing;
-    private javax.swing.JComboBox wingDropdown;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -977,6 +1016,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             v.add(rooms[i].getFloor().toString());
             v.add(new Integer(rooms[i].getPosts().length).toString());
             v.add(rooms[i].getRoomName());
+            v.add(rooms[i].getWing());
             roomData.add(i, v);
         }
 
@@ -1000,10 +1040,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             lockerRow.add(people[i].getSahkoposti());
             peopleRow.add(people[i].getName());
             peopleRow.add(people[i].getRoom());
-            if (people[i].getLastReservation() == null) {
+            if (people[i].getReservationForRoom(people[i].getRoom()) == null) {
                 peopleRow.add(null);
             } else {
-                peopleRow.add(people[i].getLastReservation().getLastDay());
+                peopleRow.add(people[i].getReservationForRoom(people[i].getRoom()).getLastDay());
             }
             peopleRow.add(people[i].getTitteli());
             peopleRow.add(people[i].getSahkoposti());
@@ -1022,6 +1062,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomColumnNames.add(kerros);
         roomColumnNames.add(pisteiden_lkm);
         roomColumnNames.add(nimi);
+        roomColumnNames.add(siipi);
 
         peopleColumnNames = new Vector<>();
         peopleColumnNames.add(nimi);
@@ -1273,6 +1314,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         huonenumero = "Huoneen nro";
         kerros = "Kerros";
         pisteiden_lkm = "Tyˆpisteiden lkm";
+        siipi = "Siipi";
 
         // postilokero    
         kayttaja = "K‰ytt‰j‰";
@@ -1400,9 +1442,14 @@ public class ReportsWindow extends javax.swing.JFrame {
                 String value;
                 if (o == null) {
                     value = "";
-                } else if (o.getClass() == Date.class) {
-                    value = dateToShortString((Date) o);
-                } else {
+                
+
+} else if (o.getClass() == Date.class  
+
+    ) {
+                    value  = dateToShortString((Date) o);
+}
+else {
                     value = o.toString();
                 }
                 rowList.add(j, value);

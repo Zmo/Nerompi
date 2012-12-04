@@ -374,6 +374,30 @@ public class Person implements Comparable {
             return null;
         }
     }
+    
+    /**
+     * Etsii henkilön varauksista sen, joka liittyy parametrina saatavaan
+     * huoneeseen.
+     * 
+     * @param room huone, jonka varaus halutaan saada tietoon.
+     * @return null jos annettuun huoneeseen ei ole varausta; muuten palauttaa
+     * varauksen, joka liittyy annettuun huoneeseen.
+     */
+    public Reservation getReservationForRoom(String room) {
+        
+        Reservation[] currentReservations = this.getReservations();
+        if (currentReservations != null && currentReservations.length > 0) {
+            for (int i = 0; i < currentReservations.length; i++) {
+                String thisRoom = currentReservations[i].getTargetPost().getRoom().toString();
+                if(thisRoom.equalsIgnoreCase(room)) {
+                    return currentReservations[i];
+                }
+            }
+        } else {
+            return null;
+        }
+        return null;       
+    }
 
     /**
      * Palauttaa henkilön työpistevaraukset sessiossa määrätyllä aikavälillä.
