@@ -1431,9 +1431,9 @@ public class NeroDatabase implements NeroObserver {
     }
 
     /**
-     * Palauttaa ne huoneet, jotka tï¿½yttï¿½vï¿½t annetut hakuehdot.
+     * Palauttaa ne huoneet, jotka täyttävät annetut hakuehdot.
      *
-     * @param roomFilter String jota etsitï¿½ï¿½n huoneen nimestï¿½ ja
+     * @param roomFilter String jota etsitään huoneen nimestä ja
      * numerosta.
      * @param maxPosts Huoneen tyï¿½pisteiden maksimilukumï¿½ï¿½rï¿½. Jos
      * pienempi kuin 0, ei rajaa tulosta.
@@ -1492,7 +1492,7 @@ public class NeroDatabase implements NeroObserver {
      * Palauttaa huoneolion huone-id:n perusteella.
      *
      * @param roomID huoneen id
-     * @return huoneolio tai null, jos kyseistï¿½ huonetta ei lï¿½ydy
+     * @return huoneolio tai null, jos kyseistä huonetta ei löydy
      */
     public Room getRoom(String roomID) {
         return (Room) rooms.get(roomID);
@@ -1527,12 +1527,12 @@ public class NeroDatabase implements NeroObserver {
         }
     }
 
-	/* --- Huoneisiin liittyvï¿½t metodit loppuu --- */ 
+	/* --- Huoneisiin liittyvät metodit loppuu --- */ 
 
-	/* --- Puhelinnumeroihin liittyvï¿½t metodit alkaa --- */ 
+	/* --- Puhelinnumeroihin liittyvät metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat puhelinnumerot jï¿½rjestettynï¿½
+	 * Palauttaa kaikki järjestelmän tuntemat puhelinnumerot järjestettynä
 	 * PhoneNumber[] -taulukkona.
 	 * @return PhoneNumber[] -taulukko.
 	 */
@@ -1548,7 +1548,7 @@ public class NeroDatabase implements NeroObserver {
 	}
 
 	/**
-	 * Pï¿½ivittï¿½ï¿½ tietokannassa olevan puhelinnumero-olion annetun mallin
+	 * Päivittää tietokannassa olevan puhelinnumero-olion annetun mallin
 	 * mukaiseksi ja päivittää puhelinnumeron työpisteen varaajalle jos sellainen on.
 	 * 
 	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
@@ -1614,7 +1614,7 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(false);
             return success;
         }
-    /* --- Puhelinnumeroihin liittyvï¿½t metodit loppuu --- */
+    /* --- Puhelinnumeroihin liittyvät metodit loppuu --- */
         
     /* --- Avainvarauksiin liittyvät metodit alkaa --- */
         
@@ -1624,19 +1624,33 @@ public class NeroDatabase implements NeroObserver {
      * @param reservation lisättävä huonevaraus
      */
     public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
+        String selectQuery = "SELECT * FROM huonevaraus";
+        
+        String updateQuery1 = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)"; // (SELECT MAX(ID) FROM HUONEVARAUS)+1
 
-        String updatequery = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)";
-
+        String updateQuery2 = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)"; 
+        
         PreparedStatement prep;
-
         try {
-
-            prep = this.connection.prepareStatement(updatequery);
-            prep.setString(1, person.getPersonID());
-            prep.setString(2, room.getRoomID());
-            prep.setDate(3, timeslice.getSQLStartDate());
-            prep.setDate(4, timeslice.getSQLEndDate());
-            prep.executeUpdate();
+            ResultSet rs = this.connection.prepareStatement(selectQuery).executeQuery();
+            if(!rs.next()) {
+                prep = this.connection.prepareStatement(updateQuery1);
+                prep.setInt(1, 1);
+                prep = this.connection.prepareStatement(updateQuery2);
+                prep.setString(2, person.getPersonID());
+                prep.setString(3, room.getRoomID());
+                prep.setDate(4, timeslice.getSQLStartDate());
+                prep.setDate(5, timeslice.getSQLEndDate());
+                prep.executeUpdate();
+            }
+            else {
+                prep = this.connection.prepareStatement(updateQuery2);
+                prep.setString(1, person.getPersonID());
+                prep.setString(2, room.getRoomID());
+                prep.setDate(3, timeslice.getSQLStartDate());
+                prep.setDate(4, timeslice.getSQLEndDate());
+                prep.executeUpdate();
+            }
         } catch (SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
         }

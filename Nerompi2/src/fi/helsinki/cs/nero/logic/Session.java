@@ -562,6 +562,9 @@ public class Session {
             setStatusMessage("Työpistevarauksen muuttaminen ei onnistunut.");
             return;
         }
+        Date date = new Date();
+        if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate()))
+            db.addRoomToPerson(reservation.getReservingPerson(), reservation.getTargetPost().getRoom());
         // kerrotaan työpisteelle että sen varaukset ovat muuttuneet
         reservation.getTargetPost().clearReservations();
         // varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
@@ -583,13 +586,14 @@ public class Session {
         }
         if (db.deleteReservation(reservation)) {
             reservation.getTargetPost().clearReservations();
+            Date date = new Date();
+            if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate()))
+                db.deleteRoomFromPerson(reservation.getReservingPerson());
             // varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus poistettu.");
-            db.updateRooms();
-            db.deleteRoomFromPerson(reservation.getReservingPerson()); // asd
         } else {
             setStatusMessage("Työpistevarauksen poistaminen epäonnistui.");
         }
@@ -615,7 +619,6 @@ public class Session {
             throw new IllegalArgumentException("sopimus ei saa olla null");
         }
         createReservation(post, contract.getPerson(), contract.getTimeSlice());
-        db.addRoomToPerson(contract.getPerson(), post.getRoom()); // asd
     }
 
     /**
@@ -633,7 +636,6 @@ public class Session {
      */
     public void createReservation(Post post, Person person) {
         createReservation(post, person, timescaleSlice);
-        db.addRoomToPerson(person, post.getRoom()); // asd
     }
 
     /**
@@ -680,12 +682,14 @@ public class Session {
         Reservation newRes = new Reservation(this, null, post, person, reservationTime, 0.0, "");
         if (db.createReservation(newRes)) {
             newRes.getTargetPost().clearReservations();
+            Date date = new Date();
+            if(date.after(newRes.getTimeSlice().getStartDate()) && date.before(newRes.getTimeSlice().getEndDate()))
+                db.addRoomToPerson(person, post.getRoom());
             // huoneiden ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus luotu.");
-            db.addRoomToPerson(person, post.getRoom()); // asd
         } else {
             setStatusMessage("Työpistevarauksen luonti epäonnistui.");
         }
