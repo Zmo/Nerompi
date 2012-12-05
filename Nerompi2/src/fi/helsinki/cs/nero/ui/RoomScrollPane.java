@@ -5,6 +5,7 @@ package fi.helsinki.cs.nero.ui;
 
 
 import fi.helsinki.cs.nero.NeroApplication;
+import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
@@ -259,11 +260,11 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                 row.resetIterator();
                            
                 //Luodaan jokaisen rivin jokaista varausjaksoa koskeva JPanel.
-                while(row.hasNext()) {
-                    TimelineElement reservation = (TimelineElement)row.next();
+                while (row.hasNext()) {
+                    TimelineElement reservation = (TimelineElement) row.next();
                     rowPanel.add(reservation);
                 }
-                
+
                 postsPanel.add(rowPanel);
             }
             
