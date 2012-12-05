@@ -75,21 +75,22 @@ public class PeopleTableModel extends DefaultTableModel {
         }
     }
     
-
-    /**
-     * Tarkistaa sarakemallilta, kuinka monta saraketta on näkyvillä. 
-     * 
-     * @return tällä hetkellä näkyvillä olevien sarakkeiden määrä 
-     */
-
-    @Override
-    public int getColumnCount() {
-        if (columnModel != null) {
-            return columnModel.getColumnCount();
-        } else {
-            return super.getColumnCount();
-        }
-    }
+// tämä ilmeisesti aiheutti ongelmia
+// käytöstä poistaminen taas ei näyttäisi vaikuttavan mitenkään..
+//    /**
+//     * Tarkistaa sarakemallilta, kuinka monta saraketta on näkyvillä. 
+//     * 
+//     * @return tällä hetkellä näkyvillä olevien sarakkeiden määrä 
+//     */
+//
+//    @Override
+//    public int getColumnCount() {
+//        if (columnModel != null) {
+//            return columnModel.getColumnCount();
+//        } else {
+//            return super.getColumnCount();
+//        }
+//    }
 
 
 }

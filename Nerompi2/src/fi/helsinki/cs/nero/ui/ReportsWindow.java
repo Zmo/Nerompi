@@ -66,6 +66,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String huonenumero, kerros, pisteiden_lkm, siipi;
     private String structuredFileType;
     // TODO: pitäisikö olla yksi lista filtereistä ja pitää aina and-filteriä
+    //TODO: defaultrowsorter muuttaa saamansa sarakkeen indeksin taulukkomallin indeksiksi
+    // tämä sotkee, jos yritetään järjestää sarakkeita kun jotkin sarakkeista eivät ole 
+    // näkyvissä -> pitäisi jotenkin kiertää tämä
     // ja laittaa listaan aina uusi filteri -> voi filteröidä kaikilla rajoittimilla
     //testi
     // combobox models not used yet
