@@ -27,6 +27,7 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -47,6 +48,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private TableColumnModel columnModel;
     private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
+    private Person[] filteredPeople;
     private Vector<Vector<Object>> tableData;
     private Vector<String> columnNames;
     private TableRowSorter<TableModel> rowSorter;
@@ -88,6 +90,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         today = new Date();
         people = session.getFilteredPeople();
+        session.setFilterActiveEmployees(false);
+        
         initStringVariables();
         initComponents();
         initContainerData();
@@ -141,9 +145,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         restrictByLastDate = new javax.swing.JTextField();
         restrictByPostRoom = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
-        saveButton = new javax.swing.JButton();
+        showInActive = new javax.swing.JCheckBox();
         tableContainer = new javax.swing.JScrollPane();
         Data = new javax.swing.JTable();
+        saveButton = new javax.swing.JButton();
         fileTypeChooser = new javax.swing.JComboBox();
 
         fileChooserDialog.setDialogTitle("Tallenna");
@@ -188,24 +193,24 @@ public class ReportsWindow extends javax.swing.JFrame {
             roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roomAttributesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showFloor)
-                    .addComponent(showPostCount)
-                    .addComponent(showWing)
-                    .addComponent(showLocker))
+                .addComponent(showFloor)
+                .addGap(64, 64, 64)
+                .addComponent(showPostCount)
+                .addGap(18, 18, 18)
+                .addComponent(showLocker)
+                .addGap(27, 27, 27)
+                .addComponent(showWing)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         roomAttributesLayout.setVerticalGroup(
             roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roomAttributesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(showFloor)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showWing)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showPostCount)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showLocker)
+                .addGroup(roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(showFloor)
+                    .addComponent(showPostCount)
+                    .addComponent(showLocker)
+                    .addComponent(showWing))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -250,28 +255,28 @@ public class ReportsWindow extends javax.swing.JFrame {
             personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(personAttributesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showRoomAndPost)
-                    .addComponent(showPhone)
-                    .addComponent(showReservations)
-                    .addComponent(showEmail)
-                    .addComponent(showJobTitle))
+                .addComponent(showRoomAndPost)
+                .addGap(18, 18, 18)
+                .addComponent(showPhone)
+                .addGap(27, 27, 27)
+                .addComponent(showJobTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(showEmail)
+                .addGap(18, 18, 18)
+                .addComponent(showReservations)
                 .addContainerGap())
         );
         personAttributesLayout.setVerticalGroup(
             personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(personAttributesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(showRoomAndPost)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showPhone)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showReservations)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showEmail)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showJobTitle)
-                .addContainerGap())
+                .addGroup(personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(showRoomAndPost)
+                    .addComponent(showReservations)
+                    .addComponent(showEmail)
+                    .addComponent(showPhone)
+                    .addComponent(showJobTitle))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         wing.setText("Siipi");
@@ -360,6 +365,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         jLabel6.setText("Postihuone");
 
+        showInActive.setText("Näytä myös ei-aktiiviset");
+        showInActive.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showInActiveMouseReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout restrictionsContainerLayout = new javax.swing.GroupLayout(restrictionsContainer);
         restrictionsContainer.setLayout(restrictionsContainerLayout);
         restrictionsContainerLayout.setHorizontalGroup(
@@ -410,7 +422,9 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(restrictByHasLocker, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(restrictByPostRoom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(124, 124, 124))))
+                        .addGap(18, 18, 18)
+                        .addComponent(showInActive)
+                        .addContainerGap())))
         );
         restrictionsContainerLayout.setVerticalGroup(
             restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -429,7 +443,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                                 .addComponent(lastCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel1)
-                                    .addComponent(restrictByHasLocker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(restrictByHasLocker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(showInActive)))
                             .addComponent(firstCalendar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(restrictByWing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -450,38 +465,6 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGap(39, 39, 39))))
         );
 
-        javax.swing.GroupLayout checkboxContainerLayout = new javax.swing.GroupLayout(checkboxContainer);
-        checkboxContainer.setLayout(checkboxContainerLayout);
-        checkboxContainerLayout.setHorizontalGroup(
-            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(checkboxContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(checkboxContainerLayout.createSequentialGroup()
-                        .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(168, 168, 168)
-                        .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(262, Short.MAX_VALUE))
-        );
-        checkboxContainerLayout.setVerticalGroup(
-            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(checkboxContainerLayout.createSequentialGroup()
-                .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-
-        saveButton.setText("Tallenna");
-        saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                saveButtonMouseReleased(evt);
-            }
-        });
-
         Data.setAutoCreateColumnsFromModel(false);
         Data.setAutoCreateRowSorter(true);
         Data.setModel(new javax.swing.table.DefaultTableModel(
@@ -499,6 +482,44 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSelectionAllowed(false);
         tableContainer.setViewportView(Data);
 
+        javax.swing.GroupLayout checkboxContainerLayout = new javax.swing.GroupLayout(checkboxContainer);
+        checkboxContainer.setLayout(checkboxContainerLayout);
+        checkboxContainerLayout.setHorizontalGroup(
+            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(checkboxContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(checkboxContainerLayout.createSequentialGroup()
+                        .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(checkboxContainerLayout.createSequentialGroup()
+                        .addComponent(personAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(87, 87, 87))
+                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 1315, Short.MAX_VALUE)))
+        );
+        checkboxContainerLayout.setVerticalGroup(
+            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(checkboxContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(roomAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(personAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        saveButton.setText("Tallenna");
+        saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                saveButtonMouseReleased(evt);
+            }
+        });
+
         fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "ODS" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -506,19 +527,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(saveButton)
-                .addGap(18, 18, 18)
-                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(tableContainer)))
+                        .addComponent(saveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -527,47 +545,29 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
                     .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(22, 22, 22))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void showPostCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPostCountActionPerformed
-        if (showPostCount.isSelected()) {
-            showColumn("Työpisteiden lkm");
-        } else {
-            hideColumn("Työpisteiden lkm");
-        }
+        setColumnVisibility(showPostCount, pisteiden_lkm);
     }//GEN-LAST:event_showPostCountActionPerformed
 
     private void showReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReservationsMouseReleased
-        if (showReservations.isSelected()) {
-            showColumn(varaus);
-        } else {
-            hideColumn(varaus);
-        }
+        setColumnVisibility(showReservations, varaus);
     }//GEN-LAST:event_showReservationsMouseReleased
 
     private void showFloorMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showFloorMouseReleased
-        if (showFloor.isSelected()) {
-            showColumn(kerros);
-        } else {
-            hideColumn(kerros);
-        }
+        setColumnVisibility(showFloor, kerros);
     }//GEN-LAST:event_showFloorMouseReleased
 
     private void showRoomAndPostMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomAndPostMouseReleased
-        if (showRoomAndPost.isSelected()) {
-            showColumn(huone);
-        } else {
-            hideColumn(huone);
-        }
+        setColumnVisibility(showRoomAndPost, huone);
     }//GEN-LAST:event_showRoomAndPostMouseReleased
 
     private void floorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_floorDropdownItemStateChanged
@@ -601,10 +601,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
         } else if (index == 1) {
             // lokerottomat
-            generalFilter = RowFilter.regexFilter("ei postilokeroa", Data.getColumnModel().getColumnIndex(postihuone));
+            generalFilter = RowFilter.regexFilter("ei postilokeroa", columnModel.getColumnIndex(postihuone));
         } else if (index == 2) {
             // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa", Data.getColumnModel().getColumnIndex(postihuone));
+            RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa", columnModel.getColumnIndex(postihuone));
             generalFilter = RowFilter.notFilter(regexFilter);
         }
         DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
@@ -636,11 +636,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_saveButtonMouseReleased
 
     private void showJobTitleMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showJobTitleMouseReleased
-        if (showJobTitle.isSelected()) {
-            showColumn(nimike);
-        } else {
-            hideColumn(nimike);
-        }
+        setColumnVisibility(showJobTitle, nimike);
     }//GEN-LAST:event_showJobTitleMouseReleased
 
     private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
@@ -658,11 +654,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_lastCalendarPropertyChange
 
     private void showEmailMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showEmailMouseReleased
-        if (showEmail.isSelected()) {
-            showColumn(sposti);
-        } else {
-            hideColumn(sposti);
-        }
+        setColumnVisibility(showEmail, sposti);
     }//GEN-LAST:event_showEmailMouseReleased
 
     private void restrictByFirstDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByFirstDateActionPerformed
@@ -699,29 +691,32 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_restrictByWingItemStateChanged
 
     private void showWingMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showWingMouseReleased
-        if (showWing.isSelected()) {
-            showColumn(siipi);
-        } else {
-            hideColumn(siipi);
-        }
-
+        setColumnVisibility(showWing, siipi);
     }//GEN-LAST:event_showWingMouseReleased
 
     private void showPhoneMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPhoneMouseReleased
-        if (showPhone.isSelected()) {
-            showColumn(puhelinnumero);
-        } else {
-            hideColumn(puhelinnumero);
-        }
+        setColumnVisibility(showPhone, puhelinnumero);
     }//GEN-LAST:event_showPhoneMouseReleased
 
     private void showLockerMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showLockerMouseReleased
-        if (showLocker.isSelected()) {
-            showColumn(postihuone);
-        } else {
-            hideColumn(postihuone);
-        }
+        setColumnVisibility(showLocker, postihuone);
     }//GEN-LAST:event_showLockerMouseReleased
+
+    private void showInActiveMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showInActiveMouseReleased
+        if (showInActive.isSelected()) {
+            session.setFilterActiveEmployees(false);
+            people = session.getFilteredPeople();
+            initColumnData();
+            initColumnNames();
+            initTableView();
+        } else {
+            session.setFilterActiveEmployees(true);
+            people = session.getFilteredPeople();
+            initColumnData();
+            initColumnNames();
+            initTableView();            
+        }
+    }//GEN-LAST:event_showInActiveMouseReleased
     /**
      * @param args the command line arguments
      */
@@ -790,6 +785,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JButton saveButton;
     private javax.swing.JCheckBox showEmail;
     private javax.swing.JCheckBox showFloor;
+    private javax.swing.JCheckBox showInActive;
     private javax.swing.JCheckBox showJobTitle;
     private javax.swing.JCheckBox showLocker;
     private javax.swing.JCheckBox showPhone;
@@ -1326,6 +1322,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (String identifier : initiallyHiddenColumns) {
             hideColumn(identifier);
         }
+    }
 
+    private void setColumnVisibility(JCheckBox comp, String columnName) {
+        if (comp.isSelected()) {
+            showColumn(columnName);
+        } else {
+            hideColumn(columnName);
+        }
     }
 }
