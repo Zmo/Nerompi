@@ -2,6 +2,7 @@ package fi.helsinki.cs.nero.db;
 
 import fi.helsinki.cs.nero.NeroApplication;
 import fi.helsinki.cs.nero.data.Contract;
+import fi.helsinki.cs.nero.data.Kannykka;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
@@ -493,20 +494,22 @@ public class NeroDatabase implements NeroObserver {
         }
         return arry;
     }
-
-    public void addKannykka(String kannukka, String htunnus, String omistaja, String tyo) {
+    /**
+     * Kännykän lisääminen tietokantaan
+     * @param kannykka 
+     */
+    public void addKannykka(Kannykka kannykka) {
 
         PreparedStatement prepAddKannykka;
 
-        String sqlQuery = "INSERT INTO HUONEVARAUS (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, TYO_NUMERO) VALUES ((SELECT MAX(PUH_ID) FROM KANNYKKA)+1, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES ((SELECT MAX(PUH_ID) FROM KANNYKKA)+1, ?, ?, ?, CURRENT_TIMESTAMP)";
 
         try {
             prepAddKannykka = this.connection.prepareStatement(sqlQuery);
 
-            prepAddKannykka.setString(1, kannukka);
-            prepAddKannykka.setString(2, htunnus);
-            prepAddKannykka.setString(3, omistaja);
-            prepAddKannykka.setString(4, tyo);
+            prepAddKannykka.setString(1, kannykka.getPhonenumber());
+            prepAddKannykka.setString(2, kannykka.getHtunnus());
+            prepAddKannykka.setString(3, kannykka.getOmistaja());
             prepAddKannykka.executeUpdate();
 
         } catch (SQLException e) {
@@ -1088,18 +1091,18 @@ public class NeroDatabase implements NeroObserver {
         prepCreateperson.setString(7, person.getHetu());
         prepCreateperson.setString(8, person.getOppiarvo());
         prepCreateperson.setString(9, person.getTitteli());
-        prepCreateperson.setString(10, person.getWorkPhone());
-        prepCreateperson.setString(11, person.getHomePhone());
-        prepCreateperson.setString(12, person.getAddress());
-        prepCreateperson.setString(13, person.getPostnumber());
-        prepCreateperson.setString(14, person.getPostitoimiPaikka());
-        prepCreateperson.setString(15, person.getSahkoposti());
-        prepCreateperson.setString(16, person.getHallinnollinenKommentti());
-        prepCreateperson.setString(17, person.getkTunnus());
-        prepCreateperson.setString(18, person.getKannykka());
-        prepCreateperson.setString(19, person.getPostilokeroHuone());
-        prepCreateperson.setString(20, person.getHyTyosuhde());
-        prepCreateperson.setString(21, person.getHyPuhelinluettelossa());
+//        prepCreateperson.setString(10, person.getWorkPhone());
+        prepCreateperson.setString(10, person.getHomePhone());
+        prepCreateperson.setString(11, person.getAddress());
+        prepCreateperson.setString(12, person.getPostnumber());
+        prepCreateperson.setString(13, person.getPostitoimiPaikka());
+        prepCreateperson.setString(14, person.getSahkoposti());
+        prepCreateperson.setString(15, person.getHallinnollinenKommentti());
+        prepCreateperson.setString(16, person.getkTunnus());
+        prepCreateperson.setString(17, person.getKannykka());
+        prepCreateperson.setString(18, person.getPostilokeroHuone());
+        prepCreateperson.setString(19, person.getHyTyosuhde());
+        prepCreateperson.setString(20, person.getHyPuhelinluettelossa());
 
         prepCreateperson.executeUpdate();
 
@@ -1585,24 +1588,22 @@ public class NeroDatabase implements NeroObserver {
                         prep = this.connection.prepareStatement(getpersons);
                         prep.setString(1, post.getPostID());
                         ResultSet rs = prep.executeQuery();
-                        rs.next();
-                        if (!this.getKannykka("HENKLO_HTUNNUS")) {
-                            if(rs.getString("HENKLO_HTUNNUS")!=null) {
-                                this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                    } else {
-                        this.updateWorkPhone(personID, phone.getPhoneNumber());
-                        }
-                        /* XXX Raskas operaatio */
+                        while (rs.next()) {
+                            if (!this.findKannykka("HENKLO_HTUNNUS")) {
+                                if(rs.getString("HENKLO_HTUNNUS")!=null) {
+                                    this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
+                                } else {
+                                    this.updateWorkPhone(personID, phone.getPhoneNumber());
+                                }
+                        
+                            }
                         }
                     }
+                        /* XXX Raskas operaatio */    
                         loadRooms();
 
                         loadPhoneNumbers();
-
-                      
-
-                }
-                
+                }         
             } catch (SQLException e) {
             	System.err.println("Tietokantavirhe: " + e.getMessage());
             }
@@ -1737,14 +1738,28 @@ public class NeroDatabase implements NeroObserver {
 	// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
     	System.out.println("done.");
     }
-
     /**
-     * Poistaa työpisteeltä puhelinnumeron
-     *
-     * @param phone Puhelinnumero, jolta poistetaan työpiste
-     * @return Onnistuiko päivitys
+     * palauttaa htunnukseen liittyvän kännykkänumeron
+     * @param htunnus
+     * @return 
      */
-    public boolean getKannykka(String henklo_tunnus) {
+    public String getKannykka(String htunnus) {
+        
+        String prep = "SELECT omistaja FROM KANNYKKA WHERE htunnus = ?";
+        try {        
+            PreparedStatement p = this.connection.prepareStatement(prep);
+            p.setString(1, htunnus);
+            ResultSet rs = p.executeQuery();
+            
+            return rs.getString("omistaja");
+            
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+        return null;
+    
+    }  
+    public boolean findKannykka(String henklo_tunnus) {
         
         String getKannykka = "SELECT htunnus FROM KANNYKKA WHERE htunnus = ?";
         try {
@@ -1753,16 +1768,21 @@ public class NeroDatabase implements NeroObserver {
             ResultSet rs = p.executeQuery();
             
             while (rs.next()) {
-                if (rs.getString("HTUNNUS") != null)
+                if (rs.getString("htunnus") != null)
                         return true;
             }
             
-        } catch (SQLException ex) {
-            Logger.getLogger(NeroDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
         }
         return false;
     }
-    
+    /**
+     * Poistaa työpisteeltä puhelinnumeron
+     *
+     * @param phone Puhelinnumero, jolta poistetaan työpiste
+     * @return Onnistuiko päivitys
+     */
     public boolean removePhoneNumberFromPost(PhoneNumber phone) {
         if (phone.getPost() == null) {
             throw new IllegalArgumentException();
@@ -1792,7 +1812,7 @@ public class NeroDatabase implements NeroObserver {
                 ResultSet rs = prep.executeQuery();
                 while (rs.next()) {
                     //tarkistus tähän, onko tunnuksella kännykkää, jos ei niin päivitä numero tyhjäksi
-                    if (!this.getKannykka(rs.getString("HENKLO_HTUNNUS"))) {
+                    if (!this.findKannykka(rs.getString("HENKLO_HTUNNUS"))) {
                         this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
                     }
 //                    if (phone.getPersonID() != null) {

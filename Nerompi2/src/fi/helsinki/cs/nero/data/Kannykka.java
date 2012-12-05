@@ -15,11 +15,10 @@ public class Kannykka {
     private String omistaja;
     private String puh_id;
 
-    public Kannykka(String htunnus, String phonenumber, String omistaja, String puh_id) {
+    public Kannykka(String htunnus, String phonenumber, String omistaja) {
         this.htunnus = htunnus;
         this.phonenumber = phonenumber;
         this.omistaja = omistaja;
-        this.puh_id = puh_id;
     }
 
     public String getHtunnus() {

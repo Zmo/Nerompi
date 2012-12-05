@@ -1,6 +1,7 @@
 package fi.helsinki.cs.nero.logic;
 
 import fi.helsinki.cs.nero.data.Contract;
+import fi.helsinki.cs.nero.data.Kannykka;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
@@ -979,5 +980,11 @@ public class Session {
 
     public void updatePerson(Person person) throws SQLException {
         db.updatePersonInfo(person);
+    }
+    public void addKannykka(Kannykka kannykka) {
+        db.addKannykka(kannykka);
+    }
+    public String getKannykka(String htunnus) {
+        return db.getKannykka(htunnus);
     }
 }

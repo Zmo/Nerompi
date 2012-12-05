@@ -32,50 +32,52 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel17" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel20" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="kotipuhelinField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                          <Component id="omistajaField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                          <Component id="kannykkaField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="tyopuhelinLabel" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                                  <Component id="titteliField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                                  <Component id="ktunnusField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="etunimiField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                                  <Component id="sukunimiField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                                  <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="postilokeroField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lisaapoistaButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="huoneLabel" min="-2" pref="77" max="-2" attributes="0"/>
-                                  <Component id="aktiivinenButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="tyosuhdeButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="puhelinluettelossaButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="MoreField" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
                       <Component id="saveButton" min="-2" pref="178" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="CancelButton" min="-2" pref="182" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="MoreButton" min="-2" pref="176" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="errorMessageLabel" alignment="0" min="-2" pref="409" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="errorMessageLabel" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel17" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel20" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="kotipuhelinField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                              <Component id="omistajaField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                              <Component id="kannykkaField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="tyopuhelinLabel" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                      <Component id="titteliField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                      <Component id="ktunnusField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                      <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="etunimiField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                      <Component id="sukunimiField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                      <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="postilokeroField" alignment="0" min="-2" pref="179" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lisaapoistaButton" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="huoneLabel" min="-2" pref="77" max="-2" attributes="0"/>
+                                      <Component id="aktiivinenButton" min="-2" max="-2" attributes="0"/>
+                                      <Component id="tyosuhdeButton" min="-2" max="-2" attributes="0"/>
+                                      <Component id="puhelinluettelossaButton" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="MoreField" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
               <EmptySpace pref="180" max="32767" attributes="0"/>
           </Group>
