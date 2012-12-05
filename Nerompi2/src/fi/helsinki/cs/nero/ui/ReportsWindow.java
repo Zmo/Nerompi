@@ -91,7 +91,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         today = new Date();
         people = session.getFilteredPeople();
         session.setFilterActiveEmployees(false);
-        
+        filteredPeople = session.getFilteredPeople();
         initStringVariables();
         initComponents();
         initContainerData();
@@ -356,7 +356,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        restrictByPostRoom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "Sivutoimiset" }));
+        restrictByPostRoom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2", "3", "Sivutoimiset", "Kaikki" }));
         restrictByPostRoom.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 restrictByPostRoomItemStateChanged(evt);
@@ -596,20 +596,24 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void restrictByHasLockerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByHasLockerItemStateChanged
         int index = restrictByHasLocker.getSelectedIndex();
+        String value;
         if (index == 0) {
             // kaikki
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
+            value = "";
+            setRegexFilter(value, postihuone);
         } else if (index == 1) {
             // lokerottomat
-            generalFilter = RowFilter.regexFilter("ei postilokeroa", columnModel.getColumnIndex(postihuone));
+            value = "ei postilokeroa";
+            setRegexFilter(value, postihuone);
         } else if (index == 2) {
-            // lokerolliset
-            RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa", columnModel.getColumnIndex(postihuone));
+            // lokerolliset            
+            RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa", 
+                    convertColumnIndexToModel(columnModel.getColumnIndex(postihuone)));
             generalFilter = RowFilter.notFilter(regexFilter);
+            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+            sorter.setRowFilter(generalFilter);
+            Data.setRowSorter(rowSorter);
         }
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
     /**
@@ -667,17 +671,11 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void restrictByPostRoomItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByPostRoomItemStateChanged
         String room = restrictByPostRoom.getSelectedItem().toString();
-        if (room.isEmpty()) {
+        if (room.isEmpty() || room.equalsIgnoreCase("kaikki")) {
             // kaikki
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(postihuone));
-        } else {
-            // lokeron numero
-            generalFilter = RowFilter.regexFilter(room, Data.getColumnModel().getColumnIndex(postihuone));
-        }
-
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
+            room = "";
+        } 
+        setRegexFilter(room, postihuone);
     }//GEN-LAST:event_restrictByPostRoomItemStateChanged
 
     private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
@@ -685,9 +683,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (value.equals("kaikki")) {
             value = "";
         }
-        generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(siipi));
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
+        setRegexFilter(value, siipi);
     }//GEN-LAST:event_restrictByWingItemStateChanged
 
     private void showWingMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showWingMouseReleased
@@ -714,7 +710,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             people = session.getFilteredPeople();
             initColumnData();
             initColumnNames();
-            initTableView();            
+            initTableView();
         }
     }//GEN-LAST:event_showInActiveMouseReleased
     /**
@@ -1300,7 +1296,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     private void initTableView() {
-        PeopleTableModel peopleModel = new PeopleTableModel(varaus);
+        NeroTableModel peopleModel = new NeroTableModel(varaus);
         peopleModel.setDataVector(tableData, columnNames);
         Data = new JTable(peopleModel);
         columnModel = Data.getColumnModel();
@@ -1318,6 +1314,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         tableContainer.setViewportView(Data);
     }
 
+    // todo: -> show columns (iterable collection)
     private void showInitialColumns() {
         for (String identifier : initiallyHiddenColumns) {
             hideColumn(identifier);
@@ -1331,4 +1328,16 @@ public class ReportsWindow extends javax.swing.JFrame {
             hideColumn(columnName);
         }
     }
+
+    private int convertColumnIndexToModel(int i) {
+        return Data.convertColumnIndexToModel(i);
+    }
+
+    private void setRegexFilter(String regex, String columnName) {
+        generalFilter = RowFilter.regexFilter(regex,
+                convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+    }
+    
 }

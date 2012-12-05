@@ -532,10 +532,11 @@
             <Component class="javax.swing.JComboBox" name="restrictByPostRoom">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="3">
+                  <StringArray count="4">
                     <StringItem index="0" value="2"/>
                     <StringItem index="1" value="3"/>
                     <StringItem index="2" value="Sivutoimiset"/>
+                    <StringItem index="3" value="Kaikki"/>
                   </StringArray>
                 </Property>
               </Properties>

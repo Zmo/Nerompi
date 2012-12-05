@@ -24,7 +24,7 @@ import javax.swing.table.TableColumnModel;
  * 
  * @author lpesola
  */
-public class PeopleTableModel extends DefaultTableModel {
+public class NeroTableModel extends DefaultTableModel {
 
     /**
      * M‰‰ritt‰‰, mink‰niminen column identifier on p‰iv‰m‰‰ri‰ sis‰lt‰v‰ll‰
@@ -34,7 +34,7 @@ public class PeopleTableModel extends DefaultTableModel {
     private TableColumnModel columnModel;
     private JTable table;
 
-    public PeopleTableModel(String identifier) {
+    public NeroTableModel(String identifier) {
         dateColumnIdentifier = identifier;
     }
 
