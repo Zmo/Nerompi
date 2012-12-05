@@ -574,7 +574,6 @@ public class Session {
 
     /**
      * Poistaa varausjakson.
-     *
      * @param reservation poistettava varausjakso
      * @throws IllegalArgumentException jos työpiste on null
      */
@@ -590,6 +589,7 @@ public class Session {
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus poistettu.");
             db.updateRooms();
+            db.deleteRoomFromPerson(reservation.getReservingPerson()); // asd
         } else {
             setStatusMessage("Työpistevarauksen poistaminen epäonnistui.");
         }
@@ -615,7 +615,7 @@ public class Session {
             throw new IllegalArgumentException("sopimus ei saa olla null");
         }
         createReservation(post, contract.getPerson(), contract.getTimeSlice());
-        db.updateRooms();
+        db.addRoomToPerson(contract.getPerson(), post.getRoom()); // asd
     }
 
     /**
@@ -633,7 +633,7 @@ public class Session {
      */
     public void createReservation(Post post, Person person) {
         createReservation(post, person, timescaleSlice);
-        db.addRoomToPerson(person, post.getRoom().getRoomName());
+        db.addRoomToPerson(person, post.getRoom()); // asd
     }
 
     /**
@@ -685,7 +685,7 @@ public class Session {
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus luotu.");
-            db.addRoomToPerson(person, post.getRoom().getRoomName());
+            db.addRoomToPerson(person, post.getRoom()); // asd
         } else {
             setStatusMessage("Työpistevarauksen luonti epäonnistui.");
         }
