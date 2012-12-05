@@ -45,15 +45,6 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-              <Component id="peopleButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="233" max="-2" attributes="0"/>
-              <Component id="roomButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="lockerButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="412" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="saveButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -79,13 +70,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="roomButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="peopleButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lockerButton" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="checkboxContainer" min="-2" max="-2" attributes="0"/>
+              <Component id="checkboxContainer" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="tableContainer" min="-2" pref="636" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -112,8 +97,6 @@
                           <Component id="personAttributes" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="168" max="-2" attributes="0"/>
                           <Component id="roomAttributes" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="338" max="-2" attributes="0"/>
-                          <Component id="lockerAttributes" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace pref="262" max="32767" attributes="0"/>
@@ -125,14 +108,11 @@
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="personAttributes" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="roomAttributes" min="-2" max="-2" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lockerAttributes" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="roomAttributes" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                   <Component id="restrictionsContainer" min="-2" pref="111" max="-2" attributes="0"/>
+                  <EmptySpace pref="21" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -148,8 +128,8 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="showFloor" min="-2" max="-2" attributes="0"/>
                           <Component id="showPostCount" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="showRoomName" min="-2" max="-2" attributes="0"/>
                           <Component id="showWing" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="showLocker" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -165,8 +145,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showPostCount" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="showRoomName" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="showLocker" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -188,20 +168,20 @@
                 <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showWingMouseReleased"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="showRoomName">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Huoneen nimi"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showRoomNameMouseReleased"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JCheckBox" name="showFloor">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Kerros"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showFloorMouseReleased"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="showLocker">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Postilokero"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showLockerMouseReleased"/>
               </Events>
             </Component>
           </SubComponents>
@@ -291,52 +271,6 @@
               </Properties>
               <Events>
                 <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showJobTitleMouseReleased"/>
-              </Events>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="lockerAttributes">
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="showRoom" min="-2" max="-2" attributes="0"/>
-                          <Component id="showPhone2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="showRoom" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="showPhone2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JCheckBox" name="showRoom">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Ty&#xf6;huone"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showRoomMouseReleased"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="showPhone2">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Puhelinnumero"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showPhone2MouseReleased"/>
               </Events>
             </Component>
           </SubComponents>
@@ -614,17 +548,6 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JRadioButton" name="peopleButton">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="viewButtons"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Henkil&#xf6;t"/>
-      </Properties>
-      <Events>
-        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="peopleButtonMouseReleased"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="saveButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Tallenna"/>
@@ -659,28 +582,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JRadioButton" name="lockerButton">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="viewButtons"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Postilokerot"/>
-      </Properties>
-      <Events>
-        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lockerButtonMouseReleased"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JRadioButton" name="roomButton">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="viewButtons"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Huoneet"/>
-      </Properties>
-      <Events>
-        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="roomButtonMouseReleased"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JComboBox" name="fileTypeChooser">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">

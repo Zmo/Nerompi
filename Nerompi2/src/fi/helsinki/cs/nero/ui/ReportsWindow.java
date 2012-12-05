@@ -9,6 +9,7 @@ package fi.helsinki.cs.nero.ui;
  * @see Session
  */
 import fi.helsinki.cs.nero.data.Person;
+import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
@@ -40,30 +41,21 @@ import javax.swing.table.TableRowSorter;
 public class ReportsWindow extends javax.swing.JFrame {
 
     private Session session;
-    private ArrayList<JCheckBox> roomComponents;
-    private ArrayList<JCheckBox> peopleComponents;
-    private ArrayList<JCheckBox> lockerComponents;
-    private TableColumnModel roomColumnModel;
-    private TableColumnModel peopleColumnModel;
-    private TableColumnModel lockerColumnModel;
-    private HashMap<String, IndexedColumn> hiddenRoomColumns;
-    private HashMap<String, IndexedColumn> hiddenPeopleColumns;
-    private HashMap<String, IndexedColumn> hiddenLockerColumns;
-    private Room[] rooms;
+    private ArrayList<String> initialColumns;
+    private ArrayList<JCheckBox> initialComponents;
+    private ArrayList<String> initiallyHiddenColumns;
+    private TableColumnModel columnModel;
+    private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
-    private Vector<Vector<String>> roomData;
-    private Vector<String> roomColumnNames;
-    private Vector<Vector<Object>> peopleData;
-    private Vector<String> peopleColumnNames;
-    private Vector<Vector<String>> lockerData;
-    private Vector<String> lockerColumnNames;
+    private Vector<Vector<Object>> tableData;
+    private Vector<String> columnNames;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
     private ReportWriter printer;
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
-    private String kayttaja, postihuone, puhelinnumero;
-    private String huonenumero, kerros, pisteiden_lkm, siipi;
+    private String postihuone, puhelinnumero;
+    private String kerros, pisteiden_lkm, siipi;
     private String structuredFileType;
     // TODO: pitäisikö olla yksi lista filtereistä ja pitää aina and-filteriä
     //TODO: defaultrowsorter muuttaa saamansa sarakkeen indeksin taulukkomallin indeksiksi
@@ -95,7 +87,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         // testikoodin loppu
 
         today = new Date();
-        rooms = session.getRooms();
         people = session.getFilteredPeople();
         initStringVariables();
         initComponents();
@@ -103,6 +94,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         initModels();
         initColumnData();
         initColumnNames();
+        initTableView();
         this.setVisible(true);
     }
 
@@ -122,17 +114,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomAttributes = new javax.swing.JPanel();
         showPostCount = new javax.swing.JCheckBox();
         showWing = new javax.swing.JCheckBox();
-        showRoomName = new javax.swing.JCheckBox();
         showFloor = new javax.swing.JCheckBox();
+        showLocker = new javax.swing.JCheckBox();
         personAttributes = new javax.swing.JPanel();
         showRoomAndPost = new javax.swing.JCheckBox();
         showEmail = new javax.swing.JCheckBox();
         showReservations = new javax.swing.JCheckBox();
         showPhone = new javax.swing.JCheckBox();
         showJobTitle = new javax.swing.JCheckBox();
-        lockerAttributes = new javax.swing.JPanel();
-        showRoom = new javax.swing.JCheckBox();
-        showPhone2 = new javax.swing.JCheckBox();
         restrictionsContainer = new javax.swing.JPanel();
         wing = new javax.swing.JLabel();
         restrictByWing = new javax.swing.JComboBox();
@@ -152,12 +141,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         restrictByLastDate = new javax.swing.JTextField();
         restrictByPostRoom = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
-        peopleButton = new javax.swing.JRadioButton();
         saveButton = new javax.swing.JButton();
         tableContainer = new javax.swing.JScrollPane();
         Data = new javax.swing.JTable();
-        lockerButton = new javax.swing.JRadioButton();
-        roomButton = new javax.swing.JRadioButton();
         fileTypeChooser = new javax.swing.JComboBox();
 
         fileChooserDialog.setDialogTitle("Tallenna");
@@ -182,17 +168,17 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        showRoomName.setText("Huoneen nimi");
-        showRoomName.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showRoomNameMouseReleased(evt);
-            }
-        });
-
         showFloor.setText("Kerros");
         showFloor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showFloorMouseReleased(evt);
+            }
+        });
+
+        showLocker.setText("Postilokero");
+        showLocker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showLockerMouseReleased(evt);
             }
         });
 
@@ -205,8 +191,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(roomAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(showFloor)
                     .addComponent(showPostCount)
-                    .addComponent(showRoomName)
-                    .addComponent(showWing))
+                    .addComponent(showWing)
+                    .addComponent(showLocker))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         roomAttributesLayout.setVerticalGroup(
@@ -219,8 +205,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showPostCount)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showRoomName)
-                .addContainerGap())
+                .addComponent(showLocker)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         showRoomAndPost.setText(huone);
@@ -285,41 +271,6 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addComponent(showEmail)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showJobTitle)
-                .addContainerGap())
-        );
-
-        showRoom.setText("Työhuone");
-        showRoom.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showRoomMouseReleased(evt);
-            }
-        });
-
-        showPhone2.setText("Puhelinnumero");
-        showPhone2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showPhone2MouseReleased(evt);
-            }
-        });
-
-        javax.swing.GroupLayout lockerAttributesLayout = new javax.swing.GroupLayout(lockerAttributes);
-        lockerAttributes.setLayout(lockerAttributesLayout);
-        lockerAttributesLayout.setHorizontalGroup(
-            lockerAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(lockerAttributesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(lockerAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showRoom)
-                    .addComponent(showPhone2))
-                .addContainerGap())
-        );
-        lockerAttributesLayout.setVerticalGroup(
-            lockerAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(lockerAttributesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(showRoom)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showPhone2)
                 .addContainerGap())
         );
 
@@ -510,9 +461,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     .addGroup(checkboxContainerLayout.createSequentialGroup()
                         .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(168, 168, 168)
-                        .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(338, 338, 338)
-                        .addComponent(lockerAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(262, Short.MAX_VALUE))
         );
         checkboxContainerLayout.setVerticalGroup(
@@ -520,21 +469,11 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(checkboxContainerLayout.createSequentialGroup()
                 .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(checkboxContainerLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lockerAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38)
-                .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
-
-        viewButtons.add(peopleButton);
-        peopleButton.setText("Henkilöt");
-        peopleButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                peopleButtonMouseReleased(evt);
-            }
-        });
 
         saveButton.setText("Tallenna");
         saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -560,36 +499,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSelectionAllowed(false);
         tableContainer.setViewportView(Data);
 
-        viewButtons.add(lockerButton);
-        lockerButton.setText("Postilokerot");
-        lockerButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                lockerButtonMouseReleased(evt);
-            }
-        });
-
-        viewButtons.add(roomButton);
-        roomButton.setText("Huoneet");
-        roomButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                roomButtonMouseReleased(evt);
-            }
-        });
-
         fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "ODS" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(peopleButton)
-                .addGap(233, 233, 233)
-                .addComponent(roomButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lockerButton)
-                .addGap(412, 412, 412))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(saveButton)
@@ -610,12 +525,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(roomButton)
-                    .addComponent(peopleButton)
-                    .addComponent(lockerButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(checkboxContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -630,96 +540,35 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showPostCountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPostCountActionPerformed
         if (showPostCount.isSelected()) {
-            showColumn("Työpisteiden lkm", roomColumnModel, hiddenRoomColumns);
+            showColumn("Työpisteiden lkm");
         } else {
-            hideColumn("Työpisteiden lkm", roomColumnModel, hiddenRoomColumns);
+            hideColumn("Työpisteiden lkm");
         }
     }//GEN-LAST:event_showPostCountActionPerformed
 
-    private void roomButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomButtonMouseReleased
-        Data = new JTable(roomData, roomColumnNames);
-        Data.setAutoCreateColumnsFromModel(false);
-        roomColumnModel = Data.getColumnModel();
-        setSelected(roomComponents);
-        addSorter();
-        tableContainer.setViewportView(Data);
-    }//GEN-LAST:event_roomButtonMouseReleased
-
-    private void peopleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peopleButtonMouseReleased
-        PeopleTableModel peopleModel = new PeopleTableModel(varaus);
-        peopleModel.setDataVector(peopleData, peopleColumnNames);
-        Data = new JTable(peopleModel);
-        peopleColumnModel = Data.getColumnModel();
-        peopleModel.setColumnModel(peopleColumnModel);
-        Data.setAutoCreateColumnsFromModel(false);
-        peopleModel.setTable(Data);
-
-        // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
-        // jotta se voidaan esittää lyhyessä muodossa
-        TableCellRenderer renderer = new DateCellRenderer();
-        peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
-        setSelected(peopleComponents);
-        addSorter();
-        tableContainer.setViewportView(Data);
-    }//GEN-LAST:event_peopleButtonMouseReleased
-
-    private void lockerButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lockerButtonMouseReleased
-        Data = new JTable(lockerData, lockerColumnNames);
-        Data.setAutoCreateColumnsFromModel(false);
-        lockerColumnModel = Data.getColumnModel();
-        setSelected(lockerComponents);
-        addSorter();
-        tableContainer.setViewportView(Data);
-
-    }//GEN-LAST:event_lockerButtonMouseReleased
-
-    private void showRoomNameMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomNameMouseReleased
-        if (showRoomName.isSelected()) {
-            showColumn(nimi, roomColumnModel, hiddenRoomColumns);
-        } else {
-            hideColumn(nimi, roomColumnModel, hiddenRoomColumns);
-        }
-    }//GEN-LAST:event_showRoomNameMouseReleased
-
     private void showReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showReservationsMouseReleased
         if (showReservations.isSelected()) {
-            showColumn(varaus, peopleColumnModel, hiddenPeopleColumns);
+            showColumn(varaus);
         } else {
-            hideColumn(varaus, peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(varaus);
         }
     }//GEN-LAST:event_showReservationsMouseReleased
 
     private void showFloorMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showFloorMouseReleased
         if (showFloor.isSelected()) {
-            showColumn("Kerros", roomColumnModel, hiddenRoomColumns);
+            showColumn(kerros);
         } else {
-            hideColumn("Kerros", roomColumnModel, hiddenRoomColumns);
+            hideColumn(kerros);
         }
     }//GEN-LAST:event_showFloorMouseReleased
 
     private void showRoomAndPostMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomAndPostMouseReleased
         if (showRoomAndPost.isSelected()) {
-            showColumn(huone, peopleColumnModel, hiddenPeopleColumns);
+            showColumn(huone);
         } else {
-            hideColumn(huone, peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(huone);
         }
     }//GEN-LAST:event_showRoomAndPostMouseReleased
-
-    private void showRoomMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomMouseReleased
-        if (showRoom.isSelected()) {
-            showColumn(huone, lockerColumnModel, hiddenLockerColumns);
-        } else {
-            hideColumn(huone, lockerColumnModel, hiddenLockerColumns);
-        }
-    }//GEN-LAST:event_showRoomMouseReleased
-
-    private void showPhone2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPhone2MouseReleased
-        if (showPhone2.isSelected()) {
-            showColumn(puhelinnumero, lockerColumnModel, hiddenLockerColumns);
-        } else {
-            hideColumn(puhelinnumero, lockerColumnModel, hiddenLockerColumns);
-        }
-    }//GEN-LAST:event_showPhone2MouseReleased
 
     private void floorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_floorDropdownItemStateChanged
         String value = floorDropdown.getSelectedItem().toString();
@@ -788,9 +637,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showJobTitleMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showJobTitleMouseReleased
         if (showJobTitle.isSelected()) {
-            showColumn(nimike, peopleColumnModel, hiddenPeopleColumns);
+            showColumn(nimike);
         } else {
-            hideColumn(nimike, peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(nimike);
         }
     }//GEN-LAST:event_showJobTitleMouseReleased
 
@@ -810,9 +659,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showEmailMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showEmailMouseReleased
         if (showEmail.isSelected()) {
-            showColumn(sposti, peopleColumnModel, hiddenPeopleColumns);
+            showColumn(sposti);
         } else {
-            hideColumn(sposti, peopleColumnModel, hiddenPeopleColumns);
+            hideColumn(sposti);
         }
     }//GEN-LAST:event_showEmailMouseReleased
 
@@ -851,24 +700,32 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showWingMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showWingMouseReleased
         if (showWing.isSelected()) {
-            showColumn(siipi, roomColumnModel, hiddenRoomColumns);
+            showColumn(siipi);
         } else {
-            hideColumn(siipi, roomColumnModel, hiddenRoomColumns);
+            hideColumn(siipi);
         }
 
     }//GEN-LAST:event_showWingMouseReleased
 
     private void showPhoneMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPhoneMouseReleased
         if (showPhone.isSelected()) {
-            showColumn(puhelinnumero, peopleColumnModel, hiddenPeopleColumns);
+            showColumn(puhelinnumero);
         } else {
-            hideColumn(puhelinnumero, peopleColumnModel, hiddenPeopleColumns);
-        }    
+            hideColumn(puhelinnumero);
+        }
     }//GEN-LAST:event_showPhoneMouseReleased
-/**
- * @param args the command line arguments
- */
-public static void main(String args[]) {
+
+    private void showLockerMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showLockerMouseReleased
+        if (showLocker.isSelected()) {
+            showColumn(postihuone);
+        } else {
+            hideColumn(postihuone);
+        }
+    }//GEN-LAST:event_showLockerMouseReleased
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -879,49 +736,27 @@ public static void main(String args[]) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
-
-                
-
-
-
-}
+                }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
-
-
-
-catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
-
-
-
-catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } 
-
-
-
-catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReportsWindow.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ReportsWindow.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
-        public void run() {
+            public void run() {
                 new ReportsWindow().setVisible(true);
             }
         });
@@ -941,10 +776,7 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private net.sourceforge.jcalendarbutton.JCalendarButton lastCalendar;
-    private javax.swing.JPanel lockerAttributes;
-    private javax.swing.JRadioButton lockerButton;
     private javax.swing.JOptionPane overwriteCheck;
-    private javax.swing.JRadioButton peopleButton;
     private javax.swing.JPanel personAttributes;
     private javax.swing.JLabel rajauksetHeader;
     private javax.swing.JTextField restrictByFirstDate;
@@ -955,18 +787,15 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
     private javax.swing.JComboBox restrictByWing;
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JPanel roomAttributes;
-    private javax.swing.JRadioButton roomButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JCheckBox showEmail;
     private javax.swing.JCheckBox showFloor;
     private javax.swing.JCheckBox showJobTitle;
+    private javax.swing.JCheckBox showLocker;
     private javax.swing.JCheckBox showPhone;
-    private javax.swing.JCheckBox showPhone2;
     private javax.swing.JCheckBox showPostCount;
     private javax.swing.JCheckBox showReservations;
-    private javax.swing.JCheckBox showRoom;
     private javax.swing.JCheckBox showRoomAndPost;
-    private javax.swing.JCheckBox showRoomName;
     private javax.swing.JCheckBox showWing;
     private javax.swing.JScrollPane tableContainer;
     private javax.swing.ButtonGroup viewButtons;
@@ -979,26 +808,30 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
      */
     private void initContainerData() {
 
-        /* Checkboxes for rooms view report*/
-        roomComponents = new ArrayList<>();
-        roomComponents.add(showPostCount);
-        roomComponents.add(showFloor);
-        roomComponents.add(showWing);
-        roomComponents.add(showRoomName);
+        /* sarakkeet, jotka näytetään oletusarvoisesti */
+        initialColumns = new ArrayList<>();
+        initialColumns.add(nimi);
+        initialColumns.add(nimike);
+        initialColumns.add(huone);
+        initialColumns.add(varaus);
 
-        /*Components for people view report*/
-        peopleComponents = new ArrayList<>();
-        peopleComponents.add(showEmail);
-        peopleComponents.add(showPhone);
-        peopleComponents.add(showRoomAndPost);
-        peopleComponents.add(showReservations);
-        peopleComponents.add(showJobTitle);
 
-        /*Components for post locker report*/
-        lockerComponents = new ArrayList<>();
-        lockerComponents.add(showRoom);
-        //TODO: vaihda tuo muuttujanimi...
-        lockerComponents.add(showPhone2);
+        /* ne checkboxit, jotka ovat valittuna oletusarvoisesti */
+        initialComponents = new ArrayList<>();
+        initialComponents.add(showRoomAndPost);
+        initialComponents.add(showReservations);
+        initialComponents.add(showJobTitle);
+
+        /* ne sarakkeet, jotka ovat aluksi piilossa */
+        initiallyHiddenColumns = new ArrayList<>();
+        initiallyHiddenColumns.add(kerros);
+
+        initiallyHiddenColumns.add(siipi);
+        initiallyHiddenColumns.add(pisteiden_lkm);
+
+        initiallyHiddenColumns.add(sposti);
+        initiallyHiddenColumns.add(puhelinnumero);
+        initiallyHiddenColumns.add(postihuone);
 
     }
 
@@ -1008,9 +841,7 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
     private void initModels() {
 
         /*ColumnModels for different views*/
-        hiddenRoomColumns = new HashMap<>();
-        hiddenPeopleColumns = new HashMap<>();
-        hiddenLockerColumns = new HashMap<>();
+        hiddenColumns = new HashMap<>();
 
         /*Dropdown menu models - currently not used*/
         wingsModel = new DefaultComboBoxModel();
@@ -1032,49 +863,50 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
     private void initColumnData() {
         //TODO: erota nimet ja identifierit toisistaan, ettei tule skandiongelmia?
 
-        // huone-tarkastelun data ja sarakkeet
-        roomData = new Vector<>();
-        for (int i = 0; i < rooms.length; i++) {
-            Vector<String> v = new Vector<>();
-            v.add(rooms[i].getRoomNumber().toString());
-            v.add(rooms[i].getFloor().toString());
-            v.add(new Integer(rooms[i].getPosts().length).toString());
-            v.add(rooms[i].getRoomName());
-            v.add(rooms[i].getWing());
-            roomData.add(i, v);
-        }
+        tableData = new Vector<>();
 
-
-        // henkilö-tarkastelun data ja sarakkeet
-        // laitetaan samalla data myös postilokero-näkymän dataan
-        peopleData = new Vector<>();
-        lockerData = new Vector<>();
         for (int i = 0; i < people.length; i++) {
-            Vector<Object> peopleRow = new Vector<>();
-            Vector<String> lockerRow = new Vector<>();
-            lockerRow.add(people[i].getName());
-            if (people[i].getPostilokeroHuone() == null) {
-                lockerRow.add("ei postilokeroa");
-            } else {
-                lockerRow.add(people[i].getPostilokeroHuone());
-            }
-            lockerRow.add(people[i].getRoom());
-            lockerRow.add(people[i].getWorkPhone());
-            lockerRow.add(people[i].getTitteli());
-            lockerRow.add(people[i].getSahkoposti());
-            peopleRow.add(people[i].getName());
-            peopleRow.add(people[i].getRoom());
-            if (people[i].getReservationForRoom(people[i].getRoom()) == null) {
-                peopleRow.add(null);
-            } else {
-                peopleRow.add(people[i].getReservationForRoom(people[i].getRoom()).getLastDay());
-            }
-            peopleRow.add(people[i].getTitteli());
-            peopleRow.add(people[i].getSahkoposti());
-            peopleRow.add(people[i].getWorkPhone());
+            Vector<Object> row = new Vector<>();
 
-            peopleData.add(i, peopleRow);
-            lockerData.add(i, lockerRow);
+            row.add(people[i].getName());
+            row.add(people[i].getTitteli());
+            String roomName = people[i].getRoom();
+            Reservation reservation = people[i].getReservationForRoom(roomName);
+            // jos varausta ei ole, näytetään vain huonenumero
+            // muuten näytetään myös työpisteen numero
+            if (reservation == null) {
+                row.add(roomName);
+            } else {
+                row.add(reservation.getTargetPost().toString());
+            }
+
+            try {
+                Room room = reservation.getTargetPost().getRoom();
+                row.add(room.getFloor().toString());
+                row.add(room.getWing());
+                row.add(new Integer(room.getPosts().length).toString());
+            } catch (NullPointerException ex) {
+                row.add(null);
+                row.add(null);
+                row.add(null);
+            }
+            // näytetään tämänhetkisen huoneen varauksen päättymispäivä,
+            // jos henkilöllä on jokin voimassaoleva varaus tähän huoneeseen
+            if (reservation == null) {
+                row.add(null);
+            } else {
+                row.add(reservation.getLastDay());
+            }
+            row.add(people[i].getSahkoposti());
+            row.add(people[i].getWorkPhone());
+
+            if (people[i].getPostilokeroHuone() == null) {
+                row.add("ei postilokeroa");
+            } else {
+                row.add(people[i].getPostilokeroHuone());
+            }
+
+            tableData.add(i, row);
         }
     }
 
@@ -1083,26 +915,20 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
      */
     private void initColumnNames() {
 
-        roomColumnNames = new Vector<>();
-        roomColumnNames.add(huonenumero);
-        roomColumnNames.add(kerros);
-        roomColumnNames.add(pisteiden_lkm);
-        roomColumnNames.add(nimi);
-        roomColumnNames.add(siipi);
+        columnNames = new Vector<>();
+        columnNames.add(nimi);
+        columnNames.add(nimike);
+        columnNames.add(huone);
 
-        peopleColumnNames = new Vector<>();
-        peopleColumnNames.add(nimi);
-        peopleColumnNames.add(huone);
-        peopleColumnNames.add(varaus);
-        peopleColumnNames.add(nimike);
-        peopleColumnNames.add(sposti);
-        peopleColumnNames.add(puhelinnumero);
+        columnNames.add(kerros);
+        columnNames.add(siipi);
+        columnNames.add(pisteiden_lkm);
+        columnNames.add(varaus);
 
-        lockerColumnNames = new Vector<>();
-        lockerColumnNames.add(kayttaja);
-        lockerColumnNames.add(postihuone);
-        lockerColumnNames.add(huone);
-        lockerColumnNames.add(puhelinnumero);
+        columnNames.add(sposti);
+        columnNames.add(puhelinnumero);
+        columnNames.add(postihuone);
+
     }
 
     /**
@@ -1116,15 +942,14 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
      * @param hiddenColumns map, josta piilotettu sarake haetaan
      * @see IndexedColumn
      */
-    private void showColumn(String name, TableColumnModel model,
-            HashMap<String, IndexedColumn> hiddenColumns) {
+    private void showColumn(String name) {
 
         IndexedColumn column = hiddenColumns.remove(name);
         if (column != null) {
-            model.addColumn(column.getTableColumn());
-            int lastColumn = model.getColumnCount() - 1;
+            columnModel.addColumn(column.getTableColumn());
+            int lastColumn = columnModel.getColumnCount() - 1;
             if (column.getIndex() < lastColumn) {
-                model.moveColumn(lastColumn, column.getIndex());
+                columnModel.moveColumn(lastColumn, column.getIndex());
             }
         }
     }
@@ -1142,19 +967,18 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
      * @param hiddenColumns map, johon piilotettava sarake laitetaan talteen
      * @see IndexedColumn
      */
-    private void hideColumn(String name, TableColumnModel model,
-            HashMap<String, IndexedColumn> hiddenColumns) {
+    private void hideColumn(String name) {
 
-        int index = model.getColumnIndex(name);
-        TableColumn column = model.getColumn(index);
+        int index = columnModel.getColumnIndex(name);
+        TableColumn column = columnModel.getColumn(index);
         IndexedColumn indexedColumn = new IndexedColumn(index, column);
         hiddenColumns.put(name, indexedColumn);
-        model.removeColumn(column);
+        columnModel.removeColumn(column);
     }
 
     /**
      * Asettaa kaikkien saamiensa checboxien tilaksi selected.
-     * 
+     *
      * @param components, lista komponenteista, joiden tila muutetaan
      */
     private void setSelected(ArrayList<JCheckBox> components) {
@@ -1290,13 +1114,13 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
     }
 
     /**
-     * Luo filterin, joka testaa useampaa ehtoa ja jota voidaan käyttää
-     * GUIn taulukossa olevan datan rajaamiseen. Luodaan kaksi Date-pohjaista
+     * Luo filterin, joka testaa useampaa ehtoa ja jota voidaan käyttää GUIn
+     * taulukossa olevan datan rajaamiseen. Luodaan kaksi Date-pohjaista
      * filteriä. Vain molempien ehdot täyttävät rivit taulukossa näytetään.
-     * 
+     *
      * @param first alkupäivämäärä
      * @param last loppupäivämäärä
-     * @return filteri, joka hyväksyy vain arvot, jotka sijoittuvat parametreina 
+     * @return filteri, joka hyväksyy vain arvot, jotka sijoittuvat parametreina
      * saatujen päivämäärien välille
      * @see setDateRestriction(first, last)
      */
@@ -1338,13 +1162,11 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
         sposti = "Sähköposti";
 
         // huone
-        huonenumero = "Huoneen nro";
         kerros = "Kerros";
         pisteiden_lkm = "Työpisteiden lkm";
         siipi = "Siipi";
 
         // postilokero    
-        kayttaja = "Käyttäjä";
         postihuone = "Postihuone";
         puhelinnumero = "Puhelinnumero";
 
@@ -1469,23 +1291,41 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
                 String value;
                 if (o == null) {
                     value = "";
-                
-
-
-
-} else if (o.getClass() == Date.class  
-
-    ) {
-                    value  = dateToShortString((Date) o);
-}
-else {
+                } else if (o.getClass() == Date.class) {
+                    value = dateToShortString((Date) o);
+                } else {
                     value = o.toString();
                 }
                 rowList.add(j, value);
-
             }
             list.add(rowList);
         }
         return list;
+    }
+
+    private void initTableView() {
+        PeopleTableModel peopleModel = new PeopleTableModel(varaus);
+        peopleModel.setDataVector(tableData, columnNames);
+        Data = new JTable(peopleModel);
+        columnModel = Data.getColumnModel();
+        peopleModel.setColumnModel(columnModel);
+        Data.setAutoCreateColumnsFromModel(false);
+        peopleModel.setTable(Data);
+
+        // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
+        // jotta se voidaan esittää lyhyessä muodossa
+        TableCellRenderer renderer = new DateCellRenderer();
+        columnModel.getColumn(columnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
+        setSelected(initialComponents);
+        showInitialColumns();
+        addSorter();
+        tableContainer.setViewportView(Data);
+    }
+
+    private void showInitialColumns() {
+        for (String identifier : initiallyHiddenColumns) {
+            hideColumn(identifier);
+        }
+
     }
 }
