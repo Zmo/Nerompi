@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 import fi.helsinki.cs.nero.logic.Session;
-import javax.swing.JButton;
 
 public class ButtonListener implements ActionListener {
 

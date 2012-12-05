@@ -575,7 +575,6 @@ public class Session {
 
     /**
      * Poistaa varausjakson.
-     *
      * @param reservation poistettava varausjakso
      * @throws IllegalArgumentException jos työpiste on null
      */
@@ -591,6 +590,7 @@ public class Session {
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus poistettu.");
             db.updateRooms();
+            db.deleteRoomFromPerson(reservation.getReservingPerson()); // asd
         } else {
             setStatusMessage("Työpistevarauksen poistaminen epäonnistui.");
         }
@@ -616,7 +616,7 @@ public class Session {
             throw new IllegalArgumentException("sopimus ei saa olla null");
         }
         createReservation(post, contract.getPerson(), contract.getTimeSlice());
-        db.updateRooms();
+        db.addRoomToPerson(contract.getPerson(), post.getRoom()); // asd
     }
 
     /**
@@ -634,7 +634,7 @@ public class Session {
      */
     public void createReservation(Post post, Person person) {
         createReservation(post, person, timescaleSlice);
-        db.addRoomToPerson(person, post.getRoom().getRoomName());
+        db.addRoomToPerson(person, post.getRoom()); // asd
     }
 
     /**
@@ -686,7 +686,7 @@ public class Session {
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus luotu.");
-            db.addRoomToPerson(person, post.getRoom().getRoomName());
+            db.addRoomToPerson(person, post.getRoom()); // asd
         } else {
             setStatusMessage("Työpistevarauksen luonti epäonnistui.");
         }
@@ -720,7 +720,7 @@ public class Session {
         if (this.activeRoom == null) {
             throw new IllegalArgumentException();
         }
-        Post newPost = new Post(this, null, this.activeRoom, 0);
+        Post newPost = new Post(this, null, this.activeRoom, 0, new Date());
         if (db.createPost(newPost)) {
             switchActiveRoom();
             // nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille
@@ -925,15 +925,23 @@ public class Session {
         return this.cursortype;
     }
 
-    public RoomKeyReservation[] getRoomKeyReservations() {
-        return db.getRoomKeyReservations(activeRoom);
+    public RoomKeyReservation[] getRoomKeyReservations(Room room) {
+        return db.getRoomKeyReservations(room);
     }
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
         RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
+        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(uusiVaraus);
+        if (etsittyVaraus == null){
+            System.out.println("Ongelmia Session.addRoomKeyReservationissa - huonetta ei löydy tietokannasta");
+        }
+        else {
+            
+            uusiVaraus = etsittyVaraus;
+        }
         this.activeRoom.addRoomKeyReservation(uusiVaraus);
         person.addRoomKeyReservation(uusiVaraus);
-        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
@@ -945,12 +953,25 @@ public class Session {
         person.deleteRoomKeyReservation(roomKeyReservation);
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
-        this.updatePerson(person);
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.modifyRoomKeyReservation(roomKeyReservation);
     }
+
+    
+    public RoomKeyReservation findMatchingRoomKeyReservation(RoomKeyReservation roomKeyReservation){
+        RoomKeyReservation[] varaukset = this.getRoomKeyReservations(roomKeyReservation.getTargetRoom());
+        for (RoomKeyReservation reservation : varaukset) {
+            if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
+                    && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
+                    && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
+                return reservation;
+            }
+        }
+        return null;
+    }
+    
     /* Kuuntelijoihin liittyvät operaatiot */
 
     /**

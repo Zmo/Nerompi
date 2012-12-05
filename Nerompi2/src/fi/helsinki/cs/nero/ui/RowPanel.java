@@ -2,7 +2,6 @@ package fi.helsinki.cs.nero.ui;
 
 import java.awt.Dimension;
 import java.util.LinkedList;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 

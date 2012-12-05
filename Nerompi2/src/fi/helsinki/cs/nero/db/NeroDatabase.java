@@ -21,7 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -257,7 +255,7 @@ public class NeroDatabase implements NeroObserver {
                      + " WHERE rhuone_id = ? AND puh.tp_id = tp.id"
                      + " ORDER BY tp.id, puh.puhelinnumero");
                      */
-                    "SELECT id FROM TYOPISTE WHERE rhuone_id = ? ORDER BY id");
+                    "SELECT id, lisayspvm FROM TYOPISTE WHERE rhuone_id = ? ORDER BY id");
         }
         if (this.prepPostPhoneNumbers == null) {
             this.prepPostPhoneNumbers = this.connection.prepareStatement(
@@ -287,7 +285,7 @@ public class NeroDatabase implements NeroObserver {
             this.prepAllPosts.setString(1, rs.getString("id"));
             ResultSet prs = this.prepAllPosts.executeQuery();
             while (prs.next()) {
-                Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size() + 1);
+                Post post = new Post(this.session, prs.getString("id"), room, roomPosts.size() + 1, prs.getDate("lisayspvm"));
 
                 /* haetaan puhelinnumerot (hidas, kolme sisï¿½kkï¿½istï¿½ prepared statementia
                  * mutta olkoot. */
@@ -677,8 +675,7 @@ public class NeroDatabase implements NeroObserver {
                 this.prepDeleteReservation = this.connection.prepareStatement(
                         "DELETE FROM TYOPISTEVARAUS WHERE id = ?");
             }
-            this.prepDeleteReservation.setString(1,
-                    reservation.getReservationID());
+            this.prepDeleteReservation.setString(1, reservation.getReservationID());
             int deletedRows = this.prepDeleteReservation.executeUpdate();
             if (deletedRows > 0) {
                 success = true;
@@ -687,7 +684,7 @@ public class NeroDatabase implements NeroObserver {
             System.err.println("Tietokantavirhe: " + e.getMessage());
         }
 
-        // poistetaan henkilï¿½n tiedot jotka ovat nyt vanhentuneet
+        // poistetaan henkilön tiedot jotka ovat nyt vanhentuneet
         people.remove(reservation.getReservingPerson().getPersonID());
         this.session.waitState(false);
         return success;
@@ -1151,7 +1148,7 @@ public class NeroDatabase implements NeroObserver {
      * @param room Lisättävän huoneen nimi
      * @return Onnistuiko lisääminen
      */
-    public boolean addRoomToPerson(Person person, String room) {
+    public boolean addRoomToPerson(Person person, Room room) {
         if (person.getRoom() != null) {
             this.removeRoomFromPerson(person);
         }
@@ -1160,10 +1157,10 @@ public class NeroDatabase implements NeroObserver {
                 + " where HTUNNUS=?";
         try {
             PreparedStatement prep = this.connection.prepareStatement(sqlQuery);
-            prep.setString(1, room);
+            prep.setString(1, room.getRoomName());
             prep.setString(2, person.getPersonID());
             prep.executeQuery();
-            person.setRoom(room);
+            person.setRoom(room.getRoomName());
             return true;
         } catch (SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
@@ -1286,6 +1283,18 @@ public class NeroDatabase implements NeroObserver {
                 prep.executeQuery();
             }
         } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+    }
+    
+    public void deleteRoomFromPerson(Person person) {
+        String updateQuery="update henkilo set huone_nro=null where htunnus=?";
+        
+        try {
+            PreparedStatement prep = this.connection.prepareStatement(updateQuery);
+            prep.setString(1, person.getPersonID());
+            prep.executeUpdate();
+        } catch(SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
         }
     }
@@ -1503,22 +1512,18 @@ public class NeroDatabase implements NeroObserver {
                 + " FROM HUONEVARAUS"
                 + " WHERE RHUONE_ID=?";
 
-        RoomKeyReservation[] reservations;
         try {
             PreparedStatement prep = this.connection.prepareStatement(sqlquery);
             prep.setString(1, room.getRoomID());
             ResultSet rs = prep.executeQuery();
-            rs.last();
-            int size = rs.getRow();
-            reservations = new RoomKeyReservation[size];
-            rs.beforeFirst();
-            for (int i = 0; i < size; ++i) {
-                rs.next();
+            ArrayList<RoomKeyReservation> arrayList = new ArrayList();
+            while(rs.next()) {
                 TimeSlice timeslice = new TimeSlice(rs.getDate("ALKUPVM"), rs.getDate("LOPPUPVM"));
                 Person person = (Person) people.get(rs.getString("HTUNNUS"));
-                reservations[i] = new RoomKeyReservation(rs.getInt("ID"), (Room) rooms.get(rs.getString("RHUONE_ID")), person.getPersonID(), person.getName(), timeslice, this.session);
+                arrayList.add(new RoomKeyReservation(rs.getInt("ID"), (Room) rooms.get(rs.getString("RHUONE_ID")), person.getPersonID(), person.getName(), timeslice, this.session));
             }
-            return reservations;
+            RoomKeyReservation[] temp = new RoomKeyReservation[0];
+            return arrayList.toArray(temp);
         } catch (SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
             return null;
