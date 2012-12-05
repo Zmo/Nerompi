@@ -952,7 +952,6 @@ public class Session {
         person.deleteRoomKeyReservation(roomKeyReservation);
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
-        this.updatePerson(person);
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
@@ -962,17 +961,11 @@ public class Session {
     
     public RoomKeyReservation findMatchingRoomKeyReservation(RoomKeyReservation roomKeyReservation){
         RoomKeyReservation[] varaukset = this.getRoomKeyReservations(roomKeyReservation.getTargetRoom());
-        for (RoomKeyReservation reservation : varaukset){
-            if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())){
-                System.out.println(" Samanniminen löytyi! Kato vaikka: " + roomKeyReservation.getReservationID() + ": \t" + roomKeyReservation.getReserverName() + " - " + roomKeyReservation.getTimeSlice().getSQLStartDate() +
-                                 "\n                                   " + reservation.getReservationID() + ": \t" +reservation.getReserverName() +        " - " + reservation.getTimeSlice().getStartDate());
-                if ((reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0) &&
-                        (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)){
-                    return reservation;
-                }
-                else {
-                    System.out.println("Virhe: ");
-                }
+        for (RoomKeyReservation reservation : varaukset) {
+            if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
+                    && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
+                    && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
+                return reservation;
             }
         }
         return null;
