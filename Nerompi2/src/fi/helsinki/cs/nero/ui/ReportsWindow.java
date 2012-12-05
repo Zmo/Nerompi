@@ -66,6 +66,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String huonenumero, kerros, pisteiden_lkm, siipi;
     private String structuredFileType;
     // TODO: pitäisikö olla yksi lista filtereistä ja pitää aina and-filteriä
+    //TODO: defaultrowsorter muuttaa saamansa sarakkeen indeksin taulukkomallin indeksiksi
+    // tämä sotkee, jos yritetään järjestää sarakkeita kun jotkin sarakkeista eivät ole 
+    // näkyvissä -> pitäisi jotenkin kiertää tämä
     // ja laittaa listaan aina uusi filteri -> voi filteröidä kaikilla rajoittimilla
     //testi
     // combobox models not used yet
@@ -242,6 +245,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showPhone.setText(puhelinnumero);
+        showPhone.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showPhoneMouseReleased(evt);
+            }
+        });
 
         showJobTitle.setText(nimike);
         showJobTitle.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -833,7 +841,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
         String value = restrictByWing.getSelectedItem().toString();
-        if(value.equals("kaikki")){
+        if (value.equals("kaikki")) {
             value = "";
         }
         generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(siipi));
@@ -847,8 +855,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else {
             hideColumn(siipi, roomColumnModel, hiddenRoomColumns);
         }
-    
+
     }//GEN-LAST:event_showWingMouseReleased
+
+    private void showPhoneMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPhoneMouseReleased
+        if (showPhone.isSelected()) {
+            showColumn(puhelinnumero, peopleColumnModel, hiddenPeopleColumns);
+        } else {
+            hideColumn(puhelinnumero, peopleColumnModel, hiddenPeopleColumns);
+        }    
+    }//GEN-LAST:event_showPhoneMouseReleased
 /**
  * @param args the command line arguments
  */
@@ -867,6 +883,8 @@ public static void main(String args[]) {
 
                 
 
+
+
 }
             }
         } catch (ClassNotFoundException ex) {
@@ -875,17 +893,23 @@ public static void main(String args[]) {
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } 
 
+
+
 catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(ReportsWindow.class  
 
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } 
 
+
+
 catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(ReportsWindow.class  
 
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } 
+
+
 
 catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ReportsWindow.class  
@@ -1047,6 +1071,8 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
             }
             peopleRow.add(people[i].getTitteli());
             peopleRow.add(people[i].getSahkoposti());
+            peopleRow.add(people[i].getWorkPhone());
+
             peopleData.add(i, peopleRow);
             lockerData.add(i, lockerRow);
         }
@@ -1070,6 +1096,7 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
         peopleColumnNames.add(varaus);
         peopleColumnNames.add(nimike);
         peopleColumnNames.add(sposti);
+        peopleColumnNames.add(puhelinnumero);
 
         lockerColumnNames = new Vector<>();
         lockerColumnNames.add(kayttaja);
@@ -1443,6 +1470,8 @@ catch (javax.swing.UnsupportedLookAndFeelException ex) {
                 if (o == null) {
                     value = "";
                 
+
+
 
 } else if (o.getClass() == Date.class  
 
