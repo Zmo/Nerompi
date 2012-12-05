@@ -279,6 +279,9 @@
                   <Connection code="puhelinnumero" type="code"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showPhoneMouseReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="showJobTitle">
               <Properties>
