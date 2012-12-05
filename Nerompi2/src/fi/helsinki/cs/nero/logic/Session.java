@@ -936,12 +936,11 @@ public class Session {
             System.out.println("Ongelmia Session.addRoomKeyReservationissa - huonetta ei löydy tietokannasta");
         }
         else {
+            
             uusiVaraus = etsittyVaraus;
         }
-        System.out.println(" - - - - - " + uusiVaraus.getReservationID());
         this.activeRoom.addRoomKeyReservation(uusiVaraus);
         person.addRoomKeyReservation(uusiVaraus);
-        // db.addRoomKeyReservation(this.activeRoom, person, timeslice);
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
@@ -957,13 +956,7 @@ public class Session {
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
-        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(roomKeyReservation);
-        if (etsittyVaraus == null){
-            System.out.println("Ongelmia Session.modifyRoomKeyReservationissa - huonetta ei löydy tietokannasta");
-        }
-        else {
-             this.db.modifyRoomKeyReservation(etsittyVaraus);
-        }
+        this.db.modifyRoomKeyReservation(roomKeyReservation);
     }
 
     
