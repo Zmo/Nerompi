@@ -1,6 +1,7 @@
 package fi.helsinki.cs.nero.logic;
 
 import fi.helsinki.cs.nero.data.Contract;
+import fi.helsinki.cs.nero.data.Kannykka;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
@@ -928,15 +929,23 @@ public class Session {
         return this.cursortype;
     }
 
-    public RoomKeyReservation[] getRoomKeyReservations() {
-        return db.getRoomKeyReservations(activeRoom);
+    public RoomKeyReservation[] getRoomKeyReservations(Room room) {
+        return db.getRoomKeyReservations(room);
     }
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
         RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
+        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(uusiVaraus);
+        if (etsittyVaraus == null){
+            System.out.println("Ongelmia Session.addRoomKeyReservationissa - huonetta ei löydy tietokannasta");
+        }
+        else {
+            
+            uusiVaraus = etsittyVaraus;
+        }
         this.activeRoom.addRoomKeyReservation(uusiVaraus);
         person.addRoomKeyReservation(uusiVaraus);
-        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
@@ -948,12 +957,25 @@ public class Session {
         person.deleteRoomKeyReservation(roomKeyReservation);
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
-        this.updatePerson(person);
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.modifyRoomKeyReservation(roomKeyReservation);
     }
+
+    
+    public RoomKeyReservation findMatchingRoomKeyReservation(RoomKeyReservation roomKeyReservation){
+        RoomKeyReservation[] varaukset = this.getRoomKeyReservations(roomKeyReservation.getTargetRoom());
+        for (RoomKeyReservation reservation : varaukset) {
+            if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
+                    && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
+                    && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
+                return reservation;
+            }
+        }
+        return null;
+    }
+    
     /* Kuuntelijoihin liittyvät operaatiot */
 
     /**
@@ -983,5 +1005,11 @@ public class Session {
 
     public void updatePerson(Person person) throws SQLException {
         db.updatePersonInfo(person);
+    }
+    public void addKannykka(Kannykka kannykka) {
+        db.addKannykka(kannykka);
+    }
+    public String getKannykka(String htunnus) {
+        return db.getKannykka(htunnus);
     }
 }
