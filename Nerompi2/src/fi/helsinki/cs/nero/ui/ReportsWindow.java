@@ -112,6 +112,18 @@ public class ReportsWindow extends javax.swing.JFrame {
         overwriteCheck = new javax.swing.JOptionPane();
         checkboxContainer = new javax.swing.JPanel();
         personAttributes = new javax.swing.JPanel();
+        saveButton = new javax.swing.JButton();
+        fileTypeChooser = new javax.swing.JComboBox();
+        showRoomAndPost = new javax.swing.JCheckBox();
+        showPhone = new javax.swing.JCheckBox();
+        showJobTitle = new javax.swing.JCheckBox();
+        showEmail = new javax.swing.JCheckBox();
+        showReservations = new javax.swing.JCheckBox();
+        showFloor = new javax.swing.JCheckBox();
+        showPostCount = new javax.swing.JCheckBox();
+        showLocker = new javax.swing.JCheckBox();
+        showWing = new javax.swing.JCheckBox();
+        ColumnsLabel = new javax.swing.JLabel();
         restrictionsContainer = new javax.swing.JPanel();
         wing = new javax.swing.JLabel();
         restrictByWing = new javax.swing.JComboBox();
@@ -134,18 +146,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         showInActive = new javax.swing.JCheckBox();
         tableContainer = new javax.swing.JScrollPane();
         Data = new javax.swing.JTable();
-        saveButton = new javax.swing.JButton();
-        fileTypeChooser = new javax.swing.JComboBox();
-        showRoomAndPost = new javax.swing.JCheckBox();
-        showPhone = new javax.swing.JCheckBox();
-        showJobTitle = new javax.swing.JCheckBox();
-        showEmail = new javax.swing.JCheckBox();
-        showReservations = new javax.swing.JCheckBox();
-        showFloor = new javax.swing.JCheckBox();
-        showPostCount = new javax.swing.JCheckBox();
-        showLocker = new javax.swing.JCheckBox();
-        showWing = new javax.swing.JCheckBox();
-        ColumnsLabel = new javax.swing.JLabel();
 
         fileChooserDialog.setDialogTitle("Tallenna");
 
@@ -156,6 +156,108 @@ public class ReportsWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Raportit");
         setPreferredSize(new java.awt.Dimension(1400, 890));
+
+        javax.swing.GroupLayout personAttributesLayout = new javax.swing.GroupLayout(personAttributes);
+        personAttributes.setLayout(personAttributesLayout);
+        personAttributesLayout.setHorizontalGroup(
+            personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1182, Short.MAX_VALUE)
+        );
+        personAttributesLayout.setVerticalGroup(
+            personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 135, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout checkboxContainerLayout = new javax.swing.GroupLayout(checkboxContainer);
+        checkboxContainer.setLayout(checkboxContainerLayout);
+        checkboxContainerLayout.setHorizontalGroup(
+            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(checkboxContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        checkboxContainerLayout.setVerticalGroup(
+            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(checkboxContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(654, Short.MAX_VALUE))
+        );
+
+        saveButton.setText("Tallenna");
+        saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                saveButtonMouseReleased(evt);
+            }
+        });
+
+        fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "ODS" }));
+
+        showRoomAndPost.setText(huone);
+        showRoomAndPost.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showRoomAndPostMouseReleased(evt);
+            }
+        });
+
+        showPhone.setText(puhelinnumero);
+        showPhone.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showPhoneMouseReleased(evt);
+            }
+        });
+
+        showJobTitle.setText(nimike);
+        showJobTitle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showJobTitleMouseReleased(evt);
+            }
+        });
+
+        showEmail.setText(sposti);
+        showEmail.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showEmailMouseReleased(evt);
+            }
+        });
+
+        showReservations.setText(varaus);
+        showReservations.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showReservationsMouseReleased(evt);
+            }
+        });
+
+        showFloor.setText("Kerros");
+        showFloor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showFloorMouseReleased(evt);
+            }
+        });
+
+        showPostCount.setText("Työpisteiden lkm");
+        showPostCount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showPostCountActionPerformed(evt);
+            }
+        });
+
+        showLocker.setText("Postilokero");
+        showLocker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showLockerMouseReleased(evt);
+            }
+        });
+
+        showWing.setText("Siipi");
+        showWing.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showWingMouseReleased(evt);
+            }
+        });
+
+        ColumnsLabel.setText("Sarakkeet");
 
         wing.setText("Siipi");
 
@@ -343,23 +445,6 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGap(39, 39, 39))))
         );
 
-        javax.swing.GroupLayout personAttributesLayout = new javax.swing.GroupLayout(personAttributes);
-        personAttributes.setLayout(personAttributesLayout);
-        personAttributesLayout.setHorizontalGroup(
-            personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, personAttributesLayout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        personAttributesLayout.setVerticalGroup(
-            personAttributesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(personAttributesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         Data.setAutoCreateColumnsFromModel(false);
         Data.setAutoCreateRowSorter(true);
         Data.setModel(new javax.swing.table.DefaultTableModel(
@@ -377,102 +462,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         Data.setRowSelectionAllowed(false);
         tableContainer.setViewportView(Data);
 
-        javax.swing.GroupLayout checkboxContainerLayout = new javax.swing.GroupLayout(checkboxContainer);
-        checkboxContainer.setLayout(checkboxContainerLayout);
-        checkboxContainerLayout.setHorizontalGroup(
-            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(checkboxContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, checkboxContainerLayout.createSequentialGroup()
-                .addComponent(tableContainer)
-                .addContainerGap())
-        );
-        checkboxContainerLayout.setVerticalGroup(
-            checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(checkboxContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(personAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        saveButton.setText("Tallenna");
-        saveButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                saveButtonMouseReleased(evt);
-            }
-        });
-
-        fileTypeChooser.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "txt", "ODS" }));
-
-        showRoomAndPost.setText(huone);
-        showRoomAndPost.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showRoomAndPostMouseReleased(evt);
-            }
-        });
-
-        showPhone.setText(puhelinnumero);
-        showPhone.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showPhoneMouseReleased(evt);
-            }
-        });
-
-        showJobTitle.setText(nimike);
-        showJobTitle.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showJobTitleMouseReleased(evt);
-            }
-        });
-
-        showEmail.setText(sposti);
-        showEmail.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showEmailMouseReleased(evt);
-            }
-        });
-
-        showReservations.setText(varaus);
-        showReservations.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showReservationsMouseReleased(evt);
-            }
-        });
-
-        showFloor.setText("Kerros");
-        showFloor.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showFloorMouseReleased(evt);
-            }
-        });
-
-        showPostCount.setText("Työpisteiden lkm");
-        showPostCount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showPostCountActionPerformed(evt);
-            }
-        });
-
-        showLocker.setText("Postilokero");
-        showLocker.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showLockerMouseReleased(evt);
-            }
-        });
-
-        showWing.setText("Siipi");
-        showWing.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                showWingMouseReleased(evt);
-            }
-        });
-
-        ColumnsLabel.setText("Sarakkeet");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -480,26 +469,32 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showWing)
-                    .addComponent(showRoomAndPost)
-                    .addComponent(showLocker)
-                    .addComponent(showPostCount)
-                    .addComponent(showFloor)
-                    .addComponent(showReservations)
-                    .addComponent(showEmail)
-                    .addComponent(showJobTitle)
-                    .addComponent(showPhone)
-                    .addComponent(ColumnsLabel))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(saveButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1035, 1035, 1035))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(showWing)
+                            .addComponent(showRoomAndPost)
+                            .addComponent(showLocker)
+                            .addComponent(showPostCount)
+                            .addComponent(showFloor)
+                            .addComponent(showReservations)
+                            .addComponent(showEmail)
+                            .addComponent(showJobTitle)
+                            .addComponent(showPhone)
+                            .addComponent(ColumnsLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(saveButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(1035, 1035, 1035))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 1203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -509,26 +504,32 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(checkboxContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(122, 122, 122)
-                        .addComponent(ColumnsLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(showRoomAndPost)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showPhone)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showJobTitle)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showEmail)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showReservations)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showFloor)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showPostCount)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showLocker)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showWing)))
+                        .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(ColumnsLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(showRoomAndPost)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showPhone)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showJobTitle)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showEmail)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showReservations)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showFloor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showPostCount)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showLocker)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showWing))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(fileTypeChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
