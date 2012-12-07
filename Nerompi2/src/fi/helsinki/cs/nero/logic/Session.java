@@ -1,6 +1,7 @@
 package fi.helsinki.cs.nero.logic;
 
 import fi.helsinki.cs.nero.data.Contract;
+import fi.helsinki.cs.nero.data.Kannykka;
 import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
@@ -562,6 +563,9 @@ public class Session {
             setStatusMessage("Työpistevarauksen muuttaminen ei onnistunut.");
             return;
         }
+        Date date = new Date();
+        if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate()))
+            db.addRoomToPerson(reservation.getReservingPerson(), reservation.getTargetPost().getRoom());
         // kerrotaan työpisteelle että sen varaukset ovat muuttuneet
         reservation.getTargetPost().clearReservations();
         // varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
@@ -574,7 +578,6 @@ public class Session {
 
     /**
      * Poistaa varausjakson.
-     *
      * @param reservation poistettava varausjakso
      * @throws IllegalArgumentException jos työpiste on null
      */
@@ -584,12 +587,14 @@ public class Session {
         }
         if (db.deleteReservation(reservation)) {
             reservation.getTargetPost().clearReservations();
+            Date date = new Date();
+            if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate()))
+                db.deleteRoomFromPerson(reservation.getReservingPerson());
             // varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus poistettu.");
-            db.updateRooms();
         } else {
             setStatusMessage("Työpistevarauksen poistaminen epäonnistui.");
         }
@@ -615,7 +620,6 @@ public class Session {
             throw new IllegalArgumentException("sopimus ei saa olla null");
         }
         createReservation(post, contract.getPerson(), contract.getTimeSlice());
-        db.updateRooms();
     }
 
     /**
@@ -633,7 +637,6 @@ public class Session {
      */
     public void createReservation(Post post, Person person) {
         createReservation(post, person, timescaleSlice);
-        db.addRoomToPerson(person, post.getRoom().getRoomName());
     }
 
     /**
@@ -680,12 +683,14 @@ public class Session {
         Reservation newRes = new Reservation(this, null, post, person, reservationTime, 0.0, "");
         if (db.createReservation(newRes)) {
             newRes.getTargetPost().clearReservations();
+            Date date = new Date();
+            if(date.after(newRes.getTimeSlice().getStartDate()) && date.before(newRes.getTimeSlice().getEndDate()))
+                db.addRoomToPerson(person, post.getRoom());
             // huoneiden ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
             //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
             setStatusMessage("Työpistevaraus luotu.");
-            db.addRoomToPerson(person, post.getRoom().getRoomName());
         } else {
             setStatusMessage("Työpistevarauksen luonti epäonnistui.");
         }
@@ -924,15 +929,23 @@ public class Session {
         return this.cursortype;
     }
 
-    public RoomKeyReservation[] getRoomKeyReservations() {
-        return db.getRoomKeyReservations(activeRoom);
+    public RoomKeyReservation[] getRoomKeyReservations(Room room) {
+        return db.getRoomKeyReservations(room);
     }
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
         RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
+        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
+        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(uusiVaraus);
+        if (etsittyVaraus == null){
+            System.out.println("Ongelmia Session.addRoomKeyReservationissa - huonetta ei löydy tietokannasta");
+        }
+        else {
+            
+            uusiVaraus = etsittyVaraus;
+        }
         this.activeRoom.addRoomKeyReservation(uusiVaraus);
         person.addRoomKeyReservation(uusiVaraus);
-        db.addRoomKeyReservation(this.activeRoom, person, timeslice);
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
@@ -944,12 +957,25 @@ public class Session {
         person.deleteRoomKeyReservation(roomKeyReservation);
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
-        this.updatePerson(person);
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.modifyRoomKeyReservation(roomKeyReservation);
     }
+
+    
+    public RoomKeyReservation findMatchingRoomKeyReservation(RoomKeyReservation roomKeyReservation){
+        RoomKeyReservation[] varaukset = this.getRoomKeyReservations(roomKeyReservation.getTargetRoom());
+        for (RoomKeyReservation reservation : varaukset) {
+            if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
+                    && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
+                    && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
+                return reservation;
+            }
+        }
+        return null;
+    }
+    
     /* Kuuntelijoihin liittyvät operaatiot */
 
     /**
@@ -979,5 +1005,11 @@ public class Session {
 
     public void updatePerson(Person person) throws SQLException {
         db.updatePersonInfo(person);
+    }
+    public void addKannykka(Kannykka kannykka) {
+        db.addKannykka(kannykka);
+    }
+    public String getKannykka(String htunnus) {
+        return db.getKannykka(htunnus);
     }
 }

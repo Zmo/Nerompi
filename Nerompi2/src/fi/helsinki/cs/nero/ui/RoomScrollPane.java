@@ -5,6 +5,7 @@ package fi.helsinki.cs.nero.ui;
 
 
 import fi.helsinki.cs.nero.NeroApplication;
+import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
@@ -90,12 +91,12 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
     
     private static final Color ROOM_HEADER_BG = Color.LIGHT_GRAY;
     private static final Color POST_HEADER_BG = new Color(255,240,192);
-	private static final Color BG = new Color(90,119,173);
+    private static final Color BG = new Color(90,119,173);
 	    
-	private final static ImageIcon OY; 
-	private final static ImageIcon OA;
-	private final static ImageIcon VY; 
-	private final static ImageIcon VA;
+    private final static ImageIcon OY; 
+    private final static ImageIcon OA;
+    private final static ImageIcon VY; 
+    private final static ImageIcon VA;
 
     static{
 		OY = new ImageIcon(NeroApplication.getProperty("img_oy"));
@@ -180,18 +181,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         
         Iterator postsIterator = postsList.iterator();
         
-//        RoomKeyReservation[] keys = this.activeRoom.getRoomKeyReservations();
-//        this.keyList = new LinkedList();
-//        
-//        for(int i=0; i<keys.length; ++i) {
-//            RoomKeyReservations rkreservations = new RoomKeyReservations(this.activeRoom, DAY_IN_PIXELS, sessio, null);
-//            keyList.add(rkreservations);
-//        }
-//        
-//        Iterator keyiterator = keyList.iterator();
-        
         postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
-
         
         //Huoneen headeri.
         JPanel roomHeader = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -270,11 +260,11 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                 row.resetIterator();
                            
                 //Luodaan jokaisen rivin jokaista varausjaksoa koskeva JPanel.
-                while(row.hasNext()) {
-                    TimelineElement reservation = (TimelineElement)row.next();
+                while (row.hasNext()) {
+                    TimelineElement reservation = (TimelineElement) row.next();
                     rowPanel.add(reservation);
                 }
-                
+
                 postsPanel.add(rowPanel);
             }
             
