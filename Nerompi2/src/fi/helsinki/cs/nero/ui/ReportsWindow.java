@@ -27,7 +27,6 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -48,7 +47,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private TableColumnModel columnModel;
     private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
-    private Person[] filteredPeople;
     private Vector<Vector<Object>> tableData;
     private Vector<String> columnNames;
     private TableRowSorter<TableModel> rowSorter;
@@ -90,8 +88,6 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         today = new Date();
         people = session.getFilteredPeople();
-        session.setFilterActiveEmployees(false);
-        filteredPeople = session.getFilteredPeople();
         initStringVariables();
         initComponents();
         initContainerData();
@@ -158,6 +154,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         overwriteCheck.setOptionType(JOptionPane.YES_NO_OPTION);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Raportit");
 
         showPostCount.setText("Työpisteiden lkm");
         showPostCount.addActionListener(new java.awt.event.ActionListener() {
@@ -490,14 +487,15 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(checkboxContainerLayout.createSequentialGroup()
-                        .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(checkboxContainerLayout.createSequentialGroup()
                         .addComponent(personAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(roomAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(87, 87, 87))
-                    .addComponent(tableContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 1315, Short.MAX_VALUE)))
+                    .addGroup(checkboxContainerLayout.createSequentialGroup()
+                        .addGroup(checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 1182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         checkboxContainerLayout.setVerticalGroup(
             checkboxContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -527,17 +525,15 @@ public class ReportsWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(saveButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addContainerGap()
+                .addComponent(saveButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(checkboxContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 1206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -548,7 +544,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
                     .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22))
+                .addContainerGap())
         );
 
         pack();
@@ -585,13 +581,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void restrictByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByNameActionPerformed
         String value = restrictByName.getText();
         if (value == null || value.isEmpty()) {
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(nimi));
-        } else {
-            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex(nimi));
-        }
-        TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setModel(Data.getModel());
-        sorter.setRowFilter(generalFilter);
+            value = "";
+        } 
+        setRegexFilter(value, nimi);
     }//GEN-LAST:event_restrictByNameActionPerformed
 
     private void restrictByHasLockerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByHasLockerItemStateChanged
@@ -1027,8 +1019,8 @@ public class ReportsWindow extends javax.swing.JFrame {
          * - ota talteen niiden nimet ja laita ensimmäiseksi listaan
          * - hae data niistä sarakkeista, jotka ovat näkyvillä
          */
-        List columnNames = getShownColumnIdentifiers();
-        list.add(0, columnNames);
+        List columnIdentifiers = getShownColumnIdentifiers();
+        list.add(0, columnIdentifiers);
         list.addAll(1, getShownColumnData());
 
         return list;
@@ -1066,7 +1058,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * näytetään kaikki rivit.
      */
     private void determineDateRestriction() {
-
 
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
