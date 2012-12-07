@@ -122,6 +122,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         showFloor = new javax.swing.JCheckBox();
         showPostCount = new javax.swing.JCheckBox();
         showLocker = new javax.swing.JCheckBox();
+        tableContainer = new javax.swing.JScrollPane();
+        Data = new javax.swing.JTable();
         showWing = new javax.swing.JCheckBox();
         ColumnsLabel = new javax.swing.JLabel();
         restrictionsContainer = new javax.swing.JPanel();
@@ -144,8 +146,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         restrictByPostRoom = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
         showInActive = new javax.swing.JCheckBox();
-        tableContainer = new javax.swing.JScrollPane();
-        Data = new javax.swing.JTable();
 
         fileChooserDialog.setDialogTitle("Tallenna");
 
@@ -155,7 +155,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Raportit");
-        setPreferredSize(new java.awt.Dimension(1400, 890));
+        setPreferredSize(new java.awt.Dimension(1500, 890));
 
         javax.swing.GroupLayout personAttributesLayout = new javax.swing.GroupLayout(personAttributes);
         personAttributes.setLayout(personAttributesLayout);
@@ -249,6 +249,23 @@ public class ReportsWindow extends javax.swing.JFrame {
                 showLockerMouseReleased(evt);
             }
         });
+
+        Data.setAutoCreateColumnsFromModel(false);
+        Data.setAutoCreateRowSorter(true);
+        Data.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        Data.setEnabled(false);
+        Data.setRowSelectionAllowed(false);
+        tableContainer.setViewportView(Data);
 
         showWing.setText("Siipi");
         showWing.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -437,30 +454,13 @@ public class ReportsWindow extends javax.swing.JFrame {
                             .addComponent(floor)
                             .addComponent(jLabel3)
                             .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(49, 49, 49))
+                        .addGap(714, 714, 714))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, restrictionsContainerLayout.createSequentialGroup()
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(restrictByPostRoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6))
                         .addGap(39, 39, 39))))
         );
-
-        Data.setAutoCreateColumnsFromModel(false);
-        Data.setAutoCreateRowSorter(true);
-        Data.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        Data.setEnabled(false);
-        Data.setRowSelectionAllowed(false);
-        tableContainer.setViewportView(Data);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -469,6 +469,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(showWing)
@@ -481,21 +482,16 @@ public class ReportsWindow extends javax.swing.JFrame {
                             .addComponent(showJobTitle)
                             .addComponent(showPhone)
                             .addComponent(ColumnsLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(saveButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(1035, 1035, 1035))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 1203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(restrictionsContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(fileTypeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tableContainer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1235, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 701, Short.MAX_VALUE)
+                .addComponent(checkboxContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -528,13 +524,13 @@ public class ReportsWindow extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(showWing))
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fileTypeChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tableContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(fileTypeChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
