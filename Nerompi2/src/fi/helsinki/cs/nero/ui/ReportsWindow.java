@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
@@ -90,6 +90,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         today = new Date();
         people = session.getFilteredPeople();
+        filterList = new HashMap<>();
         initStringVariables();
         initComponents();
         initContainerData();
@@ -613,9 +614,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         String room = restrictByPostRoom.getSelectedItem().toString();
         if (room.isEmpty() || room.equalsIgnoreCase("kaikki")) {
             // kaikki
-            room = "";
+            removeFilter(postihuone);
+//            room = "";
+        } else {
+            addFilter(postihuone, getRegexFilter(room, postihuone));
+//        setRegexFilter(room, postihuone); 
         }
-        setRegexFilter(room, postihuone);
     }//GEN-LAST:event_restrictByPostRoomItemStateChanged
 
     private void restrictByLastDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByLastDateActionPerformed
@@ -643,9 +647,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void restrictByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByNameActionPerformed
         String value = restrictByName.getText();
         if (value == null || value.isEmpty()) {
-            value = "";
+            removeFilter(nimi);
+        } else {
+            addFilter(nimi, getRegexFilter(value, nimi));
         }
-        setRegexFilter(value, nimi);
     }//GEN-LAST:event_restrictByNameActionPerformed
 
     private void restrictByHasLockerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByHasLockerItemStateChanged
@@ -653,41 +658,36 @@ public class ReportsWindow extends javax.swing.JFrame {
         String value;
         if (index == 0) {
             // kaikki
-            value = "";
-            setRegexFilter(value, postihuone);
+            removeFilter(postihuone);
         } else if (index == 1) {
             // lokerottomat
             value = "ei postilokeroa";
-            setRegexFilter(value, postihuone);
+            addFilter(postihuone, getRegexFilter(value, postihuone));
         } else if (index == 2) {
             // lokerolliset
             RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa",
-                convertColumnIndexToModel(columnModel.getColumnIndex(postihuone)));
-            generalFilter = RowFilter.notFilter(regexFilter);
-            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-            sorter.setRowFilter(generalFilter);
-            Data.setRowSorter(rowSorter);
+                    convertColumnIndexToModel(columnModel.getColumnIndex(postihuone)));
+            RowFilter filter = RowFilter.notFilter(regexFilter);
+            addFilter(postihuone, filter);
         }
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
     private void floorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_floorDropdownItemStateChanged
         String value = floorDropdown.getSelectedItem().toString();
         if (value.equals("Kaikki")) {
-            generalFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex("Kerros"));
+            removeFilter(kerros);
         } else {
-            generalFilter = RowFilter.regexFilter(value, Data.getColumnModel().getColumnIndex("Kerros"));
+            addFilter(kerros, getRegexFilter(value, kerros));
         }
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-        Data.setRowSorter(rowSorter);
     }//GEN-LAST:event_floorDropdownItemStateChanged
 
     private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
         String value = restrictByWing.getSelectedItem().toString();
         if (value.equals("kaikki")) {
-            value = "";
+            removeFilter(siipi);
+        } else {
+            addFilter(siipi, getRegexFilter(value, siipi));
         }
-        setRegexFilter(value, siipi);
     }//GEN-LAST:event_restrictByWingItemStateChanged
     /**
      * @param args the command line arguments
@@ -808,7 +808,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * Luodaan mallit, joita GUI:ssa tarvitaan.
      */
     private void initModels() {
- 
+
         hiddenColumns = new HashMap<>();
 
         /*Dropdown menu models - currently not used*/
@@ -1042,27 +1042,30 @@ public class ReportsWindow extends javax.swing.JFrame {
      * n‰ytet‰‰n kaikki rivit.
      */
     private void determineDateRestriction() {
-        
+
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
         RowFilter filter;
         if (firstDate != null && lastDate != null) {
             // molemmissa p‰iv‰m‰‰r‰
-            filter = setDateRestrictionContains(firstDate, lastDate);
+            filter = getDateFilter(firstDate, lastDate);
+            addFilter(varaus, filter);
+
         } else if (firstDate == null && lastDate != null) {
             // loppup‰iv‰m‰‰r‰ on
-            filter = setDateRestriction(lastDate, RowFilter.ComparisonType.BEFORE);
+            filter = getDateFilter(lastDate, RowFilter.ComparisonType.BEFORE);
+            addFilter(varaus, filter);
+
         } else if (firstDate != null && lastDate == null) {
             // alkup‰iv‰m‰‰r‰ on
-            filter = setDateRestriction(firstDate, RowFilter.ComparisonType.AFTER);
+            filter = getDateFilter(firstDate, RowFilter.ComparisonType.AFTER);
+            addFilter(varaus, filter);
+
         } else {
             // kumpaakaan ei asetettu
-            filter = removeDateRestriction();
+            removeFilter(varaus);
         }
 
-        TableRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setModel(Data.getModel());
-        sorter.setRowFilter(filter);
     }
 
     /**
@@ -1073,7 +1076,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @param type Vertailun tyyppi, t‰ss‰ BEFORE tai AFTER
      * @return filteri, joka filterˆi saamansa p‰iv‰m‰‰r‰n ja ehdon mukaan
      */
-    private RowFilter setDateRestriction(Date date, ComparisonType type) {
+    private RowFilter getDateFilter(Date date, ComparisonType type) {
         int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(type,
                 date, index);
@@ -1089,13 +1092,13 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @param last loppup‰iv‰m‰‰r‰
      * @return filteri, joka hyv‰ksyy vain arvot, jotka sijoittuvat parametreina
      * saatujen p‰iv‰m‰‰rien v‰lille
-     * @see setDateRestriction(first, last)
+     * @see getDateFilter(first, last)
      */
-    private RowFilter setDateRestrictionContains(Date first, Date last) {
+    private RowFilter getDateFilter(Date first, Date last) {
         // and filter 
         List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
-        filters.add(setDateRestriction(last, RowFilter.ComparisonType.BEFORE));
-        filters.add(setDateRestriction(first, RowFilter.ComparisonType.AFTER));
+        filters.add(getDateFilter(last, RowFilter.ComparisonType.BEFORE));
+        filters.add(getDateFilter(first, RowFilter.ComparisonType.AFTER));
         RowFilter<Object, Object> newFilter = RowFilter.andFilter(filters);
         return newFilter;
     }
@@ -1156,17 +1159,6 @@ public class ReportsWindow extends javax.swing.JFrame {
             date.setYear(new Integer(split[2]) - 1900);
         }
         return date;
-    }
-
-    /**
-     * Poistetaan p‰iv‰m‰‰r‰n mukaan filterˆinti k‰ytˆst‰. Palautetaan
-     * regexp-filtteri, joka hyv‰ksyy mink‰ tahansa merkkijonon.
-     *
-     * @return
-     */
-    private RowFilter removeDateRestriction() {
-        RowFilter newFilter = RowFilter.regexFilter("", Data.getColumnModel().getColumnIndex(varaus));
-        return newFilter;
     }
 
     /**
@@ -1308,32 +1300,36 @@ public class ReportsWindow extends javax.swing.JFrame {
         return Data.convertColumnIndexToModel(i);
     }
 
-    private void setRegexFilter(String regex, String columnName) {
-        generalFilter = RowFilter.regexFilter(regex,
-                convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
-    }
-    
     private RowFilter getRegexFilter(String regex, String columnName) {
-         RowFilter filter = RowFilter.regexFilter(regex,
-                convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
-         return filter;
+        try {
+            RowFilter filter = RowFilter.regexFilter(regex,
+                    convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
+            return filter;
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
-    
+
     private void removeFilter(String filterColumnName) {
         filterList.remove(filterColumnName);
-        updateFilterList(new ArrayList(filterList.values()));        
+        updateFilterList(new ArrayList(filterList.values()));
     }
-    
+
     private void addFilter(String filterColumnName, RowFilter filter) {
         filterList.put(filterColumnName, filter);
         updateFilterList(new ArrayList(filterList.values()));
     }
-    
+
     private void updateFilterList(List<RowFilter<Object, Object>> filters) {
-        generalFilter = RowFilter.andFilter(filters);
-        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
-        sorter.setRowFilter(generalFilter);
+        try {
+            generalFilter = RowFilter.andFilter(filters);
+            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+            sorter.setRowFilter(generalFilter);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(rootPane,
+                    "Rajoituksia voi tehd‰ vain n‰kyvill‰ oleviin sarakkeisiin",
+                    "Sarake ei n‰kyvill‰", JOptionPane.ERROR_MESSAGE);
+
+        }
     }
 }
