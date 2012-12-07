@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
@@ -51,6 +52,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Vector<String> columnNames;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
+    private Map<String, RowFilter> filterList;
     private ReportWriter printer;
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
@@ -806,8 +808,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * Luodaan mallit, joita GUI:ssa tarvitaan.
      */
     private void initModels() {
-
-  
+ 
         hiddenColumns = new HashMap<>();
 
         /*Dropdown menu models - currently not used*/
@@ -1314,4 +1315,25 @@ public class ReportsWindow extends javax.swing.JFrame {
         sorter.setRowFilter(generalFilter);
     }
     
+    private RowFilter getRegexFilter(String regex, String columnName) {
+         RowFilter filter = RowFilter.regexFilter(regex,
+                convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
+         return filter;
+    }
+    
+    private void removeFilter(String filterColumnName) {
+        filterList.remove(filterColumnName);
+        updateFilterList(new ArrayList(filterList.values()));        
+    }
+    
+    private void addFilter(String filterColumnName, RowFilter filter) {
+        filterList.put(filterColumnName, filter);
+        updateFilterList(new ArrayList(filterList.values()));
+    }
+    
+    private void updateFilterList(List<RowFilter<Object, Object>> filters) {
+        generalFilter = RowFilter.andFilter(filters);
+        DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+        sorter.setRowFilter(generalFilter);
+    }
 }
