@@ -615,10 +615,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (room.isEmpty() || room.equalsIgnoreCase("kaikki")) {
             // kaikki
             removeFilter(postihuone);
-//            room = "";
         } else {
             addFilter(postihuone, getRegexFilter(room, postihuone));
-//        setRegexFilter(room, postihuone); 
         }
     }//GEN-LAST:event_restrictByPostRoomItemStateChanged
 
@@ -1306,7 +1304,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
             return filter;
         } catch (IllegalArgumentException ex) {
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 
@@ -1329,7 +1327,6 @@ public class ReportsWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane,
                     "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin",
                     "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
-
         }
     }
 }
