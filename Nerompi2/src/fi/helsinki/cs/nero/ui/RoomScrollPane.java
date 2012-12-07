@@ -261,6 +261,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
                 //Luodaan jokaisen rivin jokaista varausjaksoa koskeva JPanel.
                 while(row.hasNext()) {
                     TimelineElement reservation = (TimelineElement)row.next();
+                    reservation.addMouseListener(null);
                     rowPanel.add(reservation);
                 }
                 
