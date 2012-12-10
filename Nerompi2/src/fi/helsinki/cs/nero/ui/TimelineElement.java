@@ -1,5 +1,6 @@
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.data.Person;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
@@ -134,6 +135,25 @@ public class TimelineElement extends JPanel {
 
         manager.setDismissDelay(10000);
     }
+    /**
+     * Henkilötietoikkunaa varten
+     * @param timeSlice
+     * @param scale
+     * @param color
+     * @param perp
+     * @param session 
+     */
+    public TimelineElement(TimeSlice timeSlice, double scale, Color color, Person perp, Session session) {
+        
+        this(timeSlice, scale, color, session);
+        this.session = session;
+        this.timeScale = session.getFilterTimescale();
+        this.createLabel(perp);
+        
+        this.setToolTipText("<html>" + perp + "<br>" + timeSlice + "</html>");
+
+        manager.setDismissDelay(10000);
+    }
     
     /**
      * 
@@ -240,6 +260,33 @@ public class TimelineElement extends JPanel {
      */
     public void createLabel(String text) {
         JLabel name = new JLabel(text);
+        SpringLayout layout = new SpringLayout();
+        this.setLayout(layout);
+        this.add(name);
+        // jätetään vakiona hieman rakoa
+        int position = 5;
+
+        // lasketaan alkaako sopimus ennen näytettävää aikaväliä
+        Date d1 = this.timeScale.getStartDate();
+        Date d2 = this.timeSlice.getStartDate();
+        long diff = (d1.getTime()-d2.getTime())/TimeSlice.ONEDAY;
+        
+        if(diff > 0) {
+        		position = (int)(diff*scale);
+        }
+        // ja laitetaan label alkamaan oikeasta kohdasta,
+        // eli labelin vasen reuna positionin verran thisin reunasta
+        layout.putConstraint(SpringLayout.WEST, name, position,
+        						SpringLayout.WEST, this);
+    }
+    /**
+     * Henkilötietoikkunaa varten
+     * @param pe 
+     */
+    public void createLabel(Person pe) {
+        JLabel name = new PersonNameLabel(this.session, pe);
+        name.setText(pe.getName()+" Puhelin: "+pe.getWorkPhone());
+        name.addMouseListener(new PersonNameLabelListener());
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
         this.add(name);
