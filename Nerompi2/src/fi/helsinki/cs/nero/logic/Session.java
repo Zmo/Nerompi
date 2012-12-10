@@ -967,10 +967,12 @@ public class Session {
     public RoomKeyReservation findMatchingRoomKeyReservation(RoomKeyReservation roomKeyReservation){
         RoomKeyReservation[] varaukset = this.getRoomKeyReservations(roomKeyReservation.getTargetRoom());
         for (RoomKeyReservation reservation : varaukset) {
-            if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
-                    && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
-                    && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
-                return reservation;
+            if (reservation != null) {
+                if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
+                        && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
+                        && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
+                    return reservation;
+                }
             }
         }
         return null;
