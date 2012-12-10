@@ -124,6 +124,20 @@ public class Room {
     }
 
     /**
+     * Nerompi Muokkaa huoneen avainvarausta
+     */
+    public boolean modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+        for (RoomKeyReservation reservation : this.roomKeyReservations) {
+            if (reservation == roomKeyReservation) {
+                reservation.setTimeSlice(roomKeyReservation.getTimeSlice());
+                return true;
+            }
+        }
+        return false;
+        
+    }
+    
+    /**
      * Nerompi Poistaa huoneelta annetun avainvarauksen
      *
      * @param roomKeyReservation poistettava avainvaraus

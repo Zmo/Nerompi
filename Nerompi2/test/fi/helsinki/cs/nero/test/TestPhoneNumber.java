@@ -7,6 +7,7 @@ import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.logic.Session;
+import java.util.Calendar;
 
 /**
  * @author Jyrki Muukkonen
@@ -38,8 +39,8 @@ public class TestPhoneNumber extends TestCase {
     protected void setUp() {
         session = new Session();
         room = null;
-        post1 = new Post(session, "p1", room, 1);
-        post2 = new Post(session, "p2", room, 2);
+        post1 = new Post(session, "p1", room, 1, Calendar.getInstance().getTime());
+        post2 = new Post(session, "p2", room, 2, Calendar.getInstance().getTime());
         number1 = new PhoneNumber(session, "1", post1, "911");
         number2 = new PhoneNumber(session, "2", post1, "112");
         numberWithoutPost = new PhoneNumber(session, "3", null, "118");

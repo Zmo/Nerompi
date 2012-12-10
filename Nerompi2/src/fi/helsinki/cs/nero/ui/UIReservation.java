@@ -42,8 +42,14 @@ public class UIReservation extends TimelineElement {
      * @param reservation Varaus joka esitet‰‰n.
      * @param scale K‰ytett‰v‰ skaala.
      */
+//    public UIReservation(Reservation reservation, double scale) {
+//        super(reservation.getTimeSlice(), scale, BG_COLOR, reservation.getReservingPerson().getName(), reservation.getSession());
+//        this.setBorder(BORDER);
+//        this.reservation = reservation;        
+//        
+//    }
     public UIReservation(Reservation reservation, double scale) {
-        super(reservation.getTimeSlice(), scale, BG_COLOR, reservation.getReservingPerson().getName(), reservation.getSession());
+        super(reservation.getTimeSlice(), scale, BG_COLOR, reservation.getReservingPerson(), reservation.getSession());
         this.setBorder(BORDER);
         this.reservation = reservation;        
         
