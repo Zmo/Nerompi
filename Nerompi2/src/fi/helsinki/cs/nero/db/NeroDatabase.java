@@ -1905,9 +1905,9 @@ public class NeroDatabase implements NeroObserver {
         
     }
     /**
-     * Palauttaa annetun tyï¿½huoneen puhelinnumerot.
+     * Palauttaa annetun työhuoneen puhelinnumerot.
      *
-     * @param post Tyï¿½huone <code>Post</code> oliona.
+     * @param post Työhuone <code>Post</code> oliona.
      * @return Puhelinnumerot <code>PhoneNumber[]</code> oliona.
      */
     public PhoneNumber[] getPhoneNumbers(Post post) {
