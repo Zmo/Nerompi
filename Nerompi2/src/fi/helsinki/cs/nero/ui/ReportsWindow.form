@@ -607,18 +607,24 @@
             <Property name="text" type="java.lang.String" value="Koko"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showSizeActionPerformed"/>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showSizeMouseReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="showRoomKeyReservations">
           <Properties>
             <Property name="text" type="java.lang.String" value="Avainvaraukset"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showRoomKeyReservationsMouseReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="showPostReservations">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ty&#xf6;pistevaraukset"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showPostReservationsMouseReleased"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -69,7 +69,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
     private String postihuone, puhelinnumero;
-    private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko;
+    private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko, pistevaraukset, avainvaraukset;
     private String structuredFileType;
     //testi
     // combobox models not used yet
@@ -78,6 +78,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private DefaultComboBoxModel floorsModel;
     private int[] floors = new int[]{1, 2, 3};
     private char[] wings = new char[]{'A', 'B', 'C', 'D'};
+    private List<JCheckBox> defaultRoomCheckboxes;
 
     /**
      * Creates new form Reports
@@ -455,15 +456,25 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showSize.setText("Koko");
-        showSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showSizeActionPerformed(evt);
+        showSize.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showSizeMouseReleased(evt);
             }
         });
 
         showRoomKeyReservations.setText("Avainvaraukset");
+        showRoomKeyReservations.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showRoomKeyReservationsMouseReleased(evt);
+            }
+        });
 
         showPostReservations.setText("Työpistevaraukset");
+        showPostReservations.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showPostReservationsMouseReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout columnChekboxesLayout = new javax.swing.GroupLayout(columnChekboxes);
         columnChekboxes.setLayout(columnChekboxesLayout);
@@ -749,9 +760,15 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_dataModeSelectorItemStateChanged
 
-    private void showSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showSizeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_showSizeActionPerformed
+    private void showSizeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showSizeMouseReleased
+        setColumnVisibility(showSize, huoneen_koko);
+    }//GEN-LAST:event_showSizeMouseReleased
+
+    private void showRoomKeyReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomKeyReservationsMouseReleased
+        setColumnVisibility(showRoomKeyReservations, avainvaraukset);    }//GEN-LAST:event_showRoomKeyReservationsMouseReleased
+
+    private void showPostReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPostReservationsMouseReleased
+        setColumnVisibility(showPostReservations, pistevaraukset);    }//GEN-LAST:event_showPostReservationsMouseReleased
     /**
      * @param args the command line arguments
      */
@@ -857,7 +874,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         initialComponents.add(showRoomAndPost);
         initialComponents.add(showRoomReservations);
         initialComponents.add(showJobTitle);
-
+        
+        defaultRoomCheckboxes = new ArrayList<>();
+        defaultRoomCheckboxes.add(showFloor);
+        defaultRoomCheckboxes.add(showWing);
+        defaultRoomCheckboxes.add(showPostCount);
+        
         /* ne sarakkeet, jotka ovat aluksi piilossa */
         initiallyHiddenColumns = new ArrayList<>();
         initiallyHiddenColumns.add(kerros);
@@ -922,7 +944,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         initRoomData();
         roomTable = new JTable(roomTableData, roomColumnNames);
-        
+
         initPeopleData();
         peopleModel = new NeroTableModel(varaus);
         peopleModel.setDataVector(peopleTableData, peopleColumnNames);
@@ -935,7 +957,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         // jotta se voidaan esittää lyhyessä muodossa
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
-        
+
         //    initPeopleModel();
         //   initRoomModel();
     }
@@ -966,8 +988,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomColumnNames.add(pisteiden_lkm);
         roomColumnNames.add(huoneen_koko);
         roomColumnNames.add(kuvaus);
-        // avainvaraukset
-        // työpistevaraukset
+        roomColumnNames.add(avainvaraukset);
+        roomColumnNames.add(pistevaraukset);
 
     }
 
@@ -1209,6 +1231,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         siipi = "Siipi";
         huoneen_koko = "Huoneen koko";
         kuvaus = "Kuvaus";
+        avainvaraukset = "Avainvaraukset";
+        pistevaraukset = "Työpistevaraukset";
 
         // postilokero    
         postihuone = "Postihuone";
@@ -1337,24 +1361,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void initTableView() {
 
-        /*
-        peopleModel = new NeroTableModel(varaus);
-        peopleModel.setDataVector(peopleTableData, peopleColumnNames);
-        table = new JTable(peopleModel);
-        peopleColumnModel = peopleTable.getColumnModel();
-        peopleModel.setColumnModel(peopleColumnModel);
-        peopleTable.setAutoCreateColumnsFromModel(false);
-        peopleModel.setTable(table);
-
-        // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
-        // jotta se voidaan esittää lyhyessä muodossa
-        TableCellRenderer renderer = new DateCellRenderer();
-        peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
-        * */
-        ///testi
-
         switchToPeopleData();
-        setSelected(initialComponents);
         showInitialColumns();
 
     }
@@ -1418,6 +1425,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void switchToRoomData() {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
+        setSelected(defaultRoomCheckboxes);
         table = roomTable;
         table.setAutoCreateColumnsFromModel(false);
         columnModel = table.getColumnModel();
@@ -1428,19 +1436,18 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void switchToPeopleData() {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
-     
-//        table = peopleTable;
-        peopleModel.setDataVector(peopleTableData, peopleColumnNames);
-        table = new JTable(peopleModel);
-        columnModel = table.getColumnModel();
 
+
+        table = peopleTable;
+        columnModel = table.getColumnModel();
         peopleModel.setTable(table);
-        peopleModel.setColumnModel(columnModel);
         table.setAutoCreateColumnsFromModel(false);
-        
+
         addSorter();
         tableContainer.setViewportView(table);
-        
+        setSelected(initialComponents);
+
+
     }
 
     private void setEnabled(List<JComponent> components, boolean b) {
@@ -1509,12 +1516,10 @@ public class ReportsWindow extends javax.swing.JFrame {
             row.add(room.getRoomSize());
             row.add(room.getDescription());
             // avainvaraukset
+            row.add("avainhlö1, avainhlö2");
             // työpistevaraukset
+            row.add("varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus");
             roomTableData.add(row);
         }
-    }
-
-    private void initPeopleModel() {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
