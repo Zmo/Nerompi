@@ -49,13 +49,19 @@ public class ReportsWindow extends javax.swing.JFrame {
     private List<JComponent> peopleComponents;
     private List<JComponent> roomComponents;
     private TableColumnModel columnModel;
+    private JTable roomTable;
+    private JTable peopleTable;
     private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
     private Room[] rooms;
-    private Vector<Vector<Object>> tableData;
+  //  private Vector<Vector<Object>> tableData;
     private Vector<Vector<Object>> peopleTableData;
     private Vector<Vector<Object>> roomTableData;
     private Vector<String> peopleColumnNames;
+    private Vector<String> roomColumnNames;
+    private TableColumnModel roomColumnModel;
+    private TableColumnModel peopleColumnModel;
+    private NeroTableModel peopleModel;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
     private Map<String, RowFilter> filterList;
@@ -72,7 +78,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private DefaultComboBoxModel floorsModel;
     private int[] floors = new int[]{1, 2, 3};
     private char[] wings = new char[]{'A', 'B', 'C', 'D'};
-    private Vector<Object> roomColumnNames;
+
 
     /**
      * Creates new form Reports
@@ -98,8 +104,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         initComponents();
         initContainers();
         initModels();
-        initColumnData();
         initColumnNames();
+        initColumnData();
         initTableView();
         this.setVisible(true);
     }
@@ -739,9 +745,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         String value = dataModeSelector.getSelectedItem().toString();
         if (value.equals("Huoneet")) {
             switchToRoomData();
-        } else if (value.equals("Henkilöt")){
+        } else if (value.equals("Henkilöt")) {
             switchToPeopleData();
-        } 
+        }
     }//GEN-LAST:event_dataModeSelectorItemStateChanged
 
     private void showSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showSizeActionPerformed
@@ -869,7 +875,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomComponents.add(showSize);
         roomComponents.add(showRoomKeyReservations);
         roomComponents.add(showPostReservations);
-        
+
         /*Pelkästään henkilöihin liittyvät rajoittimet*/
         peopleComponents = new ArrayList<>();
         peopleComponents.add(restrictByLockerRoom);
@@ -885,7 +891,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleComponents.add(firstCalendar);
         peopleComponents.add(lastCalendar);
         peopleComponents.add(showInactive);
-                
+
     }
 
     /**
@@ -913,10 +919,26 @@ public class ReportsWindow extends javax.swing.JFrame {
      * lisäksi kiinnitetään sarakkeisiin otsakkeet.
      */
     private void initColumnData() {
-        
+
         initPeopleData();
         initRoomData();
-        tableData = peopleTableData;
+
+        roomTable = new JTable(roomTableData, roomColumnNames);
+        roomTable.setAutoCreateColumnsFromModel(false);
+        roomColumnModel = roomTable.getColumnModel();
+
+        peopleModel = new NeroTableModel(varaus);
+        peopleModel.setDataVector(peopleTableData, peopleColumnNames);
+        peopleTable = new JTable(peopleModel);
+        peopleColumnModel = peopleTable.getColumnModel();
+        peopleModel.setColumnModel(peopleColumnModel);
+        peopleTable.setAutoCreateColumnsFromModel(false);
+        peopleModel.setTable(Data);
+        // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
+        // jotta se voidaan esittää lyhyessä muodossa
+        TableCellRenderer renderer = new DateCellRenderer();
+        peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
+
     }
 
     /**
@@ -937,7 +959,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnNames.add(sposti);
         peopleColumnNames.add(puhelinnumero);
         peopleColumnNames.add(postihuone);
-        
+
         roomColumnNames = new Vector<>();
         roomColumnNames.add(nimi);
         roomColumnNames.add(kerros);
@@ -945,8 +967,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomColumnNames.add(pisteiden_lkm);
         roomColumnNames.add(huoneen_koko);
         roomColumnNames.add(kuvaus);
-            // avainvaraukset
-            // työpistevaraukset
+        // avainvaraukset
+        // työpistevaraukset
 
     }
 
@@ -1188,7 +1210,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         siipi = "Siipi";
         huoneen_koko = "Huoneen koko";
         kuvaus = "Kuvaus";
-        
+
         // postilokero    
         postihuone = "Postihuone";
         puhelinnumero = "Puhelinnumero";
@@ -1315,18 +1337,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     private void initTableView() {
-        NeroTableModel peopleModel = new NeroTableModel(varaus);
-        peopleModel.setDataVector(tableData, peopleColumnNames);
-        Data = new JTable(peopleModel);
-        columnModel = Data.getColumnModel();
-        peopleModel.setColumnModel(columnModel);
-        Data.setAutoCreateColumnsFromModel(false);
-        peopleModel.setTable(Data);
 
-        // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
-        // jotta se voidaan esittää lyhyessä muodossa
-        TableCellRenderer renderer = new DateCellRenderer();
-        columnModel.getColumn(columnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
+        Data = peopleTable;
+        columnModel = peopleColumnModel;
+        
         setSelected(initialComponents);
         showInitialColumns();
         addSorter();
@@ -1335,8 +1349,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     // todo: -> show columns (iterable collection)
     private void showInitialColumns() {
+
         for (String identifier : initiallyHiddenColumns) {
-            hideColumn(identifier);
+            try {
+                hideColumn(identifier);
+            } catch (NullPointerException ex) {
+                System.out.println("ei sarakkeita näkyvillä");
+            }
         }
     }
 
@@ -1387,19 +1406,24 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void switchToRoomData() {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
-        tableData = roomTableData;
-        tableContainer.setViewportView(Data);
-    }
-    
-    private void switchToPeopleData() {
-        setEnabled(peopleComponents, true);
-        setEnabled(roomComponents, false);
-        tableData = peopleTableData;
+        Data = roomTable;
+        addSorter();
         tableContainer.setViewportView(Data);
     }
 
+    private void switchToPeopleData() {
+        setEnabled(peopleComponents, true);
+        setEnabled(roomComponents, false);
+        Data = peopleTable;
+        addSorter();
+        tableContainer.setViewportView(Data);
+
+
+
+    }
+
     private void setEnabled(List<JComponent> components, boolean b) {
-        for(JComponent comp: components) {
+        for (JComponent comp : components) {
             comp.setEnabled(b);
         }
     }
@@ -1454,7 +1478,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void initPeopleData() {
         roomTableData = new Vector<>();
-        for(int i = 0; i < rooms.length; i++) {
+        for (int i = 0; i < rooms.length; i++) {
             Vector<Object> row = new Vector<>();
             Room room = rooms[i];
             row.add(room.getRoomID());
