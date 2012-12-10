@@ -79,6 +79,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private int[] floors = new int[]{1, 2, 3};
     private char[] wings = new char[]{'A', 'B', 'C', 'D'};
     private List<JCheckBox> defaultRoomCheckboxes;
+    private ArrayList<String> defaultRoomColumns;
 
     /**
      * Creates new form Reports
@@ -162,6 +163,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showSize = new javax.swing.JCheckBox();
         showRoomKeyReservations = new javax.swing.JCheckBox();
         showPostReservations = new javax.swing.JCheckBox();
+        showDescription = new javax.swing.JCheckBox();
         dataModeSelector = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
 
@@ -476,6 +478,13 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
+        showDescription.setText("Kuvaus");
+        showDescription.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showDescriptionMouseReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout columnChekboxesLayout = new javax.swing.GroupLayout(columnChekboxes);
         columnChekboxes.setLayout(columnChekboxesLayout);
         columnChekboxesLayout.setHorizontalGroup(
@@ -485,7 +494,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(columnChekboxesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(showSize)
                     .addComponent(showRoomKeyReservations)
-                    .addComponent(showPostReservations))
+                    .addComponent(showPostReservations)
+                    .addComponent(showDescription))
                 .addContainerGap(64, Short.MAX_VALUE))
             .addGroup(columnChekboxesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(columnChekboxesLayout.createSequentialGroup()
@@ -511,7 +521,9 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addComponent(showRoomKeyReservations)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showPostReservations)
-                .addContainerGap(284, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showDescription)
+                .addContainerGap(261, Short.MAX_VALUE))
             .addGroup(columnChekboxesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(columnChekboxesLayout.createSequentialGroup()
                     .addContainerGap()
@@ -765,10 +777,16 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_showSizeMouseReleased
 
     private void showRoomKeyReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showRoomKeyReservationsMouseReleased
-        setColumnVisibility(showRoomKeyReservations, avainvaraukset);    }//GEN-LAST:event_showRoomKeyReservationsMouseReleased
+        setColumnVisibility(showRoomKeyReservations, avainvaraukset);
+    }//GEN-LAST:event_showRoomKeyReservationsMouseReleased
 
     private void showPostReservationsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showPostReservationsMouseReleased
-        setColumnVisibility(showPostReservations, pistevaraukset);    }//GEN-LAST:event_showPostReservationsMouseReleased
+        setColumnVisibility(showPostReservations, pistevaraukset);
+    }//GEN-LAST:event_showPostReservationsMouseReleased
+
+    private void showDescriptionMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showDescriptionMouseReleased
+        setColumnVisibility(showDescription, kuvaus);
+    }//GEN-LAST:event_showDescriptionMouseReleased
     /**
      * @param args the command line arguments
      */
@@ -837,6 +855,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JLabel roomLabel;
     private javax.swing.JButton saveButton;
+    private javax.swing.JCheckBox showDescription;
     private javax.swing.JCheckBox showEmail;
     private javax.swing.JCheckBox showFloor;
     private javax.swing.JCheckBox showInactive;
@@ -874,12 +893,15 @@ public class ReportsWindow extends javax.swing.JFrame {
         initialComponents.add(showRoomAndPost);
         initialComponents.add(showRoomReservations);
         initialComponents.add(showJobTitle);
-        
+
         defaultRoomCheckboxes = new ArrayList<>();
+
         defaultRoomCheckboxes.add(showFloor);
         defaultRoomCheckboxes.add(showWing);
         defaultRoomCheckboxes.add(showPostCount);
-        
+        defaultRoomCheckboxes.add(showDescription);
+
+
         /* ne sarakkeet, jotka ovat aluksi piilossa */
         initiallyHiddenColumns = new ArrayList<>();
         initiallyHiddenColumns.add(kerros);
@@ -890,6 +912,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         initiallyHiddenColumns.add(sposti);
         initiallyHiddenColumns.add(puhelinnumero);
         initiallyHiddenColumns.add(postihuone);
+
+        defaultRoomColumns = new ArrayList<>();
+        defaultRoomColumns.add(huoneen_koko);
+        defaultRoomColumns.add(avainvaraukset);
+        defaultRoomColumns.add(pistevaraukset);
+
 
         /*Pelk‰st‰‰n huoneisiin liittyv‰t rajoittimet*/
         roomComponents = new ArrayList<>();
@@ -1362,18 +1390,16 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void initTableView() {
 
         switchToPeopleData();
-        showInitialColumns();
+        showColumns(initiallyHiddenColumns);
 
     }
 
-    // todo: -> show columns (iterable collection)
-    private void showInitialColumns() {
-
-        for (String identifier : initiallyHiddenColumns) {
+    private void showColumns(Collection<String> col) {
+        for (String identifier : col) {
             try {
                 hideColumn(identifier);
             } catch (NullPointerException ex) {
-                System.out.println("ei sarakkeita n‰kyvill‰");
+                System.out.println("saraketta " + identifier + " ei n‰kyvill‰");
             }
         }
     }
@@ -1429,6 +1455,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         table = roomTable;
         table.setAutoCreateColumnsFromModel(false);
         columnModel = table.getColumnModel();
+        showColumns(defaultRoomColumns);
         addSorter();
         tableContainer.setViewportView(table);
     }
