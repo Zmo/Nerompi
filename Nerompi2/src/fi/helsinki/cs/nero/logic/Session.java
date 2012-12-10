@@ -965,7 +965,8 @@ public class Session {
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.modifyRoomKeyReservation(roomKeyReservation);
-        System.out.println(" /\\/\\/" + roomKeyReservation.getReservationID());
+        roomKeyReservation.getTargetRoom().modifyRoomKeyReservation(roomKeyReservation);
+        this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
     }
 
     
