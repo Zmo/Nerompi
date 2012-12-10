@@ -938,6 +938,11 @@ public class Session {
         return db.getRoomKeyReservations(room);
     }
 
+    /**
+     * Lisää annetulle henkilölle avainvarauksen annetulle aikavälille
+     * @param person Henkilö, jolle avainvaraus lisätään
+     * @param timeslice aikaväli, jolle varaus tehdään
+     */
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
         //RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
         db.addRoomKeyReservation(this.activeRoom, person, timeslice);
@@ -953,6 +958,12 @@ public class Session {
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
     }
 
+    /**
+     * Poistetaan annettu avainvaraus annetulta henkilöltä
+     * @param roomKeyReservation Poistettava avainvaraus
+     * @param person Henkilö, jolta avainvaraus poistetaan
+     * @throws SQLException 
+     */
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         this.db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
