@@ -1398,7 +1398,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (String identifier : col) {
             try {
                 hideColumn(identifier);
-            } catch (NullPointerException ex) {
+            } catch (Exception ex) {
                 System.out.println("saraketta " + identifier + " ei näkyvillä");
             }
         }
