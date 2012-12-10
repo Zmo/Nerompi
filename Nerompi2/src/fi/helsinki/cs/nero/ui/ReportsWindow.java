@@ -54,7 +54,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
     private Room[] rooms;
-  //  private Vector<Vector<Object>> tableData;
+    //  private Vector<Vector<Object>> tableData;
     private Vector<Vector<Object>> peopleTableData;
     private Vector<Vector<Object>> roomTableData;
     private Vector<String> peopleColumnNames;
@@ -78,7 +78,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private DefaultComboBoxModel floorsModel;
     private int[] floors = new int[]{1, 2, 3};
     private char[] wings = new char[]{'A', 'B', 'C', 'D'};
-
 
     /**
      * Creates new form Reports
@@ -126,7 +125,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         fileTypeChooser = new javax.swing.JComboBox();
         ColumnsLabel = new javax.swing.JLabel();
         tableContainer = new javax.swing.JScrollPane();
-        Data = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         restrictionsContainer = new javax.swing.JPanel();
         wing = new javax.swing.JLabel();
         restrictByWing = new javax.swing.JComboBox();
@@ -187,9 +186,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         tableContainer.setPreferredSize(new java.awt.Dimension(700, 700));
 
-        Data.setAutoCreateColumnsFromModel(false);
-        Data.setAutoCreateRowSorter(true);
-        Data.setModel(new javax.swing.table.DefaultTableModel(
+        table.setAutoCreateColumnsFromModel(false);
+        table.setAutoCreateRowSorter(true);
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -200,9 +199,9 @@ public class ReportsWindow extends javax.swing.JFrame {
 
             }
         ));
-        Data.setEnabled(false);
-        Data.setRowSelectionAllowed(false);
-        tableContainer.setViewportView(Data);
+        table.setEnabled(false);
+        table.setRowSelectionAllowed(false);
+        tableContainer.setViewportView(table);
 
         wing.setText("Siipi");
 
@@ -615,7 +614,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      */
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
 
-        int option = fileChooserDialog.showSaveDialog(Data);
+        int option = fileChooserDialog.showSaveDialog(table);
         // tallennus vain, jos on painettu "OK/Tallenna"
         if (option == JFileChooser.APPROVE_OPTION) {
             File f = fileChooserDialog.getSelectedFile();
@@ -794,7 +793,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ColumnsLabel;
-    private javax.swing.JTable Data;
     private javax.swing.JPanel columnChekboxes;
     private javax.swing.JComboBox dataModeSelector;
     private javax.swing.JFileChooser fileChooserDialog;
@@ -835,6 +833,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JCheckBox showRoomReservations;
     private javax.swing.JCheckBox showSize;
     private javax.swing.JCheckBox showWing;
+    private javax.swing.JTable table;
     private javax.swing.JScrollPane tableContainer;
     private javax.swing.ButtonGroup viewButtons;
     private javax.swing.JLabel wing;
@@ -901,6 +900,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         hiddenColumns = new HashMap<>();
 
+
         /*Dropdown menu models - currently not used*/
         wingsModel = new DefaultComboBoxModel();
         floorsModel = new DefaultComboBoxModel();
@@ -921,24 +921,23 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void initColumnData() {
 
         initRoomData();
-        initPeopleData();
-
         roomTable = new JTable(roomTableData, roomColumnNames);
-        roomTable.setAutoCreateColumnsFromModel(false);
-        roomColumnModel = roomTable.getColumnModel();
-
+        
+        initPeopleData();
         peopleModel = new NeroTableModel(varaus);
         peopleModel.setDataVector(peopleTableData, peopleColumnNames);
         peopleTable = new JTable(peopleModel);
         peopleColumnModel = peopleTable.getColumnModel();
         peopleModel.setColumnModel(peopleColumnModel);
         peopleTable.setAutoCreateColumnsFromModel(false);
-        peopleModel.setTable(Data);
+        peopleModel.setTable(table);
         // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
         // jotta se voidaan esittää lyhyessä muodossa
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
-
+        
+        //    initPeopleModel();
+        //   initRoomModel();
     }
 
     /**
@@ -1033,8 +1032,8 @@ public class ReportsWindow extends javax.swing.JFrame {
      * sarakkeittain.
      */
     private void addSorter() {
-        rowSorter = new TableRowSorter<>(Data.getModel());
-        Data.setRowSorter(rowSorter);
+        rowSorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(rowSorter);
     }
 
     /**
@@ -1046,12 +1045,12 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @return taulukko tällä hetkellä näkyvillä olevien sarakkeiden indekseistä
      */
     private int[] listShownColumnsByIndex() {
-        Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
-        int[] neededIndexes = new int[Data.getColumnCount()];
+        Enumeration<TableColumn> e = table.getColumnModel().getColumns();
+        int[] neededIndexes = new int[table.getColumnCount()];
         int z = 0;
         while (e.hasMoreElements()) {
             String s = e.nextElement().getIdentifier().toString();
-            neededIndexes[z] = Data.getColumnModel().getColumnIndex(s);
+            neededIndexes[z] = table.getColumnModel().getColumnIndex(s);
             z++;
         }
         return neededIndexes;
@@ -1150,7 +1149,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @return filteri, joka filteröi saamansa päivämäärän ja ehdon mukaan
      */
     private RowFilter getDateFilter(Date date, ComparisonType type) {
-        int index = Data.convertColumnIndexToModel(Data.getColumnModel().getColumnIndex(varaus));
+        int index = table.convertColumnIndexToModel(table.getColumnModel().getColumnIndex(varaus));
         RowFilter newFilter = RowFilter.dateFilter(type,
                 date, index);
         return newFilter;
@@ -1282,7 +1281,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      */
     private List getShownColumnIdentifiers() {
 
-        Enumeration<TableColumn> e = Data.getColumnModel().getColumns();
+        Enumeration<TableColumn> e = table.getColumnModel().getColumns();
         int z = 0;
         List rowData = new ArrayList();
         while (e.hasMoreElements()) {
@@ -1307,9 +1306,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Collection<? extends List> getShownColumnData() {
 
         int[] neededIndexes = listShownColumnsByIndex();
-        TableModel tableModel = Data.getModel();
-        DefaultRowSorter rs = (DefaultRowSorter) Data.getRowSorter();
-        int columnCount = Data.getColumnCount();
+        TableModel tableModel = table.getModel();
+        DefaultRowSorter rs = (DefaultRowSorter) table.getRowSorter();
+        int columnCount = table.getColumnCount();
         int rowCount = rs.getViewRowCount();
         ArrayList list = new ArrayList(rowCount);
 
@@ -1320,7 +1319,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             int rowIndexInView = rs.convertRowIndexToModel(i);
             for (int j = 0; j < columnCount; j++) {
                 Object o = tableModel.getValueAt(rowIndexInView,
-                        Data.convertColumnIndexToModel(neededIndexes[j]));
+                        table.convertColumnIndexToModel(neededIndexes[j]));
                 String value;
                 if (o == null) {
                     value = "";
@@ -1338,30 +1337,26 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void initTableView() {
 
-//        Data = peopleTable;
-  //      columnModel = peopleColumnModel;
-        
-        // testi
-        
+        /*
         peopleModel = new NeroTableModel(varaus);
         peopleModel.setDataVector(peopleTableData, peopleColumnNames);
-        Data = new JTable(peopleModel);
+        table = new JTable(peopleModel);
         peopleColumnModel = peopleTable.getColumnModel();
         peopleModel.setColumnModel(peopleColumnModel);
         peopleTable.setAutoCreateColumnsFromModel(false);
-        peopleModel.setTable(Data);
+        peopleModel.setTable(table);
+
         // asetetaan varaus-sarakkeelle oma renderer päivämäärää varten
         // jotta se voidaan esittää lyhyessä muodossa
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
-
+        * */
         ///testi
-        
-        
+
+        switchToPeopleData();
         setSelected(initialComponents);
         showInitialColumns();
-        addSorter();
-        tableContainer.setViewportView(Data);
+
     }
 
     // todo: -> show columns (iterable collection)
@@ -1385,7 +1380,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     private int convertColumnIndexToModel(int i) {
-        return Data.convertColumnIndexToModel(i);
+        return table.convertColumnIndexToModel(i);
     }
 
     private RowFilter getRegexFilter(String regex, String columnName) {
@@ -1411,7 +1406,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void updateFilterList(List<RowFilter<Object, Object>> filters) {
         try {
             generalFilter = RowFilter.andFilter(filters);
-            DefaultRowSorter sorter = (TableRowSorter) Data.getRowSorter();
+            DefaultRowSorter sorter = (TableRowSorter) table.getRowSorter();
             sorter.setRowFilter(generalFilter);
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(rootPane,
@@ -1423,22 +1418,29 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void switchToRoomData() {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
-        Data = roomTable;
-        Data.setAutoCreateColumnsFromModel(false);
-        
-        columnModel = Data.getColumnModel();
+        table = roomTable;
+        table.setAutoCreateColumnsFromModel(false);
+        columnModel = table.getColumnModel();
         addSorter();
-        tableContainer.setViewportView(Data);
+        tableContainer.setViewportView(table);
     }
 
     private void switchToPeopleData() {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
-        Data = peopleTable;
-        columnModel = peopleColumnModel;
-        addSorter();
-        tableContainer.setViewportView(Data);
+     
+//        table = peopleTable;
+        peopleModel.setDataVector(peopleTableData, peopleColumnNames);
+        table = new JTable(peopleModel);
+        columnModel = table.getColumnModel();
 
+        peopleModel.setTable(table);
+        peopleModel.setColumnModel(columnModel);
+        table.setAutoCreateColumnsFromModel(false);
+        
+        addSorter();
+        tableContainer.setViewportView(table);
+        
     }
 
     private void setEnabled(List<JComponent> components, boolean b) {
@@ -1500,7 +1502,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         for (int i = 0; i < rooms.length; i++) {
             Vector<Object> row = new Vector<>();
             Room room = rooms[i];
-            row.add(room.getRoomID());
+            row.add(room.getRoomName());
             row.add(room.getFloor());
             row.add(room.getWing());
             row.add(room.getPosts().length);
@@ -1510,5 +1512,9 @@ public class ReportsWindow extends javax.swing.JFrame {
             // työpistevaraukset
             roomTableData.add(row);
         }
+    }
+
+    private void initPeopleModel() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
