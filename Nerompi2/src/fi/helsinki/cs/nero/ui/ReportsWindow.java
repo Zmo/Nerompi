@@ -920,8 +920,8 @@ public class ReportsWindow extends javax.swing.JFrame {
      */
     private void initColumnData() {
 
-        initPeopleData();
         initRoomData();
+        initPeopleData();
 
         roomTable = new JTable(roomTableData, roomColumnNames);
         roomTable.setAutoCreateColumnsFromModel(false);
@@ -1338,8 +1338,25 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void initTableView() {
 
-        Data = peopleTable;
-        columnModel = peopleColumnModel;
+//        Data = peopleTable;
+  //      columnModel = peopleColumnModel;
+        
+        // testi
+        
+        peopleModel = new NeroTableModel(varaus);
+        peopleModel.setDataVector(peopleTableData, peopleColumnNames);
+        Data = new JTable(peopleModel);
+        peopleColumnModel = peopleTable.getColumnModel();
+        peopleModel.setColumnModel(peopleColumnModel);
+        peopleTable.setAutoCreateColumnsFromModel(false);
+        peopleModel.setTable(Data);
+        // asetetaan varaus-sarakkeelle oma renderer p‰iv‰m‰‰r‰‰ varten
+        // jotta se voidaan esitt‰‰ lyhyess‰ muodossa
+        TableCellRenderer renderer = new DateCellRenderer();
+        peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
+
+        ///testi
+        
         
         setSelected(initialComponents);
         showInitialColumns();
@@ -1407,6 +1424,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
         Data = roomTable;
+        Data.setAutoCreateColumnsFromModel(false);
+        
+        columnModel = Data.getColumnModel();
         addSorter();
         tableContainer.setViewportView(Data);
     }
@@ -1415,10 +1435,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
         Data = peopleTable;
+        columnModel = peopleColumnModel;
         addSorter();
         tableContainer.setViewportView(Data);
-
-
 
     }
 
@@ -1428,7 +1447,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
-    private void initRoomData() {
+    private void initPeopleData() {
         peopleTableData = new Vector<>();
 
         for (int i = 0; i < people.length; i++) {
@@ -1476,7 +1495,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
-    private void initPeopleData() {
+    private void initRoomData() {
         roomTableData = new Vector<>();
         for (int i = 0; i < rooms.length; i++) {
             Vector<Object> row = new Vector<>();
@@ -1489,6 +1508,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             row.add(room.getDescription());
             // avainvaraukset
             // tyˆpistevaraukset
+            roomTableData.add(row);
         }
     }
 }
