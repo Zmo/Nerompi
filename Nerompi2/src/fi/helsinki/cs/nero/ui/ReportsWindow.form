@@ -59,6 +59,8 @@
                               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                               <Component id="columnChekboxes" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="dataModeDropdown" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -82,9 +84,13 @@
               <Component id="restrictionsContainer" min="-2" pref="111" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                      <Component id="ColumnsLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                      <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="dataModeDropdown" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <Component id="ColumnsLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="columnChekboxes" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -585,5 +591,21 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JComboBox" name="dataModeDropdown">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="2">
+            <StringItem index="0" value="Henkil&#xf6;t"/>
+            <StringItem index="1" value="Huoneet"/>
+          </StringArray>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="N&#xe4;ytet&#xe4;&#xe4;nk&#xf6; tiedot huoneiden vai henkil&#xf6;iden mukaan"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel7">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="N&#xe4;yt&#xe4; kaikki"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
