@@ -939,21 +939,18 @@ public class Session {
     }
 
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
-        RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
+        //RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
         db.addRoomKeyReservation(this.activeRoom, person, timeslice);
-        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(uusiVaraus);
+        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(person, timeslice, this.getActiveRoom());
         if (etsittyVaraus == null){
             System.out.println("Ongelmia Session.addRoomKeyReservationissa - huonetta ei löydy tietokannasta");
+            return;
         }
-        else {
-            
-            uusiVaraus = etsittyVaraus;
-        }
-        this.activeRoom.addRoomKeyReservation(uusiVaraus);
-        person.addRoomKeyReservation(uusiVaraus);
+        this.activeRoom.addRoomKeyReservation(etsittyVaraus);
+        person.addRoomKeyReservation(etsittyVaraus);
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
-        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);        
+        this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
     }
 
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
@@ -969,13 +966,13 @@ public class Session {
     }
 
     
-    public RoomKeyReservation findMatchingRoomKeyReservation(RoomKeyReservation roomKeyReservation){
-        RoomKeyReservation[] varaukset = this.getRoomKeyReservations(roomKeyReservation.getTargetRoom());
+    public RoomKeyReservation findMatchingRoomKeyReservation(Person person, TimeSlice timeSlice, Room room){
+        RoomKeyReservation[] varaukset = this.getRoomKeyReservations(room);
         for (RoomKeyReservation reservation : varaukset) {
             if (reservation != null) {
-                if (reservation.getReserverName().equalsIgnoreCase(roomKeyReservation.getReserverName())
-                        && (reservation.getTimeSlice().getStartDate().compareTo(roomKeyReservation.getTimeSlice().getStartDate()) == 0)
-                        && (reservation.getTimeSlice().getEndDate().compareTo(roomKeyReservation.getTimeSlice().getEndDate()) == 0)) {
+                if (reservation.getReserverName().equalsIgnoreCase(person.getName())
+                        && (reservation.getTimeSlice().getStartDate().compareTo(timeSlice.getStartDate()) == 0)
+                        && (reservation.getTimeSlice().getEndDate().compareTo(timeSlice.getEndDate()) == 0)) {
                     return reservation;
                 }
             }
