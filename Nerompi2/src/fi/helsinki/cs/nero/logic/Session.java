@@ -564,8 +564,12 @@ public class Session {
             return;
         }
         Date date = new Date();
-        if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate()))
+        if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate())) {
             db.addRoomToPerson(reservation.getReservingPerson(), reservation.getTargetPost().getRoom());
+        }
+        else {
+            db.removeRoomFromPerson(reservation.getReservingPerson());
+        }
         // kerrotaan työpisteelle että sen varaukset ovat muuttuneet
         reservation.getTargetPost().clearReservations();
         // varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
@@ -573,7 +577,6 @@ public class Session {
         // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
         //obsman.notifyObservers(NeroObserverTypes.FILTER_PEOPLE);
         setStatusMessage("Työpistevarausta muutettu.");
-        db.updateRooms();
     }
 
     /**
@@ -588,8 +591,9 @@ public class Session {
         if (db.deleteReservation(reservation)) {
             reservation.getTargetPost().clearReservations();
             Date date = new Date();
-            if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate()))
+            if(date.after(reservation.getTimeSlice().getStartDate()) && date.before(reservation.getTimeSlice().getEndDate())) {
                 db.deleteRoomFromPerson(reservation.getReservingPerson());
+            }
             // varausten ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
@@ -684,8 +688,9 @@ public class Session {
         if (db.createReservation(newRes)) {
             newRes.getTargetPost().clearReservations();
             Date date = new Date();
-            if(date.after(newRes.getTimeSlice().getStartDate()) && date.before(newRes.getTimeSlice().getEndDate()))
+            if(date.after(newRes.getTimeSlice().getStartDate()) && date.before(newRes.getTimeSlice().getEndDate())) {
                 db.addRoomToPerson(person, post.getRoom());
+            }
             // huoneiden ja henkilöiden tiedot ovat muuttuneet, ilmoitetaan kuuntelijoille
             obsman.notifyObservers(NeroObserverTypes.RESERVATIONS);
             // XXX PersonScrollPane on FILTER_PEOPLEn ainoa kuuntelija, ja se kuuntelee myös RESERVATIONSia. Joten turha...
