@@ -956,6 +956,7 @@ public class Session {
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        System.out.println(" /\\/\\/" + etsittyVaraus.getReservationID());
     }
 
     /**
@@ -965,6 +966,7 @@ public class Session {
      * @throws SQLException 
      */
     public void deleteRoomkeyReservation(RoomKeyReservation roomKeyReservation, Person person) throws SQLException {
+        System.out.println(" /\\/\\/" + roomKeyReservation.getReservationID());
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         this.db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         person.deleteRoomKeyReservation(roomKeyReservation);
@@ -974,6 +976,8 @@ public class Session {
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.modifyRoomKeyReservation(roomKeyReservation);
+        roomKeyReservation.getTargetRoom().modifyRoomKeyReservation(roomKeyReservation);
+        this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
     }
 
     

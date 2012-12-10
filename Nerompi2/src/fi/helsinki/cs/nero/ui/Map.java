@@ -28,43 +28,43 @@ import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGRect;
 
 /**
- * KÃ¤yttÃ¶liittymÃ¤n karttakomponentti. Toteutukseen kÃ¤ytetÃ¤Ã¤n Batikin
- * JSVGCanvas-kÃ¤yttÃ¶liittymÃ¤komponenttia.
+ * Käyttöliittymän karttakomponentti. Toteutukseen käytetään Batikin
+ * JSVGCanvas-käyttöliittymäkomponenttia.
  * 
- * Toteutusta hankaloittaa se, ettï¿½ Batikin tietorakenteiden kï¿½sittely
- * tï¿½ytyy tehdï¿½ Batikin omasta sï¿½ikeestï¿½ kï¿½sin, kun taas muu sovellus
- * pyï¿½rii lï¿½hinnï¿½ Swingin tapahtumakï¿½sittelijï¿½sï¿½ikeessï¿½. Tï¿½ytyy siis
- * tarvittaessa vaihtaa sï¿½ikeestï¿½ toiseen.
+ * Toteutusta hankaloittaa se, että Batikin tietorakenteiden käsittely
+ * täytyy tehdä Batikin omasta säikeestä käsin, kun taas muu sovellus
+ * pyörii lähinnä Swingin tapahtumakäsittelijäsäikeessä. Täytyy siis
+ * tarvittaessa vaihtaa säikeestä toiseen.
  * 
- * SVG-dokumentissa on huone-elementtejï¿½, joiden tila esitetï¿½ï¿½n graafisesti.
- * Huoneille asetetaan CSS-luokka (attribuutti class), jonka jï¿½lkeen ulkoasu
- * mï¿½ï¿½ritellï¿½ï¿½n erillisessa CSS-tyylitiedostossa. Luokat ovat seuraavat:
- *  room        tï¿½mï¿½ on aina kaikilla huoneilla
+ * SVG-dokumentissa on huone-elementtejä, joiden tila esitetään graafisesti.
+ * Huoneille asetetaan CSS-luokka (attribuutti class), jonka jälkeen ulkoasu
+ * määritellään erillisessa CSS-tyylitiedostossa. Luokat ovat seuraavat:
+ *  room        tämä on aina kaikilla huoneilla
  *  project     valitun projektin huone
  *  active      valittu huone
  *  filtered    hakuehtojen mukainen
  *  occupied    varattu
  *  partfree    osittain vapaa
  *  free        vapaa
- *  noposts     ei sisï¿½llï¿½ yhtï¿½ï¿½n tyï¿½pistettï¿½
+ *  noposts     ei sisällä yhtään työpistettä
  * @author Osma Suominen
  */
 
 public class Map extends JSVGCanvas implements NeroObserver {
 	
 	/**
-	 * Tiedosto, joka sisï¿½ltï¿½ï¿½ karttapohjan SVG-muodossa.
+	 * Tiedosto, joka sisältää karttapohjan SVG-muodossa.
 	 */
 	private static final String SVGFILE = "data/kartta.svg";
 	
 	/**
 	 * Kartan kerrosten tunnukset. Merkkijonon jokainen merkki vastaa
-     * yhtï¿½ kerrosta.
+     * yhtä kerrosta.
 	 */
 	private static final String FLOORS = "1234";
 	
 	/**
-	 * Kartta-SVG:n nappien ryhmï¿½n id.
+	 * Kartta-SVG:n nappien ryhmän id.
 	 */
 	private static final String BUTTONS_ID = "buttons";
 	
@@ -86,17 +86,17 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	private static final String FLOOR_PREFIX = "floor";
 	
 	/**
-	 * Kartta-SVG:n kerrosten ryhmï¿½n id.
+	 * Kartta-SVG:n kerrosten ryhmän id.
 	 */
 	private static final String FLOORS_ID = "floors";
 	
     /**
-     * Huoneen nimitekstin vasemman reunan etï¿½isyys huoneen vasemmasta reunasta.
+     * Huoneen nimitekstin vasemman reunan etäisyys huoneen vasemmasta reunasta.
      */
     private static final int ROOMLABEL_OFFSET_X = 2;
 
     /**
-     * Huoneen nimitekstin alareunan etï¿½isyys huoneen ylï¿½reunasta.
+     * Huoneen nimitekstin alareunan etäisyys huoneen yläreunasta.
      */
     private static final int ROOMLABEL_OFFSET_Y = 12;
     
@@ -111,13 +111,13 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	private Session session;
 	
 	/**
-	 * Hajautusrakenne, joka tallettaa kaikki jï¿½rjestelmï¿½n tuntemat huoneet.
+	 * Hajautusrakenne, joka tallettaa kaikki järjestelmän tuntemat huoneet.
 	 * Avaimena on huoneen numero (esim. "C132"), arvona huoneolio (Room).
 	 */
 	private java.util.Map roomsByNumber = null;
 	
 	/**
-     * SVG:n XML-nimiavaruuden mï¿½ï¿½rittï¿½vï¿½ URI. Kï¿½ytetï¿½ï¿½n lyhennysmerkintï¿½nï¿½.
+     * SVG:n XML-nimiavaruuden määrittävä URI. Käytetään lyhennysmerkintänä.
 	 */
     private String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     
@@ -128,20 +128,20 @@ public class Map extends JSVGCanvas implements NeroObserver {
     private Element activeRoom = null;
 
     /**
-     * Valitun kerroksen id. Jokin FLOORS-merkkijonon merkeistï¿½.
+     * Valitun kerroksen id. Jokin FLOORS-merkkijonon merkeistä.
      */
     private char activeFloor;
     
     /**
-     * Projektin huone-elementtejï¿½ sï¿½ilyttï¿½vï¿½ kokoelma. Kokoelman elementit
-     * ovat SVG-dokumentin elementtejï¿½ (Element-olioita).
+     * Projektin huone-elementtejä säilyttävä kokoelma. Kokoelman elementit
+     * ovat SVG-dokumentin elementtejä (Element-olioita).
      */
     private Collection projectRooms = new LinkedList();
     
 	/**
 	 * Konstruktori, joka luo karttakomponentin.
 	 * @param session sovelluslogiikan sessio
-	 * @param frame Swingin pï¿½ï¿½ikkuna
+	 * @param frame Swingin pääikkuna
 	 */
 	public Map(Session session, JFrame frame) {
 		super();
@@ -162,35 +162,35 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	/* (non-Javadoc)
 	 * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
 	 */
-	/* Synkronoitu metodi, koska sitï¿½ saatetaan kutsua joko Swingin tai Batikin sï¿½ikeestï¿½ */
+	/* Synkronoitu metodi, koska sitä saatetaan kutsua joko Swingin tai Batikin säikeestä */
 	public synchronized void updateObserved(int type) {
         // Haetaan sessiolta tarvittavat tiedot niin kauan, kuin ollaan
-        // oikeassa sï¿½ikeessï¿½. 
+        // oikeassa säikeessä. 
         
         Room[] filteredRooms = null;
         int[] roomStatuses = null;
         Room[] projectRooms = null;
         Room activeRoom = null;
         
-        // tarkistetaan kuinka laaja pï¿½ivitys tarvitsee tehdï¿½
+        // tarkistetaan kuinka laaja päivitys tarvitsee tehdä
         switch(type) {
-		case NeroObserverTypes.ROOMS:          // tï¿½ytyy pï¿½ivittï¿½ï¿½ kaikki
+		case NeroObserverTypes.ROOMS:          // täytyy päivittää kaikki
 			Room[] rooms = session.getRooms();
 		    for(int i=0; i < rooms.length; ++i)
 		    	roomsByNumber.put(rooms[i].getRoomNumber(), rooms[i]);
             // fall-through
-		case NeroObserverTypes.RESERVATIONS:   // tï¿½ytyy pï¿½ivittï¿½ï¿½ varaustiedot     
+		case NeroObserverTypes.RESERVATIONS:   // täytyy päivittää varaustiedot     
 		case NeroObserverTypes.FILTER_ROOMS:
 		case NeroObserverTypes.TIMESCALESLICE:
 			filteredRooms = session.getFilteredRooms();
 		    // Huoneiden tilakin haetaan valmiiksi int-taulukkoon,
 		    // koska sen hakeminen voi aiheuttaa tietokantaoperaatioita, ja ne on
-		    // syytï¿½ tehdï¿½ Swing-sï¿½ikeessï¿½ eikï¿½ Batik-sï¿½ikeessï¿½.
+		    // syytä tehdä Swing-säikeessä eikä Batik-säikeessä.
 		    roomStatuses = new int[filteredRooms.length];
 		    for(int i=0; i<roomStatuses.length; ++i)
 		    	roomStatuses[i] = filteredRooms[i].getStatus();
             // fall-through
-		case NeroObserverTypes.FILTER_PROJECT: // tï¿½ytyy pï¿½ivittï¿½ï¿½ pari huonetta
+		case NeroObserverTypes.FILTER_PROJECT: // täytyy päivittää pari huonetta
 		case NeroObserverTypes.ACTIVE_ROOM:
                     projectRooms = session.getProjectRooms();
 		    activeRoom = session.getActiveRoom();
@@ -199,20 +199,20 @@ public class Map extends JSVGCanvas implements NeroObserver {
             assert(false);
 		}
         
-        // tï¿½ytyy kopioida tiedot final-muuttujiin jotta niitï¿½ voidaan kï¿½sitellï¿½
-        // toisessa luokassa ja sï¿½ikeessï¿½
+        // täytyy kopioida tiedot final-muuttujiin jotta niitä voidaan käsitellä
+        // toisessa luokassa ja säikeessä
         
         final Room[] finalFilteredRooms = filteredRooms;
         final int[] finalRoomStatuses = roomStatuses;
         final Room[] finalProjectRooms = projectRooms;
         final Room finalActiveRoom = activeRoom;
-        // jos tapahtuma oli aktiivisen huoneen vaihto, vaihdetaan myï¿½s kerros tarvittaessa
+        // jos tapahtuma oli aktiivisen huoneen vaihto, vaihdetaan myös kerros tarvittaessa
         final boolean changeFloor = (type == NeroObserverTypes.ACTIVE_ROOM);
         
-        // Kartan pï¿½ivitys tehdï¿½ï¿½n Batikin tapahtumakï¿½sittelijï¿½sï¿½ikeessï¿½.
+        // Kartan päivitys tehdään Batikin tapahtumakäsittelijäsäikeessä.
         UpdateManager updman = getUpdateManager();
         if(updman == null) {
-        	// Karttaa ei ole vielï¿½ ladattu, joten sen pï¿½ivittï¿½minen ei onnistu.
+        	// Karttaa ei ole vielä ladattu, joten sen päivittäminen ei onnistu.
             return;
         }
 		updman.getUpdateRunnableQueue().invokeLater(
@@ -228,12 +228,12 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	}
 	
 	/**
-	 * Apumetodi SVG-dokumentin elementin class-attribuutin pï¿½ivittï¿½miseksi.
-	 * Annettu arvo lisï¿½tï¿½ï¿½n class-attribuutin listaan luokista. Metodia on
-	 * kutsuttava Batikin tapahtumakï¿½sittelijï¿½sï¿½ikeestï¿½. Jos class-attribuutti
-     * jo sisï¿½ltï¿½ï¿½ annetun luokan, ei tehdï¿½ mitï¿½ï¿½n.
+	 * Apumetodi SVG-dokumentin elementin class-attribuutin päivittämiseksi.
+	 * Annettu arvo lisätään class-attribuutin listaan luokista. Metodia on
+	 * kutsuttava Batikin tapahtumakäsittelijäsäikeestä. Jos class-attribuutti
+     * jo sisältää annetun luokan, ei tehdä mitään.
 	 * @param el elementti jonka class-attribuuttia muokataan
-	 * @param newclass lisï¿½ttï¿½vï¿½ class-arvo
+	 * @param newclass lisättävä class-arvo
 	 */
 	private void addClass(Element el, String newclass) {
 		String oldclass = el.getAttribute("class");
@@ -244,10 +244,10 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	}
 
     /**
-     * Apumetodi SVG-dokumentin elementin class-attribuutin pï¿½ivittï¿½miseksi.
+     * Apumetodi SVG-dokumentin elementin class-attribuutin päivittämiseksi.
      * Annettu arvo posistetaan class-attribuutin luokista. Metodia on
-     * kutsuttava Batikin tapahtumakï¿½sittelijï¿½sï¿½ikeestï¿½. Jos class-attribuutti
-     * ei sisï¿½llï¿½ annettua luokkaa, ei tehdï¿½ mitï¿½ï¿½n.
+     * kutsuttava Batikin tapahtumakäsittelijäsäikeestä. Jos class-attribuutti
+     * ei sisällä annettua luokkaa, ei tehdä mitään.
      * @param el elementti jonka class-attribuuttia muokataan
      * @param newclass poistettava class-arvo
      */
@@ -257,9 +257,9 @@ public class Map extends JSVGCanvas implements NeroObserver {
     }
     
 	/**
-	 * Palauttaa kaikkien kartalla nï¿½kyvien huoneiden tilan alkutilaan eli
+	 * Palauttaa kaikkien kartalla näkyvien huoneiden tilan alkutilaan eli
 	 * poistaa kaikki korostukset. Metodia on kutsuttava Batikin
-	 * tapahtumakï¿½sittelijï¿½sï¿½ikeestï¿½.
+	 * tapahtumakäsittelijäsäikeestä.
 	 */
 	private void clearRoomStatus() {
 		Iterator it =  roomsByNumber.values().iterator();
@@ -267,7 +267,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
 			Room room = (Room) it.next();
 			Element el = document.getElementById(room.getRoomNumber());
 			if(el == null) {
-				System.err.println("Huonetta " + room.getRoomNumber() + " ei lï¿½ydy kartalta.");
+				System.err.println("Huonetta " + room.getRoomNumber() + " ei löydy kartalta.");
 				continue;
 			}
 			el.setAttribute("class", "room");
@@ -276,9 +276,9 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	
 	/**
 	 * Merkkaa aktiivisen huoneen kartalle. Metodia on kutsuttava Batikin
-	 * tapahtumakï¿½sittelijï¿½sï¿½ikeestï¿½.
+	 * tapahtumakäsittelijäsäikeestä.
 	 * @param room uusi aktiivinen huone
-	 * @param changeFloor vaihdetaanko myï¿½s kerrosta
+	 * @param changeFloor vaihdetaanko myös kerrosta
 	 */
 	private void updateActiveRoom(Room room, boolean changeFloor) {
         if(room == null) return;
@@ -289,17 +289,17 @@ public class Map extends JSVGCanvas implements NeroObserver {
 		assert(el != null);
 		addClass(el, "active");
         activeRoom = el;
-        // vaihda kerrosta niin, ettï¿½ aktiivinen huone on nï¿½kyvillï¿½
+        // vaihda kerrosta niin, että aktiivinen huone on näkyvillä
         if(changeFloor && room.getFloor().charAt(0) != activeFloor)
         	setActiveFloor(room.getFloor().charAt(0));
  	}
 	
 	/**
 	 * Merkkaa projektin huoneet kartalle. Metodia on kutsuttava Batikin
-	 * tapahtumakï¿½sittelijï¿½sï¿½ikeestï¿½.
+	 * tapahtumakäsittelijäsäikeestä.
 	 */
 	private void updateProjectRooms(Room[] rooms) {
-        // poistetaan merkkaus entisistï¿½ projektihuoneista
+        // poistetaan merkkaus entisistä projektihuoneista
 		Iterator iter = projectRooms.iterator();
         while(iter.hasNext()) {
         	Element el = (Element)iter.next();
@@ -307,15 +307,15 @@ public class Map extends JSVGCanvas implements NeroObserver {
         }
         projectRooms.clear();
 
-        // lisï¿½tï¿½ï¿½n merkkaus uusiin projektihuoneisiin sekï¿½ niiden kerroksiin
-        String floorsWithProjects = ""; // projektihuoneita sisï¿½ltï¿½vien kerrosten tunnukset
+        // lisätään merkkaus uusiin projektihuoneisiin sekä niiden kerroksiin
+        String floorsWithProjects = ""; // projektihuoneita sisältävien kerrosten tunnukset
         for(int i=0; i<rooms.length; ++i) {
 			Element el = document.getElementById(rooms[i].getRoomNumber());
 			assert(el != null);
 			addClass(el, "project");
             projectRooms.add(el);
 
-            // lisï¿½tï¿½ï¿½n tarvittaessa huoneen kerros listaan merkattavista kerroksista
+            // lisätään tarvittaessa huoneen kerros listaan merkattavista kerroksista
             if(floorsWithProjects.indexOf(rooms[i].getFloor()) == -1)
             	floorsWithProjects += rooms[i].getFloor();
 		}
@@ -328,11 +328,11 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	
 	/**
 	 * Merkkaa hakuehtojen mukaiset huoneet kartalle. Metodia on kutsuttava 
-	 * Batikin tapahtumakï¿½sittelijï¿½sï¿½ikeestï¿½.
+	 * Batikin tapahtumakäsittelijäsäikeestä.
 	 */
 	private void updateFilteredRooms(Room[] rooms, int[] roomStatuses) {
             // kerrosten tila: maksimiarvo huoneiden vapaustiloista
-            // Room.NO_POSTS on oletustila, jota ei merkitï¿½
+            // Room.NO_POSTS on oletustila, jota ei merkitä
             int[] floorStatus = new int[FLOORS.length()];
             for(int i=0; i<floorStatus.length; ++i)
                 floorStatus[i] = Room.NO_POSTS;
@@ -355,7 +355,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
             }
                 el.setAttribute("class", "room filtered " + cl);
             
-                // pidetï¿½ï¿½n yllï¿½ kerroskohtaista maksimiarvoa statuksesta
+                // pidetään yllä kerroskohtaista maksimiarvoa statuksesta
                 int floorIdx = FLOORS.indexOf(rooms[i].getFloor());
                 if(floorStatus[floorIdx] < roomStatuses[i])
                 floorStatus[floorIdx] = roomStatuses[i];
@@ -389,17 +389,17 @@ public class Map extends JSVGCanvas implements NeroObserver {
         }
 	
 	/**
-	 * Asettaa aktiivisen kerroksen. Piilottaa muut kerrokset nï¿½kyvistï¿½.
-	 * Metodia on kutsuttava Batikin tapahtumakuuntelijasï¿½ikeestï¿½.
-	 * @param floorID kerroksen id 1-merkkisenï¿½ merkkijonona
-	 * @note Kerroksen vaihto kartalla syï¿½ runsaasti muistia! Tï¿½mï¿½ saattaa olla Batikin bugi.
+	 * Asettaa aktiivisen kerroksen. Piilottaa muut kerrokset näkyvistä.
+	 * Metodia on kutsuttava Batikin tapahtumakuuntelijasäikeestä.
+	 * @param floorID kerroksen id 1-merkkisenä merkkijonona
+	 * @note Kerroksen vaihto kartalla syö runsaasti muistia! Tämä saattaa olla Batikin bugi.
 	 */
 	private void setActiveFloor(char floorID) {
 		Element newfloor = document.getElementById(FLOOR_PREFIX + floorID);
 		if(newfloor == null)
 			throw new IllegalArgumentException("nonexistant floor id: " + floorID);
 
-		// XXX Tï¿½ssï¿½ kohtaa Batik tuntuu vuotavan muistia. Onneksi kerrosta ei vaihdeta
+		// XXX Tässä kohtaa Batik tuntuu vuotavan muistia. Onneksi kerrosta ei vaihdeta
 		// kovin usein.
 		Element oldfloor = document.getElementById(FLOOR_PREFIX + activeFloor);
 		if(oldfloor != null)
@@ -407,7 +407,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
 		
 		newfloor.removeAttribute("display");
 		
-		// pï¿½ivitï¿½ aktiivisen kerroksen osoittava nappula
+		// päivitä aktiivisen kerroksen osoittava nappula
 		Element oldButton = document.getElementById(BUTTON_PREFIX + activeFloor);
 		if(oldButton != null)
 			removeClass(oldButton, "active");
@@ -419,7 +419,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	
 	/**
 	 * Asettaa aktiivisen huoneen sovelluslogiikalle. Kutsu sovelluslogiikkaan
-	 * tehdï¿½ï¿½n Swingin tapahtumankï¿½sittelijï¿½sï¿½ikeessï¿½.
+	 * tehdään Swingin tapahtumankäsittelijäsäikeessä.
 	 * @param room huone
 	 */
 	private void setActiveRoom(Room room) {
@@ -434,30 +434,30 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	}
 
     /**
-     * Piirtï¿½ï¿½ kaikkien huoneiden numerot kartalle. Piirtï¿½minen tapahtuu
-     * etsimï¿½llï¿½ huonetta vastaava elementti kartalta ja lisï¿½ï¿½mï¿½llï¿½
+     * Piirtää kaikkien huoneiden numerot kartalle. Piirtäminen tapahtuu
+     * etsimällä huonetta vastaava elementti kartalta ja lisäämällä
      * sen kohdalle tekstielementti.
      */
     private void showRoomNumbers() {
         // Ladataan huonetiedot
         updateObserved(NeroObserverTypes.ROOMS);
 
-        // Merkitï¿½ï¿½n tietokannasta lï¿½ytyneiden huoneiden nimet kartalle.
+        // Merkitään tietokannasta löytyneiden huoneiden nimet kartalle.
         Iterator it = roomsByNumber.keySet().iterator();
         while(it.hasNext()) {
             String roomNumber = (String) it.next();
             Element el = document.getElementById(roomNumber);
             if(el == null) {
-            	System.err.println("Huonetta " + roomNumber + " ei lï¿½ydy kartalta.");
+            	System.err.println("Huonetta " + roomNumber + " ei löydy kartalta.");
                 continue;
             }
 
-            // lasketaan koordinaatit ja etsitï¿½ï¿½n vasen ylï¿½kulma + offset
+            // lasketaan koordinaatit ja etsitään vasen yläkulma + offset
             SVGRect rect = ((SVGLocatable)el).getBBox();
             float x = rect.getX() + ROOMLABEL_OFFSET_X;
             float y = rect.getY() + ROOMLABEL_OFFSET_Y;
             
-            // luodaan tekstielementti ja lisï¿½tï¿½ï¿½n kerrosryhmï¿½ï¿½n
+            // luodaan tekstielementti ja lisätään kerrosryhmään
             Element label = document.createElementNS(svgNS, "text");
             label.appendChild(document.createTextNode(roomNumber));
             label.setAttributeNS(null, "x", ""+x);
@@ -470,7 +470,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
     }
     
 	/**
-	 * Kuuntelija, jonka koodi suoritetaan, kun Swingin pï¿½ï¿½ikkuna (JFrame) on
+	 * Kuuntelija, jonka koodi suoritetaan, kun Swingin pääikkuna (JFrame) on
 	 * avattu. Batik haluaa ladata SVG-dokumentin vasta kun ikkuna on jo auki.
 	 * @author Osma Suominen
 	 */
@@ -493,35 +493,35 @@ public class Map extends JSVGCanvas implements NeroObserver {
 		public void svgLoadEventDispatchStarted (SVGLoadEventDispatcherEvent e) {
 			document = getSVGDocument();
 			
-			// Aseta napit-ryhmï¿½lle tapahtumakuuntelijan, jolla vaihdetaan
-			// kerrosta. Kï¿½yttï¿½ï¿½ event capturea, jolloin yksi kuuntelija riittï¿½ï¿½.
-			// Ei vaikuta text-elementteihin koska niillï¿½ on attribuutti
+			// Aseta napit-ryhmälle tapahtumakuuntelijan, jolla vaihdetaan
+			// kerrosta. Käyttää event capturea, jolloin yksi kuuntelija riittää.
+			// Ei vaikuta text-elementteihin koska niillä on attribuutti
 			// pointer-events="none"
 			EventTarget buttons = (EventTarget) document.getElementById(BUTTONS_ID);
 			buttons.addEventListener("click", new FloorClickHandler(), true);
 			
-			// Aseta kerrokset-ryhmï¿½lle tapahtumakuuntelija, joka kï¿½yttï¿½ï¿½ event
-			// capturea eli kuulee myï¿½s lapsielementtien tapahtumat.
+			// Aseta kerrokset-ryhmälle tapahtumakuuntelija, joka käyttää event
+			// capturea eli kuulee myäs lapsielementtien tapahtumat.
 			EventTarget floors = (EventTarget) document.getElementById(FLOORS_ID);
 			floors.addEventListener("click", new RoomClickHandler(), true);
             
-            // piirretï¿½ï¿½n huoneiden numerot kartalle
+            // piirretään huoneiden numerot kartalle
             showRoomNumbers();
 			
-			// piilottaa muut kuin ensimmï¿½isen kerroksen (huom. lï¿½htee i=1:stï¿½)
+			// piilottaa muut kuin ensimmäisen kerroksen (huom. lähtee i=1:stä)
             for(int i=1; i<FLOORS.length(); ++i) {
             	Element floor = document.getElementById(FLOOR_PREFIX + FLOORS.charAt(i));
             	floor.setAttribute("display", "none");
             }
-            // asettaa ensimmï¿½isen kerroksen aktiiviseksi
+            // asettaa ensimmäisen kerroksen aktiiviseksi
             setActiveFloor(FLOORS.charAt(0));
 		}
 	}
 	
 	/**
-	 * Kuuntelija, jonka koodi suoritetaan kartan elementtejï¿½ klikattaessa.
+	 * Kuuntelija, jonka koodi suoritetaan kartan elementtejä klikattaessa.
 	 * Asettaa sovelluslogiikalle aktiivisen huoneen, jos on klikattu
-	 * huone-elementtiï¿½, muutoin ei tee mitï¿½ï¿½n.
+	 * huone-elementtiä, muutoin ei tee mitään.
 	 * @author Osma Suominen
 	 */
 	private class RoomClickHandler implements EventListener {
@@ -531,8 +531,8 @@ public class Map extends JSVGCanvas implements NeroObserver {
 			if(id.equals("")) return;
             Room room = (Room) roomsByNumber.get(id);
 			if(room == null) {
-				// Klikattu huonetta, jota ei lï¿½ydy tietokannasta.
-				session.setStatusMessage("Huonetta " + id + " ei lï¿½ydy tietokannasta.");
+				// Klikattu huonetta, jota ei löydy tietokannasta.
+				session.setStatusMessage("Huonetta " + id + " ei löydy tietokannasta.");
 				return;
 			}
 			setActiveRoom(room);
@@ -541,7 +541,7 @@ public class Map extends JSVGCanvas implements NeroObserver {
 	
 	/**
 	 * Kuuntelija, jonka koodi suoritetaan kerroksenvaihtonappeja klikattaessa.
-	 * Vaihtaa kartalla nï¿½kyvï¿½n kerroksen.
+	 * Vaihtaa kartalla näkyvän kerroksen.
 	 * @author Osma Suominen
 	 */
 	
