@@ -151,7 +151,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showSize = new javax.swing.JCheckBox();
         showRoomKeyReservations = new javax.swing.JCheckBox();
         showPostReservations = new javax.swing.JCheckBox();
-        dataModeDropdown = new javax.swing.JComboBox();
+        dataModeSelector = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
 
         fileChooserDialog.setDialogTitle("Tallenna");
@@ -514,11 +514,11 @@ public class ReportsWindow extends javax.swing.JFrame {
                     .addContainerGap(362, Short.MAX_VALUE)))
         );
 
-        dataModeDropdown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Henkilöt", "Huoneet" }));
-        dataModeDropdown.setToolTipText("Näytetäänkö tiedot huoneiden vai henkilöiden mukaan");
-        dataModeDropdown.addItemListener(new java.awt.event.ItemListener() {
+        dataModeSelector.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Henkilöt", "Huoneet" }));
+        dataModeSelector.setToolTipText("Näytetäänkö tiedot huoneiden vai henkilöiden mukaan");
+        dataModeSelector.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                dataModeDropdownItemStateChanged(evt);
+                dataModeSelectorItemStateChanged(evt);
             }
         });
 
@@ -535,7 +535,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ColumnsLabel)
-                            .addComponent(dataModeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dataModeSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
@@ -559,7 +559,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGap(9, 9, 9)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dataModeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dataModeSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(ColumnsLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -730,9 +730,14 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_restrictByWingItemStateChanged
 
-    private void dataModeDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dataModeDropdownItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dataModeDropdownItemStateChanged
+    private void dataModeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dataModeSelectorItemStateChanged
+        String value = dataModeSelector.getSelectedItem().toString();
+        if (value.equals("Huoneet")) {
+            initRoomData();
+        } else if (value.equals("Henkilöt")){
+            initPeopleData();
+        } 
+    }//GEN-LAST:event_dataModeSelectorItemStateChanged
 
     private void showSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showSizeActionPerformed
         // TODO add your handling code here:
@@ -780,7 +785,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JLabel ColumnsLabel;
     private javax.swing.JTable Data;
     private javax.swing.JPanel columnChekboxes;
-    private javax.swing.JComboBox dataModeDropdown;
+    private javax.swing.JComboBox dataModeSelector;
     private javax.swing.JFileChooser fileChooserDialog;
     private javax.swing.JComboBox fileTypeChooser;
     private net.sourceforge.jcalendarbutton.JCalendarButton firstCalendar;
@@ -855,11 +860,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         initiallyHiddenColumns.add(postihuone);
 
         /*Pelkästään huoneisiin liittyvät rajoittimet*/
+        roomComponents = new ArrayList<>();
         roomComponents.add(showSize);
         roomComponents.add(showRoomKeyReservations);
         roomComponents.add(showPostReservations);
         
         /*Pelkästään henkilöihin liittyvät rajoittimet*/
+        peopleComponents = new ArrayList<>();
         peopleComponents.add(restrictByLockerRoom);
         peopleComponents.add(restrictByFirstDate);
         peopleComponents.add(restrictByLastDate);
@@ -870,8 +877,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleComponents.add(showRoomReservations);
         peopleComponents.add(showLocker);
         peopleComponents.add(showRoomReservations);
-        
-        
+        peopleComponents.add(firstCalendar);
+        peopleComponents.add(lastCalendar);
+                
     }
 
     /**
@@ -1399,6 +1407,22 @@ public class ReportsWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane,
                     "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin",
                     "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void initRoomData() {
+        setEnabled(roomComponents, true);
+        setEnabled(peopleComponents, false);
+    }
+    
+    private void initPeopleData() {
+        setEnabled(peopleComponents, true);
+        setEnabled(roomComponents, false);
+    }
+
+    private void setEnabled(List<JComponent> components, boolean b) {
+        for(JComponent comp: components) {
+            comp.setEnabled(b);
         }
     }
 }
