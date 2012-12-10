@@ -170,7 +170,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="showInActive" min="-2" max="-2" attributes="0"/>
+                              <Component id="showInactive" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
@@ -264,7 +264,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="showInActive" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="showInactive" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="restrictByLastDate" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lastCalendar" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -424,12 +424,12 @@
             <Property name="text" type="java.lang.String" value="Huone"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="showInActive">
+        <Component class="javax.swing.JCheckBox" name="showInactive">
           <Properties>
             <Property name="text" type="java.lang.String" value="N&#xe4;yt&#xe4; my&#xf6;s ei-aktiiviset"/>
           </Properties>
           <Events>
-            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showInActiveMouseReleased"/>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showInactiveMouseReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="postroomLabel">
