@@ -54,7 +54,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
     private Room[] rooms;
-    //  private Vector<Vector<Object>> tableData;
     private Vector<Vector<Object>> peopleTableData;
     private Vector<Vector<Object>> roomTableData;
     private Vector<String> peopleColumnNames;
@@ -71,13 +70,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String postihuone, puhelinnumero;
     private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko, pistevaraukset, avainvaraukset;
     private String structuredFileType;
-    //testi
-    // combobox models not used yet
-    private DefaultComboBoxModel wingsModel;
-    //private DefaultComboBoxModel fileTypeModel;
-    private DefaultComboBoxModel floorsModel;
-    private int[] floors = new int[]{1, 2, 3};
-    private char[] wings = new char[]{'A', 'B', 'C', 'D'};
     private List<JCheckBox> defaultRoomCheckboxes;
     private ArrayList<String> defaultRoomColumns;
 
@@ -208,7 +200,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         wing.setText("Siipi");
 
-        restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "kaikki" }));
+        restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "Kaikki" }));
         restrictByWing.setToolTipText("");
         restrictByWing.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -688,7 +680,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void restrictByLockerRoomItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByLockerRoomItemStateChanged
         String room = restrictByLockerRoom.getSelectedItem().toString();
         if (room.isEmpty() || room.equalsIgnoreCase("kaikki")) {
-            // kaikki
             removeFilter(postihuone);
         } else {
             addRegexpFilter(room, postihuone);
@@ -756,7 +747,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
         String value = restrictByWing.getSelectedItem().toString();
-        if (value.equals("kaikki")) {
+        if (value.equals("Kaikki")) {
             removeFilter(siipi);
         } else {
             addRegexpFilter(value, siipi);
@@ -953,16 +944,6 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         hiddenColumns = new HashMap<>();
 
-
-        /*Dropdown menu models - currently not used*/
-        wingsModel = new DefaultComboBoxModel();
-        floorsModel = new DefaultComboBoxModel();
-        for (int i = 0; i < floors.length; i++) {
-            floorsModel.addElement(floors[i]);
-        }
-        for (int i = 0; i < floors.length; i++) {
-            wingsModel.addElement(wings[i]);
-        }
     }
 
     /**
@@ -1544,6 +1525,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         table = roomTable;
         table.setAutoCreateColumnsFromModel(false);
         table.getTableHeader().setReorderingAllowed(false);
+        table.setEnabled(false);
         columnModel = table.getColumnModel();
         showColumns(defaultRoomColumns);
         addSorter();
@@ -1566,6 +1548,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleModel.setTable(table);
         table.setAutoCreateColumnsFromModel(false);
         table.getTableHeader().setReorderingAllowed(false);
+        table.setEnabled(false);
 
         addSorter();
         tableContainer.setViewportView(table);
