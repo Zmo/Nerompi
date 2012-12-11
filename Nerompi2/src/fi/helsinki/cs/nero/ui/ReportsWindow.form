@@ -292,7 +292,7 @@
                 <StringItem index="1" value="B"/>
                 <StringItem index="2" value="C"/>
                 <StringItem index="3" value="D"/>
-                <StringItem index="4" value="kaikki"/>
+                <StringItem index="4" value="Kaikki"/>
               </StringArray>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value=""/>
