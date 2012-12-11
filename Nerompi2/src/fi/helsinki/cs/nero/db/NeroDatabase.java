@@ -877,8 +877,7 @@ public class NeroDatabase implements NeroObserver {
                      * joten kï¿½ytetï¿½ï¿½n NVL()-funktiota */
                     + " AND NVL(tsj.prjkti_koodi, 'oraclesucks') LIKE ?"
                     + " AND ? <= tsj.loppupvm_jakso AND ? >= tsj.alkupvm_jakso";
-        } else // tehdï¿½ï¿½n ulkoliitos eli saadaan myï¿½s henkilï¿½t ilman sopimusjaksoja
-        {
+        } else {  // tehdï¿½ï¿½n ulkoliitos eli saadaan myï¿½s henkilï¿½t ilman sopimusjaksoja
             sqlQuery += " AND tsj.henklo_htunnus(+) = h.htunnus";
         }
 
@@ -1130,16 +1129,16 @@ public class NeroDatabase implements NeroObserver {
     }
 
     /**
-     * Tarkista kuuluuko henkilï¿½ hakuehtojen mukaiseen listaan. Tarkistus
-     * tehdï¿½ï¿½n, koska vastaavan seikan tarkistaminen SQL-kannassa on hyvin
+     * Tarkista kuuluuko henkilö hakuehtojen mukaiseen listaan. Tarkistus
+     * tehdään, koska vastaavan seikan tarkistaminen SQL-kannassa on hyvin
      * vaikeaa ja hidasta.
      *
-     * @param person henkilï¿½
-     * @param timescale tarkasteltava aikavï¿½li
-     * @param contractEndDate henkilï¿½
-     * @param showEndingContracts halutaanko pï¿½ï¿½ttyvï¿½t tyï¿½sopimukset
-     * @param withoutPost halutaanko tyï¿½pisteettï¿½mï¿½t
-     * @return Sopivatko annetut hakuehdot henkilï¿½ï¿½n
+     * @param person henkilö
+     * @param timescale tarkasteltava aikaväli
+     * @param contractEndDate henkilö
+     * @param showEndingContracts halutaanko päättyvät työsopimukset
+     * @param withoutPost halutaanko työpisteettömät
+     * @return Sopivatko annetut hakuehdot henkilöön
      */
     private boolean filterPerson(Person person, TimeSlice timescale, java.sql.Date contractEndDate, boolean showEndingContracts, boolean withoutPost, boolean activeOnly, boolean contractsOnly) {
         // Tarkistetaan tarvitseeko henkilöä filtteröidä aktiivisuuden perusteella
@@ -1309,6 +1308,10 @@ public class NeroDatabase implements NeroObserver {
         }
     }
     
+    /**
+     * Muutetaan annetun henkilön huonekentän arvo nulliksi
+     * @param person Henkilö, jonka huonetieto muutetaan
+     */
     public void deleteRoomFromPerson(Person person) {
         String updateQuery="update henkilo set huone_nro=null where htunnus=?";
         
@@ -1321,13 +1324,13 @@ public class NeroDatabase implements NeroObserver {
         }
     }
 
-    /* --- Henkilï¿½ihin liittyvï¿½t metodit loppuu --- */
+    /* --- Henkilöihin liittyvät metodit loppuu --- */
 
-    /* --- Tyï¿½pisteisiin liittyvï¿½t metodit alkaa --- */
+    /* --- Työpisteisiin liittyvät metodit alkaa --- */
     /**
-     * Poistaa tyï¿½pisteen.
+     * Poistaa työpisteen.
      *
-     * @param post Poistettava tyï¿½piste
+     * @param post Poistettava työpiste
      * @return Onnistuiko poisto.
      */
     public boolean deletePost(Post post) {
@@ -1394,11 +1397,11 @@ public class NeroDatabase implements NeroObserver {
         return success;
     }
 
-    /* --- Tyï¿½pisteisiin liittyvï¿½t metodit loppuu --- */
+    /* --- Työpisteisiin liittyvät metodit loppuu --- */
 
     /* --- Työhuoneisiin liittyvät metodit alkaa --- */
     /**
-     * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat huoneet.
+     * Palauttaa kaikki järjestelmän tuntemat huoneet.
      *
      * @return huoneet Room[]-oliona
      */
@@ -1407,12 +1410,12 @@ public class NeroDatabase implements NeroObserver {
     }
 
     /**
-     * Hakee tietyn projektin henkilï¿½ille varatut huoneet tietyllï¿½
-     * aikavï¿½lillï¿½. Jos projekti on null, palautetaan tyhjï¿½ huonetaulukko.
+     * Hakee tietyn projektin henkilöille varatut huoneet tietyllä
+     * aikavälillä. Jos projekti on null, palautetaan tyhjä huonetaulukko.
      *
      * @param project Projekti, jonka tyï¿½huoneita haetaan. Jos null,
-     * palautetaan tyhjï¿½ lista.
-     * @param timescale Aikavï¿½li, jota varauksien tulee leikata.
+     * palautetaan tyhjä lista.
+     * @param timescale Aikaväli, jota varauksien tulee leikata.
      * @return taulukko projektin huoneista
      */
     public Room[] getRooms(Project project, TimeSlice timescale) {
@@ -1429,8 +1432,8 @@ public class NeroDatabase implements NeroObserver {
                         + " WHERE h.ID = tp.RHUONE_ID AND tp.ID = tpv.TPISTE_ID"
                         + " AND tpv.HENKLO_HTUNNUS = tsj.HENKLO_HTUNNUS"
                         + " AND tsj.PRJKTI_KOODI = ?"
-                        /* sekï¿½ tyï¿½pistevarauksen ettï¿½ tyï¿½sopimusjakson pï¿½ivï¿½mï¿½ï¿½rï¿½t
-                         * pitï¿½ï¿½ olla oikein */
+                        /* sekä työpistevarauksen että työsopimusjakson päivämäärät
+                         * pitää olla oikein */
                         + " AND ? <= tsj.LOPPUPVM_JAKSO AND ? >= tsj.ALKUPVM_JAKSO"
                         + " AND ? <= tpv.LOPPUPVM AND ? >= tpv.ALKUPVM");
             }
@@ -1460,9 +1463,9 @@ public class NeroDatabase implements NeroObserver {
      *
      * @param roomFilter String jota etsitään huoneen nimestä ja
      * numerosta.
-     * @param maxPosts Huoneen tyï¿½pisteiden maksimilukumï¿½ï¿½rï¿½. Jos
+     * @param maxPosts Huoneen työpisteiden maksimilukumärä. Jos
      * pienempi kuin 0, ei rajaa tulosta.
-     * @return Hakuehdot tï¿½yttï¿½vï¿½t huoneet Room[]-oliona
+     * @return Hakuehdot täyttävät huoneet Room[]-oliona
      */
     public Room[] getRooms(String roomFilter, int maxPosts) {
         String queryNormal, queryWithMaxPosts;
@@ -1725,7 +1728,7 @@ public class NeroDatabase implements NeroObserver {
     /* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa kaikki jï¿½rjestelmï¿½n tuntemat projektit jï¿½rjestettynï¿½
+	 * Palauttaa kaikki järjestelmän tuntemat projektit järjestettynä
 	 * Project[] -taulukkona.
 	 * 
 	 * @return projektit <code>Project[]</code> oliona
@@ -1742,8 +1745,8 @@ public class NeroDatabase implements NeroObserver {
 	/* --- Muut metodit alkaa --- */ 
 
 	/**
-	 * Palauttaa tietokantayhteyden. Kï¿½ytï¿½ varovaisesti, tarkoitettu lï¿½hinnï¿½
-	 * testejï¿½ varten.
+	 * Palauttaa tietokantayhteyden. Käytä varovaisesti, tarkoitettu lähinnä
+	 * testejä varten.
 	 * @return Yhteys <code>Connection</code> oliona.
 	 */
 	public Connection getConnection() {

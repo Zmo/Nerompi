@@ -942,10 +942,8 @@
     <text x="40" y="710">Vapaa huone</text>
     <rect class="room active" x="210" y="635" width="20" height="20" />
     <text x="240" y="650">Valittu huone/kerros</text>
-    <rect class="room project" x="210" y="665" width="20" height="20" />
-    <text x="240" y="680">Projektin huone</text>
-    <rect class="room noposts" x="210" y="695" width="20" height="20" />
-    <text x="240" y="710">Huone ilman työpisteitä</text>
+    <rect class="room noposts" x="210" y="665" width="20" height="20" />
+    <text x="240" y="680">Huone ilman työpisteitä</text>
     
     <text x="410" y="650">Liikutus: Shift + vasen nappi</text>
     <text x="410" y="670">Zoomaus: Shift + oikea nappi</text>
