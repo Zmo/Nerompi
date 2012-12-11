@@ -691,7 +691,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             // kaikki
             removeFilter(postihuone);
         } else {
-            addFilter(room, postihuone);
+            addRegexpFilter(room, postihuone);
         }
     }//GEN-LAST:event_restrictByLockerRoomItemStateChanged
 
@@ -722,7 +722,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (value == null || value.isEmpty()) {
             removeFilter(nimi);
         } else {
-            addFilter(value, nimi);
+            addRegexpFilter(value, nimi);
         }
     }//GEN-LAST:event_restrictByNameActionPerformed
 
@@ -735,7 +735,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else if (index == 1) {
             // lokerottomat
             value = "ei postilokeroa";
-            addFilter(value, postihuone);
+            addRegexpFilter(value, postihuone);
         } else if (index == 2) {
             // lokerolliset
             RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa",
@@ -750,7 +750,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (value.equals("Kaikki")) {
             removeFilter(kerros);
         } else {
-            addFilter(value, kerros);
+            addRegexpFilter(value, kerros);
         }
     }//GEN-LAST:event_floorDropdownItemStateChanged
 
@@ -759,7 +759,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (value.equals("kaikki")) {
             removeFilter(siipi);
         } else {
-            addFilter(value, siipi);
+            addRegexpFilter(value, siipi);
         }
     }//GEN-LAST:event_restrictByWingItemStateChanged
 
@@ -1408,6 +1408,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         return list;
     }
 
+    /**
+     * Asettaa taulukon aloitusnäkymän.
+     */
     private void initTableView() {
 
         switchToPeopleData();
@@ -1415,20 +1418,31 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Asettaa kaikki saamansa sarakkeet näkyviksi. 
+     * 
+     * @param col kokoelma sarakkeita 
+     */
     private void showColumns(Collection<String> col) {
         for (String identifier : col) {
             try {
                 hideColumn(identifier);
             } catch (Exception ex) {
-                System.out.println("sarake " + identifier + " ei näkyvillä\n"
-                        + "Metodi: showColumns \n"
-                        + ex);
+                System.out.println("Metodi: showColumns \n"
+                        + ex + " " + identifier);
             }
         }
     }
 
-    private void setColumnVisibility(JCheckBox comp, String columnName) {
-        if (comp.isSelected()) {
+    /**
+     * Piilottaa tai näyttää sarakkeen sen mukaan, onko siihen liittyvä
+     * checkbox valittuna vai ei.
+     * 
+     * @param box checkbox, joka sarakkeeseen liittyy
+     * @param columnName sarakkeen nimi
+     */
+    private void setColumnVisibility(JCheckBox box, String columnName) {
+        if (box.isSelected()) {
             showColumn(columnName);
         } else {
             hideColumn(columnName);
@@ -1439,6 +1453,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         return table.convertColumnIndexToModel(i);
     }
 
+    /**
+     * Luo regexp-filtterin saamiensa parametrien perusteella.
+     * 
+     * @param regex säännöllinen lauseke, jonka perusteella filteröidään
+     * @param columnName sarake, jonka dataan rajaus kohdistuu
+     * @return regexp-filtteri, joka vaikuttaa annettuun sarakkeeseen ja rajaa
+     * saadun säännöllisen lausekkeen perusteella
+     * @throws IllegalArgumentException jos sarake, jonka perusteella rajataan,
+     * ei ole näkyvillä
+     */
     private RowFilter getRegexFilter(String regex, String columnName) {
         try {
             RowFilter filter = RowFilter.regexFilter(regex,
@@ -1454,22 +1478,46 @@ public class ReportsWindow extends javax.swing.JFrame {
         updateFilterList(new ArrayList(filterList.values()));
     }
 
+    /**
+     * Lisää käyttöön filterin.
+     * Saa parametrina filterin, jonka lisää käytössä olevien filtereiden listaan
+     * ja päivittää sen jälkeen yleisfilterin, joka sisältää kaikki käytössä olevat
+     * filterit.
+     * @param filterColumnName sarake, johon filterin pitää vaikuttaa
+     * @param filter filtteri, joka otetaan käyttöön
+     * @see updateFilterList
+     */
     private void addFilter(String filterColumnName, RowFilter filter) {
         filterList.put(filterColumnName, filter);
         updateFilterList(new ArrayList(filterList.values()));
     }
-    
-    private void addFilter(String filterText, String columnName) {
-         try {
-               addFilter(columnName, getRegexFilter(filterText, columnName));
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(rootPane,
+
+    /**
+     * Lisää käyttöön regexp-filterin.
+     * 
+     * @see addFilter
+     * @param filterText teksti, jonka pohjalta regexp-filter luodaan
+     * @param columnName sarake, johon filterin pitää vaikuttaa
+     */
+    private void addRegexpFilter(String filterText, String columnName) {
+        try {
+            addFilter(columnName, getRegexFilter(filterText, columnName));
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(rootPane,
                     "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin.",
                     "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
-                System.out.println(ex+" "+columnName);
-            }
+            System.out.println(ex + " " + columnName);
+        }
     }
 
+    /**
+     * Luo filterin, joka rajaa taulukon datan sen mukaan, mitä kaikkia 
+     * filttereitä on asetettu. 
+     * Saa parametrina listan tällä hetkellä käytössä olevista filtereistä ja 
+     * luo tämän yleisfilterin niiden perusteella.
+     * 
+     * @param filters lista niistä filtereistä, jotka ovat käytössä
+     */
     private void updateFilterList(List<RowFilter<Object, Object>> filters) {
         try {
             generalFilter = RowFilter.andFilter(filters);
@@ -1482,6 +1530,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Näyttää taulukossa kaikki huoneet ja niihin liittyvän datan. Asettaa
+     * tarvittavat rajoittimet ja sarakevalitsimet pois käytöstä / käyttöön sekä
+     * valitsee oletusnäkymässä näkyvillä olevat sarakkeet näytettäviksi
+     * piilottaen muut.
+     */
     private void switchToRoomData() {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
@@ -1496,31 +1550,47 @@ public class ReportsWindow extends javax.swing.JFrame {
         tableContainer.setViewportView(table);
     }
 
+    /**
+     * Näyttää taulukossa kaikki henkilöt ja niihin liittyvän datan. Asettaa
+     * tarvittavat rajoittimet ja sarakevalitsimet pois käytöstä / käyttöön sekä
+     * valitsee oletusnäkymässä näkyvillä olevat sarakkeet näytettäviksi
+     * piilottaen muut.
+     */
     private void switchToPeopleData() {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
-
-
+        setSelected(initialComponents);
+        
         table = peopleTable;
         columnModel = table.getColumnModel();
         peopleModel.setTable(table);
         table.setAutoCreateColumnsFromModel(false);
         table.getTableHeader().setReorderingAllowed(false);
 
-
         addSorter();
         tableContainer.setViewportView(table);
-        setSelected(initialComponents);
+
 
 
     }
 
+    /**
+     * Muuttaaa checkboxien tilan siten, että ne ovat käytössä tai pois käytöstä
+     * sen mukaan, mitä se saa parametrina.
+     *
+     * @param components lista niistä checkboxeista, joiden tila muutetaan
+     * @param b true, jos komponentit pitää asettaa käyttöön ja false jos pois
+     */
     private void setEnabled(List<JComponent> components, boolean b) {
         for (JComponent comp : components) {
             comp.setEnabled(b);
         }
     }
 
+    /**
+     * Luo taulukon joka sisältää kaikki henkilöt ja niihin liittyvän datan.
+     *
+     */
     private void initPeopleData() {
         peopleTableData = new Vector<>();
 
@@ -1569,6 +1639,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Luo taulukon, joka sisältää kaikki tiedossa olevat huoneet ja niihin
+     * liittyvät tiedot.
+     */
     private void initRoomData() {
         roomTableData = new Vector<>();
         for (int i = 0; i < rooms.length; i++) {
