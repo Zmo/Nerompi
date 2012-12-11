@@ -8,6 +8,7 @@ import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.data.TimeSlice;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import net.sourceforge.jcalendarbutton.JCalendarButton;
@@ -74,8 +75,6 @@ public class AvainKalenterinappi extends JCalendarButton{
                             return;
                         }
                     }
-                    else {
-                    }
                 }
             }
             
@@ -92,6 +91,18 @@ public class AvainKalenterinappi extends JCalendarButton{
             this.person.modifyRoomKeyReservation(this.roomKeyReservation);
             this.setTargetDate(kohdeaika.getTime());
             this.setText(updateAikaTeksti(this.getTargetDate()));
+            for (RoomKeyReservation reservation : this.person.getRoomKeyReservations()){
+                System.out.println(" - hyypiöllä - " + reservation.getTargetRoom() + " \t " + reservation.getTimeSlice().getStartDate() + " - " + reservation.getTimeSlice().getEndDate());
+            }
+            for (Object reservation : this.roomKeyReservation.getTargetRoom().getRoomKeyReservations().toArray()) {
+                if (reservation instanceof RoomKeyReservation) {
+                    RoomKeyReservation asia = (RoomKeyReservation)reservation;
+                    System.out.println(" - huoneella - " +asia.getTargetRoom() + " - " + asia.getReserverName() + " \t " + asia.getTimeSlice().getStartDate() + " - " + asia.getTimeSlice().getEndDate());
+                }
+            }
+            for (RoomKeyReservation arraylista : this.person.getRoomKeyreservationArrayList()){
+                System.out.println(" - arrayLista - " + arraylista.getTargetRoom() + " \t " + arraylista.getTimeSlice().getSQLStartDate() + " - " + arraylista.getTimeSlice().getSQLEndDate());
+            }
         }
     }
     

@@ -20,7 +20,7 @@ public class AvaimenpoistoNappi extends JButton{
     
     public AvaimenpoistoNappi(Person person, RoomKeyReservation roomKeyReservation){
         super();
-        this.setText("Poista avainvaraus");
+        this.setText("Poista");
         this.roomKeyReservation = roomKeyReservation;
         this.person = person;
         this.addMouseListener(new AvaimenpoistoNappiListener(this));
@@ -28,12 +28,9 @@ public class AvaimenpoistoNappi extends JButton{
     
     public void poistaAvain() throws SQLException{
         if (this.roomKeyReservation == null){
-            this.person.getSession().setStatusMessage(" - Virhe - AvaimenpoistoNappi: avainvarausta ei en‰‰ ole!");
+            this.person.getSession().setStatusMessage(" - Virhe - AvaimenpoistoNappi: avainvarausta ei ole!");
             return;
         }
         this.person.getSession().deleteRoomkeyReservation(this.roomKeyReservation, this.person);
-        this.person.getSession().setStatusMessage("Avainvaraus poistettu");
-        this.roomKeyReservation = null;
-    };
-    
+    }
 }
