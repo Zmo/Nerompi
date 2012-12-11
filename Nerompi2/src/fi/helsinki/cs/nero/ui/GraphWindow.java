@@ -71,8 +71,8 @@ public class GraphWindow extends javax.swing.JFrame {
         chartTypeDropdown = new javax.swing.JComboBox();
         startDateCalendarButton = new net.sourceforge.jcalendarbutton.JCalendarButton();
         endDateCalendarButton = new net.sourceforge.jcalendarbutton.JCalendarButton();
-        startDateDropdown = new javax.swing.JTextField();
-        endDateDropdown = new javax.swing.JTextField();
+        startDateTextField = new javax.swing.JTextField();
+        endDateTextField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -135,11 +135,11 @@ public class GraphWindow extends javax.swing.JFrame {
             }
         });
 
-        startDateDropdown.setEditable(false);
-        startDateDropdown.setText(dateToShortString(startDate));
+        startDateTextField.setEditable(false);
+        startDateTextField.setText(dateToShortString(startDate));
 
-        endDateDropdown.setEditable(false);
-        endDateDropdown.setText(dateToShortString(endDate));
+        endDateTextField.setEditable(false);
+        endDateTextField.setText(dateToShortString(endDate));
 
         jLabel2.setLabelFor(endDateCalendarButton);
         jLabel2.setText("Loppupvm.");
@@ -195,14 +195,14 @@ public class GraphWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(startDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(startDateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(endDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(endDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(endDateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chartTypeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -223,7 +223,7 @@ public class GraphWindow extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(startDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(endDateCalendarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(startDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(startDateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
@@ -232,11 +232,10 @@ public class GraphWindow extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(endDateDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(endDateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(chartTypeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(roomSizeDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -260,7 +259,7 @@ public class GraphWindow extends javax.swing.JFrame {
     private void startDateCalendarButtonPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_startDateCalendarButtonPropertyChange
         if (evt.getNewValue() instanceof Date) {
             this.startDate = (((Date) evt.getNewValue()));
-            this.startDateDropdown.setText(dateToShortString(startDate));
+            this.startDateTextField.setText(dateToShortString(startDate));
             createOccupiedPostPercentageChart();
             updateNumberLabels();
         }
@@ -269,7 +268,7 @@ public class GraphWindow extends javax.swing.JFrame {
     private void endDateCalendarButtonPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_endDateCalendarButtonPropertyChange
         if (evt.getNewValue() instanceof Date) {
             this.endDate = (((Date) evt.getNewValue()));
-            this.endDateDropdown.setText(dateToShortString(endDate));
+            this.endDateTextField.setText(dateToShortString(endDate));
             createOccupiedPostPercentageChart();
             updateNumberLabels();
         }
@@ -479,7 +478,7 @@ public class GraphWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox chartTypeDropdown;
     private javax.swing.JButton closeButton;
     private net.sourceforge.jcalendarbutton.JCalendarButton endDateCalendarButton;
-    private javax.swing.JTextField endDateDropdown;
+    private javax.swing.JTextField endDateTextField;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
@@ -491,6 +490,6 @@ public class GraphWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JComboBox roomSizeDropdown;
     private net.sourceforge.jcalendarbutton.JCalendarButton startDateCalendarButton;
-    private javax.swing.JTextField startDateDropdown;
+    private javax.swing.JTextField startDateTextField;
     // End of variables declaration//GEN-END:variables
 }

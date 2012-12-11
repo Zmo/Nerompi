@@ -574,6 +574,7 @@ public class Person implements Comparable {
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation){
+        this.roomKeyReservations.get(this.roomKeyReservations.indexOf(roomKeyReservation)).setTimeSlice(roomKeyReservation.getTimeSlice());
     }
     
     public boolean deleteRoomKeyReservation(RoomKeyReservation toBeRemoved) {
