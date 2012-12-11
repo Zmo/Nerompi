@@ -54,7 +54,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private HashMap<String, IndexedColumn> hiddenColumns;
     private Person[] people;
     private Room[] rooms;
-    //  private Vector<Vector<Object>> tableData;
     private Vector<Vector<Object>> peopleTableData;
     private Vector<Vector<Object>> roomTableData;
     private Vector<String> peopleColumnNames;
@@ -71,13 +70,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String postihuone, puhelinnumero;
     private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko, pistevaraukset, avainvaraukset;
     private String structuredFileType;
-    //testi
-    // combobox models not used yet
-    private DefaultComboBoxModel wingsModel;
-    //private DefaultComboBoxModel fileTypeModel;
-    private DefaultComboBoxModel floorsModel;
-    private int[] floors = new int[]{1, 2, 3};
-    private char[] wings = new char[]{'A', 'B', 'C', 'D'};
     private List<JCheckBox> defaultRoomCheckboxes;
     private ArrayList<String> defaultRoomColumns;
 
@@ -208,7 +200,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         wing.setText("Siipi");
 
-        restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "kaikki" }));
+        restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "Kaikki" }));
         restrictByWing.setToolTipText("");
         restrictByWing.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -688,10 +680,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void restrictByLockerRoomItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByLockerRoomItemStateChanged
         String room = restrictByLockerRoom.getSelectedItem().toString();
         if (room.isEmpty() || room.equalsIgnoreCase("kaikki")) {
-            // kaikki
             removeFilter(postihuone);
         } else {
-            addFilter(postihuone, getRegexFilter(room, postihuone));
+            addRegexpFilter(room, postihuone);
         }
     }//GEN-LAST:event_restrictByLockerRoomItemStateChanged
 
@@ -722,7 +713,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (value == null || value.isEmpty()) {
             removeFilter(nimi);
         } else {
-            addFilter(nimi, getRegexFilter(value, nimi));
+            addRegexpFilter(value, nimi);
         }
     }//GEN-LAST:event_restrictByNameActionPerformed
 
@@ -735,7 +726,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         } else if (index == 1) {
             // lokerottomat
             value = "ei postilokeroa";
-            addFilter(postihuone, getRegexFilter(value, postihuone));
+            addRegexpFilter(value, postihuone);
         } else if (index == 2) {
             // lokerolliset
             RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa",
@@ -750,16 +741,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (value.equals("Kaikki")) {
             removeFilter(kerros);
         } else {
-            addFilter(kerros, getRegexFilter(value, kerros));
+            addRegexpFilter(value, kerros);
         }
     }//GEN-LAST:event_floorDropdownItemStateChanged
 
     private void restrictByWingItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_restrictByWingItemStateChanged
         String value = restrictByWing.getSelectedItem().toString();
-        if (value.equals("kaikki")) {
+        if (value.equals("Kaikki")) {
             removeFilter(siipi);
         } else {
-            addFilter(siipi, getRegexFilter(value, siipi));
+            addRegexpFilter(value, siipi);
         }
     }//GEN-LAST:event_restrictByWingItemStateChanged
 
@@ -924,6 +915,8 @@ public class ReportsWindow extends javax.swing.JFrame {
         roomComponents.add(showSize);
         roomComponents.add(showRoomKeyReservations);
         roomComponents.add(showPostReservations);
+        roomComponents.add(showDescription);
+
 
         /*Pelkästään henkilöihin liittyvät rajoittimet*/
         peopleComponents = new ArrayList<>();
@@ -940,6 +933,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleComponents.add(firstCalendar);
         peopleComponents.add(lastCalendar);
         peopleComponents.add(showInactive);
+        peopleComponents.add(showRoomAndPost);
 
     }
 
@@ -950,16 +944,6 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         hiddenColumns = new HashMap<>();
 
-
-        /*Dropdown menu models - currently not used*/
-        wingsModel = new DefaultComboBoxModel();
-        floorsModel = new DefaultComboBoxModel();
-        for (int i = 0; i < floors.length; i++) {
-            floorsModel.addElement(floors[i]);
-        }
-        for (int i = 0; i < floors.length; i++) {
-            wingsModel.addElement(wings[i]);
-        }
     }
 
     /**
@@ -1059,11 +1043,16 @@ public class ReportsWindow extends javax.swing.JFrame {
      */
     private void hideColumn(String name) {
 
-        int index = columnModel.getColumnIndex(name);
-        TableColumn column = columnModel.getColumn(index);
-        IndexedColumn indexedColumn = new IndexedColumn(index, column);
-        hiddenColumns.put(name, indexedColumn);
-        columnModel.removeColumn(column);
+        try {
+            int index = columnModel.getColumnIndex(name);
+            TableColumn column = columnModel.getColumn(index);
+            IndexedColumn indexedColumn = new IndexedColumn(index, column);
+            hiddenColumns.put(name, indexedColumn);
+            columnModel.removeColumn(column);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Sarake " + name + " ei ollut näkyvissä. Ei voida piilottaa."
+                    + "\nMetodi: hideColumn");
+        }
     }
 
     /**
@@ -1168,24 +1157,29 @@ public class ReportsWindow extends javax.swing.JFrame {
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
         RowFilter filter;
-        if (firstDate != null && lastDate != null) {
-            // molemmissa päivämäärä
-            filter = getDateFilter(firstDate, lastDate);
-            addFilter(varaus, filter);
+        try {
+            if (firstDate != null && lastDate != null) {
+                // molemmissa päivämäärä
+                filter = getDateFilter(firstDate, lastDate);
+                addFilter(varaus, filter);
 
-        } else if (firstDate == null && lastDate != null) {
-            // loppupäivämäärä on
-            filter = getDateFilter(lastDate, RowFilter.ComparisonType.BEFORE);
-            addFilter(varaus, filter);
+            } else if (firstDate == null && lastDate != null) {
+                // loppupäivämäärä on
+                filter = getDateFilter(lastDate, RowFilter.ComparisonType.BEFORE);
+                addFilter(varaus, filter);
 
-        } else if (firstDate != null && lastDate == null) {
-            // alkupäivämäärä on
-            filter = getDateFilter(firstDate, RowFilter.ComparisonType.AFTER);
-            addFilter(varaus, filter);
+            } else if (firstDate != null && lastDate == null) {
+                // alkupäivämäärä on
+                filter = getDateFilter(firstDate, RowFilter.ComparisonType.AFTER);
+                addFilter(varaus, filter);
 
-        } else {
-            // kumpaakaan ei asetettu
-            removeFilter(varaus);
+            } else {
+                // kumpaakaan ei asetettu
+                removeFilter(varaus);
+            }
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Sarake varaus on piilotettu, ei filteröidä. \n"
+                    + "Metodi: determineDateRestriction \n" + ex);
         }
 
     }
@@ -1199,10 +1193,14 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @return filteri, joka filteröi saamansa päivämäärän ja ehdon mukaan
      */
     private RowFilter getDateFilter(Date date, ComparisonType type) {
-        int index = table.convertColumnIndexToModel(table.getColumnModel().getColumnIndex(varaus));
-        RowFilter newFilter = RowFilter.dateFilter(type,
-                date, index);
-        return newFilter;
+        try {
+            int index = table.convertColumnIndexToModel(table.getColumnModel().getColumnIndex(varaus));
+            RowFilter newFilter = RowFilter.dateFilter(type,
+                    date, index);
+            return newFilter;
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        }
     }
 
     /**
@@ -1218,11 +1216,15 @@ public class ReportsWindow extends javax.swing.JFrame {
      */
     private RowFilter getDateFilter(Date first, Date last) {
         // and filter 
-        List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
-        filters.add(getDateFilter(last, RowFilter.ComparisonType.BEFORE));
-        filters.add(getDateFilter(first, RowFilter.ComparisonType.AFTER));
-        RowFilter<Object, Object> newFilter = RowFilter.andFilter(filters);
-        return newFilter;
+        try {
+            List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
+            filters.add(getDateFilter(last, RowFilter.ComparisonType.BEFORE));
+            filters.add(getDateFilter(first, RowFilter.ComparisonType.AFTER));
+            RowFilter<Object, Object> newFilter = RowFilter.andFilter(filters);
+            return newFilter;
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        }
     }
 
     /**
@@ -1387,6 +1389,9 @@ public class ReportsWindow extends javax.swing.JFrame {
         return list;
     }
 
+    /**
+     * Asettaa taulukon aloitusnäkymän.
+     */
     private void initTableView() {
 
         switchToPeopleData();
@@ -1394,18 +1399,31 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Asettaa kaikki saamansa sarakkeet näkyviksi. 
+     * 
+     * @param col kokoelma sarakkeita 
+     */
     private void showColumns(Collection<String> col) {
         for (String identifier : col) {
             try {
                 hideColumn(identifier);
             } catch (Exception ex) {
-                System.out.println("saraketta " + identifier + " ei näkyvillä");
+                System.out.println("Metodi: showColumns \n"
+                        + ex + " " + identifier);
             }
         }
     }
 
-    private void setColumnVisibility(JCheckBox comp, String columnName) {
-        if (comp.isSelected()) {
+    /**
+     * Piilottaa tai näyttää sarakkeen sen mukaan, onko siihen liittyvä
+     * checkbox valittuna vai ei.
+     * 
+     * @param box checkbox, joka sarakkeeseen liittyy
+     * @param columnName sarakkeen nimi
+     */
+    private void setColumnVisibility(JCheckBox box, String columnName) {
+        if (box.isSelected()) {
             showColumn(columnName);
         } else {
             hideColumn(columnName);
@@ -1416,13 +1434,23 @@ public class ReportsWindow extends javax.swing.JFrame {
         return table.convertColumnIndexToModel(i);
     }
 
+    /**
+     * Luo regexp-filtterin saamiensa parametrien perusteella.
+     * 
+     * @param regex säännöllinen lauseke, jonka perusteella filteröidään
+     * @param columnName sarake, jonka dataan rajaus kohdistuu
+     * @return regexp-filtteri, joka vaikuttaa annettuun sarakkeeseen ja rajaa
+     * saadun säännöllisen lausekkeen perusteella
+     * @throws IllegalArgumentException jos sarake, jonka perusteella rajataan,
+     * ei ole näkyvillä
+     */
     private RowFilter getRegexFilter(String regex, String columnName) {
         try {
             RowFilter filter = RowFilter.regexFilter(regex,
                     convertColumnIndexToModel(columnModel.getColumnIndex(columnName)));
             return filter;
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException();
+            throw ex;
         }
     }
 
@@ -1431,11 +1459,46 @@ public class ReportsWindow extends javax.swing.JFrame {
         updateFilterList(new ArrayList(filterList.values()));
     }
 
+    /**
+     * Lisää käyttöön filterin.
+     * Saa parametrina filterin, jonka lisää käytössä olevien filtereiden listaan
+     * ja päivittää sen jälkeen yleisfilterin, joka sisältää kaikki käytössä olevat
+     * filterit.
+     * @param filterColumnName sarake, johon filterin pitää vaikuttaa
+     * @param filter filtteri, joka otetaan käyttöön
+     * @see updateFilterList
+     */
     private void addFilter(String filterColumnName, RowFilter filter) {
         filterList.put(filterColumnName, filter);
         updateFilterList(new ArrayList(filterList.values()));
     }
 
+    /**
+     * Lisää käyttöön regexp-filterin.
+     * 
+     * @see addFilter
+     * @param filterText teksti, jonka pohjalta regexp-filter luodaan
+     * @param columnName sarake, johon filterin pitää vaikuttaa
+     */
+    private void addRegexpFilter(String filterText, String columnName) {
+        try {
+            addFilter(columnName, getRegexFilter(filterText, columnName));
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(rootPane,
+                    "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin.",
+                    "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ex + " " + columnName);
+        }
+    }
+
+    /**
+     * Luo filterin, joka rajaa taulukon datan sen mukaan, mitä kaikkia 
+     * filttereitä on asetettu. 
+     * Saa parametrina listan tällä hetkellä käytössä olevista filtereistä ja 
+     * luo tämän yleisfilterin niiden perusteella.
+     * 
+     * @param filters lista niistä filtereistä, jotka ovat käytössä
+     */
     private void updateFilterList(List<RowFilter<Object, Object>> filters) {
         try {
             generalFilter = RowFilter.andFilter(filters);
@@ -1448,41 +1511,69 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Näyttää taulukossa kaikki huoneet ja niihin liittyvän datan. Asettaa
+     * tarvittavat rajoittimet ja sarakevalitsimet pois käytöstä / käyttöön sekä
+     * valitsee oletusnäkymässä näkyvillä olevat sarakkeet näytettäviksi
+     * piilottaen muut.
+     */
     private void switchToRoomData() {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
         setSelected(defaultRoomCheckboxes);
+
         table = roomTable;
         table.setAutoCreateColumnsFromModel(false);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.setEnabled(false);
         columnModel = table.getColumnModel();
         showColumns(defaultRoomColumns);
         addSorter();
         tableContainer.setViewportView(table);
     }
 
+    /**
+     * Näyttää taulukossa kaikki henkilöt ja niihin liittyvän datan. Asettaa
+     * tarvittavat rajoittimet ja sarakevalitsimet pois käytöstä / käyttöön sekä
+     * valitsee oletusnäkymässä näkyvillä olevat sarakkeet näytettäviksi
+     * piilottaen muut.
+     */
     private void switchToPeopleData() {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
-
-
+        setSelected(initialComponents);
+        
         table = peopleTable;
         columnModel = table.getColumnModel();
         peopleModel.setTable(table);
         table.setAutoCreateColumnsFromModel(false);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.setEnabled(false);
 
         addSorter();
         tableContainer.setViewportView(table);
-        setSelected(initialComponents);
+
 
 
     }
 
+    /**
+     * Muuttaaa checkboxien tilan siten, että ne ovat käytössä tai pois käytöstä
+     * sen mukaan, mitä se saa parametrina.
+     *
+     * @param components lista niistä checkboxeista, joiden tila muutetaan
+     * @param b true, jos komponentit pitää asettaa käyttöön ja false jos pois
+     */
     private void setEnabled(List<JComponent> components, boolean b) {
         for (JComponent comp : components) {
             comp.setEnabled(b);
         }
     }
 
+    /**
+     * Luo taulukon joka sisältää kaikki henkilöt ja niihin liittyvän datan.
+     *
+     */
     private void initPeopleData() {
         peopleTableData = new Vector<>();
 
@@ -1531,6 +1622,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Luo taulukon, joka sisältää kaikki tiedossa olevat huoneet ja niihin
+     * liittyvät tiedot.
+     */
     private void initRoomData() {
         roomTableData = new Vector<>();
         for (int i = 0; i < rooms.length; i++) {

@@ -1604,6 +1604,7 @@ public class NeroDatabase implements NeroObserver {
 		}
 		if(post == null) {
                     this.prepUpdatePhoneNumber.setString(1, "");
+
 		} else {
                     this.prepUpdatePhoneNumber.setString(1, post.getPostID());
 		}
@@ -1614,17 +1615,20 @@ public class NeroDatabase implements NeroObserver {
                 
 		if(updatedRows > 0) { // TODO tehdään jotenkin erilailla kun poistetaan puhelinnumero työpisteestä
                     success = true;
-                    //Kun työpisteelle varataan numero, jos kännykkää ei löydetä työpisteen varanneilta henkilöiltä, niin työisteen numero päivitetään henkilöille
+                    //Kun työpisteelle varataan numero, jos kännykkää ei löydetä työpisteen varanneilta henkilöiltä, niin työpisteen numero päivitetään henkilöille
                     if (post != null)    {
 
                         prep = this.connection.prepareStatement(getpersons);
                         prep.setString (1, post.getPostID());
                         ResultSet rs = prep.executeQuery();
                         while (rs.next()) {
-                            if (this.findKannykka("HENKLO_HTUNNUS") == false) {
-                                if(rs.getString("HENKLO_HTUNNUS")!=null) {
-                                    this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                                }                      
+                            if (this.findKannykka(rs.getString("HENKLO_HTUNNUS"))) {
+                                    System.out.println("true");                      
+                            }
+                            else {
+                                this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
+                                System.out.println("true");
+                                
                             }
                         }
                     //Kun henkilölle varataan numero
@@ -1813,14 +1817,13 @@ public class NeroDatabase implements NeroObserver {
             PreparedStatement p = this.connection.prepareStatement(getKannykka);
             p.setString(1, henklo_tunnus);
             ResultSet rs = p.executeQuery();
-            
-            while (rs.next()) {
-                if (rs.getString("kannykka_numero") != null)
-                        return true;
+          
+            if (rs.next()) {
+                return true;
             }
             
         } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
+            System.err.println("Tietokantavirhe: " + e.getMessage());            
         }
         return false;
     }
