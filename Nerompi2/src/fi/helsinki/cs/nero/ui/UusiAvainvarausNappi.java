@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fi.helsinki.cs.nero.ui;
 
 import fi.helsinki.cs.nero.data.Person;
@@ -51,7 +47,6 @@ public class UusiAvainvarausNappi extends JButton {
                 this.person.getSession().setStatusMessage("Henkilöllä on jo avainvaraus tarkasteluajan loppuun asti!");
             } else {
                 this.person.getSession().addRoomKeyReservation(this.person, new TimeSlice(alkuaika.getTime(), this.person.getSession().getTimeScaleSlice().getEndDate()));
-                this.person.getSession().setStatusMessage("Avainvaraus luotu huoneeseen " + this.person.getSession().getActiveRoom() + ".");
             }
         }
     }

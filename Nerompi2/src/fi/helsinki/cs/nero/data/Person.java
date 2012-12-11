@@ -1,10 +1,9 @@
 package fi.helsinki.cs.nero.data;
 
-import java.util.Arrays;
-import java.util.Date;
-
 import fi.helsinki.cs.nero.logic.Session;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 /*
@@ -18,15 +17,15 @@ import java.util.HashMap;
 public class Person implements Comparable {
 
     /**
-     * Henkilön tunnus
+     * Henkilön tunnus.
      */
     private final String personID;
     /**
-     * Henkilön nimi
+     * Henkilön nimi.
      */
     private final String name;
     /**
-     * Henkilön työsopimukset
+     * Henkilön työsopimukset.
      */
     private Contract[] contracts;
     /**
@@ -567,6 +566,10 @@ public class Person implements Comparable {
 
     public void addRoomKeyReservation(RoomKeyReservation reservation) {
         this.roomKeyReservations.add(reservation);
+    }
+    
+    public ArrayList<RoomKeyReservation> getRoomKeyreservationArrayList(){
+        return this.roomKeyReservations;
     }
     
     public RoomKeyReservation[] getRoomKeyReservations() {
