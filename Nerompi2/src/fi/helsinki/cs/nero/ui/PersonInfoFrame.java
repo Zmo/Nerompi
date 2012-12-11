@@ -153,7 +153,6 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("tietoruutu");
-        setAlwaysOnTop(true);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFocusTraversalPolicyProvider(true);
 
@@ -216,6 +215,9 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(MoreFieldLayout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addContainerGap(72, Short.MAX_VALUE))
+                    .addGroup(MoreFieldLayout.createSequentialGroup()
                         .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(hallinnollinenkommenttiField, javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,17 +235,9 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel14)
                                     .addComponent(sahkopostiField, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel11))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(MoreFieldLayout.createSequentialGroup()
-                        .addGroup(MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(MoreFieldLayout.createSequentialGroup()
-                                .addComponent(jLabel15)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MoreFieldLayout.createSequentialGroup()
-                                .addGap(0, 1, Short.MAX_VALUE)
-                                .addComponent(jLabel13)))
-                        .addContainerGap())))
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel13))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         MoreFieldLayout.setVerticalGroup(
             MoreFieldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
