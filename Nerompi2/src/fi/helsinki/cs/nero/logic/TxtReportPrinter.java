@@ -65,6 +65,7 @@ public class TxtReportPrinter implements ReportPrinter {
      * pisin merkkijono.
      * K‰y l‰pi listan ja tarkistaa jokaisen alilistan alkion kohdalla, onko se
      * pidempi kuin toistaiseksi pisin tunnettu sana samalla sarakkeella.
+     * Metodi olettaa, ett‰ kaikki rivit ovat saman mittaisia.
      * 
      * @param data taulukko, jonka sarakkeiden pituudet selvitet‰‰n
      * @return taulukko joka on samanpituinen kuin parametrina saadun listan 
@@ -72,6 +73,7 @@ public class TxtReportPrinter implements ReportPrinter {
      * vastaavalla "sarakkeella". 
      */
     private Integer[] getLongestWord(List<List> data) {
+        
         Integer[] lengths = new Integer[data.get(0).size()];
 
         for (int i = 0; i < lengths.length; i++) {

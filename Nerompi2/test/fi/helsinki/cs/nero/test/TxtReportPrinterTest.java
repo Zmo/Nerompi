@@ -67,6 +67,46 @@ public class TxtReportPrinterTest extends TestCase {
         }
     }
         
+        public void testPrint() {
+        try {
+            File f = new File("TxtReportPrinterTest.txt");
+            List<List> data = new ArrayList();
+            List<String> row = new ArrayList();
+            row.add("eka");
+            row.add("toka");
+            row.add("kolmas");
+
+            List<String> row2 = new ArrayList();
+            row2.add("eka2");
+            row2.add("toka2");
+            row2.add("kolmas2");
+            
+            List<String> row3 = new ArrayList();
+            row3.add("eka3");
+            row3.add("toka3");
+            row3.add("kolmas3");
+            
+            data.add(row);
+            data.add(row2);
+            data.add(row3);
+            TxtReportPrinter instance = new TxtReportPrinter(f);
+            instance.print(data);
+            
+            String result = readFile(f);
+            String expResult = "eka | toka | kolmas | \n"
+                             + "eka2| toka2| kolmas2| \n"
+                             + "eka3| toka3| kolmas3| \n";
+            
+            System.out.println("expected: "+expResult);
+            System.out.println("result: "+result);
+                    
+            
+            assertEquals(expResult, result);
+        } catch (FileNotFoundException ex) {
+            fail();
+        }
+    }
+        
         public void testPrintOneColumn() {
         System.out.println("print");
         List<List> data = null;
@@ -90,7 +130,7 @@ public class TxtReportPrinterTest extends TestCase {
         try {
             Scanner scanner = new Scanner(new FileReader(f));
             while (scanner.hasNextLine()) {
-                str = str.concat(scanner.nextLine());
+                str = str.concat(scanner.nextLine()+"\n");                
             }
         } catch (FileNotFoundException ex) {
             throw ex;
