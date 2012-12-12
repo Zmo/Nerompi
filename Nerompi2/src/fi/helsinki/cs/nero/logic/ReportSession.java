@@ -34,7 +34,7 @@ public class ReportSession {
 
     public Vector<Vector<Object>> getRoomData() {
         Vector roomTableData = new Vector<>();
-        for (Room room: rooms) {
+        for (Room room : rooms) {
             Vector<Object> row = new Vector<>();
             row.add(room.getRoomName());
             row.add(room.getFloor());
@@ -54,7 +54,7 @@ public class ReportSession {
     public Vector<Vector<Object>> getPeopleData() {
         Vector peopleTableData = new Vector<>();
 
-        for (Person person: people) {
+        for (Person person : people) {
             Vector<Object> row = new Vector<>();
 
             row.add(person.getName());
@@ -68,11 +68,12 @@ public class ReportSession {
             } else {
                 row.add(reservation.getTargetPost().toString());
             }
-            // lisätään tiedot henkilön tämänhetkisestä huoneesta
+            // lisätään tiedot henkilön tämänhetkisestä huoneesta: siipi, kerros
             try {
                 Room room = reservation.getTargetPost().getRoom();
                 row.add(room.getFloor().toString());
                 row.add(room.getWing());
+                // huoneessa olevien työpisteiden lukumäärä
                 row.add(new Integer(room.getPosts().length).toString());
             } catch (NullPointerException ex) {
                 row.add(null);
@@ -94,7 +95,6 @@ public class ReportSession {
             } else {
                 row.add(person.getPostilokeroHuone());
             }
-
             peopleTableData.add(row);
         }
         return peopleTableData;
@@ -136,17 +136,16 @@ public class ReportSession {
         Post[] posts = room.getPosts();
         String str = "";
         if (posts != null) {
-            for (Post post: posts) {
+            for (Post post : posts) {
                 Reservation[] reservations = post.getReservations();
-
-                
-                for (int j = 0; j < reservations.length; j++) {
-                    Reservation reservation = reservations[j];
-                    if (j+1 == reservations.length) {
-                        str = str.concat(reservation.getReservingPerson().toString());
-                    } else {
+                if (reservations != null && reservations.length > 0) {
+                    str = str.concat(post.getPostNumber() + ": ");
+                    int lastIndex = reservations.length -1;
+                    for (int j = 0; j < lastIndex-1; j++) {
+                        Reservation reservation = reservations[j];
                         str = str.concat(reservation.getReservingPerson().toString() + ", ");
                     }
+                    str = str + reservations[lastIndex].getReservingPerson().toString()+" ";
                 }
             }
         }
