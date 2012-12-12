@@ -13,6 +13,7 @@ import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
+import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.TxtReportPrinter;
@@ -26,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -44,6 +44,7 @@ import javax.swing.table.TableRowSorter;
 public class ReportsWindow extends javax.swing.JFrame {
 
     private Session session;
+    private ReportSession rsession;
     private List<String> initialColumns;
     private List<JCheckBox> initialComponents;
     private List<String> initiallyHiddenColumns;
@@ -89,6 +90,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 "tk_testi", "tapaus2");
         session.setDatabase(db);
         // testikoodin loppu
+        rsession = new ReportSession();
 
         today = new Date();
         people = session.getFilteredPeople();
@@ -1564,51 +1566,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      *
      */
     private void initPeopleData() {
-        peopleTableData = new Vector<>();
-
-        for (int i = 0; i < people.length; i++) {
-            Vector<Object> row = new Vector<>();
-
-            row.add(people[i].getName());
-            row.add(people[i].getTitteli());
-            String roomName = people[i].getRoom();
-            Reservation reservation = people[i].getReservationForRoom(roomName);
-            // jos varausta ei ole, näytetään vain huonenumero
-            // muuten näytetään myös työpisteen numero
-            if (reservation == null) {
-                row.add(roomName);
-            } else {
-                row.add(reservation.getTargetPost().toString());
-            }
-
-            try {
-                Room room = reservation.getTargetPost().getRoom();
-                row.add(room.getFloor().toString());
-                row.add(room.getWing());
-                row.add(new Integer(room.getPosts().length).toString());
-            } catch (NullPointerException ex) {
-                row.add(null);
-                row.add(null);
-                row.add(null);
-            }
-            // näytetään tämänhetkisen huoneen varauksen päättymispäivä,
-            // jos henkilöllä on jokin voimassaoleva varaus tähän huoneeseen
-            if (reservation == null) {
-                row.add(null);
-            } else {
-                row.add(reservation.getLastDay());
-            }
-            row.add(people[i].getSahkoposti());
-            row.add(people[i].getWorkPhone());
-
-            if (people[i].getPostilokeroHuone() == null) {
-                row.add("ei postilokeroa");
-            } else {
-                row.add(people[i].getPostilokeroHuone());
-            }
-
-            peopleTableData.add(i, row);
-        }
+        peopleTableData = rsession.getPeopleData();
     }
 
     /**
@@ -1616,22 +1574,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * liittyvät tiedot.
      */
     private void initRoomData() {
-        roomTableData = new Vector<>();
-        for (int i = 0; i < rooms.length; i++) {
-            Vector<Object> row = new Vector<>();
-            Room room = rooms[i];
-            row.add(room.getRoomName());
-            row.add(room.getFloor());
-            row.add(room.getWing());
-            row.add(room.getPosts().length);
-            row.add(room.getRoomSize());
-            row.add(room.getDescription());
-            // avainvaraukset
-            row.add("avainhlö1, avainhlö2");
-            // työpistevaraukset
-            row.add("varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus");
-            roomTableData.add(row);
-        }
+        roomTableData = rsession.getRoomData();
     }
     /**
      * Muuttaa näkymää sen perusteella, pitääkö myös epäaktiiviset henkilöt
