@@ -17,7 +17,7 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  * 
  * @author lpesola
  */
-public class ODTReportPrinter implements ReportWriter {
+public class ODTReportPrinter implements ReportPrinter {
     
     final File file;
 

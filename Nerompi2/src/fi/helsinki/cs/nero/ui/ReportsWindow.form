@@ -386,7 +386,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="11"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="dateToShortString(today)" type="code"/>
+              <Connection code="new SimpleDateFormat(&quot;dd.MM.yyyy&quot;).format(today)" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Aikav&#xe4;lin ensimm&#xe4;inen p&#xe4;iv&#xe4; muodossa DD.MM.YYYY"/>
           </Properties>

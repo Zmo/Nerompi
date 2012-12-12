@@ -946,7 +946,7 @@ public class Session {
     public void addRoomKeyReservation(Person person, TimeSlice timeslice) {
         //RoomKeyReservation uusiVaraus = new RoomKeyReservation(this.getActiveRoom().getRoomKeyReservations().size(), this.getActiveRoom(), person.getPersonID(), person.getName(), timeslice, this); 
         db.addRoomKeyReservation(this.activeRoom, person, timeslice);
-        RoomKeyReservation etsittyVaraus = this.findMatchingRoomKeyReservation(person, timeslice, this.getActiveRoom());
+        RoomKeyReservation etsittyVaraus = this.getMatchingRoomKeyReservation(person, timeslice, this.getActiveRoom());
         if (etsittyVaraus == null){
             System.out.println("Ongelmia Session.addRoomKeyReservationissa - huonetta ei löydy tietokannasta");
             return;
@@ -981,7 +981,7 @@ public class Session {
     }
 
     
-    public RoomKeyReservation findMatchingRoomKeyReservation(Person person, TimeSlice timeSlice, Room room){
+    public RoomKeyReservation getMatchingRoomKeyReservation(Person person, TimeSlice timeSlice, Room room){
         RoomKeyReservation[] varaukset = this.getRoomKeyReservations(room);
         for (RoomKeyReservation reservation : varaukset) {
             if (reservation != null) {
@@ -1018,6 +1018,9 @@ public class Session {
         obsman.addObserver(type, observer);
     }
 
+/*    public Person getPerson(String personID){
+        return this.db;
+    }*/
     public void saveNewPerson(Person person) throws SQLException {
         db.createPerson(person);
     }
