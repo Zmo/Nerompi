@@ -19,6 +19,10 @@ public class ReportWriter {
 
     JTable table;
     ReportPrinter printer;
+    /**
+     * M‰‰rittelee, mist‰ tiedet‰‰n, tulostetaanko tekstitiedostoon vai johonkin
+     * formatoituun tiedostoon.
+     */
     String structuredFileType;
 
     public ReportWriter(JTable jtable, String structuredFile) {

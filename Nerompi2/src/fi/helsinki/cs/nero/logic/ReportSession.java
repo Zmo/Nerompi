@@ -11,7 +11,13 @@ import java.util.Iterator;
 import java.util.Vector;
 
 /**
- *
+ * Session ja ReportsWindown'n v‰liss‰ toimiva luokka, joka tarjoaa
+ * ReportsWindow'lle datan sellaisessa muodossa, joka sopii sille.
+ * Ideana l‰hinn‰ se, ettei GUIssa tarvitse olla metodeita, jotka ovat 
+ * oleellisesti vain erin‰isten taulukoiden iterointia ja datan muokkaamista
+ * sopivaan esitysmuotoon.
+ * 
+ * 
  * @author lpesola
  */
 public class ReportSession {
@@ -32,6 +38,12 @@ public class ReportSession {
         rooms = session.getRooms();
     }
 
+    /**
+     * Tuottaa vektorin, joka sis‰lt‰‰ kaikki ohjelman tuntemat henkilˆt
+     * ja n‰ihin liittyv‰n oleellisen datan.
+     * 
+     * @return vektori, joka sis‰lt‰‰ taulukon rivit vektoreina
+     */
     public Vector<Vector<Object>> getRoomData() {
         Vector roomTableData = new Vector<>();
         for (Room room : rooms) {
@@ -50,6 +62,13 @@ public class ReportSession {
         }
         return roomTableData;
     }
+    
+     /**
+     * Tuottaa vektorin, joka sis‰lt‰‰ kaikki ohjelman tuntemat huoneet
+     * ja n‰ihin liittyv‰n oleellisen datan.
+     * 
+     * @return vektori, joka sis‰lt‰‰ taulukon rivit vektoreina
+     */
 
     public Vector<Vector<Object>> getPeopleData() {
         Vector peopleTableData = new Vector<>();

@@ -53,7 +53,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="ColumnsLabel" min="-2" max="-2" attributes="0"/>
                           <Component id="dataModeSelector" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="showAllLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Component id="columnChekboxes" min="-2" max="-2" attributes="0"/>
@@ -82,7 +82,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                      <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                      <Component id="showAllLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="dataModeSelector" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
@@ -172,7 +172,7 @@
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="showInactive" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Component id="restrictByName" min="-2" pref="148" max="-2" attributes="0"/>
                               </Group>
@@ -184,8 +184,8 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel4" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="EndDateLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="startDateLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -199,13 +199,13 @@
                           </Group>
                           <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="showLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel6" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <Component id="reservationEndsLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -218,7 +218,7 @@
                           <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="floor" min="-2" max="-2" attributes="0"/>
-                              <Component id="wing" min="-2" max="-2" attributes="0"/>
+                              <Component id="wingLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Component id="postroomLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -247,27 +247,27 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="roomLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="postroomLabel" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="reservationEndsLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="personLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="restrictByWing" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="wing" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="wingLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="restrictByHasLocker" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="showLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="firstCalendar" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="restrictByFirstDate" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel4" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="startDateLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="restrictByName" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel3" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="nameLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="showInactive" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="restrictByLastDate" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lastCalendar" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel5" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="EndDateLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel6" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="restrictByLockerRoom" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="floor" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -279,7 +279,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="wing">
+        <Component class="javax.swing.JLabel" name="wingLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Siipi"/>
           </Properties>
@@ -335,18 +335,18 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="restrictByHasLockerItemStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="showLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="N&#xe4;yt&#xe4;"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel2">
+        <Component class="javax.swing.JLabel" name="reservationEndsLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Varaus p&#xe4;&#xe4;ttyy aikav&#xe4;lill&#xe4;"/>
             <Property name="toolTipText" type="java.lang.String" value="Aseta aikav&#xe4;li, jonka aikana p&#xe4;&#xe4;ttyv&#xe4;t varaukset n&#xe4;ytet&#xe4;&#xe4;n"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel3">
+        <Component class="javax.swing.JLabel" name="nameLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Nimi"/>
           </Properties>
@@ -356,12 +356,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="restrictByNameActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel4">
+        <Component class="javax.swing.JLabel" name="startDateLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Alkupvm."/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel5">
+        <Component class="javax.swing.JLabel" name="EndDateLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Loppupvm."/>
           </Properties>
@@ -653,7 +653,7 @@
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="dataModeSelectorItemStateChanged"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel7">
+    <Component class="javax.swing.JLabel" name="showAllLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="N&#xe4;yt&#xe4; kaikki"/>
       </Properties>
