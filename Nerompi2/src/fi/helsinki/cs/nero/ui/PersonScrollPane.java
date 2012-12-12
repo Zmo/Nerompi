@@ -295,25 +295,14 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                         GridLayout gridLayout = new GridLayout();
                         gridLayout.setColumns(1);
                         
-                        /* Henkilön avainvaraukset - työn alla*/
-                        int rivimaara = 0; // IDE valehtelee, kyllä tätä käytetään!
+                        /* Henkilön avainvaraukset */
+                        int rivimaara;
                         RoomKeyReservation[] avainVarausLista = personIterator.getPerson().getRoomKeyReservations();
                         for (rivimaara = 0; rivimaara < avainVarausLista.length; rivimaara++){
                             Calendar alkupaiva = Calendar.getInstance();
                             Calendar loppupaiva = Calendar.getInstance();
                             alkupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getStartDate());
                             loppupaiva.setTime(avainVarausLista[rivimaara].getTimeSlice().getEndDate());
-                            
-                            /*
-                            String alkuTekstina = alkupaiva.get(Calendar.DAY_OF_MONTH) + "." + 
-                                                 (alkupaiva.get(Calendar.MONTH)+1) + "." + 
-                                                  alkupaiva.get(Calendar.YEAR);7
-                            */
-                            /*
-                            String loppuTekstina = loppupaiva.get(Calendar.DAY_OF_MONTH) + "." + 
-                                                  (loppupaiva.get(Calendar.MONTH)+1) + "." + 
-                                                   loppupaiva.get(Calendar.YEAR);
-                            */
                             AvainKalenterinappi alkuAvainKalenteri = new AvainKalenterinappi(avainVarausLista[rivimaara], personIterator.getPerson(), true);
                             AvainKalenterinappi loppuAvainKalenteri = new AvainKalenterinappi(avainVarausLista[rivimaara], personIterator.getPerson(), false);
                             
@@ -361,7 +350,6 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
                                     else {
                                         barPanel.add(post);
                                     }
-                                    // rowPanel.add(post);
                                 }
                                 nappiRivit.setLayout(new GridLayout(korkeus, 1));
                                 korkeus = korkeus * 28;
