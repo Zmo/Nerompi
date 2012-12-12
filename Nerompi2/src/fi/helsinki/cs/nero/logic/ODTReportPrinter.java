@@ -46,7 +46,7 @@ public class ODTReportPrinter implements ReportPrinter {
      * Luo uuden TableModelin, johon saadaan sarakkeiden nimi -vektori
      * sekä data-vektori parametrina saatavasta listasta.
      * 
-     * @param data, data josta malli muoodstetaan
+     * @param data data josta malli muoodstetaan
      */
     @Override
     public void print(List<List> data) {

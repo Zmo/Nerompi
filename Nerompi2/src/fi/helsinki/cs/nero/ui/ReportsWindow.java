@@ -614,7 +614,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * voiko sen päälle tallentaa.
      *
      * @param evt
-     * @see promptForOverWrite()
+     * @see #promptForOverWrite() 
      */
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
 
@@ -920,7 +920,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * Alustaa GUI taulukossa tarvittavat tiedot ja luo näistä kaksi taulukkoa,
      * joiden välillä raporttinäkymässä voidaan vaihtaa: henkilö- sekä
      * huonetaulukon. Alustaa näiden sarakkeiden nimet sekä sarakkeiden datan ja
-     * näitä vastaavat mallit. Data saadaan Sessiolta. Huonedataa ei koskaan
+     * näitä vastaavat mallit. Data saadaan ReportSessiolta. Huonedataa ei koskaan
      * muuteta - se pysyy samana sen jälkeen, kun se on kerran haettu.
      * Henkilödata saatetaan hakea uudestaan, jos käyttäjä haluaa mukaan myös
      * epäaktiiviset henkilöt. Joka tapauksessa idea on se, että taulukkomalli
@@ -928,7 +928,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * henkilöiden ja huoneiden perusteella listatut. Datan alustamisen lisäksi
      * luodaan tarvittavat malit henkilödataa varten.
      *
-     * @See NeroTableModel
+     * @see NeroTableModel
      */
     private void initColumnData() {
 
@@ -992,8 +992,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * vasemmalle.
      *
      * @param name sarakkeen identifier / sen otsake
-     * @param model taulukkomalli, johon sarake lisätään
-     * @param hiddenColumns map, josta piilotettu sarake haetaan
      * @see IndexedColumn
      */
     private void showColumn(String name) {
@@ -1017,8 +1015,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * jälkeen poistetaan sarake taulukkomallista.
      *
      * @param name sarakkeen identifier / sen otsake
-     * @param model sarakemalli, josta sarake poistetaan
-     * @param hiddenColumns map, johon piilotettava sarake laitetaan talteen
      * @see IndexedColumn
      */
     private void hideColumn(String name) {
@@ -1038,7 +1034,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     /**
      * Asettaa kaikkien saamiensa checboxien tilaksi selected.
      *
-     * @param components, lista komponenteista, joiden tila muutetaan
+     * @param components lista komponenteista, joiden tila muutetaan
      */
     private void setSelected(List<JCheckBox> components) {
         for (JCheckBox jcomp : components) {
@@ -1123,7 +1119,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @param last loppupäivämäärä
      * @return filteri, joka hyväksyy vain arvot, jotka sijoittuvat parametreina
      * saatujen päivämäärien välille
-     * @see getDateFilter(first, last)
+     * @see #getDateFilter(java.util.Date, javax.swing.RowFilter.ComparisonType) 
      */
     private RowFilter getDateFilter(Date first, Date last) {
         try {
@@ -1166,7 +1162,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * Antaa käskyn tulostaa näkyvillä olevan taulukon datan valitussa
      * formaatissa.
      *
-     * @param f, tiedosto, johon data kirjoitetaan
+     * @param f tiedosto, johon data kirjoitetaan
      * @see ReportWriter
      */
     private void print(File f) {
@@ -1268,7 +1264,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      *
      * @param filterColumnName sarake, johon filterin pitää vaikuttaa
      * @param filter filtteri, joka otetaan käyttöön
-     * @see updateFilterList
+     * @see #updateFilterList(java.util.List) 
      */
     private void addFilter(String filterColumnName, RowFilter filter) {
         filterList.put(filterColumnName, filter);
@@ -1278,7 +1274,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     /**
      * Luo ja lisää käyttöön regexp-filterin.
      *
-     * @see addFilter
+     * @see #addFilter(java.lang.String, javax.swing.RowFilter) 
      * @param filterText teksti, jonka pohjalta regexp-filter luodaan
      * @param columnName sarake, johon filterin pitää vaikuttaa
      */
