@@ -1032,6 +1032,6 @@ public class Session {
         db.addKannykka(kannykka);
     }
     public String getKannykka(String htunnus) {
-        return db.getKannykka(htunnus);
+        return db.getKannykkanOmistaja(htunnus);
     }
 }

@@ -293,9 +293,19 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Kännykän omistaja");
 
-        tyosuhdeButton.setText("Työsuhteessa");
+        tyosuhdeButton.setText("HY:n Työsuhteessa");
+        tyosuhdeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tyosuhdeButtonActionPerformed(evt);
+            }
+        });
 
-        puhelinluettelossaButton.setText("Puhelinluettelossa");
+        puhelinluettelossaButton.setText("HY:n Puhelinluettelossa");
+        puhelinluettelossaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                puhelinluettelossaButtonActionPerformed(evt);
+            }
+        });
 
         lisaapoistaButton.setText("Varaa työnumero");
         lisaapoistaButton.addActionListener(new java.awt.event.ActionListener() {
@@ -351,7 +361,7 @@ public class PersonInfoFrame extends javax.swing.JFrame {
                                         .addComponent(puhelinluettelossaButton))))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(MoreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -422,7 +432,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Tallenna-nappulaa painettaessa tallettaa henkilön ja kannykän tiedot tietokantaan
+     * @param evt 
+     */
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
         errorMessageLabel.setText("");
@@ -495,7 +508,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         
         //this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
-
+    /**
+     * Lisätietonapin on/off asento tuo tai piilottaa lisätiedot pääikkunasta
+     * @param evt 
+     */
     private void MoreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoreButtonActionPerformed
         if (MoreField.isVisible()) {
             //this.setSize(610, 400);
@@ -522,6 +538,14 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private void htunnusFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_htunnusFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_htunnusFieldActionPerformed
+
+    private void puhelinluettelossaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_puhelinluettelossaButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_puhelinluettelossaButtonActionPerformed
+
+    private void tyosuhdeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tyosuhdeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tyosuhdeButtonActionPerformed
 
     /**
      * @param args the command line arguments

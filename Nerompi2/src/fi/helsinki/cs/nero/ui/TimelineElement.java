@@ -285,7 +285,11 @@ public class TimelineElement extends JPanel {
      */
     public void createLabel(Person pe) {
         JLabel name = new PersonNameLabel(this.session, pe);
-        name.setText(pe.getName()+" Puhelin: "+pe.getWorkPhone());
+        String puhNumero = "";
+        if (pe.getWorkPhone() != null){
+            puhNumero = " (" + pe.getWorkPhone() + ")";
+        }
+        name.setText(pe.getName() + puhNumero);
         name.addMouseListener(new PersonNameLabelListener());
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
