@@ -956,6 +956,7 @@ public class Session {
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        //this.db.updateObserved(NeroObserverTypes.RESERVATIONS);
         this.setStatusMessage("Avainvaraus henkilölle " + person +" luotu huoneeseen " + this.getActiveRoom() + ".");
     }
 
@@ -969,14 +970,17 @@ public class Session {
         this.db.getRoom(roomKeyReservation.getTargetRoom().getRoomID()).deleteRoomKeyReservation(roomKeyReservation);
         this.db.deleteRoomKeyReservation(roomKeyReservation.getReservationID());
         person.deleteRoomKeyReservation(roomKeyReservation);
+        
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        //this.db.updateObserved(NeroObserverTypes.RESERVATIONS);
         this.setStatusMessage("Avainvaraus poistettu");
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         this.db.modifyRoomKeyReservation(roomKeyReservation);
         roomKeyReservation.getTargetRoom().modifyRoomKeyReservation(roomKeyReservation);
+
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
     }
 

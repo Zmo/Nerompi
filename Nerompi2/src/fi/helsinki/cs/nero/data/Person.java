@@ -568,10 +568,6 @@ public class Person implements Comparable {
         this.roomKeyReservations.add(reservation);
     }
     
-    public ArrayList<RoomKeyReservation> getRoomKeyreservationArrayList(){
-        return this.roomKeyReservations;
-    }
-    
     public RoomKeyReservation[] getRoomKeyReservations() {
         return this.roomKeyReservations.toArray(new RoomKeyReservation[0]);
     }
