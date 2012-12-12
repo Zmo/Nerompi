@@ -111,6 +111,12 @@ public class ReportSession {
         people = session.getFilteredPeople();
     }
 
+    /**
+     * Muotoilee huoneen kaikki avainvaraukset yhdeksi Stringiksi.
+     * 
+     * @param room huone, jonka avainvarauksia käsitellään
+     * @return avainvaraukset listattuna yhdessä Stringissä
+     */
     private String roomKeyReservationsToString(Room room) {
         ArrayList<RoomKeyReservation> reservations = room.getRoomKeyReservations();
         if (reservations == null || reservations.isEmpty()) {
@@ -132,6 +138,11 @@ public class ReportSession {
         }
     }
 
+    /**
+     * Muotoilee huoneen kaikki työpistevaraukset yhdeksi Stringiksi.
+     * @param room huone, jonka varauksia käsitellään
+     * @return työpistevaraukset listattuna yhdessä Stringissä
+     */
     private String reservationsToString(Room room) {
         Post[] posts = room.getPosts();
         String str = "";
