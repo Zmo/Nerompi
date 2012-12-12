@@ -9,12 +9,11 @@ package fi.helsinki.cs.nero.ui;
  * @see Session
  */
 import fi.helsinki.cs.nero.data.Person;
-import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
 import fi.helsinki.cs.nero.logic.ReportSession;
-import fi.helsinki.cs.nero.logic.ReportPrinter;
+import fi.helsinki.cs.nero.logic.ReportWriter;
 import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
@@ -66,7 +65,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
     private Map<String, RowFilter> filterList;
-    private ReportPrinter printer;
+    private ReportWriter writer;
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
     private String postihuone, puhelinnumero;
@@ -688,26 +687,26 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_restrictByLockerRoomItemStateChanged
 
     private void restrictByLastDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByLastDateActionPerformed
-        determineDateRestriction();
+        setDateRestriction();
     }//GEN-LAST:event_restrictByLastDateActionPerformed
 
     private void restrictByFirstDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByFirstDateActionPerformed
-        determineDateRestriction();
+        setDateRestriction();
     }//GEN-LAST:event_restrictByFirstDateActionPerformed
 
     private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
             String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());
             restrictByFirstDate.setText(strDate);
-            determineDateRestriction();
+            setDateRestriction();
         }
     }//GEN-LAST:event_firstCalendarPropertyChange
 
     private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());            
+            String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());
             restrictByLastDate.setText(strDate);
-            determineDateRestriction();
+            setDateRestriction();
         }
     }//GEN-LAST:event_lastCalendarPropertyChange
 
@@ -937,27 +936,24 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
-
     /**
-     * Alustaa GUI taulukossa tarvittavat tiedot ja luo näistä kaksi
-     * taulukkoa, joiden välillä raporttinäkymässä voidaan vaihtaa: 
-     * henkilö- sekä huonetaulukon.
-     * Alustaa näiden sarakkeiden nimet 
-     * sekä sarakkeiden datan ja näitä vastaavat mallit.
-     * Data saadaan Sessiolta. Huonedataa ei koskaan
+     * Alustaa GUI taulukossa tarvittavat tiedot ja luo näistä kaksi taulukkoa,
+     * joiden välillä raporttinäkymässä voidaan vaihtaa: henkilö- sekä
+     * huonetaulukon. Alustaa näiden sarakkeiden nimet sekä sarakkeiden datan ja
+     * näitä vastaavat mallit. Data saadaan Sessiolta. Huonedataa ei koskaan
      * muuteta - se pysyy samana sen jälkeen, kun se on kerran haettu.
      * Henkilödata saatetaan hakea uudestaan, jos käyttäjä haluaa mukaan myös
-     * epäaktiiviset henkilöt.
-     * Joka tapauksessa idea on se, että taulukkomalli ei koskaan muutu - vain
-     * näkymää muutetaan.
-     * Taulukkoja on kaksi: henkilöiden ja huoneiden perusteella listatut.
-     * Datan alustamisen lisäksi luodaan tarvittavat malit henkilödataa varten.
+     * epäaktiiviset henkilöt. Joka tapauksessa idea on se, että taulukkomalli
+     * ei koskaan muutu - vain näkymää muutetaan. Taulukkoja on kaksi:
+     * henkilöiden ja huoneiden perusteella listatut. Datan alustamisen lisäksi
+     * luodaan tarvittavat malit henkilödataa varten.
+     *
      * @See NeroTableModel
      */
     private void initColumnData() {
 
         initColumnNames();
-        
+
         initRoomData();
         roomTable = new JTable(roomTableData, roomColumnNames);
 
@@ -1079,70 +1075,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Käy läpi näkyvillä olevat sarakkeet ja palauttaa niiden indeksit. Pyytää
-     * taulukolta sen sarakemallin ja pyytää siltä sarakkeet (nämä ovat siis
-     * näkyvillä). Iteroi niiden läpi ja tarkistaa, mikä niiden indeksi on.
-     * Lisää indeksin taulukkoon.
-     *
-     * @return taulukko tällä hetkellä näkyvillä olevien sarakkeiden indekseistä
-     */
-    private int[] listShownColumnsByIndex() {
-        Enumeration<TableColumn> e = table.getColumnModel().getColumns();
-        int[] neededIndexes = new int[table.getColumnCount()];
-        int z = 0;
-        while (e.hasMoreElements()) {
-            String s = e.nextElement().getIdentifier().toString();
-            neededIndexes[z] = table.getColumnModel().getColumnIndex(s);
-            z++;
-        }
-        return neededIndexes;
-    }
-
-    /**
-     * Hakee GUIn taulukossa tällä hetkellä näkyvillä olevan datan. Luo listan,
-     * jonka alkiot vastaavat taulukon rivejä. Alkiot ovat listoja, joiden
-     * alkiot vastaavat rivin sarakkeita. Hakee näkyvillä olevat sarakkeiden
-     * nimet ja tämän jälkeen näkyvillä olevan datan ja yhdistää nämä yhdeksi
-     * listaksi.
-     *
-     * @return lista listoja, joka kuvaa GUIn taulukossa tällä hetkellä
-     * näkyvillä olevan datan
-     * @see getShownColumnIdentifiers()
-     * @see getShownColumnData()
-     */
-    private List<List> getTableDataAsList() {
-
-        List<List> list = new ArrayList<>();
-        /* - tarkista, mitkä sarakkeet ovat näkyvillä
-         * - ota talteen niiden nimet ja laita ensimmäiseksi listaan
-         * - hae data niistä sarakkeista, jotka ovat näkyvillä
-         */
-        List columnIdentifiers = getShownColumnIdentifiers();
-        list.add(0, columnIdentifiers);
-        list.addAll(1, getShownColumnData());
-
-        return list;
-    }
-
-    /**
-     * Tuottaa Date-oliosta merkkijonon, joka kuvaa sen päivämäärän.
-     *
-     * @param date päivämäärä, josta teksti muodostetaan
-     * @return annettu päivämäärä merkkijonona, joka on muotoa pp.kk.vvvv
-     */
-    private String dateToShortString(Date date) {
-        if (date != null) {
-            String dateString = "";
-            dateString = dateString.concat(date.getDate() + ".");
-            dateString = dateString.concat((1 + date.getMonth()) + ".");
-            dateString = dateString.concat(new Integer((date.getYear()) + 1900).toString());
-            return dateString;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Tarkistaa, minkälaisia päivämääräpohjaisia rajoitteita GUIssa on
      * määriteltynä tällä hetkellä ja rajaa taulukon dataa sen mukaan.
      *
@@ -1155,7 +1087,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * kummassakaan ei ole mitään, poistetaan päivämäärärajoitin kokonaan ja
      * näytetään kaikki rivit.
      */
-    private void determineDateRestriction() {
+    private void setDateRestriction() {
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
         RowFilter filter;
@@ -1288,21 +1220,16 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Antaa käskyn tulostaa näkyvillä olevan taulukon datan valitussa
-     * formaatissa. Tarkistaa, mikä tiedostomuoto on valittu ja valitsee
-     * tulostamiseen käytetyn luokan sen mukaan. Antaa kirjoittajalle taulukon
-     * näyttämän datan listana.
+     * formaatissa. 
      *
      * @param f, tiedosto, johon data kirjoitetaan
+     * @see ReportWriter
      */
     private void print(File f) {
 
-        String fileType = fileTypeChooser.getSelectedItem().toString();
-        if (fileType.equals(structuredFileType)) {
-            printer = new ODTReportPrinter(f);
-        } else {
-            printer = new TxtReportPrinter(f);
-        }
-        printer.print(getTableDataAsList());
+        writer = new ReportWriter(table, structuredFileType);
+        writer.print(f, fileTypeChooser.getSelectedItem().toString());
+
     }
 
     /**
@@ -1326,72 +1253,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Listaa kaikkien GUIn taulukossa näkyvillä olevien sarakkeiden otsakkeet.
-     * Pyytää mallilta kaikki sarakkeet ja käy läpi niiden otsaketiedot.
+     * Asettaa kaikki saamansa sarakkeet näkyviksi.
      *
-     * @return lista näkyvillä olevien sarakkeiden otsikoista
-     */
-    private List getShownColumnIdentifiers() {
-
-        Enumeration<TableColumn> e = table.getColumnModel().getColumns();
-        int z = 0;
-        List identifiers = new ArrayList();
-        while (e.hasMoreElements()) {
-            String s = e.nextElement().getIdentifier().toString();
-            identifiers.add(z, s);
-            z++;
-        }
-        return identifiers;
-    }
-
-    /**
-     * Tuottaa kokoelman, joka sisältää kaiken GUIn taulukossa näkyvillä olevan
-     * datan. Käy läpi kaikki näkyvät rivit (view) ja selvittää niiden indeksin
-     * alla olevassa taulukkomallissa (model). Selvittää jokaisen näkyvillä
-     * olevan rivin sarakkeen indeksin mallissa (view -> model) ja hakee rivin
-     * ja sarakkeen perusteella taulukosta näkyvän datan.
-     *
-     * @return kokoelma listoja. Kokoelma sisältää kaiken näkyvillä olevan datan
-     * ja se on samassa järjestyksessä kuin se on taulukon näkymässä. Listan
-     * alkiot vastaavat rivin sarakkeita ja kokoelman alkiot taulukon rivejä.
-     */
-    private Collection<? extends List> getShownColumnData() {
-
-        int[] neededIndexes = listShownColumnsByIndex();
-        TableModel tableModel = table.getModel();
-        DefaultRowSorter rs = (DefaultRowSorter) table.getRowSorter();
-        int columnCount = table.getColumnCount();
-        int rowCount = rs.getViewRowCount();
-        ArrayList list = new ArrayList(rowCount);
-
-
-        //TODO: ehkä tuon päivämäärän lyhentämisen voi tehdä myöskin jossain muualla
-        for (int i = 0; i < rowCount; i++) {
-            List rowList = new ArrayList(columnCount);
-            int rowIndexInView = rs.convertRowIndexToModel(i);
-            for (int j = 0; j < columnCount; j++) {
-                Object o = tableModel.getValueAt(rowIndexInView,
-                        table.convertColumnIndexToModel(neededIndexes[j]));
-                String value;
-                if (o == null) {
-                    value = "";
-                } else if (o.getClass() == Date.class) {
-                    value = dateToShortString((Date) o);
-                } else {
-                    value = o.toString();
-                }
-                rowList.add(j, value);
-            }
-            list.add(rowList);
-        }
-        return list;
-    }
-
-
-    /**
-     * Asettaa kaikki saamansa sarakkeet näkyviksi. 
-     * 
-     * @param col kokoelma sarakkeita 
+     * @param col kokoelma sarakkeita
      */
     private void showColumns(Collection<String> col) {
         for (String identifier : col) {
@@ -1405,9 +1269,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Piilottaa tai näyttää sarakkeen sen mukaan, onko siihen liittyvä
-     * checkbox valittuna vai ei.
-     * 
+     * Piilottaa tai näyttää sarakkeen sen mukaan, onko siihen liittyvä checkbox
+     * valittuna vai ei.
+     *
      * @param box checkbox, joka sarakkeeseen liittyy
      * @param columnName sarakkeen nimi
      */
@@ -1425,7 +1289,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Luo regexp-filtterin saamiensa parametrien perusteella.
-     * 
+     *
      * @param regex säännöllinen lauseke, jonka perusteella filteröidään
      * @param columnName sarake, jonka dataan rajaus kohdistuu
      * @return regexp-filtteri, joka vaikuttaa annettuun sarakkeeseen ja rajaa
@@ -1445,8 +1309,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Poistaa käytöstä valitun filterin.
-     * 
-     * @param filterColumnName sarake, johon filtteri liittyi 
+     *
+     * @param filterColumnName sarake, johon filtteri liittyi
      */
     private void removeFilter(String filterColumnName) {
         filterList.remove(filterColumnName);
@@ -1454,10 +1318,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Lisää käyttöön filterin.
-     * Saa parametrina filterin, jonka lisää käytössä olevien filtereiden listaan
-     * ja päivittää sen jälkeen yleisfilterin, joka sisältää kaikki käytössä olevat
-     * filterit.
+     * Lisää käyttöön filterin. Saa parametrina filterin, jonka lisää käytössä
+     * olevien filtereiden listaan ja päivittää sen jälkeen yleisfilterin, joka
+     * sisältää kaikki käytössä olevat filterit.
+     *
      * @param filterColumnName sarake, johon filterin pitää vaikuttaa
      * @param filter filtteri, joka otetaan käyttöön
      * @see updateFilterList
@@ -1469,7 +1333,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Luo ja lisää käyttöön regexp-filterin.
-     * 
+     *
      * @see addFilter
      * @param filterText teksti, jonka pohjalta regexp-filter luodaan
      * @param columnName sarake, johon filterin pitää vaikuttaa
@@ -1486,11 +1350,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Luo filterin, joka rajaa taulukon datan sen mukaan, mitä kaikkia 
-     * filttereitä on asetettu. 
-     * Saa parametrina listan tällä hetkellä käytössä olevista filtereistä ja 
-     * luo tämän yleisfilterin niiden perusteella.
-     * 
+     * Luo filterin, joka rajaa taulukon datan sen mukaan, mitä kaikkia
+     * filttereitä on asetettu. Saa parametrina listan tällä hetkellä käytössä
+     * olevista filtereistä ja luo tämän yleisfilterin niiden perusteella.
+     *
      * @param filters lista niistä filtereistä, jotka ovat käytössä
      */
     private void updateFilterList(List<RowFilter<Object, Object>> filters) {
@@ -1536,7 +1399,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
         setSelected(initialComponents);
-        
+
         table = peopleTable;
         columnModel = table.getColumnModel();
         peopleModel.setTable(table);
@@ -1576,14 +1439,14 @@ public class ReportsWindow extends javax.swing.JFrame {
     private void initRoomData() {
         roomTableData = rsession.getRoomData();
     }
+
     /**
      * Muuttaa näkymää sen perusteella, pitääkö myös epäaktiiviset henkilöt
-     * näyttää vai ei.
-     * Käytännössä piirtää uusiksi koko taulukon.
+     * näyttää vai ei. Käytännössä piirtää uusiksi koko taulukon.
      */
     private void showInactive() {
-            initColumnData();
-            switchToPeopleData();
-            showColumns(initiallyHiddenColumns);
+        initColumnData();
+        switchToPeopleData();
+        showColumns(initiallyHiddenColumns);
     }
 }

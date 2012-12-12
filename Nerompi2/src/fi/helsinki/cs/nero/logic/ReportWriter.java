@@ -1,5 +1,6 @@
 package fi.helsinki.cs.nero.logic;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -17,11 +18,32 @@ import javax.swing.table.TableModel;
 public class ReportWriter {
 
     JTable table;
+    ReportPrinter printer;
+    String structuredFileType;
 
-    public ReportWriter(JTable jtable) {
+    public ReportWriter(JTable jtable, String structuredFile) {
         table = jtable;
+        structuredFileType = structuredFile;
     }
 
+     /**
+     * Antaa k‰skyn tulostaa n‰kyvill‰ olevan taulukon datan valitussa
+     * formaatissa. Tarkistaa, mik‰ tiedostomuoto on valittu ja valitsee
+     * tulostamiseen k‰ytetyn luokan sen mukaan. Antaa kirjoittajalle taulukon
+     * n‰ytt‰m‰n datan listana.
+     *
+     * @param f, tiedosto, johon data kirjoitetaan
+     */
+    public void print(File f, String fileType) {
+        
+        if (fileType.equals(structuredFileType)) {
+            printer = new ODTReportPrinter(f);
+        } else {
+            printer = new TxtReportPrinter(f);
+        }
+        printer.print(getTableDataAsList());
+    }
+    
     
      /**
      * K‰y l‰pi n‰kyvill‰ olevat sarakkeet ja palauttaa niiden indeksit. Pyyt‰‰
@@ -130,5 +152,23 @@ public class ReportWriter {
             list.add(rowList);
         }
         return list;
+    }
+    
+     /**
+     * Tuottaa Date-oliosta merkkijonon, joka kuvaa sen p‰iv‰m‰‰r‰n.
+     *
+     * @param date p‰iv‰m‰‰r‰, josta teksti muodostetaan
+     * @return annettu p‰iv‰m‰‰r‰ merkkijonona, joka on muotoa pp.kk.vvvv
+     */
+    private String dateToShortString(Date date) {
+        if (date != null) {
+            String dateString = "";
+            dateString = dateString.concat(date.getDate() + ".");
+            dateString = dateString.concat((1 + date.getMonth()) + ".");
+            dateString = dateString.concat(new Integer((date.getYear()) + 1900).toString());
+            return dateString;
+        } else {
+            return null;
+        }
     }
 }
