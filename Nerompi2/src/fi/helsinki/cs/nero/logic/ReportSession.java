@@ -1,9 +1,13 @@
 package fi.helsinki.cs.nero.logic;
 
 import fi.helsinki.cs.nero.data.Person;
+import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
+import fi.helsinki.cs.nero.data.RoomKeyReservation;
 import fi.helsinki.cs.nero.db.NeroDatabase;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -23,16 +27,15 @@ public class ReportSession {
                 "jdbc:oracle:thin:@bodbacka:1521:test",
                 "tk_testi", "tapaus2");
         session.setDatabase(db);
-        
+
         people = session.getFilteredPeople();
         rooms = session.getRooms();
     }
-    
+
     public Vector<Vector<Object>> getRoomData() {
         Vector roomTableData = new Vector<>();
-        for (int i = 0; i < rooms.length; i++) {
+        for (Room room: rooms) {
             Vector<Object> row = new Vector<>();
-            Room room = rooms[i];
             row.add(room.getRoomName());
             row.add(room.getFloor());
             row.add(room.getWing());
@@ -40,24 +43,24 @@ public class ReportSession {
             row.add(room.getRoomSize());
             row.add(room.getDescription());
             // avainvaraukset
-            row.add("avainhlö1, avainhlö2");
+            row.add(roomKeyReservationsToString(room));
             // työpistevaraukset
-            row.add("varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus");
+            row.add(reservationsToString(room));
             roomTableData.add(row);
         }
         return roomTableData;
     }
-    
-    public Vector<Vector<Object>> getPeopleData() {
-         Vector peopleTableData = new Vector<>();
 
-        for (int i = 0; i < people.length; i++) {
+    public Vector<Vector<Object>> getPeopleData() {
+        Vector peopleTableData = new Vector<>();
+
+        for (Person person: people) {
             Vector<Object> row = new Vector<>();
 
-            row.add(people[i].getName());
-            row.add(people[i].getTitteli());
-            String roomName = people[i].getRoom();
-            Reservation reservation = people[i].getReservationForRoom(roomName);
+            row.add(person.getName());
+            row.add(person.getTitteli());
+            String roomName = person.getRoom();
+            Reservation reservation = person.getReservationForRoom(roomName);
             // jos varausta ei ole, näytetään vain huonenumero
             // muuten näytetään myös työpisteen numero
             if (reservation == null) {
@@ -65,6 +68,7 @@ public class ReportSession {
             } else {
                 row.add(reservation.getTargetPost().toString());
             }
+            // lisätään tiedot henkilön tämänhetkisestä huoneesta
             try {
                 Room room = reservation.getTargetPost().getRoom();
                 row.add(room.getFloor().toString());
@@ -82,22 +86,70 @@ public class ReportSession {
             } else {
                 row.add(reservation.getLastDay());
             }
-            row.add(people[i].getSahkoposti());
-            row.add(people[i].getWorkPhone());
+            row.add(person.getSahkoposti());
+            row.add(person.getWorkPhone());
 
-            if (people[i].getPostilokeroHuone() == null) {
+            if (person.getPostilokeroHuone() == null) {
                 row.add("ei postilokeroa");
             } else {
-                row.add(people[i].getPostilokeroHuone());
+                row.add(person.getPostilokeroHuone());
             }
 
-            peopleTableData.add(i, row);
+            peopleTableData.add(row);
         }
         return peopleTableData;
     }
 
+    /**
+     * Hakee Sessiolta henkilödatan uudestaan sen mukaan, pitääkö mukana olla
+     * epäaktiiviset henkilöt vai ei.
+     *
+     * @param b
+     */
     public void setFilterActiveEmployees(boolean b) {
         session.setFilterActiveEmployees(b);
         people = session.getFilteredPeople();
+    }
+
+    private String roomKeyReservationsToString(Room room) {
+        ArrayList<RoomKeyReservation> reservations = room.getRoomKeyReservations();
+        if (reservations == null || reservations.isEmpty()) {
+            return "";
+        } else {
+            String str = "";
+            for (Iterator<RoomKeyReservation> it = reservations.iterator(); it.hasNext();) {
+                RoomKeyReservation r = it.next();
+                String reserver = r.getReserverName();
+                if (reserver != null) {
+                    if (!it.hasNext()) {
+                        str = str.concat(reserver);
+                    } else {
+                        str = str.concat(reserver + ", ");
+                    }
+                }
+            }
+            return str;
+        }
+    }
+
+    private String reservationsToString(Room room) {
+        Post[] posts = room.getPosts();
+        String str = "";
+        if (posts != null) {
+            for (Post post: posts) {
+                Reservation[] reservations = post.getReservations();
+
+                
+                for (int j = 0; j < reservations.length; j++) {
+                    Reservation reservation = reservations[j];
+                    if (j+1 == reservations.length) {
+                        str = str.concat(reservation.getReservingPerson().toString());
+                    } else {
+                        str = str.concat(reservation.getReservingPerson().toString() + ", ");
+                    }
+                }
+            }
+        }
+        return str;
     }
 }
