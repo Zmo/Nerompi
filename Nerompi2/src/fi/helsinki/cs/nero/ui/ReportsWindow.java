@@ -712,10 +712,14 @@ public class ReportsWindow extends javax.swing.JFrame {
             addRegexpFilter(value, postihuone);
         } else if (index == 2) {
             // lokerolliset
+            try {
             RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa",
                     convertColumnIndexToModel(columnModel.getColumnIndex(postihuone)));
             RowFilter filter = RowFilter.notFilter(regexFilter);
             addFilter(postihuone, filter);
+            } catch (IllegalArgumentException ex) {
+                showErrorMessage(ex, postihuone);
+            }
         }
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
@@ -1309,7 +1313,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
         setSelected(defaultRoomCheckboxes);
-
+        filterList.clear();
         table = roomTable;
         table.setAutoCreateColumnsFromModel(false);
         table.getTableHeader().setReorderingAllowed(false);
@@ -1330,7 +1334,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
         setSelected(initialComponents);
-
+        filterList.clear();
         table = peopleTable;
         columnModel = table.getColumnModel();
         peopleModel.setTable(table);

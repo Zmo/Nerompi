@@ -1602,10 +1602,34 @@ public class NeroDatabase implements NeroObserver {
 		Arrays.sort(numbers);
 		return numbers;
 	}
+        /**
+         * Metodi tarkastaa, että onko puhelinnumero varattu jollekkin työpisteelle.
+         * @param phone Puhelinnumero olio, jolta kysytään puhelinnumeroa
+         * @return 
+         */
+        public String findTyopiste(PhoneNumber phone) {
+            
+            String isReserved = "select TP_ID from PUHELINNUMERO where PUHELINNUMERO = ?";
+            
+        try {            
+            PreparedStatement pr = this.connection.prepareStatement(isReserved);
+            pr.setString(1, phone.getPhoneNumber());
+            ResultSet rs = pr.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getString("TP_ID");
+            }
+                       
+        } catch (SQLException ex) {
+            Logger.getLogger(NeroDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return "";
+        }
 
 	/**
 	 * Päivittää tietokannassa olevan puhelinnumero-olion annetun mallin
-	 * mukaiseksi ja päivittää henkilölle puhelinnumeron
+	 * mukaiseksi ja päivittää henkilölle tai työpisteelle puhelinnumeron
 	 * 
 	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
 	 * @return Onnistuiko päivitys.
@@ -1624,14 +1648,13 @@ public class NeroDatabase implements NeroObserver {
             Post post = phone.getPost();
             String personID = phone.getPersonID();
             
-            
             //tarkistus, jos työpistenumero käytössä, niin voi lisätä yhden henkilönumeron
             try {
 		if(this.prepUpdatePhoneNumber == null) {
                     this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ?, h_tunnus = ? WHERE id = ?");
 		}
 		if(post == null) {
-                    this.prepUpdatePhoneNumber.setString(1, "");
+                    this.prepUpdatePhoneNumber.setString(1, this.findTyopiste(phone));
 
 		} else {
                     this.prepUpdatePhoneNumber.setString(1, post.getPostID());
@@ -1821,7 +1844,7 @@ public class NeroDatabase implements NeroObserver {
      * @param htunnus
      * @return 
      */
-    public String getKannykka(String htunnus) {
+    public String getKannykkanOmistaja(String htunnus) {
         
         String prep = "SELECT omistaja FROM KANNYKKA WHERE htunnus = ?";
         try {        
@@ -1829,8 +1852,8 @@ public class NeroDatabase implements NeroObserver {
             p.setString(1, htunnus);
             ResultSet rs = p.executeQuery();
             
-            rs.next();
-            return rs.getString("omistaja");
+            if (rs.next())
+                return rs.getString("omistaja");
             
         } catch (SQLException e) {
             System.err.println("Tietokantavirhe: " + e.getMessage());
