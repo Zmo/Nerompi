@@ -8,20 +8,15 @@ package fi.helsinki.cs.nero.ui;
  * @author lpesola
  * @see Session
  */
-import fi.helsinki.cs.nero.data.Person;
-import fi.helsinki.cs.nero.data.Room;
-import fi.helsinki.cs.nero.db.NeroDatabase;
-import fi.helsinki.cs.nero.logic.ODTReportPrinter;
 import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import fi.helsinki.cs.nero.logic.Session;
-import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,13 +48,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     private JTable roomTable;
     private JTable peopleTable;
     private HashMap<String, IndexedColumn> hiddenColumns;
-    private Person[] people;
-    private Room[] rooms;
     private Vector<Vector<Object>> peopleTableData;
     private Vector<Vector<Object>> roomTableData;
     private Vector<String> peopleColumnNames;
     private Vector<String> roomColumnNames;
-    private TableColumnModel roomColumnModel;
     private TableColumnModel peopleColumnModel;
     private NeroTableModel peopleModel;
     private TableRowSorter<TableModel> rowSorter;
@@ -73,29 +65,18 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String structuredFileType;
     private List<JCheckBox> defaultRoomCheckboxes;
     private List<String> defaultRoomColumns;
+    private SimpleDateFormat dateFormat;
 
     /**
      * Creates new form Reports
      */
     public ReportsWindow() {
 
-        // koodia testausta varten, voi poistaa kun t‰m‰ ikkuna
-        // integroidaan muuhun k‰liin
-        // toimiva sessio
-        session = new Session();
-        NeroDatabase db = new NeroDatabase(session,
-                "oracle.jdbc.driver.OracleDriver",
-                "jdbc:oracle:thin:@bodbacka:1521:test",
-                "tk_testi", "tapaus2");
-        session.setDatabase(db);
-        // testikoodin loppu
         rsession = new ReportSession();
-
         today = new Date();
-        people = session.getFilteredPeople();
-        rooms = session.getRooms();
         filterList = new HashMap<>();
         hiddenColumns = new HashMap<>();
+        dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         initStringVariables();
         initComponents();
@@ -667,12 +648,12 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showInactiveMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showInactiveMouseReleased
         if (showInactive.isSelected()) {
-            session.setFilterActiveEmployees(false);
-            people = session.getFilteredPeople();
+            rsession.setFilterActiveEmployees(false);
+            peopleTableData = rsession.getPeopleData();
             showInactive();
         } else {
-            session.setFilterActiveEmployees(true);
-            people = session.getFilteredPeople();
+            rsession.setFilterActiveEmployees(true);
+            peopleTableData = rsession.getPeopleData();
             showInactive();
         }
     }//GEN-LAST:event_showInactiveMouseReleased
@@ -696,7 +677,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());
+            String strDate = dateFormat.format(evt.getNewValue());
             restrictByFirstDate.setText(strDate);
             setDateRestriction();
         }
@@ -704,7 +685,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());
+            String strDate = dateFormat.format(evt.getNewValue());
             restrictByLastDate.setText(strDate);
             setDateRestriction();
         }
@@ -1088,8 +1069,10 @@ public class ReportsWindow extends javax.swing.JFrame {
      * n‰ytet‰‰n kaikki rivit.
      */
     private void setDateRestriction() {
-        Date firstDate = hasDate(restrictByFirstDate.getText());
-        Date lastDate = hasDate(restrictByLastDate.getText());
+        String firstText = restrictByFirstDate.getText();
+        String lastText = restrictByLastDate.getText();
+        Date firstDate = dateFormat.parse(firstText, new ParsePosition(0));
+        Date lastDate = dateFormat.parse(lastText, new ParsePosition(0));
         RowFilter filter;
         try {
             if (firstDate != null && lastDate != null) {
@@ -1158,23 +1141,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Lukee merkkijonon muotoa pp.kk.vvvv ja muodostaa siit‰ Date-olion
-     *
-     * @return jos merkkijono on tyhj‰ tai syˆte on null, palautetaa null,
-     * muuten palautetaan Date-olio, joka vastaa merkkijonon kuvaamaa
-     * p‰iv‰m‰‰r‰‰
-     */
-    private Date hasDate(String s) {
-        /* Palauttaa muotoa pp.kk.vvvv olevasta merkkijonosta muodostetun p‰iv‰m‰‰r‰n
-         Jos merkkijono on tyhj‰ tai syˆte on null, palautetaan null*/
-        if (s == null | s.isEmpty()) {
-            return null;
-        } else {
-            return parseDate(s);
-        }
-    }
-
-    /**
      * M‰‰ritell‰‰n koko luokassa k‰ytˆss‰ olevien merkkijonomuuttujien arvot.
      */
     private void initStringVariables() {
@@ -1198,24 +1164,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         postihuone = "Postihuone";
         puhelinnumero = "Puhelinnumero";
         structuredFileType = "ODS";
-    }
-
-    /**
-     * Muodostaa Date-olion merkkijonon kuvaamasta p‰iv‰m‰‰r‰st‰.
-     *
-     * @param text, merkkijono, josta p‰iv‰m‰‰r‰ luodaan
-     * @return Date-luokan ilmentym‰, joka sis‰lt‰‰ p‰iv‰m‰‰r‰n, jonka 'text'
-     * kuvaa
-     */
-    private Date parseDate(String text) {
-        Date date = new Date();
-        if (text != null) {
-            String[] split = text.split("\\.");
-            date.setDate(new Integer(split[0]));
-            date.setMonth(new Integer(split[1]) - 1);
-            date.setYear(new Integer(split[2]) - 1900);
-        }
-        return date;
     }
 
     /**

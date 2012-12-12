@@ -95,4 +95,9 @@ public class ReportSession {
         }
         return peopleTableData;
     }
+
+    public void setFilterActiveEmployees(boolean b) {
+        session.setFilterActiveEmployees(b);
+        people = session.getFilteredPeople();
+    }
 }
