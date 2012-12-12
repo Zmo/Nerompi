@@ -26,7 +26,7 @@ public class ReportWriter {
         structuredFileType = structuredFile;
     }
 
-     /**
+    /**
      * Antaa käskyn tulostaa näkyvillä olevan taulukon datan valitussa
      * formaatissa. Tarkistaa, mikä tiedostomuoto on valittu ja valitsee
      * tulostamiseen käytetyn luokan sen mukaan. Antaa kirjoittajalle taulukon
@@ -35,7 +35,7 @@ public class ReportWriter {
      * @param f, tiedosto, johon data kirjoitetaan
      */
     public void print(File f, String fileType) {
-        
+
         if (fileType.equals(structuredFileType)) {
             printer = new ODTReportPrinter(f);
         } else {
@@ -43,9 +43,8 @@ public class ReportWriter {
         }
         printer.print(getTableDataAsList());
     }
-    
-    
-     /**
+
+    /**
      * Käy läpi näkyvillä olevat sarakkeet ja palauttaa niiden indeksit. Pyytää
      * taulukolta sen sarakemallin ja pyytää siltä sarakkeet (nämä ovat siis
      * näkyvillä). Iteroi niiden läpi ja tarkistaa, mikä niiden indeksi on.
@@ -64,13 +63,12 @@ public class ReportWriter {
         }
         return neededIndexes;
     }
-    
-     /**
-     * Hakee GUIn taulukossa tällä hetkellä näkyvillä olevan datan. Luo listan,
-     * jonka alkiot vastaavat taulukon rivejä. Alkiot ovat listoja, joiden
-     * alkiot vastaavat rivin sarakkeita. Hakee näkyvillä olevat sarakkeiden
-     * nimet ja tämän jälkeen näkyvillä olevan datan ja yhdistää nämä yhdeksi
-     * listaksi.
+
+    /**
+     * Hakee taulukossa tällä hetkellä näkyvillä olevan datan. Luo listan, jonka
+     * alkiot vastaavat taulukon rivejä. Alkiot ovat listoja, joiden alkiot
+     * vastaavat rivin sarakkeita. Hakee näkyvillä olevat sarakkeiden nimet ja
+     * tämän jälkeen näkyvillä olevan datan ja yhdistää nämä yhdeksi listaksi.
      *
      * @return lista listoja, joka kuvaa GUIn taulukossa tällä hetkellä
      * näkyvillä olevan datan
@@ -90,10 +88,9 @@ public class ReportWriter {
 
         return list;
     }
-    
-    
-     /**
-     * Listaa kaikkien GUIn taulukossa näkyvillä olevien sarakkeiden otsakkeet.
+
+    /**
+     * Listaa kaikkien taulukossa näkyvillä olevien sarakkeiden otsakkeet.
      * Pyytää mallilta kaikki sarakkeet ja käy läpi niiden otsaketiedot.
      *
      * @return lista näkyvillä olevien sarakkeiden otsikoista
@@ -110,9 +107,9 @@ public class ReportWriter {
         }
         return identifiers;
     }
-    
-     /**
-     * Tuottaa kokoelman, joka sisältää kaiken GUIn taulukossa näkyvillä olevan
+
+    /**
+     * Tuottaa kokoelman, joka sisältää kaiken taulukossa näkyvillä olevan
      * datan. Käy läpi kaikki näkyvät rivit (view) ja selvittää niiden indeksin
      * alla olevassa taulukkomallissa (model). Selvittää jokaisen näkyvillä
      * olevan rivin sarakkeen indeksin mallissa (view -> model) ja hakee rivin
@@ -131,30 +128,21 @@ public class ReportWriter {
         int rowCount = rs.getViewRowCount();
         ArrayList list = new ArrayList(rowCount);
 
-
-        //TODO: ehkä tuon päivämäärän lyhentämisen voi tehdä myöskin jossain muualla
         for (int i = 0; i < rowCount; i++) {
             List rowList = new ArrayList(columnCount);
             int rowIndexInView = rs.convertRowIndexToModel(i);
             for (int j = 0; j < columnCount; j++) {
                 Object o = tableModel.getValueAt(rowIndexInView,
                         table.convertColumnIndexToModel(neededIndexes[j]));
-                String value;
-                if (o == null) {
-                    value = "";
-                } else if (o.getClass() == Date.class) {
-                    value = dateToShortString((Date) o);
-                } else {
-                    value = o.toString();
-                }
+                String value = parseValue(o);
                 rowList.add(j, value);
             }
             list.add(rowList);
         }
         return list;
     }
-    
-     /**
+
+    /**
      * Tuottaa Date-oliosta merkkijonon, joka kuvaa sen päivämäärän.
      *
      * @param date päivämäärä, josta teksti muodostetaan
@@ -170,5 +158,23 @@ public class ReportWriter {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Muuttaa saamansa olion tulostettavaksi sopivaan muotoon.
+     * 
+     * @param o olio, joka muutetaan
+     * @return String-muotoinen kuvaus saadusta oliosta
+     */
+    private String parseValue(Object o) {
+        String value;
+        if (o == null) {
+            value = "";
+        } else if (o.getClass() == Date.class) {
+            value = dateToShortString((Date) o);
+        } else {
+            value = o.toString();
+        }
+        return value;
     }
 }

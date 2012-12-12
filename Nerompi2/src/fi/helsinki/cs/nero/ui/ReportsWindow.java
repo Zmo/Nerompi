@@ -10,7 +10,6 @@ package fi.helsinki.cs.nero.ui;
  */
 import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
-import fi.helsinki.cs.nero.logic.Session;
 import java.io.File;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -37,7 +36,6 @@ import javax.swing.table.TableRowSorter;
 
 public class ReportsWindow extends javax.swing.JFrame {
 
-    private Session session;
     private ReportSession rsession;
     private List<String> initialColumns;
     private List<JCheckBox> initialComponents;
@@ -59,10 +57,11 @@ public class ReportsWindow extends javax.swing.JFrame {
     private Map<String, RowFilter> filterList;
     private ReportWriter writer;
     private Date today;
-    private String varaus, nimi, huone, nimike, sposti;
-    private String postihuone, puhelinnumero;
-    private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko, pistevaraukset, avainvaraukset;
-    private String structuredFileType;
+    private String varaus, nimi, huone, nimike, sposti, postihuone,
+            puhelinnumero;
+    private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko,
+            pistevaraukset, avainvaraukset;
+    private final String structuredFileType;
     private List<JCheckBox> defaultRoomCheckboxes;
     private List<String> defaultRoomColumns;
     private SimpleDateFormat dateFormat;
@@ -77,6 +76,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         filterList = new HashMap<>();
         hiddenColumns = new HashMap<>();
         dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        structuredFileType = "ODS";
 
         initStringVariables();
         initComponents();
@@ -780,16 +780,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ReportsWindow.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -935,10 +926,11 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         initColumnNames();
 
-        initRoomData();
+        roomTableData = rsession.getRoomData();
         roomTable = new JTable(roomTableData, roomColumnNames);
 
-        initPeopleData();
+        peopleTableData = rsession.getPeopleData();
+
         // henkilödata käyttää DefaultTableModelin aliluokkaa NeroTableModelia
         // joka tarvitsee toimiakseen tietoonsa sen, mihin taulukkoon
         // se liittyy sekä taulukon sarakemallin
@@ -1069,10 +1061,8 @@ public class ReportsWindow extends javax.swing.JFrame {
      * näytetään kaikki rivit.
      */
     private void setDateRestriction() {
-        String firstText = restrictByFirstDate.getText();
-        String lastText = restrictByLastDate.getText();
-        Date firstDate = dateFormat.parse(firstText, new ParsePosition(0));
-        Date lastDate = dateFormat.parse(lastText, new ParsePosition(0));
+        Date firstDate = dateFormat.parse(restrictByFirstDate.getText(), new ParsePosition(0));
+        Date lastDate = dateFormat.parse(restrictByLastDate.getText(), new ParsePosition(0));
         RowFilter filter;
         try {
             if (firstDate != null && lastDate != null) {
@@ -1092,8 +1082,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 removeFilter(varaus);
             }
         } catch (IllegalArgumentException ex) {
-            System.out.println("Sarake varaus on piilotettu, ei filteröidä. \n"
-                    + "Metodi: determineDateRestriction \n" + ex);
+            showErrorMessage(ex, "varaus");
         }
     }
 
@@ -1163,12 +1152,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         // postilokero    
         postihuone = "Postihuone";
         puhelinnumero = "Puhelinnumero";
-        structuredFileType = "ODS";
     }
 
     /**
      * Antaa käskyn tulostaa näkyvillä olevan taulukon datan valitussa
-     * formaatissa. 
+     * formaatissa.
      *
      * @param f, tiedosto, johon data kirjoitetaan
      * @see ReportWriter
@@ -1290,10 +1278,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         try {
             addFilter(columnName, getRegexFilter(filterText, columnName));
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(rootPane,
-                    "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin.",
-                    "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
-            System.out.println(ex + " " + columnName);
+            showErrorMessage(ex, columnName);
         }
     }
 
@@ -1310,9 +1295,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             DefaultRowSorter sorter = (TableRowSorter) table.getRowSorter();
             sorter.setRowFilter(generalFilter);
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(rootPane,
-                    "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin",
-                    "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage(ex, "");
         }
     }
 
@@ -1373,22 +1356,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Luo taulukon joka sisältää kaikki henkilöt ja niihin liittyvän datan.
-     *
-     */
-    private void initPeopleData() {
-        peopleTableData = rsession.getPeopleData();
-    }
-
-    /**
-     * Luo taulukon, joka sisältää kaikki tiedossa olevat huoneet ja niihin
-     * liittyvät tiedot.
-     */
-    private void initRoomData() {
-        roomTableData = rsession.getRoomData();
-    }
-
-    /**
      * Muuttaa näkymää sen perusteella, pitääkö myös epäaktiiviset henkilöt
      * näyttää vai ei. Käytännössä piirtää uusiksi koko taulukon.
      */
@@ -1396,5 +1363,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         initColumnData();
         switchToPeopleData();
         showColumns(initiallyHiddenColumns);
+    }
+
+    private void showErrorMessage(Exception ex, String column) {
+        JOptionPane.showMessageDialog(rootPane,
+                "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin.",
+                "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
+        System.out.println(ex + " " + column);
+
     }
 }
