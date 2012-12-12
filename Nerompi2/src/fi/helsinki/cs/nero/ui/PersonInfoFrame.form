@@ -78,7 +78,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="180" max="32767" attributes="0"/>
+              <EmptySpace pref="146" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -414,13 +414,19 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="tyosuhdeButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Ty&#xf6;suhteessa"/>
+        <Property name="text" type="java.lang.String" value="HY:n Ty&#xf6;suhteessa"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tyosuhdeButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="puhelinluettelossaButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Puhelinluettelossa"/>
+        <Property name="text" type="java.lang.String" value="HY:n Puhelinluettelossa"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="puhelinluettelossaButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="lisaapoistaButton">
       <Properties>

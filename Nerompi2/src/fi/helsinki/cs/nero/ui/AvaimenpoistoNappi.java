@@ -15,7 +15,7 @@ import javax.swing.JButton;
  */
 public class AvaimenpoistoNappi extends JButton{
     
-    private RoomKeyReservation roomKeyReservation = null;
+    private RoomKeyReservation roomKeyReservation;
     private Person person;
     
     public AvaimenpoistoNappi(Person person, RoomKeyReservation roomKeyReservation){

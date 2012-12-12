@@ -15,8 +15,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- *
+ * 
  * @author ssinisal
+ * Ikkuna työnumeroiden varaamiseen henkilöille
  */
 public class AltPhonenumberDialog extends javax.swing.JDialog
         implements ListSelectionListener, ActionListener, NeroObserver{
@@ -185,12 +186,17 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Varaa-nappulaa painettaessa varaa työnumeron henkilölle
+     * @param evt 
+     */
     private void varaaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_varaaButtonActionPerformed
      
         
         if(allnumbersList.getSelectedValue()!=null){
             if (reservedNumbersVector.size() < 1) {
             PhoneNumber p = (PhoneNumber)allnumbersList.getSelectedValue();
+                System.out.println(p.getPost());
         
             session.addPhoneNumber(null, p, this.person.getPersonID());
 
@@ -218,7 +224,10 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
             }
         }         
     }//GEN-LAST:event_varaaButtonActionPerformed
-
+    /**
+     * Vapauta-nappulaa painettaessa vapauttaa työnumeron henkilöltä
+     * @param evt 
+     */
     private void vapautaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vapautaButtonActionPerformed
         if(reservednumbersList.getSelectedValue()!=null){
   
