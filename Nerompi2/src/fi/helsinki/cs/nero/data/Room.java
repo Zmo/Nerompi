@@ -125,6 +125,8 @@ public class Room {
 
     /**
      * Nerompi Muokkaa huoneen avainvarausta
+     * 
+     * @param roomKeyReservation muokattava avainvaraus
      */
     public boolean modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
         for (RoomKeyReservation reservation : this.roomKeyReservations) {

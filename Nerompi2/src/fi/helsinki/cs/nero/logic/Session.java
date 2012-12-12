@@ -70,7 +70,7 @@ public class Session {
      */
     private boolean activeEmployeesOnly;
     /**
-     * Rajataanko henkilölistää voimassaolevan työsopimuksen perusteella
+     * Rajataanko henkilölistaa voimassaolevan työsopimuksen perusteella
      */
     private boolean contract;
     /* huoneisiin (getFilteredRooms) vaikuttavat hakuehdot */
@@ -95,8 +95,8 @@ public class Session {
      */
     private Room activeRoom;
     /**
-     * Vapaiden tyï¿½pisteiden minimimï¿½ï¿½rï¿½, jonka perusteella voidaan
-     * esittï¿½ï¿½ huone vapaana. Yleensï¿½ 1, mutta voi olla enemmï¿½n.
+     * Vapaiden työpisteiden minimimäärä, jonka perusteella voidaan
+     * esittää huone vapaana. Yleensä 1, mutta voi olla enemmän.
      */
     private int freePosts;
     /**
@@ -110,21 +110,21 @@ public class Session {
 
     /**
      * Konstruktori, joka asettaa hakuehdoille oletusarvot ohjelman
-     * kï¿½ynnistyessï¿½.
+     * käynnistyessä.
      */
     public Session() {
         obsman = new NeroObserverManager();
-        this.resetTimescale();		// vakioaikavï¿½li
-        personName = "";            // ei henkilï¿½n nimeï¿½
+        this.resetTimescale();		// vakioaikaväli
+        personName = "";            // ei henkilön nimeä
         project = null;             // ei projektia
-        showEndingContracts = false; // nï¿½ytetï¿½ï¿½n pï¿½ï¿½ttyvï¿½t sopimukset
-        withoutPost = false;         // nï¿½ytetï¿½ï¿½n tyï¿½pisteettï¿½mï¿½t
+        showEndingContracts = false; // näytetään päättyvät sopimukset
+        withoutPost = false;         // näytetään työpisteettömät
         activeEmployeesOnly = true; // oletusarvoisesti näytetään vain aktiiviset henkilöt
         contract = false;           // oletusarvoisesti näytetään myös henkilöt, joilla ei ole voimassaolevaa työsopimusta
-        roomName = "";              // ei huoneen nimeï¿½
-        maxPosts = -1;              // ei tyï¿½pisteiden maksimimï¿½ï¿½rï¿½ï¿½
+        roomName = "";              // ei huoneen nimeä
+        maxPosts = -1;              // ei työpisteiden maksimimäärää
         activeRoom = null;          // ei aktiivista huonetta
-        freePosts = 1;              // haetaan yhtï¿½ vapaata tyï¿½pistettï¿½
+        freePosts = 1;              // haetaan yhtä vapaata työpistettä
         statusMessage = new String("");
         cursortype = java.awt.Cursor.DEFAULT_CURSOR;
         cursorlocked = false;
@@ -133,7 +133,7 @@ public class Session {
     }
 
     /**
-     * Asettaa tarkasteltavan aikavï¿½lin takaisin vakioksi, eli tästä päivästä
+     * Asettaa tarkasteltavan aikavälin takaisin vakioksi, eli tästä päivästä
      * kolme kuukautta eteenpäin
      */
     public void resetTimescale() {
@@ -152,10 +152,10 @@ public class Session {
     }
 
     /**
-     * Asettaa kï¿½ytettï¿½vï¿½n tietokantayhteyden. Metodia voi kutsua vain
-     * kerran, sen jï¿½lkeen se heittï¿½ï¿½ poikkeuksen.
+     * Asettaa käytettävän tietokantayhteyden. Metodia voi kutsua vain
+     * kerran, sen jälkeen se heittää poikkeuksen.
      *
-     * @param db kï¿½ytettï¿½vï¿½ tietokantayhteys
+     * @param db käytettävä tietokantayhteys
      * Asettaa käytettävän tietokantayhteyden. Metodia voi kutsua vain kerran,
      * sen jälkeen se heittää poikkeuksen.
      * @param db käytettävä tietokantayhteys
@@ -173,8 +173,8 @@ public class Session {
     }
 
     /**
-     * Palauttaa kï¿½ytettï¿½vï¿½n tietokantayhteyden.
-     * @return kï¿½ytettï¿½vï¿½ tietokantayhteys
+     * Palauttaa käytettävän tietokantayhteyden.
+     * @return käytettävä tietokantayhteys
      * Palauttaa käytettävän tietokantayhteyden.
      * @return käytettävä tietokantayhteys
      */
@@ -183,10 +183,10 @@ public class Session {
     }
 
     /**
-     * Asettaa tarkasteltavan aikavï¿½lin.
+     * Asettaa tarkasteltavan aikavälin.
      *
-     * @param timescale uusi tarkasteltava aikavï¿½li
-     * @throws IllegalArgumentException jos annettu aikavï¿½li on null
+     * @param timescale uusi tarkasteltava aikaväli
+     * @throws IllegalArgumentException jos annettu aikaväli on null
      */
     public void setFilterTimescale(TimeSlice timescale) {
         if (timescale == null) {
@@ -194,7 +194,7 @@ public class Session {
         }
         this.timescale = timescale;
 
-        // jos osa-aikavï¿½li ei mahdu uuden aikavï¿½lin sisï¿½lle, typistï¿½ sitï¿½
+        // jos osa-aikaväli ei mahdu uuden aikavälin sisälle, typistä sitä
     	this.timescale = timescale;
         
         // jos osa-aikaväli ei mahdu uuden aikavälin sisälle, typistä sitä
@@ -208,8 +208,8 @@ public class Session {
             sliceChanged = true;
         }
 
-        // Tyhjennï¿½ tyï¿½pisteiden tallettama tieto niihin liittyvistï¿½ varauksista, koska
-        // aikavï¿½li on muuttunut ja sen vuoksi varaukset pitï¿½ï¿½ hakea uudelleen
+        // Tyhjennä työpisteiden tallettama tieto niihin liittyvistä varauksista, koska
+        // aikaväli on muuttunut ja sen vuoksi varaukset pitää hakea uudelleen
     	// Tyhjennä työpisteiden tallettama tieto niihin liittyvistä varauksista, koska
     	// aikaväli on muuttunut ja sen vuoksi varaukset pitää hakea uudelleen
         // NOTE junit-testien aikana db saattaa olla null
@@ -451,7 +451,7 @@ public class Session {
         }
         if (timescaleSlice.getEndDate().compareTo(
                 this.timescale.getEndDate()) > 0) {
-            throw new IllegalArgumentException("osa-aikaväli ei saa päättyä myähemmin kuin aikaväli");
+            throw new IllegalArgumentException("osa-aikaväli ei saa päättyä myöhemmin kuin aikaväli");
         }
         this.timescaleSlice = timescaleSlice;
         if (stillMoving) {
@@ -775,7 +775,7 @@ public class Session {
                     if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
                             this.switchActiveRoom();
                     }
-                    // nyt huoneiden tila on muuttunut, joten tï¿½ytyy ilmoittaa kuuntelijoille
+                    // nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille
                     obsman.notifyObservers(NeroObserverTypes.ROOMS);
                         setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
                 } else {
@@ -937,7 +937,7 @@ public class Session {
     public RoomKeyReservation[] getRoomKeyReservations(Room room) {
         return db.getRoomKeyReservations(room);
     }
-
+    
     /**
      * Lisää annetulle henkilölle avainvarauksen annetulle aikavälille
      * @param person Henkilö, jolle avainvaraus lisätään
@@ -956,6 +956,7 @@ public class Session {
 
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        this.setStatusMessage("Avainvaraus henkilölle " + person +" luotu huoneeseen " + this.getActiveRoom() + ".");
     }
 
     /**
@@ -970,6 +971,7 @@ public class Session {
         person.deleteRoomKeyReservation(roomKeyReservation);
         this.roomScrollPane.updateObserved(NeroObserverTypes.ACTIVE_ROOM);
         this.personScrollPane.updateObserved(NeroObserverTypes.FILTER_PEOPLE);
+        this.setStatusMessage("Avainvaraus poistettu");
     }
     
     public void modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {

@@ -71,7 +71,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko, pistevaraukset, avainvaraukset;
     private String structuredFileType;
     private List<JCheckBox> defaultRoomCheckboxes;
-    private ArrayList<String> defaultRoomColumns;
+    private List<String> defaultRoomColumns;
 
     /**
      * Creates new form Reports
@@ -93,13 +93,15 @@ public class ReportsWindow extends javax.swing.JFrame {
         people = session.getFilteredPeople();
         rooms = session.getRooms();
         filterList = new HashMap<>();
+        hiddenColumns = new HashMap<>();
+
         initStringVariables();
         initComponents();
         initContainers();
-        initModels();
-        initColumnNames();
         initColumnData();
-        initTableView();
+        // oletusarvoisesti näytetään henkilönäkymä
+        switchToPeopleData();
+        showColumns(initiallyHiddenColumns);
         this.setVisible(true);
     }
 
@@ -665,15 +667,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         if (showInactive.isSelected()) {
             session.setFilterActiveEmployees(false);
             people = session.getFilteredPeople();
-            initColumnData();
-            initColumnNames();
-            initTableView();
+            showInactive();
         } else {
             session.setFilterActiveEmployees(true);
             people = session.getFilteredPeople();
-            initColumnData();
-            initColumnNames();
-            initTableView();
+            showInactive();
         }
     }//GEN-LAST:event_showInactiveMouseReleased
 
@@ -756,10 +754,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void dataModeSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dataModeSelectorItemStateChanged
         String value = dataModeSelector.getSelectedItem().toString();
-        if (value.equals("Huoneet")) {
-            switchToRoomData();
-        } else if (value.equals("Henkilöt")) {
-            switchToPeopleData();
+        switch (value) {
+            case "Huoneet":
+                switchToRoomData();
+                break;
+            case "Henkilöt":
+                switchToPeopleData();
+                break;
         }
     }//GEN-LAST:event_dataModeSelectorItemStateChanged
 
@@ -886,20 +887,16 @@ public class ReportsWindow extends javax.swing.JFrame {
         initialComponents.add(showJobTitle);
 
         defaultRoomCheckboxes = new ArrayList<>();
-
         defaultRoomCheckboxes.add(showFloor);
         defaultRoomCheckboxes.add(showWing);
         defaultRoomCheckboxes.add(showPostCount);
         defaultRoomCheckboxes.add(showDescription);
 
-
         /* ne sarakkeet, jotka ovat aluksi piilossa */
         initiallyHiddenColumns = new ArrayList<>();
         initiallyHiddenColumns.add(kerros);
-
         initiallyHiddenColumns.add(siipi);
         initiallyHiddenColumns.add(pisteiden_lkm);
-
         initiallyHiddenColumns.add(sposti);
         initiallyHiddenColumns.add(puhelinnumero);
         initiallyHiddenColumns.add(postihuone);
@@ -909,14 +906,12 @@ public class ReportsWindow extends javax.swing.JFrame {
         defaultRoomColumns.add(avainvaraukset);
         defaultRoomColumns.add(pistevaraukset);
 
-
         /*Pelkästään huoneisiin liittyvät rajoittimet*/
         roomComponents = new ArrayList<>();
         roomComponents.add(showSize);
         roomComponents.add(showRoomKeyReservations);
         roomComponents.add(showPostReservations);
         roomComponents.add(showDescription);
-
 
         /*Pelkästään henkilöihin liittyvät rajoittimet*/
         peopleComponents = new ArrayList<>();
@@ -937,27 +932,35 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
-    /**
-     * Luodaan mallit, joita GUI:ssa tarvitaan.
-     */
-    private void initModels() {
-
-        hiddenColumns = new HashMap<>();
-
-    }
 
     /**
-     * Alustaa GUIn taulukkoon datan, jonka saa Sessiolta. Dataa ei koskaan
-     * muuteta - se pysyy samana sen jälkeen, kun se on kerran haettu. Dataa on
-     * kolmea erilaista - henkilö-, postilokero- ja huonenäkymää varten. Datan
-     * lisäksi kiinnitetään sarakkeisiin otsakkeet.
+     * Alustaa GUI taulukossa tarvittavat tiedot ja luo näistä kaksi
+     * taulukkoa, joiden välillä raporttinäkymässä voidaan vaihtaa: 
+     * henkilö- sekä huonetaulukon.
+     * Alustaa näiden sarakkeiden nimet 
+     * sekä sarakkeiden datan ja näitä vastaavat mallit.
+     * Data saadaan Sessiolta. Huonedataa ei koskaan
+     * muuteta - se pysyy samana sen jälkeen, kun se on kerran haettu.
+     * Henkilödata saatetaan hakea uudestaan, jos käyttäjä haluaa mukaan myös
+     * epäaktiiviset henkilöt.
+     * Joka tapauksessa idea on se, että taulukkomalli ei koskaan muutu - vain
+     * näkymää muutetaan.
+     * Taulukkoja on kaksi: henkilöiden ja huoneiden perusteella listatut.
+     * Datan alustamisen lisäksi luodaan tarvittavat malit henkilödataa varten.
+     * @See NeroTableModel
      */
     private void initColumnData() {
 
+        initColumnNames();
+        
         initRoomData();
         roomTable = new JTable(roomTableData, roomColumnNames);
 
         initPeopleData();
+        // henkilödata käyttää DefaultTableModelin aliluokkaa NeroTableModelia
+        // joka tarvitsee toimiakseen tietoonsa sen, mihin taulukkoon
+        // se liittyy sekä taulukon sarakemallin
+        // luodaan nämä ja liitetään ne malliin
         peopleModel = new NeroTableModel(varaus);
         peopleModel.setDataVector(peopleTableData, peopleColumnNames);
         peopleTable = new JTable(peopleModel);
@@ -969,13 +972,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         // jotta se voidaan esittää lyhyessä muodossa
         TableCellRenderer renderer = new DateCellRenderer();
         peopleColumnModel.getColumn(peopleColumnModel.getColumnIndex(varaus)).setCellRenderer(renderer);
-
-        //    initPeopleModel();
-        //   initRoomModel();
     }
 
     /**
-     * Asetetaan sarakkeiden nimet.
+     * Asetetaan sarakkeille nimet.
      */
     private void initColumnNames() {
 
@@ -983,12 +983,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         peopleColumnNames.add(nimi);
         peopleColumnNames.add(nimike);
         peopleColumnNames.add(huone);
-
         peopleColumnNames.add(kerros);
         peopleColumnNames.add(siipi);
         peopleColumnNames.add(pisteiden_lkm);
         peopleColumnNames.add(varaus);
-
         peopleColumnNames.add(sposti);
         peopleColumnNames.add(puhelinnumero);
         peopleColumnNames.add(postihuone);
@@ -1153,7 +1151,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * näytetään kaikki rivit.
      */
     private void determineDateRestriction() {
-
         Date firstDate = hasDate(restrictByFirstDate.getText());
         Date lastDate = hasDate(restrictByLastDate.getText());
         RowFilter filter;
@@ -1162,17 +1159,14 @@ public class ReportsWindow extends javax.swing.JFrame {
                 // molemmissa päivämäärä
                 filter = getDateFilter(firstDate, lastDate);
                 addFilter(varaus, filter);
-
             } else if (firstDate == null && lastDate != null) {
-                // loppupäivämäärä on
+                // loppupäivämäärä on määritelty
                 filter = getDateFilter(lastDate, RowFilter.ComparisonType.BEFORE);
                 addFilter(varaus, filter);
-
             } else if (firstDate != null && lastDate == null) {
-                // alkupäivämäärä on
+                // alkupäivämäärä on määritelty
                 filter = getDateFilter(firstDate, RowFilter.ComparisonType.AFTER);
                 addFilter(varaus, filter);
-
             } else {
                 // kumpaakaan ei asetettu
                 removeFilter(varaus);
@@ -1181,7 +1175,6 @@ public class ReportsWindow extends javax.swing.JFrame {
             System.out.println("Sarake varaus on piilotettu, ei filteröidä. \n"
                     + "Metodi: determineDateRestriction \n" + ex);
         }
-
     }
 
     /**
@@ -1189,7 +1182,8 @@ public class ReportsWindow extends javax.swing.JFrame {
      * olevan datan rajaamiseen.
      *
      * @param date päivämäärä, johon verrataan
-     * @param type Vertailun tyyppi, tässä BEFORE tai AFTER
+     * @param type Vertailun tyyppi eli hyväksytäänkö ne rivit joissa päivämäärä
+     * on ennen vai jälkeen parametrina saadun päivämäärän
      * @return filteri, joka filteröi saamansa päivämäärän ja ehdon mukaan
      */
     private RowFilter getDateFilter(Date date, ComparisonType type) {
@@ -1215,7 +1209,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @see getDateFilter(first, last)
      */
     private RowFilter getDateFilter(Date first, Date last) {
-        // and filter 
         try {
             List<RowFilter<Object, Object>> filters = new ArrayList<>(2);
             filters.add(getDateFilter(last, RowFilter.ComparisonType.BEFORE));
@@ -1308,7 +1301,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Selvitetään, saako olemassaolevan tiedoston ylikirjoittaa. Näytetään
+     * Selvitetään, saako olemassaolevan tiedoston yli kirjoittaa. Näytetään
      * käyttäjälle pop-up-ikkuna tätä varten. Jos käyttäjä painaa OK,
      * hyväksytään ylikirjoitus. Jos käyttäjä tekee mitä tahansa muuta (esim.
      * sulkee ikkunan) ei hyväksytä ylikirjoitusta.
@@ -1337,13 +1330,13 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         Enumeration<TableColumn> e = table.getColumnModel().getColumns();
         int z = 0;
-        List rowData = new ArrayList();
+        List identifiers = new ArrayList();
         while (e.hasMoreElements()) {
             String s = e.nextElement().getIdentifier().toString();
-            rowData.add(z, s);
+            identifiers.add(z, s);
             z++;
         }
-        return rowData;
+        return identifiers;
     }
 
     /**
@@ -1389,15 +1382,6 @@ public class ReportsWindow extends javax.swing.JFrame {
         return list;
     }
 
-    /**
-     * Asettaa taulukon aloitusnäkymän.
-     */
-    private void initTableView() {
-
-        switchToPeopleData();
-        showColumns(initiallyHiddenColumns);
-
-    }
 
     /**
      * Asettaa kaikki saamansa sarakkeet näkyviksi. 
@@ -1454,6 +1438,11 @@ public class ReportsWindow extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Poistaa käytöstä valitun filterin.
+     * 
+     * @param filterColumnName sarake, johon filtteri liittyi 
+     */
     private void removeFilter(String filterColumnName) {
         filterList.remove(filterColumnName);
         updateFilterList(new ArrayList(filterList.values()));
@@ -1474,7 +1463,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Lisää käyttöön regexp-filterin.
+     * Luo ja lisää käyttöön regexp-filterin.
      * 
      * @see addFilter
      * @param filterText teksti, jonka pohjalta regexp-filter luodaan
@@ -1552,9 +1541,6 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         addSorter();
         tableContainer.setViewportView(table);
-
-
-
     }
 
     /**
@@ -1643,5 +1629,15 @@ public class ReportsWindow extends javax.swing.JFrame {
             row.add("varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus");
             roomTableData.add(row);
         }
+    }
+    /**
+     * Muuttaa näkymää sen perusteella, pitääkö myös epäaktiiviset henkilöt
+     * näyttää vai ei.
+     * Käytännössä piirtää uusiksi koko taulukon.
+     */
+    private void showInactive() {
+            initColumnData();
+            switchToPeopleData();
+            showColumns(initiallyHiddenColumns);
     }
 }

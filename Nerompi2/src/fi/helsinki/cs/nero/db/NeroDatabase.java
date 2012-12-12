@@ -498,35 +498,52 @@ public class NeroDatabase implements NeroObserver {
      */
     public void addKannykka(Kannykka kannykka) {
 
+        PreparedStatement updateKannykka;
         PreparedStatement prepAddKannykka;
         PreparedStatement prepID;
         PreparedStatement prep;
         
-        String test = "SELECT * FROM KANNYKKA";       
+        //uuden lis‰‰miseen 
+        String test = "Select * FROM KANNYKKA";      
         
         String x = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES ((SELECT MAX(PUH_ID) FROM KANNYKKA)+1, ?, ?, ?, CURRENT_TIMESTAMP)";
 
         String ensimmainen = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        
+        //vanhan p‰ivitt‰miseen
+        
+        String update = "UPDATE KANNYKKA SET KANNYKKA_NUMERO = ?, OMISTAJA = ?, LISAUSPVM = CURRENT_TIMESTAMP WHERE HTUNNUS = ?";
 
         try {
             
-            prepAddKannykka = this.connection.prepareStatement(ensimmainen);
-            prepID = this.connection.prepareStatement(test);
-            prep = this.connection.prepareStatement(x);
+            if (!findKannykka(kannykka.getHtunnus())) {
             
-            ResultSet rs = prepID.executeQuery();
+                  
+                prepAddKannykka = this.connection.prepareStatement(ensimmainen);
+                prepID = this.connection.prepareStatement(test);
+                prep = this.connection.prepareStatement(x);
+
+                ResultSet rs = prepID.executeQuery();
+
+                if (!rs.next()) {
+                    prepAddKannykka.setInt(1, 1);
+                    prepAddKannykka.setString(2, kannykka.getPhonenumber());
+                    prepAddKannykka.setString(3, kannykka.getHtunnus());
+                    prepAddKannykka.setString(4, kannykka.getOmistaja());
+                    prepAddKannykka.executeUpdate();
+                } else {
+                    prep.setString(1, kannykka.getPhonenumber());
+                    prep.setString(2, kannykka.getHtunnus());
+                    prep.setString(3, kannykka.getOmistaja());
+                    prep.executeUpdate();
+                }
             
-            if (!rs.next()) {
-                prepAddKannykka.setInt(1, 1);
-                prepAddKannykka.setString(2, kannykka.getPhonenumber());
-                prepAddKannykka.setString(3, kannykka.getHtunnus());
-                prepAddKannykka.setString(4, kannykka.getOmistaja());
-                prepAddKannykka.executeUpdate();
             } else {
-                prep.setString(1, kannykka.getPhonenumber());
-                prep.setString(2, kannykka.getHtunnus());
-                prep.setString(3, kannykka.getOmistaja());
-                prep.executeUpdate();
+                updateKannykka = this.connection.prepareStatement(update);
+                updateKannykka.setString(1, kannykka.getPhonenumber());
+                updateKannykka.setString(2, kannykka.getOmistaja());  
+                updateKannykka.setString(3, kannykka.getHtunnus());
+                updateKannykka.executeQuery();
             }
 
             
