@@ -14,7 +14,7 @@ import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.db.NeroDatabase;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
 import fi.helsinki.cs.nero.logic.ReportSession;
-import fi.helsinki.cs.nero.logic.ReportWriter;
+import fi.helsinki.cs.nero.logic.ReportPrinter;
 import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
@@ -66,7 +66,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
     private Map<String, RowFilter> filterList;
-    private ReportWriter printer;
+    private ReportPrinter printer;
     private Date today;
     private String varaus, nimi, huone, nimike, sposti;
     private String postihuone, puhelinnumero;

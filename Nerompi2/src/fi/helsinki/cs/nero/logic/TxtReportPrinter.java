@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author lpesola
  */
-public class TxtReportPrinter implements ReportWriter {
+public class TxtReportPrinter implements ReportPrinter {
 
     String fileName;
     File file;
