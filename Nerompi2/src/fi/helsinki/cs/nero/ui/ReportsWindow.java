@@ -8,24 +8,18 @@ package fi.helsinki.cs.nero.ui;
  * @author lpesola
  * @see Session
  */
-import fi.helsinki.cs.nero.data.Person;
-import fi.helsinki.cs.nero.data.Reservation;
-import fi.helsinki.cs.nero.data.Room;
-import fi.helsinki.cs.nero.db.NeroDatabase;
-import fi.helsinki.cs.nero.logic.ODTReportPrinter;
+import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
-import fi.helsinki.cs.nero.logic.Session;
-import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultRowSorter;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -42,7 +36,7 @@ import javax.swing.table.TableRowSorter;
 
 public class ReportsWindow extends javax.swing.JFrame {
 
-    private Session session;
+    private ReportSession rsession;
     private List<String> initialColumns;
     private List<JCheckBox> initialComponents;
     private List<String> initiallyHiddenColumns;
@@ -52,48 +46,37 @@ public class ReportsWindow extends javax.swing.JFrame {
     private JTable roomTable;
     private JTable peopleTable;
     private HashMap<String, IndexedColumn> hiddenColumns;
-    private Person[] people;
-    private Room[] rooms;
     private Vector<Vector<Object>> peopleTableData;
     private Vector<Vector<Object>> roomTableData;
     private Vector<String> peopleColumnNames;
     private Vector<String> roomColumnNames;
-    private TableColumnModel roomColumnModel;
     private TableColumnModel peopleColumnModel;
     private NeroTableModel peopleModel;
     private TableRowSorter<TableModel> rowSorter;
     private RowFilter generalFilter;
     private Map<String, RowFilter> filterList;
-    private ReportWriter printer;
+    private ReportWriter writer;
     private Date today;
-    private String varaus, nimi, huone, nimike, sposti;
-    private String postihuone, puhelinnumero;
-    private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko, pistevaraukset, avainvaraukset;
-    private String structuredFileType;
+    private String varaus, nimi, huone, nimike, sposti, postihuone,
+            puhelinnumero;
+    private String kerros, pisteiden_lkm, siipi, kuvaus, huoneen_koko,
+            pistevaraukset, avainvaraukset;
+    private final String structuredFileType;
     private List<JCheckBox> defaultRoomCheckboxes;
     private List<String> defaultRoomColumns;
+    private SimpleDateFormat dateFormat;
 
     /**
      * Creates new form Reports
      */
     public ReportsWindow() {
 
-        // koodia testausta varten, voi poistaa kun tämä ikkuna
-        // integroidaan muuhun käliin
-        // toimiva sessio
-        session = new Session();
-        NeroDatabase db = new NeroDatabase(session,
-                "oracle.jdbc.driver.OracleDriver",
-                "jdbc:oracle:thin:@bodbacka:1521:test",
-                "tk_testi", "tapaus2");
-        session.setDatabase(db);
-        // testikoodin loppu
-
+        rsession = new ReportSession();
         today = new Date();
-        people = session.getFilteredPeople();
-        rooms = session.getRooms();
         filterList = new HashMap<>();
         hiddenColumns = new HashMap<>();
+        dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        structuredFileType = "ODS";
 
         initStringVariables();
         initComponents();
@@ -258,7 +241,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         restrictByFirstDate.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        restrictByFirstDate.setText(dateToShortString(today));
+        restrictByFirstDate.setText(new SimpleDateFormat("dd.MM.yyyy").format(today));
         restrictByFirstDate.setToolTipText("Aikavälin ensimmäinen päivä muodossa DD.MM.YYYY");
         restrictByFirstDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -665,12 +648,12 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void showInactiveMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showInactiveMouseReleased
         if (showInactive.isSelected()) {
-            session.setFilterActiveEmployees(false);
-            people = session.getFilteredPeople();
+            rsession.setFilterActiveEmployees(false);
+            peopleTableData = rsession.getPeopleData();
             showInactive();
         } else {
-            session.setFilterActiveEmployees(true);
-            people = session.getFilteredPeople();
+            rsession.setFilterActiveEmployees(true);
+            peopleTableData = rsession.getPeopleData();
             showInactive();
         }
     }//GEN-LAST:event_showInactiveMouseReleased
@@ -685,24 +668,26 @@ public class ReportsWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_restrictByLockerRoomItemStateChanged
 
     private void restrictByLastDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByLastDateActionPerformed
-        determineDateRestriction();
+        setDateRestriction();
     }//GEN-LAST:event_restrictByLastDateActionPerformed
 
     private void restrictByFirstDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restrictByFirstDateActionPerformed
-        determineDateRestriction();
+        setDateRestriction();
     }//GEN-LAST:event_restrictByFirstDateActionPerformed
 
     private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            restrictByFirstDate.setText(dateToShortString(((Date) evt.getNewValue())));
-            determineDateRestriction();
+            String strDate = dateFormat.format(evt.getNewValue());
+            restrictByFirstDate.setText(strDate);
+            setDateRestriction();
         }
     }//GEN-LAST:event_firstCalendarPropertyChange
 
     private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            restrictByLastDate.setText(dateToShortString(((Date) evt.getNewValue())));
-            determineDateRestriction();
+            String strDate = dateFormat.format(evt.getNewValue());
+            restrictByLastDate.setText(strDate);
+            setDateRestriction();
         }
     }//GEN-LAST:event_lastCalendarPropertyChange
 
@@ -795,16 +780,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReportsWindow.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ReportsWindow.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -932,31 +908,29 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     }
 
-
     /**
-     * Alustaa GUI taulukossa tarvittavat tiedot ja luo näistä kaksi
-     * taulukkoa, joiden välillä raporttinäkymässä voidaan vaihtaa: 
-     * henkilö- sekä huonetaulukon.
-     * Alustaa näiden sarakkeiden nimet 
-     * sekä sarakkeiden datan ja näitä vastaavat mallit.
-     * Data saadaan Sessiolta. Huonedataa ei koskaan
+     * Alustaa GUI taulukossa tarvittavat tiedot ja luo näistä kaksi taulukkoa,
+     * joiden välillä raporttinäkymässä voidaan vaihtaa: henkilö- sekä
+     * huonetaulukon. Alustaa näiden sarakkeiden nimet sekä sarakkeiden datan ja
+     * näitä vastaavat mallit. Data saadaan Sessiolta. Huonedataa ei koskaan
      * muuteta - se pysyy samana sen jälkeen, kun se on kerran haettu.
      * Henkilödata saatetaan hakea uudestaan, jos käyttäjä haluaa mukaan myös
-     * epäaktiiviset henkilöt.
-     * Joka tapauksessa idea on se, että taulukkomalli ei koskaan muutu - vain
-     * näkymää muutetaan.
-     * Taulukkoja on kaksi: henkilöiden ja huoneiden perusteella listatut.
-     * Datan alustamisen lisäksi luodaan tarvittavat malit henkilödataa varten.
+     * epäaktiiviset henkilöt. Joka tapauksessa idea on se, että taulukkomalli
+     * ei koskaan muutu - vain näkymää muutetaan. Taulukkoja on kaksi:
+     * henkilöiden ja huoneiden perusteella listatut. Datan alustamisen lisäksi
+     * luodaan tarvittavat malit henkilödataa varten.
+     *
      * @See NeroTableModel
      */
     private void initColumnData() {
 
         initColumnNames();
-        
-        initRoomData();
+
+        roomTableData = rsession.getRoomData();
         roomTable = new JTable(roomTableData, roomColumnNames);
 
-        initPeopleData();
+        peopleTableData = rsession.getPeopleData();
+
         // henkilödata käyttää DefaultTableModelin aliluokkaa NeroTableModelia
         // joka tarvitsee toimiakseen tietoonsa sen, mihin taulukkoon
         // se liittyy sekä taulukon sarakemallin
@@ -1074,70 +1048,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Käy läpi näkyvillä olevat sarakkeet ja palauttaa niiden indeksit. Pyytää
-     * taulukolta sen sarakemallin ja pyytää siltä sarakkeet (nämä ovat siis
-     * näkyvillä). Iteroi niiden läpi ja tarkistaa, mikä niiden indeksi on.
-     * Lisää indeksin taulukkoon.
-     *
-     * @return taulukko tällä hetkellä näkyvillä olevien sarakkeiden indekseistä
-     */
-    private int[] listShownColumnsByIndex() {
-        Enumeration<TableColumn> e = table.getColumnModel().getColumns();
-        int[] neededIndexes = new int[table.getColumnCount()];
-        int z = 0;
-        while (e.hasMoreElements()) {
-            String s = e.nextElement().getIdentifier().toString();
-            neededIndexes[z] = table.getColumnModel().getColumnIndex(s);
-            z++;
-        }
-        return neededIndexes;
-    }
-
-    /**
-     * Hakee GUIn taulukossa tällä hetkellä näkyvillä olevan datan. Luo listan,
-     * jonka alkiot vastaavat taulukon rivejä. Alkiot ovat listoja, joiden
-     * alkiot vastaavat rivin sarakkeita. Hakee näkyvillä olevat sarakkeiden
-     * nimet ja tämän jälkeen näkyvillä olevan datan ja yhdistää nämä yhdeksi
-     * listaksi.
-     *
-     * @return lista listoja, joka kuvaa GUIn taulukossa tällä hetkellä
-     * näkyvillä olevan datan
-     * @see getShownColumnIdentifiers()
-     * @see getShownColumnData()
-     */
-    private List<List> getTableDataAsList() {
-
-        List<List> list = new ArrayList<>();
-        /* - tarkista, mitkä sarakkeet ovat näkyvillä
-         * - ota talteen niiden nimet ja laita ensimmäiseksi listaan
-         * - hae data niistä sarakkeista, jotka ovat näkyvillä
-         */
-        List columnIdentifiers = getShownColumnIdentifiers();
-        list.add(0, columnIdentifiers);
-        list.addAll(1, getShownColumnData());
-
-        return list;
-    }
-
-    /**
-     * Tuottaa Date-oliosta merkkijonon, joka kuvaa sen päivämäärän.
-     *
-     * @param date päivämäärä, josta teksti muodostetaan
-     * @return annettu päivämäärä merkkijonona, joka on muotoa pp.kk.vvvv
-     */
-    private String dateToShortString(Date date) {
-        if (date != null) {
-            String dateString = "";
-            dateString = dateString.concat(date.getDate() + ".");
-            dateString = dateString.concat((1 + date.getMonth()) + ".");
-            dateString = dateString.concat(new Integer((date.getYear()) + 1900).toString());
-            return dateString;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Tarkistaa, minkälaisia päivämääräpohjaisia rajoitteita GUIssa on
      * määriteltynä tällä hetkellä ja rajaa taulukon dataa sen mukaan.
      *
@@ -1150,9 +1060,9 @@ public class ReportsWindow extends javax.swing.JFrame {
      * kummassakaan ei ole mitään, poistetaan päivämäärärajoitin kokonaan ja
      * näytetään kaikki rivit.
      */
-    private void determineDateRestriction() {
-        Date firstDate = hasDate(restrictByFirstDate.getText());
-        Date lastDate = hasDate(restrictByLastDate.getText());
+    private void setDateRestriction() {
+        Date firstDate = dateFormat.parse(restrictByFirstDate.getText(), new ParsePosition(0));
+        Date lastDate = dateFormat.parse(restrictByLastDate.getText(), new ParsePosition(0));
         RowFilter filter;
         try {
             if (firstDate != null && lastDate != null) {
@@ -1172,8 +1082,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 removeFilter(varaus);
             }
         } catch (IllegalArgumentException ex) {
-            System.out.println("Sarake varaus on piilotettu, ei filteröidä. \n"
-                    + "Metodi: determineDateRestriction \n" + ex);
+            showErrorMessage(ex, "varaus");
         }
     }
 
@@ -1221,23 +1130,6 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Lukee merkkijonon muotoa pp.kk.vvvv ja muodostaa siitä Date-olion
-     *
-     * @return jos merkkijono on tyhjä tai syöte on null, palautetaa null,
-     * muuten palautetaan Date-olio, joka vastaa merkkijonon kuvaamaa
-     * päivämäärää
-     */
-    private Date hasDate(String s) {
-        /* Palauttaa muotoa pp.kk.vvvv olevasta merkkijonosta muodostetun päivämäärän
-         Jos merkkijono on tyhjä tai syöte on null, palautetaan null*/
-        if (s == null | s.isEmpty()) {
-            return null;
-        } else {
-            return parseDate(s);
-        }
-    }
-
-    /**
      * Määritellään koko luokassa käytössä olevien merkkijonomuuttujien arvot.
      */
     private void initStringVariables() {
@@ -1260,44 +1152,20 @@ public class ReportsWindow extends javax.swing.JFrame {
         // postilokero    
         postihuone = "Postihuone";
         puhelinnumero = "Puhelinnumero";
-        structuredFileType = "ODS";
-    }
-
-    /**
-     * Muodostaa Date-olion merkkijonon kuvaamasta päivämäärästä.
-     *
-     * @param text, merkkijono, josta päivämäärä luodaan
-     * @return Date-luokan ilmentymä, joka sisältää päivämäärän, jonka 'text'
-     * kuvaa
-     */
-    private Date parseDate(String text) {
-        Date date = new Date();
-        if (text != null) {
-            String[] split = text.split("\\.");
-            date.setDate(new Integer(split[0]));
-            date.setMonth(new Integer(split[1]) - 1);
-            date.setYear(new Integer(split[2]) - 1900);
-        }
-        return date;
     }
 
     /**
      * Antaa käskyn tulostaa näkyvillä olevan taulukon datan valitussa
-     * formaatissa. Tarkistaa, mikä tiedostomuoto on valittu ja valitsee
-     * tulostamiseen käytetyn luokan sen mukaan. Antaa kirjoittajalle taulukon
-     * näyttämän datan listana.
+     * formaatissa.
      *
      * @param f, tiedosto, johon data kirjoitetaan
+     * @see ReportWriter
      */
     private void print(File f) {
 
-        String fileType = fileTypeChooser.getSelectedItem().toString();
-        if (fileType.equals(structuredFileType)) {
-            printer = new ODTReportPrinter(f);
-        } else {
-            printer = new TxtReportPrinter(f);
-        }
-        printer.print(getTableDataAsList());
+        writer = new ReportWriter(table, structuredFileType);
+        writer.print(f, fileTypeChooser.getSelectedItem().toString());
+
     }
 
     /**
@@ -1321,72 +1189,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Listaa kaikkien GUIn taulukossa näkyvillä olevien sarakkeiden otsakkeet.
-     * Pyytää mallilta kaikki sarakkeet ja käy läpi niiden otsaketiedot.
+     * Asettaa kaikki saamansa sarakkeet näkyviksi.
      *
-     * @return lista näkyvillä olevien sarakkeiden otsikoista
-     */
-    private List getShownColumnIdentifiers() {
-
-        Enumeration<TableColumn> e = table.getColumnModel().getColumns();
-        int z = 0;
-        List identifiers = new ArrayList();
-        while (e.hasMoreElements()) {
-            String s = e.nextElement().getIdentifier().toString();
-            identifiers.add(z, s);
-            z++;
-        }
-        return identifiers;
-    }
-
-    /**
-     * Tuottaa kokoelman, joka sisältää kaiken GUIn taulukossa näkyvillä olevan
-     * datan. Käy läpi kaikki näkyvät rivit (view) ja selvittää niiden indeksin
-     * alla olevassa taulukkomallissa (model). Selvittää jokaisen näkyvillä
-     * olevan rivin sarakkeen indeksin mallissa (view -> model) ja hakee rivin
-     * ja sarakkeen perusteella taulukosta näkyvän datan.
-     *
-     * @return kokoelma listoja. Kokoelma sisältää kaiken näkyvillä olevan datan
-     * ja se on samassa järjestyksessä kuin se on taulukon näkymässä. Listan
-     * alkiot vastaavat rivin sarakkeita ja kokoelman alkiot taulukon rivejä.
-     */
-    private Collection<? extends List> getShownColumnData() {
-
-        int[] neededIndexes = listShownColumnsByIndex();
-        TableModel tableModel = table.getModel();
-        DefaultRowSorter rs = (DefaultRowSorter) table.getRowSorter();
-        int columnCount = table.getColumnCount();
-        int rowCount = rs.getViewRowCount();
-        ArrayList list = new ArrayList(rowCount);
-
-
-        //TODO: ehkä tuon päivämäärän lyhentämisen voi tehdä myöskin jossain muualla
-        for (int i = 0; i < rowCount; i++) {
-            List rowList = new ArrayList(columnCount);
-            int rowIndexInView = rs.convertRowIndexToModel(i);
-            for (int j = 0; j < columnCount; j++) {
-                Object o = tableModel.getValueAt(rowIndexInView,
-                        table.convertColumnIndexToModel(neededIndexes[j]));
-                String value;
-                if (o == null) {
-                    value = "";
-                } else if (o.getClass() == Date.class) {
-                    value = dateToShortString((Date) o);
-                } else {
-                    value = o.toString();
-                }
-                rowList.add(j, value);
-            }
-            list.add(rowList);
-        }
-        return list;
-    }
-
-
-    /**
-     * Asettaa kaikki saamansa sarakkeet näkyviksi. 
-     * 
-     * @param col kokoelma sarakkeita 
+     * @param col kokoelma sarakkeita
      */
     private void showColumns(Collection<String> col) {
         for (String identifier : col) {
@@ -1400,9 +1205,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Piilottaa tai näyttää sarakkeen sen mukaan, onko siihen liittyvä
-     * checkbox valittuna vai ei.
-     * 
+     * Piilottaa tai näyttää sarakkeen sen mukaan, onko siihen liittyvä checkbox
+     * valittuna vai ei.
+     *
      * @param box checkbox, joka sarakkeeseen liittyy
      * @param columnName sarakkeen nimi
      */
@@ -1420,7 +1225,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Luo regexp-filtterin saamiensa parametrien perusteella.
-     * 
+     *
      * @param regex säännöllinen lauseke, jonka perusteella filteröidään
      * @param columnName sarake, jonka dataan rajaus kohdistuu
      * @return regexp-filtteri, joka vaikuttaa annettuun sarakkeeseen ja rajaa
@@ -1440,8 +1245,8 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Poistaa käytöstä valitun filterin.
-     * 
-     * @param filterColumnName sarake, johon filtteri liittyi 
+     *
+     * @param filterColumnName sarake, johon filtteri liittyi
      */
     private void removeFilter(String filterColumnName) {
         filterList.remove(filterColumnName);
@@ -1449,10 +1254,10 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Lisää käyttöön filterin.
-     * Saa parametrina filterin, jonka lisää käytössä olevien filtereiden listaan
-     * ja päivittää sen jälkeen yleisfilterin, joka sisältää kaikki käytössä olevat
-     * filterit.
+     * Lisää käyttöön filterin. Saa parametrina filterin, jonka lisää käytössä
+     * olevien filtereiden listaan ja päivittää sen jälkeen yleisfilterin, joka
+     * sisältää kaikki käytössä olevat filterit.
+     *
      * @param filterColumnName sarake, johon filterin pitää vaikuttaa
      * @param filter filtteri, joka otetaan käyttöön
      * @see updateFilterList
@@ -1464,7 +1269,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     /**
      * Luo ja lisää käyttöön regexp-filterin.
-     * 
+     *
      * @see addFilter
      * @param filterText teksti, jonka pohjalta regexp-filter luodaan
      * @param columnName sarake, johon filterin pitää vaikuttaa
@@ -1473,19 +1278,15 @@ public class ReportsWindow extends javax.swing.JFrame {
         try {
             addFilter(columnName, getRegexFilter(filterText, columnName));
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(rootPane,
-                    "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin.",
-                    "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
-            System.out.println(ex + " " + columnName);
+            showErrorMessage(ex, columnName);
         }
     }
 
     /**
-     * Luo filterin, joka rajaa taulukon datan sen mukaan, mitä kaikkia 
-     * filttereitä on asetettu. 
-     * Saa parametrina listan tällä hetkellä käytössä olevista filtereistä ja 
-     * luo tämän yleisfilterin niiden perusteella.
-     * 
+     * Luo filterin, joka rajaa taulukon datan sen mukaan, mitä kaikkia
+     * filttereitä on asetettu. Saa parametrina listan tällä hetkellä käytössä
+     * olevista filtereistä ja luo tämän yleisfilterin niiden perusteella.
+     *
      * @param filters lista niistä filtereistä, jotka ovat käytössä
      */
     private void updateFilterList(List<RowFilter<Object, Object>> filters) {
@@ -1494,9 +1295,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             DefaultRowSorter sorter = (TableRowSorter) table.getRowSorter();
             sorter.setRowFilter(generalFilter);
         } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(rootPane,
-                    "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin",
-                    "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage(ex, "");
         }
     }
 
@@ -1531,7 +1330,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
         setSelected(initialComponents);
-        
+
         table = peopleTable;
         columnModel = table.getColumnModel();
         peopleModel.setTable(table);
@@ -1557,87 +1356,20 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
 
     /**
-     * Luo taulukon joka sisältää kaikki henkilöt ja niihin liittyvän datan.
-     *
-     */
-    private void initPeopleData() {
-        peopleTableData = new Vector<>();
-
-        for (int i = 0; i < people.length; i++) {
-            Vector<Object> row = new Vector<>();
-
-            row.add(people[i].getName());
-            row.add(people[i].getTitteli());
-            String roomName = people[i].getRoom();
-            Reservation reservation = people[i].getReservationForRoom(roomName);
-            // jos varausta ei ole, näytetään vain huonenumero
-            // muuten näytetään myös työpisteen numero
-            if (reservation == null) {
-                row.add(roomName);
-            } else {
-                row.add(reservation.getTargetPost().toString());
-            }
-
-            try {
-                Room room = reservation.getTargetPost().getRoom();
-                row.add(room.getFloor().toString());
-                row.add(room.getWing());
-                row.add(new Integer(room.getPosts().length).toString());
-            } catch (NullPointerException ex) {
-                row.add(null);
-                row.add(null);
-                row.add(null);
-            }
-            // näytetään tämänhetkisen huoneen varauksen päättymispäivä,
-            // jos henkilöllä on jokin voimassaoleva varaus tähän huoneeseen
-            if (reservation == null) {
-                row.add(null);
-            } else {
-                row.add(reservation.getLastDay());
-            }
-            row.add(people[i].getSahkoposti());
-            row.add(people[i].getWorkPhone());
-
-            if (people[i].getPostilokeroHuone() == null) {
-                row.add("ei postilokeroa");
-            } else {
-                row.add(people[i].getPostilokeroHuone());
-            }
-
-            peopleTableData.add(i, row);
-        }
-    }
-
-    /**
-     * Luo taulukon, joka sisältää kaikki tiedossa olevat huoneet ja niihin
-     * liittyvät tiedot.
-     */
-    private void initRoomData() {
-        roomTableData = new Vector<>();
-        for (int i = 0; i < rooms.length; i++) {
-            Vector<Object> row = new Vector<>();
-            Room room = rooms[i];
-            row.add(room.getRoomName());
-            row.add(room.getFloor());
-            row.add(room.getWing());
-            row.add(room.getPosts().length);
-            row.add(room.getRoomSize());
-            row.add(room.getDescription());
-            // avainvaraukset
-            row.add("avainhlö1, avainhlö2");
-            // työpistevaraukset
-            row.add("varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus, varaus");
-            roomTableData.add(row);
-        }
-    }
-    /**
      * Muuttaa näkymää sen perusteella, pitääkö myös epäaktiiviset henkilöt
-     * näyttää vai ei.
-     * Käytännössä piirtää uusiksi koko taulukon.
+     * näyttää vai ei. Käytännössä piirtää uusiksi koko taulukon.
      */
     private void showInactive() {
-            initColumnData();
-            switchToPeopleData();
-            showColumns(initiallyHiddenColumns);
+        initColumnData();
+        switchToPeopleData();
+        showColumns(initiallyHiddenColumns);
+    }
+
+    private void showErrorMessage(Exception ex, String column) {
+        JOptionPane.showMessageDialog(rootPane,
+                "Rajoituksia voi tehdä vain näkyvillä oleviin sarakkeisiin.",
+                "Sarake ei näkyvillä", JOptionPane.ERROR_MESSAGE);
+        System.out.println(ex + " " + column);
+
     }
 }
