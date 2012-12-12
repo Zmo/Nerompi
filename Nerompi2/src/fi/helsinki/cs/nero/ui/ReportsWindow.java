@@ -17,6 +17,7 @@ import fi.helsinki.cs.nero.logic.ReportWriter;
 import fi.helsinki.cs.nero.logic.Session;
 import fi.helsinki.cs.nero.logic.TxtReportPrinter;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -258,7 +259,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         restrictByFirstDate.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        restrictByFirstDate.setText(dateToShortString(today));
+        restrictByFirstDate.setText(new SimpleDateFormat("dd.MM.yyyy").format(today));
         restrictByFirstDate.setToolTipText("Aikavälin ensimmäinen päivä muodossa DD.MM.YYYY");
         restrictByFirstDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -694,14 +695,16 @@ public class ReportsWindow extends javax.swing.JFrame {
 
     private void firstCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_firstCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            restrictByFirstDate.setText(dateToShortString(((Date) evt.getNewValue())));
+            String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());
+            restrictByFirstDate.setText(strDate);
             determineDateRestriction();
         }
     }//GEN-LAST:event_firstCalendarPropertyChange
 
     private void lastCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_lastCalendarPropertyChange
         if (evt.getNewValue() instanceof Date) {
-            restrictByLastDate.setText(dateToShortString(((Date) evt.getNewValue())));
+            String strDate = new SimpleDateFormat("dd.MM.yyyy").format(evt.getNewValue());            
+            restrictByLastDate.setText(strDate);
             determineDateRestriction();
         }
     }//GEN-LAST:event_lastCalendarPropertyChange
