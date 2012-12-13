@@ -115,14 +115,45 @@ public class TxtReportPrinterTest extends TestCase {
 
             String resultString = readFile(f);
             String expResultString = "vain yksi| \n";
-            
+
             boolean expResult = true;
             boolean result = compare(resultString, expResultString);
-                       
+
             assertEquals(expResult, result);
         } catch (FileNotFoundException ex) {
             fail();
         }
+    }
+
+    //v‰‰r‰nmallinen lista on sellainen, jossa ensimm‰inen rivi
+    // on lyhyempi kuin seuraavat rivit
+    public void testUnsuitableList() {
+        boolean result = false;
+        boolean expResult = true;
+
+        try {
+            File f = new File("TxtReportPrinterTest.txt");
+            List<List> data = new ArrayList();
+            List<String> row1 = new ArrayList();
+            row1.add("eka");
+            row1.add("toka");
+            row1.add("kolmas");
+            List<String> row2 = new ArrayList();
+            row2.add("eka");
+            row2.add("toka");
+            row2.add("kolmas");
+            row2.add("ylim‰‰r‰inen");
+
+            data.add(row1);
+            data.add(row2);
+            TxtReportPrinter instance = new TxtReportPrinter(f);
+            instance.print(data);
+
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            result = true;
+            System.out.println(ex);
+        }
+        assertEquals(expResult, result);
     }
 
     private String readFile(File f) throws FileNotFoundException {
@@ -137,27 +168,27 @@ public class TxtReportPrinterTest extends TestCase {
         }
         return str;
     }
-    
+
     private boolean compare(String result, String exp) {
         boolean b = false;
-        
+
         if (result.length() == exp.length()) {
             b = true;
             for (int i = 0; i < result.length(); i++) {
-                System.out.print("result: "+result.charAt(i));
-                System.out.print(" exp: "+exp.charAt(i) + "\n");
+                System.out.print("result: " + result.charAt(i));
+                System.out.print(" exp: " + exp.charAt(i) + "\n");
                 if (result.charAt(i) != exp.charAt(i)) {
                     b = false;
                     break;
                 }
-            } 
+            }
         } else {
             System.out.println("eripituiset");
-            System.out.println("exp: "+exp.length());
-            System.out.println("result: "+result.length());
+            System.out.println("exp: " + exp.length());
+            System.out.println("result: " + result.length());
         }
-        
-        
+
+
         return b;
     }
 }

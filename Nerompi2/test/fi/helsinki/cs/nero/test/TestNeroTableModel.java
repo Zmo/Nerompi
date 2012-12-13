@@ -66,9 +66,6 @@ public class TestNeroTableModel extends TestCase {
         super.tearDown();
     }
 
-    /**
-     * Test of getColumnClass method, of class NeroTableModel.
-     */
     public void testGetColumnClassColumnDateColumnExists() {
         Class result = model.getColumnClass(1);
         Class expResult = Date.class;
@@ -81,6 +78,10 @@ public class TestNeroTableModel extends TestCase {
         assertEquals(expResult, result);
     }
     
+        /**
+         * luokan pitäisi palauttaa aina luokka String, jos kyse ei ole
+         * siitä ainoasta sarakkeesta, joka on Date
+         */
         public void testGetColumnClassDateColumnDoesNotExists() {
         Class result = model.getColumnClass(5);
         Class expResult = String.class;
