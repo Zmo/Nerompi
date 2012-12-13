@@ -19,6 +19,10 @@ public class ReportWriter {
 
     JTable table;
     ReportPrinter printer;
+    /**
+     * Määrittelee, mistä tiedetään, tulostetaanko tekstitiedostoon vai johonkin
+     * formatoituun tiedostoon.
+     */
     String structuredFileType;
 
     public ReportWriter(JTable jtable, String structuredFile) {
@@ -114,6 +118,7 @@ public class ReportWriter {
      * alla olevassa taulukkomallissa (model). Selvittää jokaisen näkyvillä
      * olevan rivin sarakkeen indeksin mallissa (view -> model) ja hakee rivin
      * ja sarakkeen perusteella taulukosta näkyvän datan.
+     * Olettaa, että taulukolla on RowSorter käytössä.
      *
      * @return kokoelma listoja. Kokoelma sisältää kaiken näkyvillä olevan datan
      * ja se on samassa järjestyksessä kuin se on taulukon näkymässä. Listan

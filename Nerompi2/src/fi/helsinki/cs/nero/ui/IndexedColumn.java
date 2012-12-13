@@ -3,8 +3,9 @@ package fi.helsinki.cs.nero.ui;
 import javax.swing.table.TableColumn;
 
 /**
- *
+ * Taulukon sarake, joka muistaa alkuperäisen indeksinsä.
  * @author lpesola
+ * @see ReportsWindow
  */
 public class IndexedColumn {
 

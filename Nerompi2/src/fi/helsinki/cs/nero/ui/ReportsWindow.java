@@ -1,13 +1,6 @@
 package fi.helsinki.cs.nero.ui;
 
-/**
- * Mahdollistaa tietojen tallentamisen. N‰ytt‰‰ taulukon, jossa olevaa dataa voi
- * j‰rjest‰‰ ja rajata haluamallaan tavalla. Taulukossa n‰ytetty data voidaan
- * tallentaa teksti- tai ODS-muodossa. Saa tietonsa Session-luokalta.
- *
- * @author lpesola
- * @see Session
- */
+
 import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import java.io.File;
@@ -33,6 +26,17 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+
+/**
+ * Luokka, joka luo n‰ytt‰‰ raportteja ohjelman t‰m‰nhetkisist‰ 
+ * tiedoista ja mahdollistaa n‰iden tietojen tallentamisen. 
+ * N‰ytt‰‰ taulukon, jossa olevaa dataa voi
+ * j‰rjest‰‰ ja rajata haluamallaan tavalla. Taulukossa n‰ytetty data voidaan
+ * tallentaa teksti- tai ODS-muodossa. Saa tietonsa ReportSession-luokalta.
+ *
+ * @author lpesola
+ * @see ReportSession
+ */
 
 public class ReportsWindow extends javax.swing.JFrame {
 
@@ -106,17 +110,17 @@ public class ReportsWindow extends javax.swing.JFrame {
         tableContainer = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         restrictionsContainer = new javax.swing.JPanel();
-        wing = new javax.swing.JLabel();
+        wingLabel = new javax.swing.JLabel();
         restrictByWing = new javax.swing.JComboBox();
         floor = new javax.swing.JLabel();
         floorDropdown = new javax.swing.JComboBox();
         restrictByHasLocker = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        showLabel = new javax.swing.JLabel();
+        reservationEndsLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
         restrictByName = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        startDateLabel = new javax.swing.JLabel();
+        EndDateLabel = new javax.swing.JLabel();
         lastCalendar = new net.sourceforge.jcalendarbutton.JCalendarButton();
         firstCalendar = new net.sourceforge.jcalendarbutton.JCalendarButton();
         restrictByFirstDate = new javax.swing.JTextField();
@@ -142,7 +146,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showPostReservations = new javax.swing.JCheckBox();
         showDescription = new javax.swing.JCheckBox();
         dataModeSelector = new javax.swing.JComboBox();
-        jLabel7 = new javax.swing.JLabel();
+        showAllLabel = new javax.swing.JLabel();
 
         fileChooserDialog.setDialogTitle("Tallenna");
 
@@ -183,7 +187,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         table.setRowSelectionAllowed(false);
         tableContainer.setViewportView(table);
 
-        wing.setText("Siipi");
+        wingLabel.setText("Siipi");
 
         restrictByWing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "Kaikki" }));
         restrictByWing.setToolTipText("");
@@ -209,12 +213,12 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("N‰yt‰");
+        showLabel.setText("N‰yt‰");
 
-        jLabel2.setText("Varaus p‰‰ttyy aikav‰lill‰");
-        jLabel2.setToolTipText("Aseta aikav‰li, jonka aikana p‰‰ttyv‰t varaukset n‰ytet‰‰n");
+        reservationEndsLabel.setText("Varaus p‰‰ttyy aikav‰lill‰");
+        reservationEndsLabel.setToolTipText("Aseta aikav‰li, jonka aikana p‰‰ttyv‰t varaukset n‰ytet‰‰n");
 
-        jLabel3.setText("Nimi");
+        nameLabel.setText("Nimi");
 
         restrictByName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -222,9 +226,9 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Alkupvm.");
+        startDateLabel.setText("Alkupvm.");
 
-        jLabel5.setText("Loppupvm.");
+        EndDateLabel.setText("Loppupvm.");
 
         lastCalendar.setToolTipText("Aikav‰lin viimeinen p‰iv‰");
         lastCalendar.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -291,7 +295,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(showInactive)
                             .addGroup(restrictionsContainerLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
+                                .addComponent(nameLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18))
@@ -299,8 +303,8 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(EndDateLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(startDateLabel, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(18, 18, 18)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(restrictByLastDate)
@@ -311,11 +315,11 @@ public class ReportsWindow extends javax.swing.JFrame {
                             .addComponent(lastCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(28, 28, 28)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(showLabel, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jLabel2)))
+                        .addComponent(reservationEndsLabel)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(restrictionsContainerLayout.createSequentialGroup()
@@ -325,7 +329,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGap(30, 30, 30)
                         .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(floor)
-                            .addComponent(wing)))
+                            .addComponent(wingLabel)))
                     .addComponent(postroomLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,25 +349,25 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(roomLabel)
                     .addComponent(postroomLabel)
-                    .addComponent(jLabel2)
+                    .addComponent(reservationEndsLabel)
                     .addComponent(personLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(restrictByWing, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wing)
+                    .addComponent(wingLabel)
                     .addComponent(restrictByHasLocker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
+                    .addComponent(showLabel)
                     .addComponent(firstCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(restrictByFirstDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
+                    .addComponent(startDateLabel)
                     .addComponent(restrictByName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(nameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(restrictionsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(showInactive, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(restrictByLastDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lastCalendar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(EndDateLabel, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(restrictByLockerRoom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(floor, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -532,7 +536,7 @@ public class ReportsWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setText("N‰yt‰ kaikki");
+        showAllLabel.setText("N‰yt‰ kaikki");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -546,7 +550,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ColumnsLabel)
                             .addComponent(dataModeSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
+                            .addComponent(showAllLabel)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addComponent(columnChekboxes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -567,7 +571,7 @@ public class ReportsWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(9, 9, 9)
-                        .addComponent(jLabel7)
+                        .addComponent(showAllLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dataModeSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -610,7 +614,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * voiko sen p‰‰lle tallentaa.
      *
      * @param evt
-     * @see promptForOverWrite()
+     * @see #promptForOverWrite() 
      */
     private void saveButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseReleased
 
@@ -712,10 +716,14 @@ public class ReportsWindow extends javax.swing.JFrame {
             addRegexpFilter(value, postihuone);
         } else if (index == 2) {
             // lokerolliset
+            try {
             RowFilter regexFilter = RowFilter.regexFilter("ei postilokeroa",
                     convertColumnIndexToModel(columnModel.getColumnIndex(postihuone)));
             RowFilter filter = RowFilter.notFilter(regexFilter);
             addFilter(postihuone, filter);
+            } catch (IllegalArgumentException ex) {
+                showErrorMessage(ex, postihuone);
+            }
         }
     }//GEN-LAST:event_restrictByHasLockerItemStateChanged
 
@@ -796,6 +804,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ColumnsLabel;
+    private javax.swing.JLabel EndDateLabel;
     private javax.swing.JPanel columnChekboxes;
     private javax.swing.JComboBox dataModeSelector;
     private javax.swing.JFileChooser fileChooserDialog;
@@ -803,17 +812,13 @@ public class ReportsWindow extends javax.swing.JFrame {
     private net.sourceforge.jcalendarbutton.JCalendarButton firstCalendar;
     private javax.swing.JLabel floor;
     private javax.swing.JComboBox floorDropdown;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private net.sourceforge.jcalendarbutton.JCalendarButton lastCalendar;
+    private javax.swing.JLabel nameLabel;
     private javax.swing.JOptionPane overwriteCheck;
     private javax.swing.JLabel personLabel;
     private javax.swing.JLabel postroomLabel;
+    private javax.swing.JLabel reservationEndsLabel;
     private javax.swing.JTextField restrictByFirstDate;
     private javax.swing.JComboBox restrictByHasLocker;
     private javax.swing.JTextField restrictByLastDate;
@@ -823,11 +828,13 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JPanel restrictionsContainer;
     private javax.swing.JLabel roomLabel;
     private javax.swing.JButton saveButton;
+    private javax.swing.JLabel showAllLabel;
     private javax.swing.JCheckBox showDescription;
     private javax.swing.JCheckBox showEmail;
     private javax.swing.JCheckBox showFloor;
     private javax.swing.JCheckBox showInactive;
     private javax.swing.JCheckBox showJobTitle;
+    private javax.swing.JLabel showLabel;
     private javax.swing.JCheckBox showLocker;
     private javax.swing.JCheckBox showPhone;
     private javax.swing.JCheckBox showPostCount;
@@ -837,10 +844,11 @@ public class ReportsWindow extends javax.swing.JFrame {
     private javax.swing.JCheckBox showRoomReservations;
     private javax.swing.JCheckBox showSize;
     private javax.swing.JCheckBox showWing;
+    private javax.swing.JLabel startDateLabel;
     private javax.swing.JTable table;
     private javax.swing.JScrollPane tableContainer;
     private javax.swing.ButtonGroup viewButtons;
-    private javax.swing.JLabel wing;
+    private javax.swing.JLabel wingLabel;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -912,7 +920,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * Alustaa GUI taulukossa tarvittavat tiedot ja luo n‰ist‰ kaksi taulukkoa,
      * joiden v‰lill‰ raporttin‰kym‰ss‰ voidaan vaihtaa: henkilˆ- sek‰
      * huonetaulukon. Alustaa n‰iden sarakkeiden nimet sek‰ sarakkeiden datan ja
-     * n‰it‰ vastaavat mallit. Data saadaan Sessiolta. Huonedataa ei koskaan
+     * n‰it‰ vastaavat mallit. Data saadaan ReportSessiolta. Huonedataa ei koskaan
      * muuteta - se pysyy samana sen j‰lkeen, kun se on kerran haettu.
      * Henkilˆdata saatetaan hakea uudestaan, jos k‰ytt‰j‰ haluaa mukaan myˆs
      * ep‰aktiiviset henkilˆt. Joka tapauksessa idea on se, ett‰ taulukkomalli
@@ -920,7 +928,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * henkilˆiden ja huoneiden perusteella listatut. Datan alustamisen lis‰ksi
      * luodaan tarvittavat malit henkilˆdataa varten.
      *
-     * @See NeroTableModel
+     * @see NeroTableModel
      */
     private void initColumnData() {
 
@@ -984,8 +992,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * vasemmalle.
      *
      * @param name sarakkeen identifier / sen otsake
-     * @param model taulukkomalli, johon sarake lis‰t‰‰n
-     * @param hiddenColumns map, josta piilotettu sarake haetaan
      * @see IndexedColumn
      */
     private void showColumn(String name) {
@@ -1009,8 +1015,6 @@ public class ReportsWindow extends javax.swing.JFrame {
      * j‰lkeen poistetaan sarake taulukkomallista.
      *
      * @param name sarakkeen identifier / sen otsake
-     * @param model sarakemalli, josta sarake poistetaan
-     * @param hiddenColumns map, johon piilotettava sarake laitetaan talteen
      * @see IndexedColumn
      */
     private void hideColumn(String name) {
@@ -1030,7 +1034,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     /**
      * Asettaa kaikkien saamiensa checboxien tilaksi selected.
      *
-     * @param components, lista komponenteista, joiden tila muutetaan
+     * @param components lista komponenteista, joiden tila muutetaan
      */
     private void setSelected(List<JCheckBox> components) {
         for (JCheckBox jcomp : components) {
@@ -1115,7 +1119,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * @param last loppup‰iv‰m‰‰r‰
      * @return filteri, joka hyv‰ksyy vain arvot, jotka sijoittuvat parametreina
      * saatujen p‰iv‰m‰‰rien v‰lille
-     * @see getDateFilter(first, last)
+     * @see #getDateFilter(java.util.Date, javax.swing.RowFilter.ComparisonType) 
      */
     private RowFilter getDateFilter(Date first, Date last) {
         try {
@@ -1158,7 +1162,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      * Antaa k‰skyn tulostaa n‰kyvill‰ olevan taulukon datan valitussa
      * formaatissa.
      *
-     * @param f, tiedosto, johon data kirjoitetaan
+     * @param f tiedosto, johon data kirjoitetaan
      * @see ReportWriter
      */
     private void print(File f) {
@@ -1260,7 +1264,7 @@ public class ReportsWindow extends javax.swing.JFrame {
      *
      * @param filterColumnName sarake, johon filterin pit‰‰ vaikuttaa
      * @param filter filtteri, joka otetaan k‰yttˆˆn
-     * @see updateFilterList
+     * @see #updateFilterList(java.util.List) 
      */
     private void addFilter(String filterColumnName, RowFilter filter) {
         filterList.put(filterColumnName, filter);
@@ -1270,7 +1274,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     /**
      * Luo ja lis‰‰ k‰yttˆˆn regexp-filterin.
      *
-     * @see addFilter
+     * @see #addFilter(java.lang.String, javax.swing.RowFilter) 
      * @param filterText teksti, jonka pohjalta regexp-filter luodaan
      * @param columnName sarake, johon filterin pit‰‰ vaikuttaa
      */
@@ -1309,7 +1313,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(roomComponents, true);
         setEnabled(peopleComponents, false);
         setSelected(defaultRoomCheckboxes);
-
+        filterList.clear();
         table = roomTable;
         table.setAutoCreateColumnsFromModel(false);
         table.getTableHeader().setReorderingAllowed(false);
@@ -1330,14 +1334,13 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
         setSelected(initialComponents);
-
+        filterList.clear();
         table = peopleTable;
         columnModel = table.getColumnModel();
         peopleModel.setTable(table);
         table.setAutoCreateColumnsFromModel(false);
         table.getTableHeader().setReorderingAllowed(false);
         table.setEnabled(false);
-
         addSorter();
         tableContainer.setViewportView(table);
     }
