@@ -470,8 +470,6 @@ public class NeroDatabase implements NeroObserver {
      * osittain voimassa.
      * @return varaukset <code>Reservation[]</code> oliona.
      */
-   
-
     public ArrayList<HashMap<String, String>> getKannykat() {
         HashMap hashMap;
         ArrayList arry = new ArrayList<HashMap<String, String>>();
@@ -506,6 +504,8 @@ public class NeroDatabase implements NeroObserver {
         //uuden lisäämiseen 
         String test = "Select * FROM KANNYKKA";      
         
+        //Jos kannan ensimmäinen olio, niin aloita ID:n indeksointi numerosta 1, 
+        //muuten jatka edellisestä suurimmasta id:stä
         String x = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES ((SELECT MAX(PUH_ID) FROM KANNYKKA)+1, ?, ?, ?, CURRENT_TIMESTAMP)";
 
         String ensimmainen = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
@@ -1051,18 +1051,11 @@ public class NeroDatabase implements NeroObserver {
         session.setStatusMessage("Löytyi " + filteredPeople.size() + " henkilöä.");
         return (Person[]) filteredPeople.toArray(new Person[0]);
     }
-    public void getPersonInfo(Person person) {
-        
-        String sqlQuery = "SELECT htunnus, sukunimi,"
-                + " etunimet, huone_nro, kutsumanimi,"
-                + " aktiivisuus, hetu, oppiarvo, titteli,"
-                + " puhelin_tyo, puhelin_koti, katuosoite, katuosoite,"
-                + " postinro, postitoimipaikka, valvontasaldo, sahkopostiosoite,"
-                + " hallinnollinen_kommentti, opiskelija_kommentti, ktunnus,"
-                + " kannykka, postilokerohuone, hy_tyosuhde, hy_puhelinluettelossa"
-                + " FROM HENKILO WHERE h_tunnus = ?";
-    }
-
+    /**
+     * Päivittää henkilön tiedot tietokantaan
+     * @param person henkilön nimi
+     * @throws SQLException 
+     */
     public void updatePersonInfo(Person person) throws SQLException {
         this.session.waitState(true);
 
@@ -1563,17 +1556,6 @@ public class NeroDatabase implements NeroObserver {
             while(rs.next()) {
                 TimeSlice timeslice = new TimeSlice(rs.getDate("ALKUPVM"), rs.getDate("LOPPUPVM"));
                 Person person = (Person) people.get(rs.getString("HTUNNUS"));
-                
-                System.out.println("-----------------" + rs.getString("HTUNNUS"));
-                System.out.println("-----------------" + people.size());
-                
-                System.out.println("<><><> " + room.getRoomID());
-                System.out.println("       " + rooms.get(rs.getString("RHUONE_ID")));
-                System.out.println("       " + rs.getInt("ID"));
-                System.out.println("       " + person.getName());
-                System.out.println("       " + person.getPersonID());
-                System.out.println("       " + timeslice);
-                
                 arrayList.add(new RoomKeyReservation(rs.getInt("ID"), (Room) rooms.get(rs.getString("RHUONE_ID")), person.getPersonID(), person.getName(), timeslice, this.session));
             }
             RoomKeyReservation[] temp = new RoomKeyReservation[0];
@@ -1632,7 +1614,7 @@ public class NeroDatabase implements NeroObserver {
 	 * Päivittää tietokannassa olevan puhelinnumero-olion annetun mallin
 	 * mukaiseksi ja päivittää henkilölle tai työpisteelle puhelinnumeron
 	 * 
-	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id).
+	 * @param phone Uusi versio puhelinnumerosta (uusi työpiste id, puhelinnumero ja henkilö id).
 	 * @return Onnistuiko päivitys.
 	 */
 	public boolean updatePhoneNumber(PhoneNumber phone) {
@@ -1649,11 +1631,12 @@ public class NeroDatabase implements NeroObserver {
             Post post = phone.getPost();
             String personID = phone.getPersonID();
             
-            //tarkistus, jos työpistenumero käytössä, niin voi lisätä yhden henkilönumeron
+            
             try {
 		if(this.prepUpdatePhoneNumber == null) {
                     this.prepUpdatePhoneNumber = this.connection.prepareStatement("UPDATE PUHELINNUMERO SET tp_id  = ?, h_tunnus = ? WHERE id = ?");
 		}
+                //tarkistus, jos työpistenumero käytössä, niin voi lisätä yhden henkilön numeron samaan numeroon
 		if(post == null) {
                     this.prepUpdatePhoneNumber.setString(1, this.findTyopiste(phone));
 
@@ -1688,7 +1671,9 @@ public class NeroDatabase implements NeroObserver {
                         ResultSet rs = prep.executeQuery();
                         
                         while (rs.next()) {
-                                this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
+                                if (!this.findKannykka(rs.getString("HENKLO_HTUNNUS"))) {
+                                    this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");                               
+                                }
                             }
                         this.updateWorkPhone(personID, phone.getPhoneNumber());
                         
@@ -1704,6 +1689,187 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(false);
             return success;
         }
+        /**
+        * palauttaa htunnukseen liittyvän kännykkänumeron
+        * @param htunnus
+        * @return 
+        */
+        public String getKannykkanOmistaja(String htunnus) {
+        
+        String prep = "SELECT omistaja FROM KANNYKKA WHERE htunnus = ?";
+        try {        
+            PreparedStatement p = this.connection.prepareStatement(prep);
+            p.setString(1, htunnus);
+            ResultSet rs = p.executeQuery();
+            
+            if (rs.next())
+                return rs.getString("omistaja");
+            
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+        return null;
+    
+    }  
+    /**
+     * ottaa selvää löytyykö henkilöltä kännykkää
+     * @param henklo_tunnus henkilön id
+     * @return 
+     */
+    public boolean findKannykka(String henklo_tunnus) {
+        
+        String getKannykka = "SELECT kannykka_numero FROM KANNYKKA WHERE htunnus = ?";
+        try {
+            PreparedStatement p = this.connection.prepareStatement(getKannykka);
+            p.setString(1, henklo_tunnus);
+            ResultSet rs = p.executeQuery();
+          
+            if (rs.next()) {
+                return true;
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());            
+        }
+        return false;
+    }
+    /**
+     * Poistaa työpisteeltä puhelinnumeron
+     *
+     * @param phone Puhelinnumero, jolta poistetaan työpiste
+     * @return Onnistuiko päivitys
+     */
+    public boolean removePhoneNumberFromPost(PhoneNumber phone) {
+        if (phone.getPost() == null) {
+            throw new IllegalArgumentException();
+        }
+
+        String updatePhoneNumber = "UPDATE PUHELINNUMERO SET tp_id='' WHERE id=?";
+       
+
+        String getpersons = "select HENKLO_HTUNNUS"
+                + " from TYOPISTEVARAUS"
+                + " where ALKUPVM<CURRENT_TIMESTAMP"
+                + " AND LOPPUPVM>CURRENT_TIMESTAMP"
+                + " AND TPISTE_ID=?";
+
+        boolean success = false;
+        this.session.waitState(true);
+        PreparedStatement prep;
+
+        try {
+            prep = this.connection.prepareStatement(updatePhoneNumber);
+            prep.setString(1, phone.getPhoneNumberID());
+            int updatedRows = prep.executeUpdate();
+            if (updatedRows > 0) {
+                success = true;
+                prep = this.connection.prepareStatement(getpersons);
+                prep.setString(1, phone.getPost().getPostID());
+                ResultSet rs = prep.executeQuery();
+                while (rs.next()) {
+                    //tarkistus tähän, onko tunnuksella kännykkää, jos ei niin päivitä numero tyhjäksi
+                    if (!this.findKannykka(rs.getString("HENKLO_HTUNNUS"))) {
+                        this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
+                    }
+//                    if (phone.getPersonID() != null) {
+//                        this.updateWorkPhone(phone.getPersonID(), "");
+//                    }
+                }
+                /* XXX Raskas operaatio */
+                loadRooms();
+                loadPhoneNumbers();
+            }
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+        this.session.waitState(false);
+        return success;
+    }
+    /**
+     * Poistaa henkilöltä työnumeron
+     * 
+     * @param phone numero josta henkilö poistetaan
+     * @return 
+     */
+    public boolean removePhoneNumberFromPerson(PhoneNumber phone) {
+        if (phone.getPersonID() == null) {
+            System.out.println("henkilö ei saa olla null");
+            return false;
+        }       
+        
+        PreparedStatement prep;
+        boolean success = false;
+        this.session.waitState(true);
+        phone.getPersonID();
+        
+        
+        String updatePhoneNumber = "UPDATE PUHELINNUMERO SET h_tunnus='' WHERE id=?";
+        
+        try {
+            prep = this.connection.prepareStatement(updatePhoneNumber);
+            prep.setString(1, phone.getPhoneNumberID());
+            int updatedRows = prep.executeUpdate();
+            if (updatedRows > 0) {
+                success = true;
+                this.updateWorkPhone(phone.getPersonID(), "");
+                /* XXX Raskas operaatio */
+                loadRooms();
+                loadPhoneNumbers();
+            }
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+        
+        this.session.waitState(false);
+        return success;
+        
+    }
+    /**
+     * Palauttaa annetun työhuoneen puhelinnumerot.
+     *
+     * @param post Työhuone <code>Post</code> oliona.
+     * @return Puhelinnumerot <code>PhoneNumber[]</code> oliona.
+     */
+    public PhoneNumber[] getPhoneNumbers(Post post) {
+        /*
+         // Menisi kutakuinkin nï¿½in jos kï¿½ytettï¿½isiin kantaa eikï¿½ omaa tietorakennetta
+         Collection numbers = new Vector();
+
+         try {
+         if(this.prepPostPhoneNumbers == null) {
+         this.prepPostPhoneNumbers = this.connection.prepareStatement(
+         "SELECT id, puhelinnumero FROM PUHELINNUMERO WHERE tp_id = ?"
+         );
+         }
+         this.prepPostPhoneNumbers.setString(1, post.getPostID());
+         ResultSet rs = this.prepPostPhoneNumbers.executeQuery();
+         while(rs.next()) {
+         PhoneNumber pn = new PhoneNumber(this.session,
+         rs.getString("id"), post,
+         rs.getString("puhelinnumero"));
+         numbers.add(pn);
+         }
+         rs.close();
+         } catch (SQLException e) {
+         System.err.println("Tietokantavirhe: " + e.getMessage());
+         }
+		
+         System.out.println("humpappaa " + numbers.size());
+         return (PhoneNumber[]) numbers.toArray(new PhoneNumber[0]);
+         */
+        String key = "free";
+        if (post != null) {
+            key = post.getPostID();
+        }
+        Collection c = (Collection) this.phoneNumbers.get(key);
+        if (c == null) {
+            return new PhoneNumber[0];
+        }
+        //yrittää tehdä null collectionista arrayn
+        PhoneNumber[] numbers = (PhoneNumber[]) c.toArray(new PhoneNumber[0]);
+        Arrays.sort(numbers);
+        return numbers;
+    }
     /* --- Puhelinnumeroihin liittyvät metodit loppuu --- */
         
     /* --- Avainvarauksiin liittyvät metodit alkaa --- */
@@ -1846,186 +2012,8 @@ public class NeroDatabase implements NeroObserver {
 	// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
     	System.out.println("done.");
     }
-    /**
-     * palauttaa htunnukseen liittyvän kännykkänumeron
-     * @param htunnus
-     * @return 
-     */
-    public String getKannykkanOmistaja(String htunnus) {
-        
-        String prep = "SELECT omistaja FROM KANNYKKA WHERE htunnus = ?";
-        try {        
-            PreparedStatement p = this.connection.prepareStatement(prep);
-            p.setString(1, htunnus);
-            ResultSet rs = p.executeQuery();
-            
-            if (rs.next())
-                return rs.getString("omistaja");
-            
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-        return null;
+ 
     
-    }  
-    /**
-     * ottaa selvää löytyykö henkilöltä kännykkää
-     * @param henklo_tunnus henkilön id
-     * @return 
-     */
-    public boolean findKannykka(String henklo_tunnus) {
-        
-        String getKannykka = "SELECT kannykka_numero FROM KANNYKKA WHERE htunnus = ?";
-        try {
-            PreparedStatement p = this.connection.prepareStatement(getKannykka);
-            p.setString(1, henklo_tunnus);
-            ResultSet rs = p.executeQuery();
-          
-            if (rs.next()) {
-                return true;
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());            
-        }
-        return false;
-    }
-    /**
-     * Poistaa työpisteeltä puhelinnumeron
-     *
-     * @param phone Puhelinnumero, jolta poistetaan työpiste
-     * @return Onnistuiko päivitys
-     */
-    public boolean removePhoneNumberFromPost(PhoneNumber phone) {
-        if (phone.getPost() == null) {
-            throw new IllegalArgumentException();
-        }
-
-        String updatePhoneNumber = "UPDATE PUHELINNUMERO SET tp_id='' WHERE id=?";
-       
-
-        String getpersons = "select HENKLO_HTUNNUS"
-                + " from TYOPISTEVARAUS"
-                + " where ALKUPVM<CURRENT_TIMESTAMP"
-                + " AND LOPPUPVM>CURRENT_TIMESTAMP"
-                + " AND TPISTE_ID=?";
-
-        boolean success = false;
-        this.session.waitState(true);
-        PreparedStatement prep;
-
-        try {
-            prep = this.connection.prepareStatement(updatePhoneNumber);
-            prep.setString(1, phone.getPhoneNumberID());
-            int updatedRows = prep.executeUpdate();
-            if (updatedRows > 0) {
-                success = true;
-                prep = this.connection.prepareStatement(getpersons);
-                prep.setString(1, phone.getPost().getPostID());
-                ResultSet rs = prep.executeQuery();
-                while (rs.next()) {
-                    //tarkistus tähän, onko tunnuksella kännykkää, jos ei niin päivitä numero tyhjäksi
-                    if (!this.findKannykka(rs.getString("HENKLO_HTUNNUS"))) {
-                        this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
-                    }
-//                    if (phone.getPersonID() != null) {
-//                        this.updateWorkPhone(phone.getPersonID(), "");
-//                    }
-                }
-                /* XXX Raskas operaatio */
-                loadRooms();
-                loadPhoneNumbers();
-            }
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-        this.session.waitState(false);
-        return success;
-    }
-    /**
-     * Poistaa henkilöltä työnumeron
-     * 
-     * @param phone numero josta henkilö poistetaan
-     * @return 
-     */
-    public boolean removePhoneNumberFromPerson(PhoneNumber phone) {
-        if (phone.getPersonID() == null) {
-            System.out.println("henkilö ei saa olla null");
-            return false;
-        }       
-        
-        PreparedStatement prep;
-        boolean success = false;
-        this.session.waitState(true);
-        phone.getPersonID();
-        
-        
-        String updatePhoneNumber = "UPDATE PUHELINNUMERO SET h_tunnus='' WHERE id=?";
-        
-        try {
-            prep = this.connection.prepareStatement(updatePhoneNumber);
-            prep.setString(1, phone.getPhoneNumberID());
-            int updatedRows = prep.executeUpdate();
-            if (updatedRows > 0) {
-                success = true;
-                this.updateWorkPhone(phone.getPersonID(), "");
-                /* XXX Raskas operaatio */
-                loadRooms();
-                loadPhoneNumbers();
-            }
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-        this.session.waitState(false);
-        return success;
-        
-    }
-    /**
-     * Palauttaa annetun työhuoneen puhelinnumerot.
-     *
-     * @param post Työhuone <code>Post</code> oliona.
-     * @return Puhelinnumerot <code>PhoneNumber[]</code> oliona.
-     */
-    public PhoneNumber[] getPhoneNumbers(Post post) {
-        /*
-         // Menisi kutakuinkin nï¿½in jos kï¿½ytettï¿½isiin kantaa eikï¿½ omaa tietorakennetta
-         Collection numbers = new Vector();
-
-         try {
-         if(this.prepPostPhoneNumbers == null) {
-         this.prepPostPhoneNumbers = this.connection.prepareStatement(
-         "SELECT id, puhelinnumero FROM PUHELINNUMERO WHERE tp_id = ?"
-         );
-         }
-         this.prepPostPhoneNumbers.setString(1, post.getPostID());
-         ResultSet rs = this.prepPostPhoneNumbers.executeQuery();
-         while(rs.next()) {
-         PhoneNumber pn = new PhoneNumber(this.session,
-         rs.getString("id"), post,
-         rs.getString("puhelinnumero"));
-         numbers.add(pn);
-         }
-         rs.close();
-         } catch (SQLException e) {
-         System.err.println("Tietokantavirhe: " + e.getMessage());
-         }
-		
-         System.out.println("humpappaa " + numbers.size());
-         return (PhoneNumber[]) numbers.toArray(new PhoneNumber[0]);
-         */
-        String key = "free";
-        if (post != null) {
-            key = post.getPostID();
-        }
-        Collection c = (Collection) this.phoneNumbers.get(key);
-        if (c == null) {
-            return new PhoneNumber[0];
-        }
-        //yrittää tehdä null collectionista arrayn
-        PhoneNumber[] numbers = (PhoneNumber[]) c.toArray(new PhoneNumber[0]);
-        Arrays.sort(numbers);
-        return numbers;
-    }
 
     /* --- Muut metodit loppuu --- */
 

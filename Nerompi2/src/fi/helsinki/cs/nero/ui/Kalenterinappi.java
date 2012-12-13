@@ -12,14 +12,24 @@ import java.util.Date;
 import org.sourceforge.jcalendarbutton.*;
 
 /**
- *
- * @author rkolagus
+ * Aikavarauksen alku- tai loppuajan valintaan k‰ytett‰v‰, kalenteripopupin 
+ * avaava nappi.
+ * 
  */
 public class Kalenterinappi extends JCalendarButton {
 
+    /**
+     * K‰ytet‰‰n lukemaan PropertyChangeEventist‰ saadun uuden p‰iv‰m‰‰r‰n kuukausi.
+     */
     private static final String[] kuulyhenteet = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private TimelineElement element;
     private boolean onkoAlku;
+    
+    /**
+     * P‰iv‰m‰‰r‰n tallennuslista. K‰ytet‰‰n vanhan arvon palauttamiseen 
+     * mik‰li (JCalendarButtonin) targetDate vaihtuu k‰ytt‰j‰n valinnan takia 
+     * sopimattomaan p‰iv‰‰n
+     */
     private int[] viimeAika;
 
     public Kalenterinappi(Date dateTarget) {
@@ -37,8 +47,6 @@ public class Kalenterinappi extends JCalendarButton {
 
     }
     
-
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         
@@ -46,7 +54,6 @@ public class Kalenterinappi extends JCalendarButton {
             Calendar tulos = Calendar.getInstance();
             tulos.setTime(this.parseAika(evt.getNewValue().toString(), this.getTargetDate()));
             tulos.set(Calendar.HOUR_OF_DAY, 0);
-            // Tuloksen tunti nollaksi!
             if (((this.onkoAlku && (tulos.getTime().before(this.element.getLoppukalenteri().getTargetDate())))
                     || (!(this.onkoAlku) && (tulos.getTime().after(this.element.getAlkukalenteri().getTargetDate()))))
                     && ((this.lapikayntiVertailu(this.element.getReservation().getReservingPerson().getReservations(), tulos.getTime())))) {
@@ -126,10 +133,10 @@ public class Kalenterinappi extends JCalendarButton {
     }
 
     private void setAikaTeksti() {
-        Calendar tuloste = Calendar.getInstance();
-        tuloste.setTime(this.getTargetDate());
-        this.setText(tuloste.get(Calendar.DAY_OF_MONTH) + "." + 
-                    (tuloste.get(Calendar.MONTH)+1) + "." + 
-                     tuloste.get(Calendar.YEAR));
+        Calendar teksti = Calendar.getInstance();
+        teksti.setTime(this.getTargetDate());
+        this.setText(teksti.get(Calendar.DAY_OF_MONTH) + "." + 
+                    (teksti.get(Calendar.MONTH)+1) + "." + 
+                     teksti.get(Calendar.YEAR));
     }
 }

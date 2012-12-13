@@ -1034,16 +1034,34 @@ public class Session {
 /*    public Person getPerson(String personID){
         return this.db;
     }*/
+    /**
+     * välipalikka Henkilön tallentamiseen
+     * @param person
+     * @throws SQLException 
+     */
     public void saveNewPerson(Person person) throws SQLException {
         db.createPerson(person);
     }
-
+    /**
+     * Välipalikka Henkilötietojen päivittämiseen
+     * @param person
+     * @throws SQLException 
+     */
     public void updatePerson(Person person) throws SQLException {
         db.updatePersonInfo(person);
     }
+    /**
+     * Välipalikka kännykän lisäämiseen
+     * @param kannykka 
+     */
     public void addKannykka(Kannykka kannykka) {
         db.addKannykka(kannykka);
     }
+    /**
+     * Kännykän hakemiseen henkilön ID:n perusteella
+     * @param htunnus
+     * @return 
+     */
     public String getKannykka(String htunnus) {
         return db.getKannykkanOmistaja(htunnus);
     }
