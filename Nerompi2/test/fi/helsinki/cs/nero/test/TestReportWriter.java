@@ -3,11 +3,14 @@ package fi.helsinki.cs.nero.test;
 import fi.helsinki.cs.nero.logic.ODTReportPrinter;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Vector;
 import javax.swing.JTable;
 import junit.framework.TestCase;
@@ -73,7 +76,7 @@ public class TestReportWriter extends TestCase {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         Date today = new Date();
         String expResult = dateFormat.format(today);
-        
+
 
         File f = new File("TestReportWriter.ods");
         Vector<Vector<Object>> dateData = new Vector();
@@ -82,7 +85,7 @@ public class TestReportWriter extends TestCase {
         row.add(today);
         dateData.add(row);
         dateData.add(row);
-        
+
         JTable table = new JTable(dateData, columns);
         table.setAutoCreateRowSorter(true);
 
@@ -94,7 +97,48 @@ public class TestReportWriter extends TestCase {
         assertEquals(expResult, result);
 
     }
-    
+
+    public void testTXTContainsCorrectDate() throws IOException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        Date today = new Date();
+        String expResult = dateFormat.format(today);
+
+        File f = new File("TestReportWriter.txt");
+        Vector<Vector<Object>> dateData = new Vector();
+        Vector<Object> row = new Vector();
+        row.add("eka");
+        row.add(today);
+        dateData.add(row);
+        dateData.add(row);
+
+        JTable table = new JTable(dateData, columns);
+        table.setAutoCreateRowSorter(true);
+
+        ReportWriter instance = new ReportWriter(table, "ods");
+        instance.print(f, "txt");
+
+        String file = readFile(f);
+        String[] rows = file.split("\n");
+        String[] words = rows[1].split("\\|");
+        String result = words[1].trim();
+        assertEquals(expResult, result);
+
+    }
+
     // jotain pitäs viel tehdä, missä on sortattu
     // ja filteröity taulukkoa
+  
+    private String readFile(File f) throws FileNotFoundException {
+        String str = "";
+        try {
+            Scanner scanner = new Scanner(new FileReader(f));
+            while (scanner.hasNextLine()) {
+                str = str.concat(scanner.nextLine() + "\n");
+            }
+        } catch (FileNotFoundException ex) {
+            throw ex;
+        }
+        return str;
+    }
+
 }
