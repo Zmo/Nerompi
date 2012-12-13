@@ -747,8 +747,9 @@ public class Session {
      */
     private void switchActiveRoom() {
         // pyydetään db:ltä uudempi versio samasta huoneesta
-        String roomID = activeRoom.getRoomID();
-        activeRoom = db.getRoom(roomID);
+//        String roomID = activeRoom.getRoomID();
+//        activeRoom = db.getRoom(roomID);
+        activeRoom = db.getRoom(activeRoom.getRoomID());
     }
 
     /**
@@ -772,11 +773,11 @@ public class Session {
             if(db.updatePhoneNumber(newPhone)) {
                     // jos ollaan näyttämässä tätä samaa huonetta, päivitetään sen tiedot
                 if (post != null) {
-                    if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
-                            this.switchActiveRoom();
-                    }
+//                    if(this.activeRoom.getRoomID().equals(post.getRoom().getRoomID())) {
+//                            this.switchActiveRoom();
+//                    }
                     // nyt huoneiden tila on muuttunut, joten täytyy ilmoittaa kuuntelijoille
-                    obsman.notifyObservers(NeroObserverTypes.ROOMS);
+                    
                         setStatusMessage("Puhelinnumero liitetty työpisteeseen.");
                 } else {
                 setStatusMessage("Puhelinnumero liitetty henkilöön.");
@@ -784,6 +785,10 @@ public class Session {
             } else {
                     setStatusMessage("Puhelinnumeron liittäminen epäonnistui.");
                 }
+            if (this.activeRoom != null) {
+                this.switchActiveRoom();
+            }
+            obsman.notifyObservers(NeroObserverTypes.ROOMS);
     }
 
     /**
@@ -815,10 +820,14 @@ public class Session {
             throw new IllegalArgumentException();
         }
         if (db.removePhoneNumberFromPerson(phone)) {
-            setStatusMessage("Puhelinnumero poistettu työpisteestä.");
+            obsman.notifyObservers(NeroObserverTypes.ROOMS);
+            setStatusMessage("Puhelinnumero poistettu henkilöltä.");
         } else {
-            setStatusMessage("Puhelinnumeron poistaminen epäonnistui.");
+            setStatusMessage("Puhelinnumeron poistaminen henkilöltä epäonnistui.");
         }
+        if (this.activeRoom != null) {
+                this.switchActiveRoom();
+            }
     }
 
     /* Dataolioiden tarvitsemat tiedonhakuoperaatiot */

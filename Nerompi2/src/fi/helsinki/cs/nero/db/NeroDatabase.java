@@ -1245,6 +1245,7 @@ public class NeroDatabase implements NeroObserver {
         String updatePhoneQuery = "update henkilo"
                 + " set puhelin_tyo=?"
                 + " where htunnus=?";
+        
         try {
             PreparedStatement prep = this.connection.prepareStatement(updatePhoneQuery);
             prep.setString(1, number);
@@ -1674,17 +1675,23 @@ public class NeroDatabase implements NeroObserver {
                         ResultSet rs = prep.executeQuery();
                         while (rs.next()) {
                             if (this.findKannykka(rs.getString("HENKLO_HTUNNUS"))) {
-                                    System.out.println("true");                      
+                                    //ei tehdä muutoksia                  
                             }
                             else {
-                                this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());
-                                System.out.println("true");
-                                
+                                this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), phone.getPhoneNumber());                                
                             }
                         }
                     //Kun henkilölle varataan numero
                      } else {
+                        prep = this.connection.prepareStatement(getpersons);
+                        prep.setString(1, findTyopiste(phone));
+                        ResultSet rs = prep.executeQuery();
+                        
+                        while (rs.next()) {
+                                this.updateWorkPhone(rs.getString("HENKLO_HTUNNUS"), "");
+                            }
                         this.updateWorkPhone(personID, phone.getPhoneNumber());
+                        
                     }
                         /* XXX Raskas operaatio */    
                         loadRooms();
@@ -1861,6 +1868,11 @@ public class NeroDatabase implements NeroObserver {
         return null;
     
     }  
+    /**
+     * ottaa selvää löytyykö henkilöltä kännykkää
+     * @param henklo_tunnus henkilön id
+     * @return 
+     */
     public boolean findKannykka(String henklo_tunnus) {
         
         String getKannykka = "SELECT kannykka_numero FROM KANNYKKA WHERE htunnus = ?";
@@ -1930,6 +1942,12 @@ public class NeroDatabase implements NeroObserver {
         this.session.waitState(false);
         return success;
     }
+    /**
+     * Poistaa henkilöltä työnumeron
+     * 
+     * @param phone numero josta henkilö poistetaan
+     * @return 
+     */
     public boolean removePhoneNumberFromPerson(PhoneNumber phone) {
         if (phone.getPersonID() == null) {
             System.out.println("henkilö ei saa olla null");
@@ -1938,6 +1956,7 @@ public class NeroDatabase implements NeroObserver {
         
         PreparedStatement prep;
         boolean success = false;
+        this.session.waitState(true);
         phone.getPersonID();
         
         
