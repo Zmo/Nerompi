@@ -470,8 +470,6 @@ public class NeroDatabase implements NeroObserver {
      * osittain voimassa.
      * @return varaukset <code>Reservation[]</code> oliona.
      */
-   
-
     public ArrayList<HashMap<String, String>> getKannykat() {
         HashMap hashMap;
         ArrayList arry = new ArrayList<HashMap<String, String>>();
@@ -506,6 +504,8 @@ public class NeroDatabase implements NeroObserver {
         //uuden lisäämiseen 
         String test = "Select * FROM KANNYKKA";      
         
+        //Jos kannan ensimmäinen olio, niin aloita ID:n indeksointi numerosta 1, 
+        //muuten jatka edellisestä suurimmasta id:stä
         String x = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES ((SELECT MAX(PUH_ID) FROM KANNYKKA)+1, ?, ?, ?, CURRENT_TIMESTAMP)";
 
         String ensimmainen = "INSERT INTO KANNYKKA (PUH_ID, KANNYKKA_NUMERO, HTUNNUS, OMISTAJA, LISAUSPVM) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
@@ -1700,154 +1700,7 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(false);
             return success;
         }
-    /* --- Puhelinnumeroihin liittyvät metodit loppuu --- */
-        
-    /* --- Avainvarauksiin liittyvät metodit alkaa --- */
-        
-    /**
-     * Nerompi Lisää Huonevaraus -tauluun uuden huonevarauksen
-     *
-     * @param reservation lisättävä huonevaraus
-     */
-    public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
-        String selectQuery = "SELECT * FROM huonevaraus";
-        
-        String updateQuery1 = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)"; // (SELECT MAX(ID) FROM HUONEVARAUS)+1
-
-        String updateQuery2 = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)"; 
-        
-        PreparedStatement prep;
-        try {
-            ResultSet rs = this.connection.prepareStatement(selectQuery).executeQuery();
-            if(!rs.next()) {
-                prep = this.connection.prepareStatement(updateQuery1);
-                prep.setInt(1, 1);
-                prep = this.connection.prepareStatement(updateQuery2);
-                prep.setString(2, person.getPersonID());
-                prep.setString(3, room.getRoomID());
-                prep.setDate(4, timeslice.getSQLStartDate());
-                prep.setDate(5, timeslice.getSQLEndDate());
-                prep.executeUpdate();
-            }
-            else {
-                prep = this.connection.prepareStatement(updateQuery2);
-                prep.setString(1, person.getPersonID());
-                prep.setString(2, room.getRoomID());
-                prep.setDate(3, timeslice.getSQLStartDate());
-                prep.setDate(4, timeslice.getSQLEndDate());
-                prep.executeUpdate();
-            }
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-    }
-    /**
-     * Poistaa annetun avainvarauksen tietokannasta
-     * @param id poistettavan avainvarauksen id
-     */
-    public void deleteRoomKeyReservation(int id) {
-        String deleteQuery = "DELETE FROM huonevaraus where id=?";
-
-        PreparedStatement prep;
-
-        try {
-            prep = this.connection.prepareStatement(deleteQuery);
-            prep.setInt(1, id);
-            prep.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-        }
-    }
-    /**
-     * Päivittää annetun avainvarauksen alku- ja loppupäivämäärän
-     * @param roomKeyReservation muutettava avainvaraus
-     * @return onnistuiko päivitys
-     */
-    public boolean modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
-        String updateQuery = "UPDATE huonevaraus SET alkupvm=?, loppupvm=? where id=?";
-        
-        PreparedStatement prep;
-        
-        try {
-            prep = this.connection.prepareStatement(updateQuery);
-            prep.setDate(1, roomKeyReservation.getTimeSlice().getSQLStartDate());
-            prep.setDate(2, roomKeyReservation.getTimeSlice().getSQLEndDate());
-            prep.setInt(3, roomKeyReservation.getReservationID());
-            prep.executeUpdate();
-            return true;
-        } catch(SQLException e) {
-            System.err.println("Tietokantavirhe: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /* --- Avainvarauksiin liittyvät metodit loppuu --- */
-
-    /* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
-
-	/**
-	 * Palauttaa kaikki järjestelmän tuntemat projektit järjestettynä
-	 * Project[] -taulukkona.
-	 * 
-	 * @return projektit <code>Project[]</code> oliona
-	 */
-	public Project[] getProjects() {
-		Project[] projs = (Project[]) projects.values().toArray(new Project[0]);
-		/* HashTable hukkaa jï¿½rjestyksen, joten sortataan */
-		Arrays.sort(projs);
-		return projs;
-	}
-
-	/* --- Projekteihin liittyvï¿½t metodit loppuu --- */ 
-
-	/* --- Muut metodit alkaa --- */ 
-
-	/**
-	 * Palauttaa tietokantayhteyden. Käytä varovaisesti, tarkoitettu lähinnä
-	 * testejä varten.
-	 * @return Yhteys <code>Connection</code> oliona.
-	 */
-	public Connection getConnection() {
-		return connection;
-	}
-
-	/**
-	 * NeroObserver-kuuntelija. Kï¿½ytï¿½nnï¿½ssï¿½ kuuntelee vain TIMESCALE ja ROOMS
-	 * tyyppejï¿½, mutta ei tarkista mikï¿½ tyyppi vastaanotettiin.
-	 * @param type Kuuntelijatyyppi, ei vaikutusta. 
-	 * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
-	 */
-	public void updateObserved(int type) {
-		// Aikajakso tai huonetiedot ovat muuttuneet. Tiedot henkilï¿½istï¿½ eivï¿½t enï¿½ï¿½
-		// ole ajan tasalla.
-		//System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
-		people.clear();
-	}
-        
-	/**
-	 * Main-metodi pienimuotoista testailua varten.
-	 * @param args Komentoriviparametrit.
-	 * @throws SQLException
-	 */
-    public static void main(String[] args) throws SQLException {
-	NeroApplication.readIni(NeroApplication.DEFAULT_INI);
-	NeroDatabase ndb = new NeroDatabase(new Session(),
-        	NeroApplication.getProperty("db_class"),
-        	NeroApplication.getProperty("db_connection"),
-		NeroApplication.getProperty("db_username"),
-		NeroApplication.getProperty("db_password"));
-	/* tahtoo katsoa versiot, jotkut toimii ja jotkut ei. */
-	System.out.println(ndb.connection.getMetaData().getDriverVersion());
-	System.out.println(ndb.connection.getMetaData().getDatabaseProductVersion());
-	// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
-    	System.out.println("done.");
-    }
-    /**
-     * palauttaa htunnukseen liittyvän kännykkänumeron
-     * @param htunnus
-     * @return 
-     */
-    public String getKannykkanOmistaja(String htunnus) {
+        public String getKannykkanOmistaja(String htunnus) {
         
         String prep = "SELECT omistaja FROM KANNYKKA WHERE htunnus = ?";
         try {        
@@ -2023,6 +1876,154 @@ public class NeroDatabase implements NeroObserver {
         Arrays.sort(numbers);
         return numbers;
     }
+    /* --- Puhelinnumeroihin liittyvät metodit loppuu --- */
+        
+    /* --- Avainvarauksiin liittyvät metodit alkaa --- */
+        
+    /**
+     * Nerompi Lisää Huonevaraus -tauluun uuden huonevarauksen
+     *
+     * @param reservation lisättävä huonevaraus
+     */
+    public void addRoomKeyReservation(Room room, Person person, TimeSlice timeslice) {
+        String selectQuery = "SELECT * FROM huonevaraus";
+        
+        String updateQuery1 = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES (?, ?, ?, ?, ?)"; // (SELECT MAX(ID) FROM HUONEVARAUS)+1
+
+        String updateQuery2 = "INSERT INTO HUONEVARAUS (ID, HTUNNUS, RHUONE_ID, ALKUPVM, LOPPUPVM) VALUES ((SELECT MAX(ID) FROM HUONEVARAUS)+1, ?, ?, ?, ?)"; 
+        
+        PreparedStatement prep;
+        try {
+            ResultSet rs = this.connection.prepareStatement(selectQuery).executeQuery();
+            if(!rs.next()) {
+                prep = this.connection.prepareStatement(updateQuery1);
+                prep.setInt(1, 1);
+                prep = this.connection.prepareStatement(updateQuery2);
+                prep.setString(2, person.getPersonID());
+                prep.setString(3, room.getRoomID());
+                prep.setDate(4, timeslice.getSQLStartDate());
+                prep.setDate(5, timeslice.getSQLEndDate());
+                prep.executeUpdate();
+            }
+            else {
+                prep = this.connection.prepareStatement(updateQuery2);
+                prep.setString(1, person.getPersonID());
+                prep.setString(2, room.getRoomID());
+                prep.setDate(3, timeslice.getSQLStartDate());
+                prep.setDate(4, timeslice.getSQLEndDate());
+                prep.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+    }
+    /**
+     * Poistaa annetun avainvarauksen tietokannasta
+     * @param id poistettavan avainvarauksen id
+     */
+    public void deleteRoomKeyReservation(int id) {
+        String deleteQuery = "DELETE FROM huonevaraus where id=?";
+
+        PreparedStatement prep;
+
+        try {
+            prep = this.connection.prepareStatement(deleteQuery);
+            prep.setInt(1, id);
+            prep.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+        }
+    }
+    /**
+     * Päivittää annetun avainvarauksen alku- ja loppupäivämäärän
+     * @param roomKeyReservation muutettava avainvaraus
+     * @return onnistuiko päivitys
+     */
+    public boolean modifyRoomKeyReservation(RoomKeyReservation roomKeyReservation) {
+        String updateQuery = "UPDATE huonevaraus SET alkupvm=?, loppupvm=? where id=?";
+        
+        PreparedStatement prep;
+        
+        try {
+            prep = this.connection.prepareStatement(updateQuery);
+            prep.setDate(1, roomKeyReservation.getTimeSlice().getSQLStartDate());
+            prep.setDate(2, roomKeyReservation.getTimeSlice().getSQLEndDate());
+            prep.setInt(3, roomKeyReservation.getReservationID());
+            prep.executeUpdate();
+            return true;
+        } catch(SQLException e) {
+            System.err.println("Tietokantavirhe: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /* --- Avainvarauksiin liittyvät metodit loppuu --- */
+
+    /* --- Projekteihin liittyvï¿½t metodit alkaa --- */ 
+
+	/**
+	 * Palauttaa kaikki järjestelmän tuntemat projektit järjestettynä
+	 * Project[] -taulukkona.
+	 * 
+	 * @return projektit <code>Project[]</code> oliona
+	 */
+	public Project[] getProjects() {
+		Project[] projs = (Project[]) projects.values().toArray(new Project[0]);
+		/* HashTable hukkaa jï¿½rjestyksen, joten sortataan */
+		Arrays.sort(projs);
+		return projs;
+	}
+
+	/* --- Projekteihin liittyvï¿½t metodit loppuu --- */ 
+
+	/* --- Muut metodit alkaa --- */ 
+
+	/**
+	 * Palauttaa tietokantayhteyden. Käytä varovaisesti, tarkoitettu lähinnä
+	 * testejä varten.
+	 * @return Yhteys <code>Connection</code> oliona.
+	 */
+	public Connection getConnection() {
+		return connection;
+	}
+
+	/**
+	 * NeroObserver-kuuntelija. Kï¿½ytï¿½nnï¿½ssï¿½ kuuntelee vain TIMESCALE ja ROOMS
+	 * tyyppejï¿½, mutta ei tarkista mikï¿½ tyyppi vastaanotettiin.
+	 * @param type Kuuntelijatyyppi, ei vaikutusta. 
+	 * @see fi.helsinki.cs.nero.event.NeroObserver#updateObserved(int)
+	 */
+	public void updateObserved(int type) {
+		// Aikajakso tai huonetiedot ovat muuttuneet. Tiedot henkilï¿½istï¿½ eivï¿½t enï¿½ï¿½
+		// ole ajan tasalla.
+		//System.err.println("DB: heitetï¿½ï¿½n pois tiedot henkilï¿½istï¿½");
+		people.clear();
+	}
+        
+	/**
+	 * Main-metodi pienimuotoista testailua varten.
+	 * @param args Komentoriviparametrit.
+	 * @throws SQLException
+	 */
+    public static void main(String[] args) throws SQLException {
+	NeroApplication.readIni(NeroApplication.DEFAULT_INI);
+	NeroDatabase ndb = new NeroDatabase(new Session(),
+        	NeroApplication.getProperty("db_class"),
+        	NeroApplication.getProperty("db_connection"),
+		NeroApplication.getProperty("db_username"),
+		NeroApplication.getProperty("db_password"));
+	/* tahtoo katsoa versiot, jotkut toimii ja jotkut ei. */
+	System.out.println(ndb.connection.getMetaData().getDriverVersion());
+	System.out.println(ndb.connection.getMetaData().getDatabaseProductVersion());
+	// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
+    	System.out.println("done.");
+    }
+    /**
+     * palauttaa htunnukseen liittyvän kännykkänumeron
+     * @param htunnus
+     * @return 
+     */
+    
 
     /* --- Muut metodit loppuu --- */
 

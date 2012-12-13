@@ -5,7 +5,7 @@
 package fi.helsinki.cs.nero.data;
 
 /**
- * Luokka kännykkä olioille
+ * Luokka kännykkä olioille. Sisältävät dataa henkilökohtaisesta työkänykästä.
  * @author ssinisal
  */
 public class Kannykka {
