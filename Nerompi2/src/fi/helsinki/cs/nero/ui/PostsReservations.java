@@ -43,14 +43,10 @@ public class PostsReservations {
             Iterator rowsIterator = this.rows.iterator();
             
             //Yritet‰‰n lis‰t‰ jokaiselle olemassaolevalle riville.
-            int rivi = 1;
             while(rowsIterator.hasNext()) {
-            
                 Row row = (Row)rowsIterator.next();
             
                 //Jos saadaan lis‰tty‰
-                String personsName = reservations[i].getReservingPerson().getName();
-                
                 if(row.addReservation(reservations[i], false)) {
                     added = true;
                     break;

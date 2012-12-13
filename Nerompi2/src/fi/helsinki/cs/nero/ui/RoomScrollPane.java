@@ -5,7 +5,6 @@ package fi.helsinki.cs.nero.ui;
 
 
 import fi.helsinki.cs.nero.NeroApplication;
-import fi.helsinki.cs.nero.data.Person;
 import fi.helsinki.cs.nero.data.PhoneNumber;
 import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Room;
@@ -40,11 +39,6 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
      * Työpisteiden (PostReservations-oliot) esitykset listana..
      */
     private LinkedList postsList = null;
-    
-    /**
-     * 
-     */
-    private LinkedList keyList = null;
  
     /**
      * Viite aktiiviseen huoneeseen, eli esitettävä huone.
@@ -254,7 +248,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
             while(rowIterator.hasNext()) {
                 
                 //Tehdään riville paneeli johon elementit tulee peräkkäin.
-                RowPanel rowPanel = new RowPanel(ROW_LENGTH);      
+                RowPanel rowPanel = new RowPanel(ROW_LENGTH);
                 Row row = (Row)rowIterator.next();
                 
                 row.resetIterator();
@@ -292,7 +286,7 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
 
             mainPanel.add(postsPanel);
         }
-        //Alkaa tästä
+        // Avainvarausten näyttäminen
         JPanel extraHeader = new JPanel(new BorderLayout());
 	extraHeader.setBackground(BG);	
 	JLabel l4 = new JLabel(VY);
@@ -355,12 +349,8 @@ public class RoomScrollPane extends JScrollPane implements NeroObserver {
         postsPanel.add(footer);
         postsPanel.add(emptyRow);
         
-        //Loppuu tähän
-        
-        
         //Asetetaan uusi post panel näkyviin.
         this.setViewportView(mainPanel);
-        long time = System.currentTimeMillis()-startTime;
     }
     
     /**
