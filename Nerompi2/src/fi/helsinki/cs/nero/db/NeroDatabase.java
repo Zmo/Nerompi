@@ -1556,17 +1556,6 @@ public class NeroDatabase implements NeroObserver {
             while(rs.next()) {
                 TimeSlice timeslice = new TimeSlice(rs.getDate("ALKUPVM"), rs.getDate("LOPPUPVM"));
                 Person person = (Person) people.get(rs.getString("HTUNNUS"));
-                
-                System.out.println("-----------------" + rs.getString("HTUNNUS"));
-                System.out.println("-----------------" + people.size());
-                
-                System.out.println("<><><> " + room.getRoomID());
-                System.out.println("       " + rooms.get(rs.getString("RHUONE_ID")));
-                System.out.println("       " + rs.getInt("ID"));
-                System.out.println("       " + person.getName());
-                System.out.println("       " + person.getPersonID());
-                System.out.println("       " + timeslice);
-                
                 arrayList.add(new RoomKeyReservation(rs.getInt("ID"), (Room) rooms.get(rs.getString("RHUONE_ID")), person.getPersonID(), person.getName(), timeslice, this.session));
             }
             RoomKeyReservation[] temp = new RoomKeyReservation[0];

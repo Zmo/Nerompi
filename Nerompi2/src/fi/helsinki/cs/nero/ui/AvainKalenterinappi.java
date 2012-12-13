@@ -13,8 +13,7 @@ import java.util.Date;
 import net.sourceforge.jcalendarbutton.JCalendarButton;
 
 /**
- *
- * @author rkolagus
+ * Avainvarausten rajauspäivien muokkaamiseen sopiva kalenterinappi.
  */
 public class AvainKalenterinappi extends JCalendarButton {
 
