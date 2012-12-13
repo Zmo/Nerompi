@@ -1700,6 +1700,11 @@ public class NeroDatabase implements NeroObserver {
             this.session.waitState(false);
             return success;
         }
+        /**
+        * palauttaa htunnukseen liittyvän kännykkänumeron
+        * @param htunnus
+        * @return 
+        */
         public String getKannykkanOmistaja(String htunnus) {
         
         String prep = "SELECT omistaja FROM KANNYKKA WHERE htunnus = ?";
@@ -2018,11 +2023,7 @@ public class NeroDatabase implements NeroObserver {
 	// testailusï¿½lï¿½ poistettu, riippuvaista kannan vanhasta sisï¿½llï¿½stï¿½.
     	System.out.println("done.");
     }
-    /**
-     * palauttaa htunnukseen liittyvän kännykkänumeron
-     * @param htunnus
-     * @return 
-     */
+ 
     
 
     /* --- Muut metodit loppuu --- */
