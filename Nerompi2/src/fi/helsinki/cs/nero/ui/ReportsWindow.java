@@ -91,6 +91,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         showColumns(initiallyHiddenColumns);
         this.setVisible(true);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

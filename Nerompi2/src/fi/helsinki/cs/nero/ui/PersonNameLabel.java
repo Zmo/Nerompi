@@ -9,7 +9,7 @@ import fi.helsinki.cs.nero.logic.Session;
 import javax.swing.JLabel;
 
 /**
- *
+ * Tarra henkilölle,
  * @author ssinisal
  */
 public class PersonNameLabel extends JLabel {

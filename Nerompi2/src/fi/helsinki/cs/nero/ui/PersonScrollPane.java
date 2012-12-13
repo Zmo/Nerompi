@@ -120,7 +120,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 		VA = new ImageIcon(NeroApplication.getProperty("img_va"));
 		mainPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
 	}
-	
+
 	/**
 	 * Konstruktori.
 	 * @param sessio Viite sessioon.
@@ -227,7 +227,7 @@ public class PersonScrollPane extends JScrollPane implements NeroObserver {
 			
 			header.add(faceIcon);
 			
-			//Lisätään henkilön yhteystiedot.
+			//Lisätään henkilön yhteystietoikkunan avaamiseen nappi.
                         PersonNameLabel personNameLabel = new PersonNameLabel(this.sessio, personIterator.getPerson());
                         personNameLabel.setText(personIterator.getPerson().getName());
                         if (personIterator.getPerson().getTitteli() != null){
