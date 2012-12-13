@@ -13,9 +13,9 @@ import junit.framework.TestCase;
  *
  * @author lpesola
  */
-public class TxtReportPrinterTest extends TestCase {
+public class TestTxtReportPrinter extends TestCase {
 
-    public TxtReportPrinterTest(String testName) {
+    public TestTxtReportPrinter(String testName) {
         super(testName);
     }
 
