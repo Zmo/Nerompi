@@ -26,6 +26,9 @@ public class PersonInfoFrame extends javax.swing.JFrame {
     private HashMap<String, String> henkiloHash;
     private Kannykka kannykka = null;
     
+    /*
+     * Konstruktori uusien henkilöiden muokkaamiseen
+     */
     public PersonInfoFrame(Session session, Person person) {
         initComponents();
         this.person = person;
@@ -80,7 +83,10 @@ public class PersonInfoFrame extends javax.swing.JFrame {
         MoreField.setVisible(false);
         this.setVisible(true);
     }
-    
+    /**
+     * Konstruktori uusien henkilöiden lisäämiseen
+     * @param session 
+     */
     public PersonInfoFrame(Session session) {
         initComponents();
         this.newPerson = true;

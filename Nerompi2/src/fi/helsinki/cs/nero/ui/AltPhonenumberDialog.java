@@ -259,7 +259,10 @@ public class AltPhonenumberDialog extends javax.swing.JDialog
             }
         
     }//GEN-LAST:event_vapautaButtonActionPerformed
-
+    /**
+     * nappi poistumiseen huoneesta
+     * @param evt 
+     */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
