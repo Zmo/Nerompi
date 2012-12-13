@@ -576,6 +576,7 @@
         <Component class="javax.swing.JCheckBox" name="showFloor">
           <Properties>
             <Property name="text" type="java.lang.String" value="Kerros"/>
+            <Property name="name" type="java.lang.String" value="showFloor" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showFloorMouseReleased"/>
@@ -616,6 +617,7 @@
         <Component class="javax.swing.JCheckBox" name="showRoomKeyReservations">
           <Properties>
             <Property name="text" type="java.lang.String" value="Avainvaraukset"/>
+            <Property name="name" type="java.lang.String" value="showRoomKeyReservations" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showRoomKeyReservationsMouseReleased"/>
@@ -648,6 +650,7 @@
           </StringArray>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="N&#xe4;ytet&#xe4;&#xe4;nk&#xf6; tiedot huoneiden vai henkil&#xf6;iden mukaan"/>
+        <Property name="name" type="java.lang.String" value="dataModeSelector" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="dataModeSelectorItemStateChanged"/>

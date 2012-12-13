@@ -412,6 +412,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showFloor.setText("Kerros");
+        showFloor.setName("showFloor"); // NOI18N
         showFloor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showFloorMouseReleased(evt);
@@ -447,6 +448,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         });
 
         showRoomKeyReservations.setText("Avainvaraukset");
+        showRoomKeyReservations.setName("showRoomKeyReservations"); // NOI18N
         showRoomKeyReservations.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showRoomKeyReservationsMouseReleased(evt);
@@ -531,6 +533,7 @@ public class ReportsWindow extends javax.swing.JFrame {
 
         dataModeSelector.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Henkilöt", "Huoneet" }));
         dataModeSelector.setToolTipText("Näytetäänkö tiedot huoneiden vai henkilöiden mukaan");
+        dataModeSelector.setName("dataModeSelector"); // NOI18N
         dataModeSelector.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 dataModeSelectorItemStateChanged(evt);
