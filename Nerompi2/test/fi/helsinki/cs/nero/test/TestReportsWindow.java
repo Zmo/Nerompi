@@ -1,6 +1,5 @@
 package fi.helsinki.cs.nero.test;
 
-import fi.helsinki.cs.nero.logic.ReportWindowSession;
 import fi.helsinki.cs.nero.ui.ReportsWindow;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
@@ -15,21 +14,22 @@ import org.junit.Test;
 public class TestReportsWindow extends FestSwingJUnitTestCase {
 
     private FrameFixture window;
-    private ReportWindowSession rsession;
+    private StubReportSession trsession;
 
     @Override
     protected void onSetUp() {
+        trsession = new StubReportSession();
         ReportsWindow frame = GuiActionRunner.execute(new GuiQuery<ReportsWindow>() {
             @Override
             protected ReportsWindow executeInEDT() {
-                return new ReportsWindow();
+                return new ReportsWindow(trsession);
             }
         });
         // IMPORTANT: note the call to 'robot()'
         // we must use the Robot from FestSwingTestngTestCase
         window = new FrameFixture(robot(), frame);
         window.show(); // shows the frame to test
-        rsession = new ReportWindowSession();
+        
     }
 
     @Test
@@ -50,4 +50,5 @@ public class TestReportsWindow extends FestSwingJUnitTestCase {
        window.checkBox("showRoomKeyReservations").click();
        window.table().requireColumnCount(count + 1);        
     }
+    
 }
