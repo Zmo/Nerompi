@@ -427,6 +427,7 @@
         <Component class="javax.swing.JCheckBox" name="showInactive">
           <Properties>
             <Property name="text" type="java.lang.String" value="N&#xe4;yt&#xe4; my&#xf6;s ei-aktiiviset"/>
+            <Property name="name" type="java.lang.String" value="showInactive" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="showInactiveMouseReleased"/>

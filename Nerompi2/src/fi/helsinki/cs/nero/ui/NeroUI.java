@@ -71,7 +71,7 @@ public class NeroUI {
         CursorObserver cursorObserver = new CursorObserver();
 
         //Create and set up the window.
-        JFrame frame = new JFrame("Nero");
+        JFrame frame = new JFrame("Nerompi");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1280, HEIGHT + 65);
         frame.setResizable(true);

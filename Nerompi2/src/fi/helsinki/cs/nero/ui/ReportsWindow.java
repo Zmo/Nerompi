@@ -274,6 +274,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         jLabel6.setText("Huone");
 
         showInactive.setText("Näytä myös ei-aktiiviset");
+        showInactive.setName("showInactive"); // NOI18N
         showInactive.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 showInactiveMouseReleased(evt);
