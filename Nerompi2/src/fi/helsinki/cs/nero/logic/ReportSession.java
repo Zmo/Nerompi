@@ -5,7 +5,7 @@ import fi.helsinki.cs.nero.data.Post;
 import fi.helsinki.cs.nero.data.Reservation;
 import fi.helsinki.cs.nero.data.Room;
 import fi.helsinki.cs.nero.data.RoomKeyReservation;
-import fi.helsinki.cs.nero.db.NeroDatabase;
+import fi.helsinki.cs.nero.ui.ReportsWindow;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
@@ -25,17 +25,18 @@ public class ReportSession {
     private Session session;
     private Person[] people;
     private Room[] rooms;
+    /**
+     * true jos n‰ytet‰‰n vain aktiiviset
+     */
+    private Boolean showOnlyActiveEmployees;
 
-    public ReportSession() {
-        session = new Session();
-        NeroDatabase db = new NeroDatabase(session,
-                "oracle.jdbc.driver.OracleDriver",
-                "jdbc:oracle:thin:@bodbacka:1521:test",
-                "tk_testi", "tapaus2");
-        session.setDatabase(db);
 
+    public ReportSession(Session s) {
+        session = s;
         people = session.getFilteredPeople();
         rooms = session.getRooms();
+        showOnlyActiveEmployees = session.getFilterActiveEmployees();
+        ReportsWindow reports = new ReportsWindow(this);
     }
 
     /**
@@ -127,9 +128,13 @@ public class ReportSession {
      */
     public void setFilterActiveEmployees(boolean b) {
         session.setFilterActiveEmployees(b);
+        showOnlyActiveEmployees = b;
         people = session.getFilteredPeople();
     }
 
+    public Boolean getShowOnlyActiveEmployees() {
+        return showOnlyActiveEmployees;
+    }
     /**
      * Muotoilee huoneen kaikki avainvaraukset yhdeksi Stringiksi.
      * 
@@ -181,4 +186,5 @@ public class ReportSession {
         }
         return str;
     }
+    
 }
