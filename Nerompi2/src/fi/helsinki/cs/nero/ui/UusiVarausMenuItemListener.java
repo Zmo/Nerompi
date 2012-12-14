@@ -24,7 +24,6 @@ public class UusiVarausMenuItemListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // room, post
         this.varausPopup.teeVaraus(this.varausPopup.person.getSession().getActiveRoom(), this.post);
     }
     

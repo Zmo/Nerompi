@@ -70,9 +70,8 @@ public class Person implements Comparable {
     private ArrayList<RoomKeyReservation> roomKeyReservations;
 
     /**
-     * Konstruktori. Saa parametrinaan session johon liittyy, henkilön
-     * tunnuksen, henkilön nimen, henkilön työsopimukset ja henkilön
-     * työpistevaraukset.
+     * Konstruktori. Saa parametrinaan session johon liittyy, kaikki
+     * henkilön attribuutit
      *
      * @param session Sessio <code>Session</code> oliona.
      * @param personID Henkilölle asetettava tunnus Stringinä.
