@@ -1,7 +1,9 @@
 package fi.helsinki.cs.nero.test;
 
+import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWindowSession;
 import fi.helsinki.cs.nero.ui.ReportsWindow;
+import java.util.Vector;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
@@ -15,21 +17,22 @@ import org.junit.Test;
 public class TestReportsWindow extends FestSwingJUnitTestCase {
 
     private FrameFixture window;
-    private ReportWindowSession rsession;
+    private TestReportSession trsession;
 
     @Override
     protected void onSetUp() {
+        trsession = new TestReportSession();
         ReportsWindow frame = GuiActionRunner.execute(new GuiQuery<ReportsWindow>() {
             @Override
             protected ReportsWindow executeInEDT() {
-                return new ReportsWindow();
+                return new ReportsWindow(trsession);
             }
         });
         // IMPORTANT: note the call to 'robot()'
         // we must use the Robot from FestSwingTestngTestCase
         window = new FrameFixture(robot(), frame);
         window.show(); // shows the frame to test
-        rsession = new ReportWindowSession();
+        
     }
 
     @Test
@@ -49,5 +52,29 @@ public class TestReportsWindow extends FestSwingJUnitTestCase {
        int count = window.table().component().getColumnCount();
        window.checkBox("showRoomKeyReservations").click();
        window.table().requireColumnCount(count + 1);        
+    }
+    
+    private class TestReportSession implements ReportSession {
+
+        @Override
+        public Vector<Vector<Object>> getPeopleData() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Vector<Vector<Object>> getRoomData() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Boolean getShowOnlyActiveEmployees() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void setFilterActiveEmployees(boolean b) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
     }
 }

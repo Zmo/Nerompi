@@ -1,6 +1,7 @@
 package fi.helsinki.cs.nero.ui;
 
 
+import fi.helsinki.cs.nero.logic.ReportSession;
 import fi.helsinki.cs.nero.logic.ReportWindowSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import java.io.File;
@@ -40,7 +41,7 @@ import javax.swing.table.TableRowSorter;
 
 public class ReportsWindow extends javax.swing.JFrame {
 
-    private static ReportWindowSession rsession;
+    private static ReportSession rsession;
     private List<String> initialColumns;
     private List<JCheckBox> initialComponents;
     private List<String> initiallyHiddenColumns;
@@ -73,7 +74,7 @@ public class ReportsWindow extends javax.swing.JFrame {
     /**
      * Creates new form Reports
      */
-    public ReportsWindow(ReportWindowSession rs) {
+    public ReportsWindow(ReportSession rs) {
 
         rsession = rs;
         today = new Date();
