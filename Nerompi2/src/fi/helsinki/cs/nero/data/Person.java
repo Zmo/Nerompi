@@ -36,7 +36,13 @@ public class Person implements Comparable {
      * Henkilön työhuone
      */
     private String room;
+    /**
+     * Henkilön kutsumanimi
+     */
     private String callName;
+    /**
+     * Onko henkilö aktiivinen
+     */
     private String activity;
     private String hetu;
     private String oppiarvo;
@@ -58,6 +64,9 @@ public class Person implements Comparable {
     private String etunimi;
     private String sukunimi;
     private Session session;
+    /**
+     * Lista henkilön avainvarauksista
+     */
     private ArrayList<RoomKeyReservation> roomKeyReservations;
 
     /**
@@ -554,13 +563,9 @@ public class Person implements Comparable {
                     && contractsForThisPerson[i].getTimeSlice().getEndDate().compareTo(end) <= 0) {
                 return true;
             }
-
-
         }
 
         return false;
-
-
     }
 
     public void addRoomKeyReservation(RoomKeyReservation reservation) {
