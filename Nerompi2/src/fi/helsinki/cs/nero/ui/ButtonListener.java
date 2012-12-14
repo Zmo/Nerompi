@@ -3,6 +3,7 @@
  */
 package fi.helsinki.cs.nero.ui;
 
+import fi.helsinki.cs.nero.logic.ReportWindowSession;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -67,7 +68,7 @@ public class ButtonListener implements ActionListener {
                 }
                 
                 if(e.getActionCommand().equals("reports")) {
-                    ReportsWindow reports = new ReportsWindow();
+                    ReportWindowSession reports = new ReportWindowSession(this.session);
                 }
                 
                 if(e.getActionCommand().equals("graphs")) {

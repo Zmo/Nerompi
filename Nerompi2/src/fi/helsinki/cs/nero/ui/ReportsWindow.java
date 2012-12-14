@@ -1,7 +1,7 @@
 package fi.helsinki.cs.nero.ui;
 
 
-import fi.helsinki.cs.nero.logic.ReportSession;
+import fi.helsinki.cs.nero.logic.ReportWindowSession;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import java.io.File;
 import java.text.ParsePosition;
@@ -32,15 +32,15 @@ import javax.swing.table.TableRowSorter;
  * tiedoista ja mahdollistaa n‰iden tietojen tallentamisen. 
  * N‰ytt‰‰ taulukon, jossa olevaa dataa voi
  * j‰rjest‰‰ ja rajata haluamallaan tavalla. Taulukossa n‰ytetty data voidaan
- * tallentaa teksti- tai ODS-muodossa. Saa tietonsa ReportSession-luokalta.
+ * tallentaa teksti- tai ODS-muodossa. Saa tietonsa ReportWindowSession-luokalta.
  *
  * @author lpesola
- * @see ReportSession
+ * @see ReportWindowSession
  */
 
 public class ReportsWindow extends javax.swing.JFrame {
 
-    private ReportSession rsession;
+    private static ReportWindowSession rsession;
     private List<String> initialColumns;
     private List<JCheckBox> initialComponents;
     private List<String> initiallyHiddenColumns;
@@ -73,9 +73,9 @@ public class ReportsWindow extends javax.swing.JFrame {
     /**
      * Creates new form Reports
      */
-    public ReportsWindow() {
+    public ReportsWindow(ReportWindowSession rs) {
 
-        rsession = new ReportSession();
+        rsession = rs;
         today = new Date();
         filterList = new HashMap<>();
         hiddenColumns = new HashMap<>();
@@ -802,7 +802,7 @@ public class ReportsWindow extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ReportsWindow().setVisible(true);
+                new ReportsWindow(rsession).setVisible(true);
             }
         });
     }
@@ -1338,6 +1338,10 @@ public class ReportsWindow extends javax.swing.JFrame {
         setEnabled(peopleComponents, true);
         setEnabled(roomComponents, false);
         setSelected(initialComponents);
+        // jos sessiossa on p‰‰ll‰ "vain aktiiviset", niin 
+        // checkboxin showInactive ei tule olla valittu
+        // jos ei, sen tulee olla valittu
+        showInactive.setSelected(!rsession.getShowOnlyActiveEmployees());
         filterList.clear();
         table = peopleTable;
         columnModel = table.getColumnModel();
