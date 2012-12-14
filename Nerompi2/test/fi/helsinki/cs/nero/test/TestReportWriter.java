@@ -1,15 +1,12 @@
 package fi.helsinki.cs.nero.test;
 
-import fi.helsinki.cs.nero.logic.ODTReportPrinter;
 import fi.helsinki.cs.nero.logic.ReportWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 import javax.swing.JTable;
