@@ -1,9 +1,6 @@
 package fi.helsinki.cs.nero.test;
 
-import fi.helsinki.cs.nero.logic.ReportSession;
-import fi.helsinki.cs.nero.logic.ReportWindowSession;
 import fi.helsinki.cs.nero.ui.ReportsWindow;
-import java.util.Vector;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
@@ -17,11 +14,11 @@ import org.junit.Test;
 public class TestReportsWindow extends FestSwingJUnitTestCase {
 
     private FrameFixture window;
-    private TestReportSession trsession;
+    private StubReportSession trsession;
 
     @Override
     protected void onSetUp() {
-        trsession = new TestReportSession();
+        trsession = new StubReportSession();
         ReportsWindow frame = GuiActionRunner.execute(new GuiQuery<ReportsWindow>() {
             @Override
             protected ReportsWindow executeInEDT() {
@@ -54,27 +51,4 @@ public class TestReportsWindow extends FestSwingJUnitTestCase {
        window.table().requireColumnCount(count + 1);        
     }
     
-    private class TestReportSession implements ReportSession {
-
-        @Override
-        public Vector<Vector<Object>> getPeopleData() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Vector<Vector<Object>> getRoomData() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Boolean getShowOnlyActiveEmployees() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void setFilterActiveEmployees(boolean b) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-        
-    }
 }

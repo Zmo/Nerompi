@@ -12,7 +12,8 @@ import java.util.Vector;
 
 /**
  * Session ja ReportsWindown'n välissä toimiva luokka, joka tarjoaa
- * ReportsWindow'lle datan sellaisessa muodossa, joka sopii sille.
+ * ReportsWindow'lle datan sellaisessa muodossa, joka sopii sille, 
+ * toteuttaa rajapinnan ReportSession.
  * Ideana lähinnä se, ettei GUIssa tarvitse olla metodeita, jotka ovat 
  * oleellisesti vain erinäisten taulukoiden iterointia ja datan muokkaamista
  * sopivaan esitysmuotoon.
